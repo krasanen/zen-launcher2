@@ -7,7 +7,7 @@ android {
         applicationId 'fi.zmengames.zlauncher'
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 121
+        versionCode 122
         versionName "3.0.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

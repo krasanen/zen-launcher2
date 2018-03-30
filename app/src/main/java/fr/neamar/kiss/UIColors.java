@@ -7,10 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class UIColors {
+    private static final String TAG = UIColors.class.getSimpleName();
     public static final int COLOR_DEFAULT = 0xFF4caf50;
     public static final int[] COLOR_LIST = new int[]{
             0xFF4CAF50, 0xFFD32F2F, 0xFFC2185B, 0xFF7B1FA2,
@@ -48,10 +50,12 @@ public class UIColors {
     }
 
     private static int getNotificationBarColor(Context context) {
-        return Color.parseColor(
+        Log.d(TAG,"getNotificationBarColor");
+        int a = Color.parseColor(
                 PreferenceManager.getDefaultSharedPreferences(context)
-                        .getString("notification-bar-color", COLOR_DEFAULT_STR)
-        );
+                        .getString("notification-bar-color", "#00000000"));
+        Log.d(TAG,"getNotificationBarColor, a:"+a);
+        return a;
     }
 
     public static int getPrimaryColor(Context context) {

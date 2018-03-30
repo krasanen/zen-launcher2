@@ -5,8 +5,10 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +22,7 @@ import fi.zmengames.zlauncher.searcher.NullSearcher;
 
 // Deals with any settings in the "User Experience" setting sub-screen
 class ExperienceTweaks extends Forwarder {
+    private static final String TAG = ExperienceTweaks.class.getSimpleName();
     /**
      * InputType that behaves as if the consuming IME is a standard-obeying
      * soft-keyboard
@@ -48,6 +51,8 @@ class ExperienceTweaks extends Forwarder {
 
     private View mainEmptyView;
     private final GestureDetector gd;
+    private final ScaleGestureDetector sgd;
+    private boolean scaling;
 
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);
@@ -64,12 +69,36 @@ class ExperienceTweaks extends Forwarder {
             mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
         }
 
+
+        sgd = new ScaleGestureDetector(mainActivity, new ScaleGestureDetector.OnScaleGestureListener() {
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                Log.d(TAG,"onScale");
+                scaling = true;
+                return true;
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                Log.d(TAG,"onScaleBegin");
+                scaling = true;
+                return true;
+            }
+
+            @Override
+            public void onScaleEnd(ScaleGestureDetector detector) {
+                Log.d(TAG,"onScaleEnd");
+                scaling = false;
+                mainActivity.launcherButton.performClick();
+            }
+        });
+
         gd = new GestureDetector(mainActivity, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 // if minimalistic mode is enabled,
                 // and we want to display history on touch
-                if (isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
+                if (!scaling && isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
                     // and we're currently in minimalistic mode with no results,
                     // and we're not looking at the app list
                     if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
@@ -87,15 +116,28 @@ class ExperienceTweaks extends Forwarder {
             }
 
             @Override
+            public boolean onDoubleTap(MotionEvent e1){
+
+                    mainActivity.launcherButton.performClick();
+
+                return true;
+            }
+
+            @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 float direction = e2.getY() - e1.getY();
-                if(direction > 0) {
-                    // Fling down: display notifications
-                    displayNotificationDrawer();
-                }
-                else {
-                    // Fling up: display keyboard
-                    mainActivity.showKeyboard();
+                if (!mainActivity.isViewingAllApps()) {
+                    if (direction > 0) {
+                        // Fling down: display notifications
+                        if (mainActivity.isKeyboardVisible()) {
+                            mainActivity.hideKeyboard();
+                        } else {
+                            displayNotificationDrawer();
+                        }
+                    } else {
+                        // Fling up: display keyboard
+                        mainActivity.showKeyboard();
+                    }
                 }
                 return true;
             }
@@ -138,6 +180,7 @@ class ExperienceTweaks extends Forwarder {
     void onTouch(View view, MotionEvent event) {
         // Forward touch events to the gesture detector
         gd.onTouchEvent(event);
+        sgd.onTouchEvent(event);
     }
 
     void onWindowFocusChanged(boolean hasFocus) {

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.PopupWindow;
@@ -111,7 +113,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     /**
      * Launcher button, can be clicked to display all apps
      */
-    private View launcherButton;
+    public View launcherButton;
     /**
      * "X" button to empty the search field
      */
@@ -136,6 +138,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private PopupWindow mPopup;
 
     private ForwarderManager forwarderManager;
+    private boolean mKeyboardVisible;
 
     /**
      * Called when the activity is first created.
@@ -319,8 +322,33 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          * Defer everything else to the forwarders
          */
         forwarderManager.onCreate();
+        initializeKeyboardListener();
     }
 
+    private void initializeKeyboardListener(){
+        emptyListView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect r = new Rect();
+                emptyListView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = emptyListView.getRootView().getHeight();
+
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+
+                Log.d(TAG, "keypadHeight = " + keypadHeight);
+
+                if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                    mKeyboardVisible = true;
+                }
+                else {
+                    mKeyboardVisible = false;
+                }
+            }
+        });
+    }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -780,5 +808,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void afterListChange() {
         list.animateChange();
+    }
+
+    public boolean isKeyboardVisible() {
+        return mKeyboardVisible;
     }
 }

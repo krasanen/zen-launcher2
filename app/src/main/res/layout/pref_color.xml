@@ -15,21 +15,21 @@
 
         <Button
             android:id="@+id/colorTransparentDark"
-            style="?android:attr/borderlessButtonStyle"
+            style="?android:attr/selectable"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/color_transparent_dark" />
 
         <Button
             android:id="@+id/colorTransparentWhite"
-            style="?android:attr/borderlessButtonStyle"
+            style="?android:attr/selectable"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/color_transparent_white" />
 
         <Button
             android:id="@+id/colorTransparent"
-            style="?android:attr/borderlessButtonStyle"
+            style="?android:attr/selectable"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/color_transparent" />
