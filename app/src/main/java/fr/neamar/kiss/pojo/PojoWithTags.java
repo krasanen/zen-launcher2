@@ -23,7 +23,7 @@ public class PojoWithTags extends Pojo {
         if (tags != null) {
             // Set the actual user-friendly name
             this.tags = tags;
-            this.normalizedTags = StringNormalizer.normalizeWithResult(this.tags, false);
+            this.normalizedTags = StringNormalizer.normalizeWithResult(this.tags, true);
         } else {
             this.tags = null;
             this.normalizedTags = null;

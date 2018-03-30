@@ -1,6 +1,7 @@
 package fi.zmengames.zlauncher.normalizer;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.nio.CharBuffer;
 import java.text.Normalizer;
@@ -12,6 +13,7 @@ import fi.zmengames.zlauncher.BuildConfig;
  * String utils to handle accented characters for search and highlighting
  */
 public class StringNormalizer {
+    private static final String TAG = StringNormalizer.class.getSimpleName();
     private StringNormalizer() {
     }
 
@@ -23,7 +25,7 @@ public class StringNormalizer {
      * @see StringNormalizer#normalizeWithResult(CharSequence, boolean)
      */
     public static String normalize(String input) {
-        Result result = StringNormalizer.normalizeWithResult(input, false);
+        Result result = StringNormalizer.normalizeWithResult(input, true);
         return result.toString();
     }
 
@@ -148,8 +150,9 @@ public class StringNormalizer {
             if (this.codePoints.length != that.codePoints.length)
                 return this.codePoints.length - that.codePoints.length;
 
-            if (BuildConfig.DEBUG && !this.equals(that))
-                throw new AssertionError("compareTo inconsistent with equals.");
+            if (BuildConfig.DEBUG && !this.equals(that)){
+                Log.d(TAG,"different case, this:"+this +" that:"+that);
+            }
 
             // equal
             return 0;

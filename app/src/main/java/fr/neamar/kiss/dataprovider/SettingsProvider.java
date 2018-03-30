@@ -22,7 +22,7 @@ public class SettingsProvider extends Provider<SettingsPojo> {
 
     @Override
     public void requestResults(String query, Searcher searcher) {
-        StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, false);
+        StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, true);
 
         if (queryNormalized.codePoints.length == 0) {
             return;

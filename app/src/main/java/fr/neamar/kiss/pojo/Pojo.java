@@ -41,7 +41,7 @@ public abstract class Pojo {
         if (name != null) {
             // Set the actual user-friendly name
             this.name = name;
-            this.normalizedName = StringNormalizer.normalizeWithResult(this.name, false);
+            this.normalizedName = StringNormalizer.normalizeWithResult(this.name, true);
         } else {
             this.name = null;
             this.normalizedName = null;
