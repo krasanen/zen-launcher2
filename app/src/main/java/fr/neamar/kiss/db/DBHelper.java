@@ -1,4 +1,4 @@
-package fr.neamar.kiss.db;
+package fi.zmengames.zlauncher.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
 
 public class DBHelper {
     private static SQLiteDatabase database = null;

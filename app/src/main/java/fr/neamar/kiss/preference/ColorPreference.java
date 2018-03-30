@@ -1,4 +1,4 @@
-package fr.neamar.kiss.preference;
+package fi.zmengames.zlauncher.preference;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,8 +12,8 @@ import com.android.colorpicker.ColorPickerDialog;
 import com.android.colorpicker.ColorPickerPalette;
 import com.android.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
 
-import fr.neamar.kiss.R;
-import fr.neamar.kiss.UIColors;
+import fi.zmengames.zlauncher.R;
+import fi.zmengames.zlauncher.UIColors;
 
 
 public class ColorPreference extends DialogPreference implements OnColorSelectedListener {

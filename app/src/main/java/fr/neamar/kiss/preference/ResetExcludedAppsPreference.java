@@ -1,4 +1,4 @@
-package fr.neamar.kiss.preference;
+package fi.zmengames.zlauncher.preference;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,8 +7,8 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.R;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.R;
 
 public class ResetExcludedAppsPreference extends DialogPreference {
 

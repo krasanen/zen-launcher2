@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">KISS</string>
+    <string name="app_name">Z-Launcher</string>
     <string name="activity_setting">Параметры</string>
     <string name="ui_search_hint">Поиск…</string>
     <string name="ui_item_search">%1$s “%2$s”</string>
@@ -98,7 +98,7 @@
     <string name="menu_favorites_add">В избранное</string>
     <string name="toast_favorites_added">%s добавлено в избранное</string>
 
-    <string name="shortcut_added">Ярлык добавлен в KISS</string>
+    <string name="shortcut_added">Ярлык добавлен в Z-Launcher</string>
 
     <string name="icons_pack_name">Значки (ADW.Launcher)</string>
     <string name="icons_pack_default_name">Системные значки</string>
@@ -106,8 +106,8 @@
     <string name="settings_nfc">Радиосвязь NFC</string>
     <string name="settings_tethering">Режим модема и точка доступа</string>
     <string name="restart_desc">Помогает при ошибках тем и невидимых новых контактах</string>
-    <string name="restart_name">Перезапуск KISS</string>
-    <string name="restart_warn">Если KISS не лончер по умолчанию, он будет закрыт. Продолжить?</string>
+    <string name="restart_name">Перезапуск Z-Launcher</string>
+    <string name="restart_warn">Если Z-Launcher не лончер по умолчанию, он будет закрыт. Продолжить?</string>
 
     <string name="items_title">%d элементов</string>
 
@@ -205,7 +205,7 @@
     <string name="freeze_history_summary">Не менять историю, пока отмечено</string>
 
 <string name="title_wallpaper">Живые обои</string>
-    <string name="enable_favorites_bar_summary_off">Показать избранное нажатием значка KISS</string>
+    <string name="enable_favorites_bar_summary_off">Показать избранное нажатием значка Z-Launcher</string>
     <string name="enable_favorites_bar_summary_on">Показать избранное над панелью поиска</string>
     <string name="get_help">Получить помощь!</string>
 

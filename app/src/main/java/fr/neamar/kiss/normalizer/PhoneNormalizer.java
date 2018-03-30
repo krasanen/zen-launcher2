@@ -1,4 +1,4 @@
-package fr.neamar.kiss.normalizer;
+package fi.zmengames.zlauncher.normalizer;
 
 import java.util.regex.Pattern;
 

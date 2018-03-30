@@ -1,13 +1,13 @@
-package fr.neamar.kiss.broadcast;
+package fi.zmengames.zlauncher.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.dataprovider.AppProvider;
-import fr.neamar.kiss.utils.UserHandle;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.dataprovider.AppProvider;
+import fi.zmengames.zlauncher.utils.UserHandle;
 
 /**
  * This class gets called when an application is created or removed on the
@@ -56,7 +56,7 @@ public class PackageAddedRemovedHandler extends BroadcastReceiver {
         String packageName = intent.getData().getSchemeSpecificPart();
 
         if (packageName.equalsIgnoreCase(ctx.getPackageName())) {
-            // When running KISS locally, sending a new version of the APK immediately triggers a "package removed" for fr.neamar.kiss,
+            // When running Z-Launcher locally, sending a new version of the APK immediately triggers a "package removed" for fi.zmengames.zlauncher,
             // There is no need to handle this event.
             // Discarding it makes startup time much faster locally as apps don't have to be loaded twice.
             return;

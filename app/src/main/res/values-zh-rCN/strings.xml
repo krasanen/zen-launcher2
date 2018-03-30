@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="activity_setting">KISS 设置</string>
+    <string name="activity_setting">Z-Launcher 设置</string>
     <string name="ui_search_hint">搜索应用，联系人，…</string>
     <string name="ui_item_contact_hint_call">呼叫</string>
 
@@ -14,7 +14,7 @@
     <string name="ui_empty_1_sub">应用，联系人，设置，…</string>
     <string name="ui_empty_2">始终查看您的历史记录</string>
     <string name="ui_empty_2_sub">更快访问</string>
-    <string name="ui_empty_3_sub">KISS 启动器会学习您的习惯</string>
+    <string name="ui_empty_3_sub">Z-Launcher 启动器会学习您的习惯</string>
 
     <string name="settings_name">设备设置</string>
 
@@ -27,7 +27,7 @@
     <string name="main_clear">清空搜索栏</string>
     <string name="main_kiss">显示收藏和应用列表</string>
     <string name="main_kiss_back">显示历史记录</string>
-    <string name="app_name">KISS 启动器</string>
+    <string name="app_name">Z-Launcher 启动器</string>
     <string name="ui_item_search">%1$s 搜索“%2$s”</string>
     <string name="ui_item_phone">呼叫“%s”</string>
     <string name="ui_item_contact_hint_message">信息</string>
@@ -77,11 +77,11 @@
     <string name="favorites_erased">收藏已清除。</string>
     <string name="menu_favorites_add">添加到收藏</string>
     <string name="excluded_app_list_erased">已排除应用已清除。</string>
-    <string name="excluded_app_list_added">应用已从 KISS 中排除。在 KISS 设置中可以重置</string>
+    <string name="excluded_app_list_added">应用已从 Z-Launcher 中排除。在 Z-Launcher 设置中可以重置</string>
 
     <string name="removed_item">已移除</string>
     <string name="menu_remove">从历史记录中移除</string>
-    <string name="menu_exclude">从 KISS 中排除应用</string>
+    <string name="menu_exclude">从 Z-Launcher 中排除应用</string>
     <string name="menu_app_details">应用信息</string>
     <string name="menu_app_uninstall">卸载</string>
     <string name="menu_app_hibernate">休眠</string>
@@ -98,11 +98,11 @@
     <string name="enable_sms">在历史记录中显示收到的短信</string>
     <string name="enable_phone">在历史记录中显示收到的来电</string>
     <string name="enable_app">在历史记录中显示新安装的应用</string>
-    <string name="shortcut_added">快捷方式已添加到 KISS。</string>
+    <string name="shortcut_added">快捷方式已添加到 Z-Launcher。</string>
 
     <string name="restart_desc">修复主题问题和新联系人不显示</string>
-    <string name="restart_name">重启 KISS</string>
-    <string name="restart_warn">您确定要重启 KISS？如果 KISS 不是您的默认启动器，该应用将只是退出。</string>
+    <string name="restart_name">重启 Z-Launcher</string>
+    <string name="restart_warn">您确定要重启 Z-Launcher？如果 Z-Launcher 不是您的默认启动器，该应用将只是退出。</string>
 
     <string name="items_title">%d 项</string>
 
@@ -202,7 +202,7 @@
     <string name="freeze_history_summary">保持历史记录不变，直至取消选中</string>
 
 <string name="title_wallpaper">动态壁纸互动</string>
-    <string name="enable_favorites_bar_summary_off">只在按下 KISS 图标时显示收藏</string>
+    <string name="enable_favorites_bar_summary_off">只在按下 Z-Launcher 图标时显示收藏</string>
     <string name="enable_favorites_bar_summary_on">在搜索栏上方显示收藏</string>
     <string name="get_help">获取帮助！</string>
 

@@ -1,4 +1,4 @@
-package fr.neamar.kiss.forwarder;
+package fi.zmengames.zlauncher.forwarder;
 
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -9,10 +9,10 @@ import android.view.View;
 
 import java.util.regex.Pattern;
 
-import fr.neamar.kiss.MainActivity;
-import fr.neamar.kiss.R;
-import fr.neamar.kiss.searcher.HistorySearcher;
-import fr.neamar.kiss.searcher.NullSearcher;
+import fi.zmengames.zlauncher.MainActivity;
+import fi.zmengames.zlauncher.R;
+import fi.zmengames.zlauncher.searcher.HistorySearcher;
+import fi.zmengames.zlauncher.searcher.NullSearcher;
 
 // Deals with any settings in the "User Experience" setting sub-screen
 class ExperienceTweaks extends Forwarder {
@@ -81,7 +81,7 @@ class ExperienceTweaks extends Forwarder {
             new Handler().postDelayed(displayKeyboardRunnable, 500);
         } else {
             // Not used (thanks windowSoftInputMode)
-            // unless coming back from KISS settings
+            // unless coming back from Z-Launcher settings
             mainActivity.hideKeyboard();
         }
 

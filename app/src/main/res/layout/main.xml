@@ -36,7 +36,7 @@
         tools:ignore="UnusedAttribute"
         tools:visibility="visible">
 
-        <fr.neamar.kiss.ui.AnimatedListView
+        <fi.zmengames.zlauncher.ui.AnimatedListView
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -48,7 +48,7 @@
             android:transcriptMode="alwaysScroll"
             tools:listitem="@layout/item_app" />
 
-        <fr.neamar.kiss.ui.BottomPullEffectView
+        <fi.zmengames.zlauncher.ui.BottomPullEffectView
             android:id="@+id/listEdgeEffect"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -187,7 +187,7 @@
             android:paddingRight="@dimen/launcher_button_padding"
             android:visibility="invisible" />
 
-        <fr.neamar.kiss.ui.SearchEditText
+        <fi.zmengames.zlauncher.ui.SearchEditText
             android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

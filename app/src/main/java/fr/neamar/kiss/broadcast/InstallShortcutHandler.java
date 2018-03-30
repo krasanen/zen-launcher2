@@ -1,4 +1,4 @@
-package fr.neamar.kiss.broadcast;
+package fi.zmengames.zlauncher.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,10 +10,10 @@ import android.util.Log;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-import fr.neamar.kiss.DataHandler;
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.dataprovider.ShortcutsProvider;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fi.zmengames.zlauncher.DataHandler;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.dataprovider.ShortcutsProvider;
+import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
 
 public class InstallShortcutHandler extends BroadcastReceiver {
 
@@ -64,7 +64,7 @@ public class InstallShortcutHandler extends BroadcastReceiver {
             Intent intent = Intent.parseUri(pojo.intentUri, 0);
             if (intent.getCategories() != null && intent.getCategories().contains(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(intent.getAction())) {
                 // The Play Store has an option to create shortcut for new apps,
-                // However, KISS already displays all apps, so we discard the shortcut to avoid duplicates.
+                // However, Z-Launcher already displays all apps, so we discard the shortcut to avoid duplicates.
                 Log.d("onReceive", "Shortcut for launcher app, discarded.");
                 return;
             }

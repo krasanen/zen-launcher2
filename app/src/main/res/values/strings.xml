@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
 
-    <string name="app_name">KISS launcher</string>
-    <string name="activity_setting">KISS settings</string>
+    <string name="app_name">Z-Launcher</string>
+    <string name="activity_setting">Z-Launcher settings</string>
     <string name="ui_search_hint">Search apps, contacts, …</string>
     <string name="ui_item_search">Search %1$s for “%2$s”</string>
     <string name="ui_item_visit">Visit “%1$s”</string>
@@ -21,7 +21,7 @@
     <string name="ui_empty_2">Always see your history</string>
     <string name="ui_empty_2_sub">For fast access</string>
     <string name="ui_empty_3">Quick access to most used apps</string>
-    <string name="ui_empty_3_sub">KISS launcher learns from your habits</string>
+    <string name="ui_empty_3_sub">Z-Launcher learns from your habits</string>
 
     <string name="contacts_name">Contacts</string>
 
@@ -124,11 +124,11 @@
     <string name="tags_confirmation_added">Tag set</string>
     <string name="tags_visible">Show app tags</string>
     <string name="excluded_app_list_erased">List of excluded apps erased.</string>
-    <string name="excluded_app_list_added">App excluded from KISS. Reset through the KISS settings</string>
+    <string name="excluded_app_list_added">App excluded from Z-Launcher. Reset through the Z-Launcher settings</string>
 
     <string name="removed_item">Removed</string>
     <string name="menu_remove">Remove from history</string>
-    <string name="menu_exclude">Exclude app from KISS</string>
+    <string name="menu_exclude">Exclude app from Z-Launcher</string>
     <string name="menu_app_details">App info</string>
     <string name="menu_app_uninstall">Uninstall</string>
     <string name="menu_app_hibernate">Hibernate</string>
@@ -153,11 +153,11 @@
     <string name="pref_hide_navbar_desc">Hide navigation bar and enable immersive mode for KitKat (4.4) and beyond</string>
     <string name="pref_hide_statusbar">Hide status bar</string>
     <string name="pref_hide_statusbar_desc">Hide notification bar and enable immersive mode for KitKat (4.4) and beyond</string>
-    <string name="shortcut_added">Shortcut added to KISS.</string>
+    <string name="shortcut_added">Shortcut added to Z-Launcher.</string>
 
     <string name="restart_desc">Fix theme issues and new contacts not displaying</string>
-    <string name="restart_name">Restart KISS</string>
-    <string name="restart_warn">Do you really want to restart KISS? If KISS is not your default launcher the app will simply quit.</string>
+    <string name="restart_name">Restart Z-Launcher</string>
+    <string name="restart_warn">Do you really want to restart Z-Launcher? If Z-Launcher is not your default launcher the app will simply quit.</string>
 
     <string name="default_launcher_title">Change Default Launcher</string>
     <string name="default_launcher_warn">After selecting the Default Launcher, you\'ll be sent to its home screen. Are you sure you\'d like to proceed?\n\nNote: If you don\'t see the \"Always\" option, press the \"Home\" button after selecting your desired launcher.</string>
@@ -205,7 +205,7 @@
     <string name="history_favorites_summary">Reset your favorites, remove favorites bar, …</string>
     <string name="title_wallpaper">Live wallpaper interactions</string>
     <string name="freeze_history_summary">Keep history as-is until unchecked</string>
-    <string name="enable_favorites_bar_summary_off">Only display favorites when pressing the KISS icon</string>
+    <string name="enable_favorites_bar_summary_off">Only display favorites when pressing the Z-Launcher icon</string>
     <string name="enable_favorites_bar_summary_on">Display favorites above the search bar</string>
     <string name="get_help">Get help!</string>
     <string name="permission_denied">Permission has been denied</string>

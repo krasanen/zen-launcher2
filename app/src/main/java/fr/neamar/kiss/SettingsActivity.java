@@ -1,4 +1,4 @@
-package fr.neamar.kiss;
+package fi.zmengames.zlauncher;
 
 import android.Manifest;
 import android.content.Intent;
@@ -25,12 +25,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.neamar.kiss.broadcast.IncomingCallHandler;
-import fr.neamar.kiss.broadcast.IncomingSmsHandler;
-import fr.neamar.kiss.dataprovider.AppProvider;
-import fr.neamar.kiss.dataprovider.SearchProvider;
-import fr.neamar.kiss.searcher.QuerySearcher;
-import fr.neamar.kiss.utils.PackageManagerUtils;
+import fi.zmengames.zlauncher.broadcast.IncomingCallHandler;
+import fi.zmengames.zlauncher.broadcast.IncomingSmsHandler;
+import fi.zmengames.zlauncher.dataprovider.AppProvider;
+import fi.zmengames.zlauncher.dataprovider.SearchProvider;
+import fi.zmengames.zlauncher.searcher.QuerySearcher;
+import fi.zmengames.zlauncher.utils.PackageManagerUtils;
 
 @SuppressWarnings("FragmentInjection")
 public class SettingsActivity extends PreferenceActivity implements
@@ -381,7 +381,7 @@ public class SettingsActivity extends PreferenceActivity implements
             findPreference("reset").setSummary(String.format(getString(R.string.items_title), historyLength));
         }
 
-        // Only display "rate the app" preference if the user has been using KISS long enough to enjoy it ;)
+        // Only display "rate the app" preference if the user has been using Z-Launcher long enough to enjoy it ;)
         Preference rateApp = findPreference("rate-app");
         if (historyLength < 300) {
             getPreferenceScreen().removePreference(rateApp);

@@ -1,13 +1,13 @@
-package fr.neamar.kiss.dataprovider;
+package fi.zmengames.zlauncher.dataprovider;
 
 import java.util.Locale;
 
-import fr.neamar.kiss.R;
-import fr.neamar.kiss.loader.LoadSettingsPojos;
-import fr.neamar.kiss.normalizer.StringNormalizer;
-import fr.neamar.kiss.pojo.SettingsPojo;
-import fr.neamar.kiss.searcher.Searcher;
-import fr.neamar.kiss.utils.FuzzyScore;
+import fi.zmengames.zlauncher.R;
+import fi.zmengames.zlauncher.loader.LoadSettingsPojos;
+import fi.zmengames.zlauncher.normalizer.StringNormalizer;
+import fi.zmengames.zlauncher.pojo.SettingsPojo;
+import fi.zmengames.zlauncher.searcher.Searcher;
+import fi.zmengames.zlauncher.utils.FuzzyScore;
 
 public class SettingsProvider extends Provider<SettingsPojo> {
     private String settingName;

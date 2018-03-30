@@ -1,11 +1,11 @@
-package fr.neamar.kiss.pojo;
+package fi.zmengames.zlauncher.pojo;
 
 import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.neamar.kiss.normalizer.StringNormalizer;
+import fi.zmengames.zlauncher.normalizer.StringNormalizer;
 
 public abstract class Pojo {
     // Globally unique ID.

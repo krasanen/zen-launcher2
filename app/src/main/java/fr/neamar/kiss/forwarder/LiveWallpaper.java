@@ -1,4 +1,4 @@
-package fr.neamar.kiss.forwarder;
+package fi.zmengames.zlauncher.forwarder;
 
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
-import fr.neamar.kiss.MainActivity;
+import fi.zmengames.zlauncher.MainActivity;
 
 class LiveWallpaper extends Forwarder {
     private final WallpaperManager mWallpaperManager;

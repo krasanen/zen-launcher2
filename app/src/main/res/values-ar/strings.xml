@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">KISS قاذفة</string>
-    <string name="activity_setting">إعدادات KISS</string>
+    <string name="app_name">Z-Launcher قاذفة</string>
+    <string name="activity_setting">إعدادات Z-Launcher</string>
     <string name="ui_search_hint">بحث التطبيقات، والاتصالات، …</string>
     <string name="ui_item_search">%1$s البحث عن \"%2$s\"</string>
     <string name="ui_item_phone">اتصال \"%s\"</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">نرى دائما تاريخكم</string>
     <string name="ui_empty_2_sub">للوصول السريع</string>
     <string name="ui_empty_3">الوصول السريع إلى التطبيقات الأكثر استخداما</string>
-    <string name="ui_empty_3_sub">KISS قاذفة يتعلم من عاداتك</string>
+    <string name="ui_empty_3_sub">Z-Launcher قاذفة يتعلم من عاداتك</string>
 
     <string name="contacts_name">جهات الاتصال</string>
 
@@ -71,11 +71,11 @@
     <string name="favorites_erased">المفضلة محوها.</string>
     <string name="menu_favorites_add">أضف الى المفضلة</string>
     <string name="excluded_app_list_erased">محت قائمة التطبيقات استبعادها.</string>
-    <string name="excluded_app_list_added">التطبيق استبعادها من قبلة. إعادة تعيين من خلال إعدادات KISS</string>
+    <string name="excluded_app_list_added">التطبيق استبعادها من قبلة. إعادة تعيين من خلال إعدادات Z-Launcher</string>
 
     <string name="removed_item">إزالة</string>
     <string name="menu_remove">إزالة من التاريخ</string>
-    <string name="menu_exclude">استبعاد التطبيق من KISS</string>
+    <string name="menu_exclude">استبعاد التطبيق من Z-Launcher</string>
     <string name="menu_app_details">معلومات التطبيق</string>
     <string name="menu_app_uninstall">الغاء التثبيت</string>
     <string name="menu_app_hibernate">نام</string>
@@ -92,7 +92,7 @@
     <string name="enable_sms">تجميع التاريخ من الرسائل النصية</string>
     <string name="enable_phone">تجميع التاريخ من المكالمات الهاتفية</string>
     <string name="enable_app">تجميع التاريخ من التطبيق تثبيت</string>
-    <string name="shortcut_added">وأضاف اختصار لـ KISS.</string>
+    <string name="shortcut_added">وأضاف اختصار لـ Z-Launcher.</string>
 
     <string name="color_picker_default_title">"تحديد لون:"</string>
     <string name="color_swatch_description">"اللون <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>

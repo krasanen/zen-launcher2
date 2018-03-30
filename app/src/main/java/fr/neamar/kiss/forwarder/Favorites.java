@@ -1,4 +1,4 @@
-package fr.neamar.kiss.forwarder;
+package fi.zmengames.zlauncher.forwarder;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,15 +15,15 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
-import fr.neamar.kiss.R;
-import fr.neamar.kiss.db.DBHelper;
-import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.result.ContactsResult;
-import fr.neamar.kiss.result.Result;
-import fr.neamar.kiss.ui.ListPopup;
-import fr.neamar.kiss.ui.RoundedQuickContactBadge;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.MainActivity;
+import fi.zmengames.zlauncher.R;
+import fi.zmengames.zlauncher.db.DBHelper;
+import fi.zmengames.zlauncher.pojo.Pojo;
+import fi.zmengames.zlauncher.result.ContactsResult;
+import fi.zmengames.zlauncher.result.Result;
+import fi.zmengames.zlauncher.ui.ListPopup;
+import fi.zmengames.zlauncher.ui.RoundedQuickContactBadge;
 
 public class Favorites extends Forwarder implements View.OnClickListener, View.OnLongClickListener {
     private static final String TAG = "FavoriteForwarder";

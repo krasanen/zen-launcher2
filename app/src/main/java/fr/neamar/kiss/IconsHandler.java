@@ -1,4 +1,4 @@
-package fr.neamar.kiss;
+package fi.zmengames.zlauncher;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import fr.neamar.kiss.utils.UserHandle;
+import fi.zmengames.zlauncher.utils.UserHandle;
 
 /**
  * Inspired from http://stackoverflow.com/questions/31490630/how-to-load-icon-from-icon-pack
@@ -290,7 +290,7 @@ public class IconsHandler {
      */
     private void loadAvailableIconsPacks() {
 
-        List<ResolveInfo> launcherthemes = pm.queryIntentActivities(new Intent("fr.neamar.kiss.THEMES"), PackageManager.GET_META_DATA);
+        List<ResolveInfo> launcherthemes = pm.queryIntentActivities(new Intent("fi.zmengames.zlauncher.THEMES"), PackageManager.GET_META_DATA);
         List<ResolveInfo> adwlauncherthemes = pm.queryIntentActivities(new Intent("org.adw.launcher.THEMES"), PackageManager.GET_META_DATA);
 
         launcherthemes.addAll(adwlauncherthemes);

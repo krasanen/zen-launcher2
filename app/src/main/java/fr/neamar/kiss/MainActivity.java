@@ -1,4 +1,4 @@
-package fr.neamar.kiss;
+package fi.zmengames.zlauncher;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -33,22 +33,22 @@ import android.widget.TextView.OnEditorActionListener;
 
 import java.util.ArrayList;
 
-import fr.neamar.kiss.adapter.RecordAdapter;
-import fr.neamar.kiss.broadcast.IncomingCallHandler;
-import fr.neamar.kiss.broadcast.IncomingSmsHandler;
-import fr.neamar.kiss.forwarder.ForwarderManager;
-import fr.neamar.kiss.result.Result;
-import fr.neamar.kiss.searcher.ApplicationsSearcher;
-import fr.neamar.kiss.searcher.QueryInterface;
-import fr.neamar.kiss.searcher.QuerySearcher;
-import fr.neamar.kiss.searcher.Searcher;
-import fr.neamar.kiss.ui.AnimatedListView;
-import fr.neamar.kiss.ui.BottomPullEffectView;
-import fr.neamar.kiss.ui.KeyboardScrollHider;
-import fr.neamar.kiss.ui.ListPopup;
-import fr.neamar.kiss.ui.SearchEditText;
-import fr.neamar.kiss.utils.PackageManagerUtils;
-import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
+import fi.zmengames.zlauncher.adapter.RecordAdapter;
+import fi.zmengames.zlauncher.broadcast.IncomingCallHandler;
+import fi.zmengames.zlauncher.broadcast.IncomingSmsHandler;
+import fi.zmengames.zlauncher.forwarder.ForwarderManager;
+import fi.zmengames.zlauncher.result.Result;
+import fi.zmengames.zlauncher.searcher.ApplicationsSearcher;
+import fi.zmengames.zlauncher.searcher.QueryInterface;
+import fi.zmengames.zlauncher.searcher.QuerySearcher;
+import fi.zmengames.zlauncher.searcher.Searcher;
+import fi.zmengames.zlauncher.ui.AnimatedListView;
+import fi.zmengames.zlauncher.ui.BottomPullEffectView;
+import fi.zmengames.zlauncher.ui.KeyboardScrollHider;
+import fi.zmengames.zlauncher.ui.ListPopup;
+import fi.zmengames.zlauncher.ui.SearchEditText;
+import fi.zmengames.zlauncher.utils.PackageManagerUtils;
+import fi.zmengames.zlauncher.utils.SystemUiVisibilityHelper;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver {
 
@@ -96,11 +96,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private View menuButton;
     /**
-     * Kiss bar
+     * Z-Launcher bar
      */
     public View kissBar;
     /**
-     * Favorites bar. Can be either the favorites within the KISS bar,
+     * Favorites bar. Can be either the favorites within the Z-Launcher bar,
      * or the external favorites bar (default)
      */
     public View favoritesBar;
@@ -128,7 +128,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private SystemUiVisibilityHelper systemUiVisibilityHelper;
 
     /**
-     * Is the KISS bar currently displayed?
+     * Is the Z-Launcher bar currently displayed?
      * (flag updated before animation is over)
      */
     private boolean isDisplayingKissBar = false;
@@ -475,7 +475,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      * @param menuButton "kebab" menu (3 dots)
      */
     public void onMenuButtonClicked(View menuButton) {
-        // When the kiss bar is displayed, the button can still be clicked in a few areas (due to favorite margin)
+        // When the Z-Launcher bar is displayed, the button can still be clicked in a few areas (due to favorite margin)
         // To fix this, we discard any click event occurring when the kissbar is displayed
         if (isViewingSearchResults())
             menuButton.showContextMenu();
@@ -514,10 +514,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     /**
-     * Display KISS menu
+     * Display Z-Launcher menu
      */
     public void onLauncherButtonClicked(View launcherButton) {
-        // Display or hide the kiss bar, according to current view tag (showMenu / hideMenu).
+        // Display or hide the Z-Launcher bar, according to current view tag (showMenu / hideMenu).
         displayKissBar(launcherButton.getTag().equals("showMenu"));
     }
 

@@ -1,6 +1,6 @@
-package fr.neamar.kiss.searcher;
+package fi.zmengames.zlauncher.searcher;
 
-import fr.neamar.kiss.MainActivity;
+import fi.zmengames.zlauncher.MainActivity;
 
 /**
  * Retrieve pojos from history

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">KISS launcher</string>
-    <string name="activity_setting">KISS настройки</string>
+    <string name="app_name">Z-Launcher</string>
+    <string name="activity_setting">Z-Launcher настройки</string>
     <string name="ui_search_hint">Потърси приложения, контакти, …</string>
     <string name="ui_item_phone">Обади се на “%s”</string>
     <string name="ui_item_contact_hint_message">Съобщение</string>
@@ -14,7 +14,7 @@
     <string name="ui_empty_1_sub">Приложения, контакти, настройки, …</string>
     <string name="ui_empty_2_sub">За бърз достъп</string>
     <string name="ui_empty_3">Бърз достъп до най-използваните приложения</string>
-    <string name="ui_empty_3_sub">KISS launcher се учи от навиците Ви</string>
+    <string name="ui_empty_3_sub">Z-Launcher се учи от навиците Ви</string>
 
     <string name="contacts_name">Контакти</string>
 
@@ -30,7 +30,7 @@
     <string name="main_clear">Изчисти полето за търсене</string>
     <string name="main_kiss">Покажи любимите приложения и списъка с приложения</string>
     <string name="main_kiss_back">Покажи история</string>
-    <string name="reset_name">Занулирай историята на KISS</string>
+    <string name="reset_name">Занулирай историята на Z-Launcher</string>
     <string name="reset_excluded_apps_name">Занулирай списъка на изключените приложения</string>
     <string name="reset_excluded_apps_warn">Наистина ли искате да занулирате списъка на изключените приложения?</string>
     <string name="ui_excluded_apps">Прегледай/Редактирай изключените приложения</string>
@@ -70,11 +70,11 @@
     <string name="favorites_erased">Любими изтрити.</string>
     <string name="menu_favorites_add">Добави към любими</string>
     <string name="excluded_app_list_erased">Списъкът с изключените приложения бе изтрит.</string>
-    <string name="excluded_app_list_added">Приложението е премахнато от KISS. Това може да се занулира през настройките</string>
+    <string name="excluded_app_list_added">Приложението е премахнато от Z-Launcher. Това може да се занулира през настройките</string>
 
     <string name="removed_item">Премахнато</string>
     <string name="menu_remove">Премахване от историята</string>
-    <string name="menu_exclude">Премахни приложението от KISS</string>
+    <string name="menu_exclude">Премахни приложението от Z-Launcher</string>
     <string name="menu_app_details">Информация за приложението</string>
     <string name="menu_app_uninstall">Деинсталиране</string>
     <string name="menu_app_hibernate">Хибернирай</string>
@@ -93,10 +93,10 @@
     <string name="enable_favorites_bar">Показване на любими над полето за търсене</string>
     <string name="exclude_favorites">Изключване на \"Предпочитани\" от историята</string>
     <string name="favorites_hide">Скрий лентата с предпочитани</string>
-    <string name="shortcut_added">Прекият път бе добавен към KISS.</string>
+    <string name="shortcut_added">Прекият път бе добавен към Z-Launcher.</string>
 
-    <string name="restart_name">Рестартиране на KISS</string>
-    <string name="restart_warn">Наистина ли искате да рестартирате KISS? Ако KISS не е launcher-ът ви по подразбиране, приложението просто ще се затвори.</string>
+    <string name="restart_name">Рестартиране на Z-Launcher</string>
+    <string name="restart_warn">Наистина ли искате да рестартирате Z-Launcher? Ако Z-Launcher не е launcher-ът ви по подразбиране, приложението просто ще се затвори.</string>
 
     <string name="items_title">%d елемента</string>
     <string name="keyboard_options">Настройки за клавиатурата</string>

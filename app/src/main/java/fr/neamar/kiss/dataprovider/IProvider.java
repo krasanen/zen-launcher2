@@ -1,10 +1,10 @@
-package fr.neamar.kiss.dataprovider;
+package fi.zmengames.zlauncher.dataprovider;
 
-import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.searcher.Searcher;
+import fi.zmengames.zlauncher.pojo.Pojo;
+import fi.zmengames.zlauncher.searcher.Searcher;
 
 /**
- * Public interface exposed by every KISS data provider
+ * Public interface exposed by every Z-Launcher data provider
  */
 public interface IProvider {
 

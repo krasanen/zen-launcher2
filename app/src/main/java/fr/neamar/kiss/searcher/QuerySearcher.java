@@ -1,4 +1,4 @@
-package fr.neamar.kiss.searcher;
+package fi.zmengames.zlauncher.searcher;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -6,11 +6,11 @@ import android.preference.PreferenceManager;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
-import fr.neamar.kiss.db.DBHelper;
-import fr.neamar.kiss.db.ValuedHistoryRecord;
-import fr.neamar.kiss.pojo.Pojo;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.MainActivity;
+import fi.zmengames.zlauncher.db.DBHelper;
+import fi.zmengames.zlauncher.db.ValuedHistoryRecord;
+import fi.zmengames.zlauncher.pojo.Pojo;
 
 /**
  * AsyncTask retrieving data from the providers and updating the view

@@ -1,11 +1,11 @@
-package fr.neamar.kiss.loader;
+package fi.zmengames.zlauncher.loader;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 
-import fr.neamar.kiss.dataprovider.PhoneProvider;
-import fr.neamar.kiss.pojo.PhonePojo;
+import fi.zmengames.zlauncher.dataprovider.PhoneProvider;
+import fi.zmengames.zlauncher.pojo.PhonePojo;
 
 public class LoadPhonePojos extends LoadPojos<PhonePojo> {
 

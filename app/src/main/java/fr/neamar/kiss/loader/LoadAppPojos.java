@@ -1,4 +1,4 @@
-package fr.neamar.kiss.loader;
+package fi.zmengames.zlauncher.loader;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.TagsHandler;
-import fr.neamar.kiss.pojo.AppPojo;
-import fr.neamar.kiss.utils.UserHandle;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.TagsHandler;
+import fi.zmengames.zlauncher.pojo.AppPojo;
+import fi.zmengames.zlauncher.utils.UserHandle;
 
 public class LoadAppPojos extends LoadPojos<AppPojo> {
 

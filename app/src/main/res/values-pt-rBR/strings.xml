@@ -11,7 +11,7 @@
 
     <string name="ui_empty_1_sub">Aplicativos, contatos, configurações…</string>
     <string name="ui_empty_2_sub">Acesso rápido</string>
-    <string name="ui_empty_3_sub">O launcher KISS aprende com os seus hábitos</string>
+    <string name="ui_empty_3_sub">O launcher Z-Launcher aprende com os seus hábitos</string>
 
     <string name="contacts_name">Contatos</string>
 
@@ -36,7 +36,7 @@
 
     <string name="main_kiss">Exibir lista de aplicativos e favoritos</string>
     <string name="main_kiss_back">Exibir histórico</string>
-    <string name="reset_name">Limpar seu histórico no KISS</string>
+    <string name="reset_name">Limpar seu histórico no Z-Launcher</string>
     <string name="reset_warn">Você realmente deseja limpar seu histórico?</string>
     <string name="keyboard_name">Exibir teclado ao iniciar</string>
     <string name="icons_hide_main">Ocultar ícones de aplicativos</string>
@@ -74,7 +74,7 @@
 
     <string name="activity_setting">Configurações do launcher</string>
 
-    <string name="app_name">Launcher KISS</string>
+    <string name="app_name">Launcher Z-Launcher</string>
     <string name="title_providers">Seleção de fornecedores</string>
     <string name="ui_item_phone">Ligar para \"%s\"</string>
     <string name="reset_excluded_apps_warn">Você realmente deseja limpar sua lista de aplicativos excluídos?</string>
@@ -98,14 +98,14 @@
     <string name="toast_favorites_added">%s foi adicionado aos favoritos</string>
 
     <string name="exclude_favorites">Remover do histórico os favoritos</string>
-    <string name="shortcut_added">Atalho adicionado ao KISS.</string>
+    <string name="shortcut_added">Atalho adicionado ao Z-Launcher.</string>
 
-    <string name="restart_name">Reiniciar KISS</string>
+    <string name="restart_name">Reiniciar Z-Launcher</string>
     <string name="items_title">%d itens</string>
 
     <string name="reset_excluded_apps_name">Limpar lista de aplicativos excluídos</string>
     <string name="settings_nfc">NFC</string>
-    <string name="menu_exclude">Excluir aplicativo do KISS</string>
+    <string name="menu_exclude">Excluir aplicativo do Z-Launcher</string>
     <string name="ui_excluded_apps_dialog_title">Desmarque os aplicativos que você gostaria de incluir</string>
     <string name="history_mode_desc">Selecione o modo como o histórico é popularizado</string>
     <string name="freeze_history_warn">Você tem certeza que deseja congelar o histórico e desabilitar qualquer alteração futura? Seu histórico não irá mais ser alterado.</string>
@@ -114,7 +114,7 @@
     <string name="alias_mail">mail,email</string>
     <string name="alias_market">loja,aplicativos,apps</string>
     <string name="toast_hibernate_completed">%s hibernado com sucesso, execute-o novamente para acorda-lo.</string>
-    <string name="excluded_app_list_added">Aplicativo excluído do KISS. Limpe através das configurações do KISS</string>
+    <string name="excluded_app_list_added">Aplicativo excluído do Z-Launcher. Limpe através das configurações do Z-Launcher</string>
 
     <string name="settings_tethering">Ponto de acesso</string>
     <string name="enable_sms">Exibir mensagens recebidas no histórico</string>
@@ -123,7 +123,7 @@
     <string name="enable_favorites_bar">Exibir favoritos acima do campo de pesquisa</string>
     <string name="favorites_hide">Esconder barra de favoritos</string>
     <string name="restart_desc">Corrigir problemas no tema / novos contatos não sendo exibidos</string>
-    <string name="restart_warn">Você realmente deseja reiniciar o KISS? Caso ele não seja seu launcher padrão, o aplicativo simplesmente irá deixar de executar.</string>
+    <string name="restart_warn">Você realmente deseja reiniciar o Z-Launcher? Caso ele não seja seu launcher padrão, o aplicativo simplesmente irá deixar de executar.</string>
 
 
     <string name="color_picker_default_title" msgid="1248663997452044787">Selecione uma cor</string>

@@ -1,8 +1,8 @@
-package fr.neamar.kiss.pojo;
+package fi.zmengames.zlauncher.pojo;
 
 import android.net.Uri;
 
-import fr.neamar.kiss.normalizer.StringNormalizer;
+import fi.zmengames.zlauncher.normalizer.StringNormalizer;
 
 public class ContactsPojo extends Pojo {
     public String lookupKey = "";

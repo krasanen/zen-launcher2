@@ -1,8 +1,8 @@
-package fr.neamar.kiss.forwarder;
+package fi.zmengames.zlauncher.forwarder;
 
 import android.content.SharedPreferences;
 
-import fr.neamar.kiss.MainActivity;
+import fi.zmengames.zlauncher.MainActivity;
 
 abstract class Forwarder {
     final MainActivity mainActivity;

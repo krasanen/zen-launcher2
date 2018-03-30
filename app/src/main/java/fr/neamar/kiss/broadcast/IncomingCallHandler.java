@@ -1,4 +1,4 @@
-package fr.neamar.kiss.broadcast;
+package fi.zmengames.zlauncher.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import fr.neamar.kiss.DataHandler;
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.dataprovider.ContactsProvider;
-import fr.neamar.kiss.pojo.ContactsPojo;
+import fi.zmengames.zlauncher.DataHandler;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.dataprovider.ContactsProvider;
+import fi.zmengames.zlauncher.pojo.ContactsPojo;
 
 public class IncomingCallHandler extends BroadcastReceiver {
 

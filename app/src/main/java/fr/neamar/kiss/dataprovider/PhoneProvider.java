@@ -1,14 +1,14 @@
-package fr.neamar.kiss.dataprovider;
+package fi.zmengames.zlauncher.dataprovider;
 
 import android.content.pm.PackageManager;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import fr.neamar.kiss.loader.LoadPhonePojos;
-import fr.neamar.kiss.pojo.PhonePojo;
-import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.searcher.Searcher;
+import fi.zmengames.zlauncher.loader.LoadPhonePojos;
+import fi.zmengames.zlauncher.pojo.PhonePojo;
+import fi.zmengames.zlauncher.pojo.Pojo;
+import fi.zmengames.zlauncher.searcher.Searcher;
 
 public class PhoneProvider extends Provider<PhonePojo> {
     public static final String PHONE_SCHEME = "phone://";

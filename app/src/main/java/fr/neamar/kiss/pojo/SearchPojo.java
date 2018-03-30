@@ -1,4 +1,4 @@
-package fr.neamar.kiss.pojo;
+package fi.zmengames.zlauncher.pojo;
 
 public class SearchPojo extends Pojo {
     public String query = "";

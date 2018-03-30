@@ -1,4 +1,4 @@
-package fr.neamar.kiss.db;
+package fi.zmengames.zlauncher.db;
 
 public class ValuedHistoryRecord {
     /**

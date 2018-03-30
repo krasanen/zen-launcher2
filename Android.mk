@@ -2,9 +2,9 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := KISSLauncher
+LOCAL_MODULE := ZLauncher
 LOCAL_MODULE_TAGS := optional
-LOCAL_PACKAGE_NAME := KISSLauncher
+LOCAL_PACKAGE_NAME := ZLauncher
 
 kiss_root  := $(LOCAL_PATH)
 kiss_dir   := app

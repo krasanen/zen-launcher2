@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">KISS launcher</string>
-    <string name="activity_setting">Paramètres de KISS</string>
+    <string name="app_name">Z-Launcher</string>
+    <string name="activity_setting">Paramètres de Z-Launcher</string>
     <string name="ui_search_hint">Rechercher des applications, contacts,…</string>
     <string name="ui_item_search">%1$s Rechercher « %2$s »</string>
     <string name="ui_item_phone">Appeler « %s »</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">Garder votre historique visible</string>
     <string name="ui_empty_2_sub">Pour un accès rapide</string>
     <string name="ui_empty_3">Accès rapide aux applis les plus utilisées</string>
-    <string name="ui_empty_3_sub">KISS launcher apprend de vos habitudes</string>
+    <string name="ui_empty_3_sub">Z-Launcher apprend de vos habitudes</string>
 
     <string name="contacts_name">Contacts</string>
 
@@ -93,14 +93,14 @@
 
     <string name="reset_excluded_apps_warn">Voulez-vous vraiment réinitialiser votre liste d\'applications masquées ?</string>
     <string name="reset_favorites_name">Réinitialiser votre liste de favoris</string>
-    <string name="shortcut_added">Raccourci ajouté à KISS.</string>
+    <string name="shortcut_added">Raccourci ajouté à Z-Launcher.</string>
     <string name="excluded_app_list_added">Application masquée. Utilisez les paramètres pour réinitialiser les applications masquées</string>
     <string name="settings_nfc">NFC</string>
     <string name="settings_tethering">Hotspot</string>
     <string name="icons_pack_default_name">Icones par défaut</string>
     <string name="icons_pack_name">Thème d’icônes (ADW.Launcher theme)</string>
 
-    <string name="restart_name">Redémarrer KISS</string>
+    <string name="restart_name">Redémarrer Z-Launcher</string>
     <string name="ui_excluded_apps">Voir ou modifier les applications exclues</string>
     <string name="ui_excluded_apps_dialog_title">Désélectionnez les applis que vous souhaitez inclure</string>
     <string name="ui_excluded_apps_not_found">Aucune appli n’a été exclue</string>
@@ -115,14 +115,14 @@
     <string name="settings_storage">Stockage</string>
     <string name="settings_dev">Paramètres développeur</string>
     <string name="settings_accessibility">Accessibilité</string>
-    <string name="menu_exclude">Exclure des applis de KISS</string>
+    <string name="menu_exclude">Exclure des applis de Z-Launcher</string>
     <string name="menu_shortcut_remove">Supprimer le raccourci</string>
 
     <string name="enable_favorites_bar">Afficher les favoris au-dessus du champ de recherche</string>
     <string name="exclude_favorites">Exclure les favoris de l’historique</string>
     <string name="favorites_hide">Cacher la barre de favoris</string>
     <string name="restart_desc">Corriger les problèmes de thème ou de non-affichage des nouveaux contacts</string>
-    <string name="restart_warn">Voulez-vous vraiment redémarrer KISS ? Si KISS n’est pas votre accueil par défaut, l’appli va juste quitter.</string>
+    <string name="restart_warn">Voulez-vous vraiment redémarrer Z-Launcher ? Si Z-Launcher n’est pas votre accueil par défaut, l’appli va juste quitter.</string>
 
     <string name="items_title">%d objets</string>
     <string name="alternate_history_inputs">Autres entrées de l’historique</string>
@@ -200,7 +200,7 @@
     <string name="history_favorites_summary">Réinitialiser vos favoris, enlever la barre des favoris…</string>
     <string name="title_wallpaper">Interactions du fond d\'écran dynamique</string>
     <string name="freeze_history_summary">Figer l\'historique tant que cette case est cochée</string>
-    <string name="enable_favorites_bar_summary_off">Seulement afficher les favoris lors de l\'appui sur l\'icône KISS</string>
+    <string name="enable_favorites_bar_summary_off">Seulement afficher les favoris lors de l\'appui sur l\'icône Z-Launcher</string>
     <string name="enable_favorites_bar_summary_on">Afficher les favoris au dessus de la barre de recherche</string>
     <string name="get_help">À l\'aide !</string>
 

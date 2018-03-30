@@ -1,4 +1,4 @@
-package fr.neamar.kiss.pojo;
+package fi.zmengames.zlauncher.pojo;
 
 public class SettingsPojo extends Pojo {
     public String settingName;

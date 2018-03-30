@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Lansator KISS</string>
-    <string name="activity_setting">Setări KISS</string>
+    <string name="app_name">Lansator Z-Launcher</string>
+    <string name="activity_setting">Setări Z-Launcher</string>
     <string name="ui_search_hint">Caută aplicații, contacte…</string>
     <string name="ui_item_search">%1$s Caută \"%2$s\"</string>
     <string name="ui_item_phone">Sună \"%s\"</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">Arată mereu istoricul</string>
     <string name="ui_empty_2_sub">Pentru acces rapid</string>
     <string name="ui_empty_3">Acces rapid la aplicațiile folosite des</string>
-    <string name="ui_empty_3_sub">Lansatorul KISS învață din obiceiurile tale</string>
+    <string name="ui_empty_3_sub">Lansatorul Z-Launcher învață din obiceiurile tale</string>
 
     <string name="contacts_name">Contacte</string>
 
@@ -76,7 +76,7 @@
     <string name="favorites_erased">Favorite șterse.</string>
     <string name="menu_favorites_add">Adaugă la favorite</string>
     <string name="excluded_app_list_erased">Lista de aplicații excluse a fost ștearsă.</string>
-    <string name="excluded_app_list_added">Aplicație exclusă din KISS. Anulează asta în setările KISS</string>
+    <string name="excluded_app_list_added">Aplicație exclusă din Z-Launcher. Anulează asta în setările Z-Launcher</string>
 
     <string name="removed_item">Eliminat</string>
     <string name="menu_remove">Elimină din istoric</string>
@@ -97,13 +97,13 @@
     <string name="enable_sms">Arată mesajele SMS primite în istoric</string>
     <string name="enable_phone">Adaugă apelurile telefonice la istoric</string>
     <string name="enable_app">Adaugă aplicațiile noi instalate la istoric</string>
-    <string name="shortcut_added">Scurtătură adăugată la KISS.</string>
+    <string name="shortcut_added">Scurtătură adăugată la Z-Launcher.</string>
 
     <string name="items_title">%d elemente</string>
 
     <string name="restart_desc">Rezolvă problemele temei și contactele ce nu apar</string>
-    <string name="restart_name">Repornește KISS</string>
-    <string name="restart_warn">Sigur vrei să restartezi KISS? Atunci când nu este lansatorul implicit KISS doar se va opri.</string>
+    <string name="restart_name">Repornește Z-Launcher</string>
+    <string name="restart_warn">Sigur vrei să restartezi Z-Launcher? Atunci când nu este lansatorul implicit Z-Launcher doar se va opri.</string>
 
     <string name="freeze_history_name">Îngheață istoric</string>
     <string name="freeze_history_warn">Sigur vrei ca istoricul să înghețe și să dezactivezi actualizările ulterioare? Istoricul nu se va mai schimba.</string>
@@ -202,7 +202,7 @@
     <string name="freeze_history_summary">Păstrează istoric cum e acum până la debifare</string>
 
 <string name="title_wallpaper">Interacțiuni cu fundaluri animate</string>
-    <string name="enable_favorites_bar_summary_off">Arată favoritele doar atunci când se apasă iconița KISS</string>
+    <string name="enable_favorites_bar_summary_off">Arată favoritele doar atunci când se apasă iconița Z-Launcher</string>
     <string name="enable_favorites_bar_summary_on">Arată favoritele deasupra barei de căutare</string>
     <string name="get_help">Cere ajutor!</string>
 

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_name">Kiss launcher</string>
-    <string name="activity_setting">KISS-inställningar</string>
+    <string name="app_name">Z-Launcher</string>
+    <string name="activity_setting">Z-Launcher-inställningar</string>
     <string name="ui_search_hint">Sök efter appar, kontakter…</string>
     <string name="ui_item_search">"Sök i %1$s efter  “%2$s”"</string>
     <string name="ui_item_visit">Besök “%1$s”</string>
@@ -20,7 +20,7 @@
     <string name="ui_empty_2">Se alltid din historik</string>
     <string name="ui_empty_2_sub">För snabb åtkomst</string>
     <string name="ui_empty_3">Snabb tillgång till mest använda appar</string>
-    <string name="ui_empty_3_sub">KISS-launcher lär från dina vanor</string>
+    <string name="ui_empty_3_sub">Z-Launcher-launcher lär från dina vanor</string>
 
     <string name="contacts_name">Kontakter</string>
 

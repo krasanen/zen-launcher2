@@ -1,4 +1,4 @@
-package fr.neamar.kiss.loader;
+package fi.zmengames.zlauncher.loader;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.neamar.kiss.dataprovider.SearchProvider;
-import fr.neamar.kiss.pojo.SearchPojo;
+import fi.zmengames.zlauncher.dataprovider.SearchProvider;
+import fi.zmengames.zlauncher.pojo.SearchPojo;
 
 public class LoadSearchPojos extends LoadPojos<SearchPojo> {
 

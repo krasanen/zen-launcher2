@@ -1,4 +1,4 @@
-package fr.neamar.kiss.forwarder;
+package fi.zmengames.zlauncher.forwarder;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
-import fr.neamar.kiss.MainActivity;
+import fi.zmengames.zlauncher.MainActivity;
 
 public class ForwarderManager extends Forwarder {
     private final Widget widgetForwarder;

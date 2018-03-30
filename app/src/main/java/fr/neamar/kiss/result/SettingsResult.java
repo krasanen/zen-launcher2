@@ -1,4 +1,4 @@
-package fr.neamar.kiss.result;
+package fi.zmengames.zlauncher.result;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import fr.neamar.kiss.R;
-import fr.neamar.kiss.pojo.SettingsPojo;
+import fi.zmengames.zlauncher.R;
+import fi.zmengames.zlauncher.pojo.SettingsPojo;
 
 public class SettingsResult extends Result {
     private final SettingsPojo settingPojo;

@@ -1,4 +1,4 @@
-package fr.neamar.kiss.result;
+package fi.zmengames.zlauncher.result;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -24,22 +24,22 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
-import fr.neamar.kiss.R;
-import fr.neamar.kiss.UIColors;
-import fr.neamar.kiss.adapter.RecordAdapter;
-import fr.neamar.kiss.db.DBHelper;
-import fr.neamar.kiss.pojo.AppPojo;
-import fr.neamar.kiss.pojo.ContactsPojo;
-import fr.neamar.kiss.pojo.PhonePojo;
-import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.pojo.SearchPojo;
-import fr.neamar.kiss.pojo.SettingsPojo;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
-import fr.neamar.kiss.searcher.QueryInterface;
-import fr.neamar.kiss.ui.ListPopup;
+import fi.zmengames.zlauncher.BuildConfig;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.MainActivity;
+import fi.zmengames.zlauncher.R;
+import fi.zmengames.zlauncher.UIColors;
+import fi.zmengames.zlauncher.adapter.RecordAdapter;
+import fi.zmengames.zlauncher.db.DBHelper;
+import fi.zmengames.zlauncher.pojo.AppPojo;
+import fi.zmengames.zlauncher.pojo.ContactsPojo;
+import fi.zmengames.zlauncher.pojo.PhonePojo;
+import fi.zmengames.zlauncher.pojo.Pojo;
+import fi.zmengames.zlauncher.pojo.SearchPojo;
+import fi.zmengames.zlauncher.pojo.SettingsPojo;
+import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
+import fi.zmengames.zlauncher.searcher.QueryInterface;
+import fi.zmengames.zlauncher.ui.ListPopup;
 
 public abstract class Result {
     /**

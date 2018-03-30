@@ -13,7 +13,7 @@
     android:paddingStart="@dimen/result_margin_left"
     android:paddingTop="@dimen/result_margin_top">
 
-    <fr.neamar.kiss.ui.ImprovedQuickContactBadge
+    <fi.zmengames.zlauncher.ui.ImprovedQuickContactBadge
         android:id="@+id/item_contact_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"

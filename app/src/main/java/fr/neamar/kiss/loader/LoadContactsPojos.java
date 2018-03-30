@@ -1,4 +1,4 @@
-package fr.neamar.kiss.loader;
+package fi.zmengames.zlauncher.loader;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import fr.neamar.kiss.forwarder.Permission;
-import fr.neamar.kiss.normalizer.PhoneNormalizer;
-import fr.neamar.kiss.pojo.ContactsPojo;
+import fi.zmengames.zlauncher.forwarder.Permission;
+import fi.zmengames.zlauncher.normalizer.PhoneNormalizer;
+import fi.zmengames.zlauncher.pojo.ContactsPojo;
 
 public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
 

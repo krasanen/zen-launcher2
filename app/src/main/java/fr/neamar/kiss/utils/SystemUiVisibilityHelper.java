@@ -1,4 +1,4 @@
-package fr.neamar.kiss.utils;
+package fi.zmengames.zlauncher.utils;
 
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
-import fr.neamar.kiss.MainActivity;
+import fi.zmengames.zlauncher.MainActivity;
 
 public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChangeListener {
     private final MainActivity mMainActivity;

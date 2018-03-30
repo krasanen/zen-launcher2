@@ -1,4 +1,4 @@
-package fr.neamar.kiss.dataprovider;
+package fi.zmengames.zlauncher.dataprovider;
 
 import android.app.Service;
 import android.content.Intent;
@@ -9,9 +9,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.neamar.kiss.MainActivity;
-import fr.neamar.kiss.loader.LoadPojos;
-import fr.neamar.kiss.pojo.Pojo;
+import fi.zmengames.zlauncher.MainActivity;
+import fi.zmengames.zlauncher.loader.LoadPojos;
+import fi.zmengames.zlauncher.pojo.Pojo;
 
 public abstract class Provider<T extends Pojo> extends Service implements IProvider {
     private final static String TAG = "Provider";

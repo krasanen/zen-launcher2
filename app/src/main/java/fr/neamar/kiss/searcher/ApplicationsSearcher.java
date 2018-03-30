@@ -1,4 +1,4 @@
-package fr.neamar.kiss.searcher;
+package fi.zmengames.zlauncher.searcher;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,10 +8,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
-import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.pojo.PojoComparator;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.MainActivity;
+import fi.zmengames.zlauncher.pojo.Pojo;
+import fi.zmengames.zlauncher.pojo.PojoComparator;
 
 /**
  * Returns the list of all applications on the system

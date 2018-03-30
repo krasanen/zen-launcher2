@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">KISS başlatıcı</string>
-    <string name="activity_setting">KISS ayarları</string>
+    <string name="app_name">Z-Launcher başlatıcı</string>
+    <string name="activity_setting">Z-Launcher ayarları</string>
     <string name="ui_search_hint">Uygulamaları, kişileri, v.b. ara</string>
     <string name="ui_item_search">%1$s içinde “%2$s” ara</string>
     <string name="ui_item_phone">Çağrı yap: “%s”</string>
@@ -18,7 +18,7 @@
     <string name="ui_empty_2">Her zaman geçmişinizi görün</string>
     <string name="ui_empty_2_sub">Hızlı erişim için</string>
     <string name="ui_empty_3">En çok kullanılan uygulamalara hızlı erişim</string>
-    <string name="ui_empty_3_sub">KISS başlatıcı alışkanlıklarınızdan öğrenir</string>
+    <string name="ui_empty_3_sub">Z-Launcher başlatıcı alışkanlıklarınızdan öğrenir</string>
 
     <string name="contacts_name">Kişiler</string>
 
@@ -84,9 +84,9 @@
     <string name="icons_hide_main">Uygulama simgelerini gizle</string>
     <string name="icons_hide_desc">Yavaş aygıtlarda yararlıdır</string>
     <string name="excluded_app_list_erased">Dahil edilmeyen uygulamaların listesi silindi.</string>
-    <string name="excluded_app_list_added">Uygulama KISS\'e dahil edilmedi. KISS ayarlarından sıfırlayın</string>
+    <string name="excluded_app_list_added">Uygulama Z-Launcher\'e dahil edilmedi. Z-Launcher ayarlarından sıfırlayın</string>
 
-    <string name="menu_exclude">Uygulamayı KISS\'e dahil etme</string>
+    <string name="menu_exclude">Uygulamayı Z-Launcher\'e dahil etme</string>
     <string name="enable_sms">Gelen SMS\'leri geçmişte göster</string>
     <string name="enable_phone">Gelen çağrıları geçmişte göster</string>
     <string name="enable_app">Yeni yüklenen uygulamaları geçmişte göster</string>
@@ -97,7 +97,7 @@
     <string name="menu_favorites_add">Sık kullanılanlara ekle</string>
     <string name="toast_favorites_added">%s sık kullanılanlara eklendi</string>
 
-    <string name="shortcut_added">Kısayol KISS\'e eklendi.</string>
+    <string name="shortcut_added">Kısayol Z-Launcher\'e eklendi.</string>
 
     <string name="icons_pack_name">Gövde simgeleri (ADW.Launcher theme)</string>
     <string name="icons_pack_default_name">Sistem simgeleri</string>
@@ -111,8 +111,8 @@
     <string name="freeze_history_warn">Geçmişi dondurmak ve yeni eklemeleri kapatmak istediğinizden emin misiniz? Geçmişiniz artık değişmeyecektir.</string>
 
     <string name="restart_desc">Gövde sorunlarını ve yeni kişilerin gözükmemesini çöz</string>
-    <string name="restart_name">KISS\'i yeniden başlat</string>
-    <string name="restart_warn">KISS\'i gerçekten yeniden başlatmak istiyor musunuz? Eğer KISS öntanımlı başlatıcınız değilse sadece kapanacaktır.</string>
+    <string name="restart_name">Z-Launcher\'i yeniden başlat</string>
+    <string name="restart_warn">Z-Launcher\'i gerçekten yeniden başlatmak istiyor musunuz? Eğer Z-Launcher öntanımlı başlatıcınız değilse sadece kapanacaktır.</string>
 
     <string name="items_title">%d öge</string>
 
@@ -206,7 +206,7 @@
     <string name="history_favorites_summary">Gözdelerinizi sıfırlayın, gözdeler çubuğunu kaldırın, …</string>
     <string name="title_wallpaper">Canlı duvar kağıdı etkileşimleri</string>
     <string name="freeze_history_summary">Onay kaldırılana dek geçmişi olduğu gibi tut</string>
-    <string name="enable_favorites_bar_summary_off">Gözdeleri yalnızca KISS simgesine dokununca göster</string>
+    <string name="enable_favorites_bar_summary_off">Gözdeleri yalnızca Z-Launcher simgesine dokununca göster</string>
     <string name="enable_favorites_bar_summary_on">Gözdeleri arama çubuğunun üstünde göster</string>
     <string name="get_help">Yardım al!</string>
 

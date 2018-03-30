@@ -1,4 +1,4 @@
-package fr.neamar.kiss.normalizer;
+package fi.zmengames.zlauncher.normalizer;
 
 import android.support.annotation.NonNull;
 
@@ -6,7 +6,7 @@ import java.nio.CharBuffer;
 import java.text.Normalizer;
 import java.util.Arrays;
 
-import fr.neamar.kiss.BuildConfig;
+import fi.zmengames.zlauncher.BuildConfig;
 
 /**
  * String utils to handle accented characters for search and highlighting

@@ -1,4 +1,4 @@
-package fr.neamar.kiss.pojo;
+package fi.zmengames.zlauncher.pojo;
 
 import java.util.Comparator;
 

@@ -1,4 +1,4 @@
-package fr.neamar.kiss.preference;
+package fi.zmengames.zlauncher.preference;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-import fr.neamar.kiss.DummyActivity;
+import fi.zmengames.zlauncher.DummyActivity;
 
 /**
  * A Dialog Preference that allows the User to change the default launcher

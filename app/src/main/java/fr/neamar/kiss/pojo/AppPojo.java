@@ -1,6 +1,6 @@
-package fr.neamar.kiss.pojo;
+package fi.zmengames.zlauncher.pojo;
 
-import fr.neamar.kiss.utils.UserHandle;
+import fi.zmengames.zlauncher.utils.UserHandle;
 
 public class AppPojo extends PojoWithTags {
     public String packageName;

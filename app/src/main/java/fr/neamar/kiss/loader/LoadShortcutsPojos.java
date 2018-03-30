@@ -1,4 +1,4 @@
-package fr.neamar.kiss.loader;
+package fi.zmengames.zlauncher.loader;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.TagsHandler;
-import fr.neamar.kiss.db.DBHelper;
-import fr.neamar.kiss.db.ShortcutRecord;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.TagsHandler;
+import fi.zmengames.zlauncher.db.DBHelper;
+import fi.zmengames.zlauncher.db.ShortcutRecord;
+import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
 
 public class LoadShortcutsPojos extends LoadPojos<ShortcutsPojo> {
 

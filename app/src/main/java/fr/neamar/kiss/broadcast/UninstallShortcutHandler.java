@@ -1,14 +1,14 @@
-package fr.neamar.kiss.broadcast;
+package fi.zmengames.zlauncher.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import fr.neamar.kiss.DataHandler;
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.dataprovider.ShortcutsProvider;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fi.zmengames.zlauncher.DataHandler;
+import fi.zmengames.zlauncher.KissApplication;
+import fi.zmengames.zlauncher.dataprovider.ShortcutsProvider;
+import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
 
 public class UninstallShortcutHandler extends BroadcastReceiver {
 

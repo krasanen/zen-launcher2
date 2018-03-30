@@ -1,4 +1,4 @@
-package fr.neamar.kiss.ui;
+package fi.zmengames.zlauncher.ui;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;

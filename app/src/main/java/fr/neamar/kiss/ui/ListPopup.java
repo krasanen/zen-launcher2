@@ -1,4 +1,4 @@
-package fr.neamar.kiss.ui;
+package fi.zmengames.zlauncher.ui;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 
-import fr.neamar.kiss.R;
-import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
+import fi.zmengames.zlauncher.R;
+import fi.zmengames.zlauncher.utils.SystemUiVisibilityHelper;
 
 public class ListPopup extends PopupWindow {
     private final View.OnClickListener mClickListener;
