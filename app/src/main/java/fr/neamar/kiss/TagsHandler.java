@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.util.Log;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,11 +16,13 @@ import java.util.Set;
 
 import fi.zmengames.zlauncher.db.DBHelper;
 
+import static fi.zmengames.zlauncher.MainActivity.mDebug;
+
 public class TagsHandler {
     private final Context context;
     //cached tags
     private final Map<String, String> tagsCache;
-
+    private static final String TAG = TagsHandler.class.getCanonicalName();
     TagsHandler(Context context) {
         this.context = context;
         tagsCache = DBHelper.loadTags(this.context);
@@ -27,6 +30,9 @@ public class TagsHandler {
     }
 
     public void setTags(String id, String tags) {
+        if (mDebug) {
+            Log.d(TAG, "setTags, id:" + id + " tags:" + tags);
+        }
         //remove existing tags for id
         DBHelper.deleteTagsForId(this.context, id);
         //add to db
@@ -36,6 +42,9 @@ public class TagsHandler {
     }
 
     public String getTags(String id) {
+        if (mDebug) {
+            Log.d(TAG, "getTags, id:" + id);
+        }
         String tag = tagsCache.get(id);
         if (tag == null) {
             return "";

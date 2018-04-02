@@ -212,5 +212,12 @@
     <string name="share_tags">Share tags</string>
     <string name="share_tags_chooser">Tags data</string>
     <string name="load_replace_tags"><![CDATA[Load&replace tags]]></string>
+    <string name="double_click">Screen doubleclick opens app menu</string>
+    <string name="swipe_down_notifications">Swipe down opens notifications</string>
+    <string name="swipe_up_keyboard">Swipe up opens keyboard</string>
+    <string name="swipe_left_opens_menu">Swipe left opens menu</string>
+    <string name="swipe_right_opens_menu">Swipe right opens menu</string>
+    <string name="share_settings">Save and Share Settings</string>
+    <string name="load_settings">Load Settings from file</string>
 
 </resources>

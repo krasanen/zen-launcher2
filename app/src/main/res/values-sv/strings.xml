@@ -113,4 +113,11 @@
     <string name="menu_favorites_add">Lägg till i favoriter</string>
     <string name="menu_tags_edit">Lägga till eller redigera taggar</string>
     <string name="tags_add_title">Lägga till taggar avgränsade med blanksteg</string>
+    <string name="double_click">Screen doubleclick opens app menu</string>
+    <string name="swipe_down_notifications">Swipe down opens notifications</string>
+    <string name="swipe_up_keyboard">Swipe up opens keyboard</string>
+    <string name="swipe_left_opens_menu">Swipe left opens menu</string>
+    <string name="swipe_right_opens_menu">Swipe right opens menu</string>
+    <string name="share_settings">Save and Share Settings</string>
+    <string name="load_settings">Load Settings from file</string>
 </resources>

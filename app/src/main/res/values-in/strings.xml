@@ -154,4 +154,11 @@ Catatan: Jika anda tidak ingin melihat opsi \'Selalu\', tekan Tombol Rumah setel
     <string name="color_picker_default_title">Pilih warna</string>
     <string name="color_swatch_description">Warna <xliff:g example="14" id="color_index">%1$d</xliff:g></string>
     <string name="color_swatch_description_selected">Warna <xliff:g example="14" id="color_index">%1$d</xliff:g> terpilih</string>
+    <string name="double_click">Screen doubleclick opens app menu</string>
+    <string name="swipe_down_notifications">Swipe down opens notifications</string>
+    <string name="swipe_up_keyboard">Swipe up opens keyboard</string>
+    <string name="swipe_left_opens_menu">Swipe left opens menu</string>
+    <string name="swipe_right_opens_menu">Swipe right opens menu</string>
+    <string name="share_settings">Save and Share Settings</string>
+    <string name="load_settings">Load Settings from file</string>
 </resources>

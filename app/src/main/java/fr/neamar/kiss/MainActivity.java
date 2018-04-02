@@ -39,15 +39,20 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -55,6 +60,7 @@ import java.util.Map;
 import fi.zmengames.zlauncher.adapter.RecordAdapter;
 import fi.zmengames.zlauncher.broadcast.IncomingCallHandler;
 import fi.zmengames.zlauncher.broadcast.IncomingSmsHandler;
+import fi.zmengames.zlauncher.db.DBHelper;
 import fi.zmengames.zlauncher.forwarder.ForwarderManager;
 import fi.zmengames.zlauncher.result.Result;
 import fi.zmengames.zlauncher.searcher.ApplicationsSearcher;
@@ -77,6 +83,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private static final String TAG = "MainActivity";
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
+    private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
 
     /**
      * Adapter to display records
@@ -114,7 +121,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     /**
      * Menu button
      */
-    private View menuButton;
+    public View menuButton;
     /**
      * Z-Launcher bar
      */
@@ -157,6 +164,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private ForwarderManager forwarderManager;
     private boolean mKeyboardVisible;
+    public static boolean mDebug=false;
 
     /**
      * Called when the activity is first created.
@@ -393,7 +401,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
         Log.d(TAG, "onResume()");
-
+        if(mDebug) {
+            try {
+                String settings = this.getSerializedSettings();
+                Log.d(TAG, "settings:" + settings);
+            } catch (JSONException e) {
+                Log.d(TAG, "JSONException");
+            }
+        }
         if (prefs.getBoolean("require-layout-update", false)) {
             super.onResume();
             Log.i(TAG, "Restarting app after setting changes");
@@ -511,7 +526,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     serializedTags = e.toString();
                 }
                 intent.putExtra(Intent.EXTRA_TEXT, serializedTags);
-                intent.putExtra(Intent.EXTRA_SUBJECT, "KISS_tags_" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Z-Launcher__tags_" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
                 intent.setType("application/json");
                 startActivity(Intent.createChooser(intent, getString(R.string.share_tags_chooser)));
                 return true;
@@ -521,6 +536,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, getString(R.string.share_tags_chooser)), REQUEST_LOAD_REPLACE_TAGS);
                 return true;
+            case R.id.loadReplaceSettings:
+                intent = new Intent();
+                intent.setType("application/json");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.load_replace_tags)), REQUEST_LOAD_REPLACE_SETTINGS);
+                return true;
+            case R.id.shareSettings:
+                intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                String serializedSettings;
+                try {
+                    serializedSettings = getSerializedSettings();
+                } catch (JSONException e) {
+                    serializedSettings = e.toString();
+                }
+                intent.putExtra(Intent.EXTRA_TEXT, serializedSettings);
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Z-Launcher_settings" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
+                intent.setType("application/json");
+                startActivity(Intent.createChooser(intent, getString(R.string.share_settings)));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -529,6 +565,25 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     String getSerializedTags() throws JSONException {
         Map<String, String> tags = fi.zmengames.zlauncher.db.DBHelper.loadTags(this);
         JSONObject json = new JSONObject(tags);
+        return json.toString(1);
+    }
+
+    String getSerializedSettings() throws JSONException {
+        Map<String, ?> tags;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        tags =  prefs.getAll();
+        JSONObject json = new JSONObject(tags);
+        for (Map.Entry<String, ?> entry : tags.entrySet()) {
+            Object v = entry.getValue();
+            String key = entry.getKey();
+          /*  if (key.equals("favorite-apps-list")){
+                json.putOpt(key, v + "_!_" + "java.util.HashSet");
+            } else { */
+                json.putOpt(key, v + "_!_" + v.getClass().getCanonicalName());
+            //}
+        }
+        Map<String, String> tags2 = fi.zmengames.zlauncher.db.DBHelper.loadTags(this);
+        json.putOpt("tags", tags2+"_!_"+"tags");
         return json.toString(1);
     }
 
@@ -585,6 +640,74 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
                     }
                     Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
+            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_LOAD_REPLACE_SETTINGS){
+                Uri selectedFile = data.getData();
+                TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
+                if ( selectedFile != null ) {
+                    InputStream stream;
+                    try {
+                        stream = getContentResolver().openInputStream(selectedFile);
+                    } catch (FileNotFoundException e) {
+                        Log.e(TAG, "con't open file", e);
+                        stream = null;
+                    }
+                    if (stream != null) {
+                        int count = 0;
+                        try {
+                            String jsonText = convertStreamToString(stream);
+                            Log.d(TAG,"jsonText:"+jsonText);
+                            JSONObject json = new JSONObject(jsonText);
+                            Iterator<String> iter = json.keys();
+                            SharedPreferences.Editor editor = prefs.edit();
+                            String booleanClassname = "java.lang.Boolean";
+                            String stringClassname = "java.lang.String";
+                            String hashsetClassname = "java.util.HashSet";
+
+                            while ( iter.hasNext() )
+                            {
+                                String key = iter.next();
+                                String[] values = json.get(key).toString().split("_!_");
+                                String value = values[0];
+                                String classValue = values[1];
+
+                                Log.d(TAG,"key:"+key + " value:"+value+" classValue:"+classValue);
+                                if (classValue.equals(booleanClassname)){
+                                    Log.d(TAG,"putBoolean");
+                                    editor.putBoolean(key, Boolean.parseBoolean(value));
+                                } else if (classValue.equals(stringClassname)){
+                                    Log.d(TAG,"putString");
+                                    editor.putString(key, value);
+                                } else if (classValue.equals(hashsetClassname)){
+                                    Log.d(TAG,"putStringSet");
+                                    editor.putStringSet(key, Collections.singleton(value));
+                                }else if (key.equals("tags")){
+                                    Log.d(TAG,"putTags:"+value);
+                                    String toparse=value.substring(1,value.length()-1);
+                                    Log.d(TAG,"substring:"+toparse);
+                                    String[] values2 = toparse.split(", ");
+                                    for(int i=0;i<values2.length;i++){
+                                        Log.d(TAG,"values2:"+values2[i]);
+                                        String[] app = values2[i].split("=");
+                                        Log.d(TAG,"appId:"+app[0]);
+                                        Log.d(TAG,"tagsForApp:"+app[1]);
+                                        tagsHandler.setTags(app[0], app[1]);
+                                    }
+
+
+                                }
+                                editor.commit();
+                                fi.zmengames.zlauncher.KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
+                                count+= 1;
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "can't load tags", e);
+                            Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
+                        }
+                        Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         }
@@ -906,4 +1029,77 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public boolean isKeyboardVisible() {
         return mKeyboardVisible;
     }
+
+    /*
+    private boolean saveSharedPreferencesToFile(File dst) {
+        boolean res = false;
+        ObjectOutputStream output = null;
+        try {
+            output = new ObjectOutputStream(new FileOutputStream(dst));
+            SharedPreferences pref =
+                    getSharedPreferences(prefName, MODE_PRIVATE);
+            output.writeObject(pref.getAll());
+
+            res = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (output != null) {
+                    output.flush();
+                    output.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return res;
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    private boolean loadSharedPreferencesFromFile(JSONObject src) {
+        boolean res = false;
+        ObjectInputStream input = null;
+        try {
+
+
+            prefEdit.clear();
+            Map<String, ?> entries = (Map<String, ?>) input.readObject();
+            for (Map.Entry<String, ?> entry : entries.entrySet()) {
+                Object v = entry.getValue();
+                String key = entry.getKey();
+
+                if (v instanceof Boolean)
+                    prefEdit.putBoolean(key, ((Boolean) v).booleanValue());
+                else if (v instanceof Float)
+                    prefEdit.putFloat(key, ((Float) v).floatValue());
+                else if (v instanceof Integer)
+                    prefEdit.putInt(key, ((Integer) v).intValue());
+                else if (v instanceof Long)
+                    prefEdit.putLong(key, ((Long) v).longValue());
+                else if (v instanceof String)
+                    prefEdit.putString(key, ((String) v));
+            }
+            prefEdit.commit();
+            res = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return res;
+    }
+    */
 }

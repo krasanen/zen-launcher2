@@ -2,10 +2,12 @@ package fi.zmengames.zlauncher.forwarder;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -53,10 +55,17 @@ class ExperienceTweaks extends Forwarder {
     private final GestureDetector gd;
     private final ScaleGestureDetector sgd;
     private boolean scaling;
+    int width,height;
 
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);
 
+        Display display = mainActivity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        width = size.x;
+        height = size.y;
+        Log.d(TAG,"ExperienceTweaks create");
         // Lock launcher into portrait mode
         // Do it here (before initializing the view in onCreate) to make the transition as smooth as possible
         if (prefs.getBoolean("force-portrait", true)) {
@@ -117,27 +126,62 @@ class ExperienceTweaks extends Forwarder {
 
             @Override
             public boolean onDoubleTap(MotionEvent e1){
-
+                if (prefs.getBoolean("double-click-opens-apps", false)) {
                     mainActivity.launcherButton.performClick();
-
-                return true;
+                    return true;
+                }
+                return false;
             }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                float direction = e2.getY() - e1.getY();
+                float directionY = e2.getY() - e1.getY();
+                float directionX = e2.getX() - e1.getX();
+                Log.d(TAG,"directionX:"+directionX);
+                Log.d(TAG,"directionY:"+directionY);
+                Log.d(TAG,"e1x:"+e1.getX());
+                Log.d(TAG,"e2x:"+e2.getX());
+
+
                 if (!mainActivity.isViewingAllApps()) {
-                    if (direction > 0) {
-                        // Fling down: display notifications
-                        if (mainActivity.isKeyboardVisible()) {
-                            mainActivity.hideKeyboard();
-                        } else {
-                            displayNotificationDrawer();
+                    if (Math.abs(directionX)>width/3){
+                        if (directionX>0) {
+                            Log.d(TAG, "swipeRight");
+                            if (prefs.getBoolean("swipe-right", false)) {
+                                Log.d(TAG, "swipeRight add menu");
+                                mainActivity.launcherButton.performClick();
+                            }
+                        }else{
+                            Log.d(TAG,"swipeLeft");
+                            if (prefs.getBoolean("swipe-left", false)) {
+                                Log.d(TAG, "Left add menu");
+                                mainActivity.menuButton.performClick();
+                            }
                         }
-                    } else {
-                        // Fling up: display keyboard
-                        mainActivity.showKeyboard();
+                        return true;
                     }
+                    if (Math.abs(directionY)>height/5) {
+
+                        if (directionY<0) {
+                            Log.d(TAG, "swipeUp");
+                            // Fling up: display keyboard
+                            if (prefs.getBoolean("swipe-up-opens-keyboard", false)) {
+                                mainActivity.showKeyboard();
+                            }
+                        }else{
+                            Log.d(TAG,"swipeDown");
+                            // Fling down: display notifications
+                            if (mainActivity.isKeyboardVisible()) {
+                                mainActivity.hideKeyboard();
+                            } else {
+                                if (prefs.getBoolean("swipe-down-opens-notifications", false)) {
+                                    displayNotificationDrawer();
+                                }
+                            }
+                        }
+                    }
+
+
                 }
                 return true;
             }

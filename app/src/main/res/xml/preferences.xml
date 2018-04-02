@@ -96,7 +96,7 @@
         <PreferenceCategory android:title="@string/misc">
             <fi.zmengames.zlauncher.SwitchPreference
                 android:key="transparent-search"
-                android:defaultValue="true"
+                android:defaultValue="false"
                 android:title="@string/transparent_search_bar" />
             <fi.zmengames.zlauncher.SwitchPreference
                 android:key="transparent-favorites"
@@ -114,6 +114,26 @@
                 android:defaultValue="true"
                 android:key="pref-rounded-bars"
                 android:title="@string/rounded_bars" />
+            <fi.zmengames.zlauncher.SwitchPreference
+                android:defaultValue="true"
+                android:key="double-click-opens-apps"
+                android:title="@string/double_click" />
+            <fi.zmengames.zlauncher.SwitchPreference
+                android:defaultValue="true"
+                android:key="swipe-down-opens-notifications"
+                android:title="@string/swipe_down_notifications" />
+            <fi.zmengames.zlauncher.SwitchPreference
+                android:defaultValue="true"
+                android:key="swipe-up-opens-keyboard"
+                android:title="@string/swipe_up_keyboard" />
+            <fi.zmengames.zlauncher.SwitchPreference
+                android:defaultValue="true"
+                android:key="swipe-left"
+                android:title="@string/swipe_left_opens_menu" />
+            <fi.zmengames.zlauncher.SwitchPreference
+                android:defaultValue="true"
+                android:key="swipe-right"
+                android:title="@string/swipe_right_opens_menu" />
         </PreferenceCategory>
     </PreferenceScreen>
     <PreferenceScreen

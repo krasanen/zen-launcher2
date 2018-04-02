@@ -28,4 +28,14 @@
         android:visible="false"
         android:title="@string/load_replace_tags" />
 
+    <item
+        android:id="@+id/loadReplaceSettings"
+        android:showAsAction="never"
+        android:visible="true"
+        android:title="@string/load_settings" />
+    <item
+        android:id="@+id/shareSettings"
+        android:showAsAction="never"
+        android:visible="true"
+        android:title="@string/share_settings" />
 </menu>
