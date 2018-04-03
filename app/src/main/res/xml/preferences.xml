@@ -134,6 +134,10 @@
                 android:defaultValue="true"
                 android:key="swipe-right"
                 android:title="@string/swipe_right_opens_menu" />
+            <fi.zmengames.zlauncher.SwitchPreference
+                android:defaultValue="true"
+                android:key="pinch-open"
+                android:title="@string/pinch_opens_menu" />
         </PreferenceCategory>
     </PreferenceScreen>
     <PreferenceScreen

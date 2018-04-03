@@ -141,4 +141,5 @@
     <string name="swipe_right_opens_menu">Swipe right opens menu</string>
     <string name="share_settings">Save and Share Settings</string>
     <string name="load_settings">Load Settings from file</string>
+    <string name="pinch_opens_menu">Pinch to open app menu</string>
 </resources>

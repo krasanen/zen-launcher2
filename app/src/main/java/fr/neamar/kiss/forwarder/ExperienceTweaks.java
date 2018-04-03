@@ -22,6 +22,8 @@ import fi.zmengames.zlauncher.R;
 import fi.zmengames.zlauncher.searcher.HistorySearcher;
 import fi.zmengames.zlauncher.searcher.NullSearcher;
 
+import static fi.zmengames.zlauncher.MainActivity.mDebug;
+
 // Deals with any settings in the "User Experience" setting sub-screen
 class ExperienceTweaks extends Forwarder {
     private static final String TAG = ExperienceTweaks.class.getSimpleName();
@@ -82,23 +84,31 @@ class ExperienceTweaks extends Forwarder {
         sgd = new ScaleGestureDetector(mainActivity, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
-                Log.d(TAG,"onScale");
+                if(mDebug) {
+                    Log.d(TAG, "onScale");
+                }
                 scaling = true;
                 return true;
             }
 
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
-                Log.d(TAG,"onScaleBegin");
+                if(mDebug) {
+                    Log.d(TAG, "onScaleBegin");
+                }
                 scaling = true;
                 return true;
             }
 
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
-                Log.d(TAG,"onScaleEnd");
+                if(mDebug) {
+                    Log.d(TAG, "onScaleEnd");
+                }
+                if (prefs.getBoolean("pinch-open", false)) {
+                    mainActivity.launcherButton.performClick();
+                }
                 scaling = false;
-                mainActivity.launcherButton.performClick();
             }
         });
 
@@ -143,7 +153,7 @@ class ExperienceTweaks extends Forwarder {
                 Log.d(TAG,"e2x:"+e2.getX());
 
 
-                if (!mainActivity.isViewingAllApps()) {
+                if (!mainActivity.isViewingAllApps()&&!scaling) {
                     if (Math.abs(directionX)>width/3){
                         if (directionX>0) {
                             Log.d(TAG, "swipeRight");
