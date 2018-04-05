@@ -38,4 +38,14 @@
         android:showAsAction="never"
         android:visible="true"
         android:title="@string/share_settings" />
+    <item
+        android:id="@+id/saveToGoogle"
+        android:showAsAction="never"
+        android:visible="true"
+        android:title="@string/save_to_google" />
+    <item
+        android:id="@+id/loadFromGoogle"
+        android:showAsAction="never"
+        android:visible="true"
+        android:title="@string/load_from_google" />
 </menu>

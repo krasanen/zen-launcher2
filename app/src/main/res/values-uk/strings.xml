@@ -206,4 +206,12 @@
     <string name="share_settings">Save and Share Settings</string>
     <string name="load_settings">Load Settings from file</string>
     <string name="pinch_opens_menu">Pinch to open app menu</string>
+    <string name="save_to_google">Save to Google</string>
+    <string name="error_opening_metadata">Error opening metadata</string>
+    <string name="error_opening_filename">Error opening filename</string>
+    <string name="select_conflicted_game">Select conflicted game</string>
+    <string name="snapshotimage_description">Snapshot description</string>
+    <string name="write_snapshot_error">There was a problem writing the snapshot!</string>
+    <string name="loading_from_cloud">Loading from cloud</string>
+    <string name="load_from_google">Load from google</string>
 </resources>

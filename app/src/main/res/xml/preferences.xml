@@ -103,7 +103,7 @@
                 android:defaultValue="true"
                 android:title="@string/transparent_favorites_bar" />
             <fi.zmengames.zlauncher.SwitchPreference
-                android:defaultValue="true"
+                android:defaultValue="false"
                 android:key="large-search-bar"
                 android:title="@string/large_search_bar" />
             <fi.zmengames.zlauncher.SwitchPreference
@@ -183,6 +183,7 @@
                 android:title="@string/pref_hide_statusbar" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/misc">
+
             <fi.zmengames.zlauncher.SwitchPreference
                 android:defaultValue="false"
                 android:key="force-portrait"
@@ -269,6 +270,11 @@
             android:key="root-mode"
             android:summary="@string/root_mode_desc"
             android:title="@string/root_mode_name" />
+        <fi.zmengames.zlauncher.preference.SignInSwitch
+            android:defaultValue="false"
+            android:key="google-signin"
+            android:summary="@string/common_signin_button_text"
+            android:title="@string/common_signin_button_text" />
         <fi.zmengames.zlauncher.preference.RestartPreference
             android:dialogMessage="@string/restart_warn"
             android:key="restart"

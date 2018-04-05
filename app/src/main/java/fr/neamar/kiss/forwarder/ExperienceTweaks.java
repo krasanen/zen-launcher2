@@ -25,7 +25,7 @@ import fi.zmengames.zlauncher.searcher.NullSearcher;
 import static fi.zmengames.zlauncher.MainActivity.mDebug;
 
 // Deals with any settings in the "User Experience" setting sub-screen
-class ExperienceTweaks extends Forwarder {
+class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
     private static final String TAG = ExperienceTweaks.class.getSimpleName();
     /**
      * InputType that behaves as if the consuming IME is a standard-obeying

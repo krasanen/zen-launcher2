@@ -220,5 +220,18 @@
     <string name="share_settings">Save and Share Settings</string>
     <string name="load_settings">Load Settings from file</string>
     <string name="pinch_opens_menu">Pinch to open app menu</string>
-
+    <string name="app_id">138255130177</string>
+    <string name="save_to_google">Save to Google</string>
+    <string name="error_opening_metadata">Error opening metadata</string>
+    <string name="error_opening_filename">Error opening filename</string>
+    <string name="select_conflicted_game">Select conflicted game</string>
+    <string name="snapshotimage_description">Snapshot description</string>
+    <string name="format_days_ago">%d days ago</string>
+    <string name="format_hours_ago">%d hours ago</string>
+    <string name="format_minutes_ago">%d minutes ago</string>
+    <string name="format_seconds_ago">%d seconds ago</string>
+    <string name="moments_ago">moments ago</string>
+    <string name="write_snapshot_error">There was a problem writing the snapshot!</string>
+    <string name="loading_from_cloud">Loading from cloud</string>
+    <string name="load_from_google">Load from google</string>
 </resources>
