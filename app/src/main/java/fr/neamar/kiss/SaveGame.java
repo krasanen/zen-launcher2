@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fi.zmengames.zlauncher;
+package fr.neamar.kiss;
 
 import android.content.SharedPreferences;
 import android.util.Log;

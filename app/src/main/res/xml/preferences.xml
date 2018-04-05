@@ -280,6 +280,11 @@
             android:key="restart"
             android:summary="@string/restart_desc"
             android:title="@string/restart_name" />
+        <fi.zmengames.zlauncher.preference.ProximitySwitch
+            android:defaultValue="false"
+            android:key="proximity-switch"
+            android:summary="@string/proximity_switch"
+            android:title="@string/proximity_switch" />
     </PreferenceScreen>
     <Preference
         android:key="rate-app"

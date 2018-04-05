@@ -1,10 +1,12 @@
 package fi.zmengames.zlauncher.forwarder;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
@@ -12,6 +14,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.WindowManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,6 +30,7 @@ import static fi.zmengames.zlauncher.MainActivity.mDebug;
 // Deals with any settings in the "User Experience" setting sub-screen
 class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
     private static final String TAG = ExperienceTweaks.class.getSimpleName();
+
     /**
      * InputType that behaves as if the consuming IME is a standard-obeying
      * soft-keyboard
@@ -57,7 +61,7 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
     private final GestureDetector gd;
     private final ScaleGestureDetector sgd;
     private boolean scaling;
-    int width,height;
+    int width, height;
 
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);
@@ -67,7 +71,7 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
         display.getSize(size);
         width = size.x;
         height = size.y;
-        Log.d(TAG,"ExperienceTweaks create");
+        Log.d(TAG, "ExperienceTweaks create");
         // Lock launcher into portrait mode
         // Do it here (before initializing the view in onCreate) to make the transition as smooth as possible
         if (prefs.getBoolean("force-portrait", true)) {
@@ -84,7 +88,7 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
         sgd = new ScaleGestureDetector(mainActivity, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
-                if(mDebug) {
+                if (mDebug) {
                     Log.d(TAG, "onScale");
                 }
                 scaling = true;
@@ -93,7 +97,7 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
 
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
-                if(mDebug) {
+                if (mDebug) {
                     Log.d(TAG, "onScaleBegin");
                 }
                 scaling = true;
@@ -102,7 +106,7 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
 
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
-                if(mDebug) {
+                if (mDebug) {
                     Log.d(TAG, "onScaleEnd");
                 }
                 if (prefs.getBoolean("pinch-open", false)) {
@@ -116,7 +120,6 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 // if minimalistic mode is enabled,
-                // and we want to display history on touch
                 if (!scaling && isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
                     // and we're currently in minimalistic mode with no results,
                     // and we're not looking at the app list
@@ -134,35 +137,48 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
                 return super.onSingleTapConfirmed(e);
             }
 
+            public void toggleScreenOnOff() {
+                // turn off/on screen backlight
+                WindowManager.LayoutParams params = mainActivity.getWindow().getAttributes();
+                if (params.screenBrightness == -1) {
+                    params.screenBrightness = 0;
+                } else {
+                    params.screenBrightness = -1;
+                }
+                params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                mainActivity.getWindow().setAttributes(params);
+            }
+
             @Override
-            public boolean onDoubleTap(MotionEvent e1){
+            public boolean onDoubleTap(MotionEvent e1) {
                 if (prefs.getBoolean("double-click-opens-apps", false)) {
                     mainActivity.launcherButton.performClick();
-                    return true;
+                } else {
+                    toggleScreenOnOff();
                 }
-                return false;
+                return true;
             }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 float directionY = e2.getY() - e1.getY();
                 float directionX = e2.getX() - e1.getX();
-                Log.d(TAG,"directionX:"+directionX);
-                Log.d(TAG,"directionY:"+directionY);
-                Log.d(TAG,"e1x:"+e1.getX());
-                Log.d(TAG,"e2x:"+e2.getX());
+                Log.d(TAG, "directionX:" + directionX);
+                Log.d(TAG, "directionY:" + directionY);
+                Log.d(TAG, "e1x:" + e1.getX());
+                Log.d(TAG, "e2x:" + e2.getX());
 
 
-                if (!mainActivity.isViewingAllApps()&&!scaling) {
-                    if (Math.abs(directionX)>width/3){
-                        if (directionX>0) {
+                if (!mainActivity.isViewingAllApps() && !scaling) {
+                    if (Math.abs(directionX) > width / 3) {
+                        if (directionX > 0) {
                             Log.d(TAG, "swipeRight");
                             if (prefs.getBoolean("swipe-right", false)) {
                                 Log.d(TAG, "swipeRight add menu");
                                 mainActivity.launcherButton.performClick();
                             }
-                        }else{
-                            Log.d(TAG,"swipeLeft");
+                        } else {
+                            Log.d(TAG, "swipeLeft");
                             if (prefs.getBoolean("swipe-left", false)) {
                                 Log.d(TAG, "Left add menu");
                                 mainActivity.menuButton.performClick();
@@ -170,16 +186,16 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
                         }
                         return true;
                     }
-                    if (Math.abs(directionY)>height/5) {
+                    if (Math.abs(directionY) > height / 5) {
 
-                        if (directionY<0) {
+                        if (directionY < 0) {
                             Log.d(TAG, "swipeUp");
                             // Fling up: display keyboard
                             if (prefs.getBoolean("swipe-up-opens-keyboard", false)) {
                                 mainActivity.showKeyboard();
                             }
-                        }else{
-                            Log.d(TAG,"swipeDown");
+                        } else {
+                            Log.d(TAG, "swipeDown");
                             // Fling down: display notifications
                             if (mainActivity.isKeyboardVisible()) {
                                 mainActivity.hideKeyboard();
@@ -201,6 +217,7 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
     void onCreate() {
         adjustInputType(null);
         mainEmptyView = mainActivity.findViewById(R.id.main_empty);
+
     }
 
     void onResume() {
@@ -304,11 +321,10 @@ class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
             Method showStatusBar;
             if (Build.VERSION.SDK_INT >= 17) {
                 showStatusBar = statusbarManager.getMethod("expandNotificationsPanel");
-            }
-            else {
+            } else {
                 showStatusBar = statusbarManager.getMethod("expand");
             }
-            showStatusBar.invoke( sbservice );
+            showStatusBar.invoke(sbservice);
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         } catch (NoSuchMethodException e1) {

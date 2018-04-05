@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fi.zmengames.zlauncher;
+package fr.neamar.kiss;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,6 +33,8 @@ import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
 
 import java.util.ArrayList;
+
+import fi.zmengames.zlauncher.R;
 
 /**
  * Activity to select a snapshot from a list of snapshots or snapshot metadata.  The intended

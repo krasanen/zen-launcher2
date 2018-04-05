@@ -91,7 +91,8 @@ import fi.zmengames.zlauncher.ui.ListPopup;
 import fi.zmengames.zlauncher.ui.SearchEditText;
 import fi.zmengames.zlauncher.utils.PackageManagerUtils;
 import fi.zmengames.zlauncher.utils.SystemUiVisibilityHelper;
-import fr.neamar.kiss.SnapshotCoordinator;
+import fr.neamar.kiss.SaveGame;
+import fr.neamar.kiss.SelectSnapshotActivity;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver {
 
@@ -929,8 +930,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         for (Snapshot m : items) {
             snapshotList.add(m.getMetadata().freeze());
         }
-        Intent intent = new Intent(this, fi.zmengames.zlauncher.SelectSnapshotActivity.class);
-        intent.putParcelableArrayListExtra(fi.zmengames.zlauncher.SelectSnapshotActivity.SNAPSHOT_METADATA_LIST,
+        Intent intent = new Intent(this, SelectSnapshotActivity.class);
+        intent.putParcelableArrayListExtra(SelectSnapshotActivity.SNAPSHOT_METADATA_LIST,
                 snapshotList);
 
         intent.putExtra(MainActivity.CONFLICT_ID, conflictId);
