@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Z-Launcher-launcherdas</string>
-    <string name="activity_setting">Z-Launcher-instellingen</string>
+    <string name="app_name">KISS-launcherdas</string>
+    <string name="activity_setting">KISS-instellingen</string>
     <string name="ui_search_hint">Zoek apps, contacten, …</string>
     <string name="ui_item_search">%1$s Zoek naar “%2$s”</string>
     <string name="ui_item_phone">Bel “%s”</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">Laat altijd geschiedenis zien</string>
     <string name="ui_empty_2_sub">Voor snelle toegang</string>
     <string name="ui_empty_3">Snelle toegang tot uw meest gebruikte apps</string>
-    <string name="ui_empty_3_sub">Z-Launcher-launcher leert van jouw gebruik</string>
+    <string name="ui_empty_3_sub">KISS-launcher leert van jouw gebruik</string>
 
     <string name="contacts_name">Contacten</string>
 
@@ -113,9 +113,9 @@
     <string name="tags_add_title">Voeg spatiegescheiden tags toe</string>
     <string name="tags_confirmation_added">Tag is ingesteld</string>
     <string name="excluded_app_list_erased">Lijst van verborgen apps leeggemaakt.</string>
-    <string name="excluded_app_list_added">App verborgen in Z-Launcher. Reset in de instellingen</string>
+    <string name="excluded_app_list_added">App verborgen in KISS. Reset in de instellingen</string>
 
-    <string name="menu_exclude">Laat app niet zien in Z-Launcher</string>
+    <string name="menu_exclude">Laat app niet zien in KISS</string>
     <string name="menu_shortcut_remove">Verwijder shortcut</string>
 
     <string name="menu_phone_create">Contactpersoon creëren</string>
@@ -129,11 +129,11 @@
     <string name="enable_favorites_bar">Favoriete boven zoekbalk weergeven</string>
     <string name="exclude_favorites">Toon favorieten niet in geschiedenis</string>
     <string name="favorites_hide">Verberg favorietenbalk</string>
-    <string name="shortcut_added">Snelkoppeling toegevoegd aan Z-Launcher.</string>
+    <string name="shortcut_added">Snelkoppeling toegevoegd aan KISS.</string>
 
     <string name="restart_desc">Themaproblemen en contacten die niet worden weergegeven herstellen</string>
-    <string name="restart_name">Herstart Z-Launcher</string>
-    <string name="restart_warn">Weet u zeker dat u Z-Launcher wilt herstarten? Als Z-Launcher niet uw standaard-beginscherm is, zal het programma simpelweg afsluiten.</string>
+    <string name="restart_name">Herstart KISS</string>
+    <string name="restart_warn">Weet u zeker dat u KISS wilt herstarten? Als KISS niet uw standaard-beginscherm is, zal het programma simpelweg afsluiten.</string>
 
     <string name="default_launcher_title">Standaard-beginscherm wijzigen</string>
     <string name="items_title">%d items</string>
@@ -192,7 +192,7 @@
     <string name="pref_hide_navbar_desc">Navigatiebalk verbergen en volledig scherm-modus inschakelen (KitKat (4.4) en hoger)</string>
     <string name="pref_hide_statusbar">Statusbalk verbergen</string>
     <string name="pref_hide_statusbar_desc">Meldingenbalk verbergen en volledig scherm-modus inschakelen (KitKat (4.4) en hoger)</string>
-<string name="history_settings_summary">Wis uw geschiedenis, sluit apps uit, …</string>
+    <string name="history_settings_summary">Wis uw geschiedenis, sluit apps uit, …</string>
     <string name="user_interface_summary">Thema\'s, doorzichtigheid en kleuren</string>
     <string name="providers_summary">Schakel diensten uit, voeg aangepaste zoekmachines toe, …</string>
     <string name="title_ux">Gebruikersbeleving</string>
@@ -201,21 +201,13 @@
     <string name="history_favorites_summary">Herstel uw favorieten, verwijder de favorietenbalk, …</string>
     <string name="freeze_history_summary">Geschiedenis behouden totdat dit wordt afgevinkt</string>
 
-<string name="title_wallpaper">Live achtergrond-interacties</string>
-    <string name="enable_favorites_bar_summary_off">Alleen favorieten weergeven na het drukken op het Z-Launcher-pictogram</string>
+    <string name="title_wallpaper">Live achtergrond-interacties</string>
+    <string name="enable_favorites_bar_summary_off">Alleen favorieten weergeven na het drukken op het KISS-pictogram</string>
     <string name="enable_favorites_bar_summary_on">Favorieten weergeven boven de zoekbalk</string>
     <string name="get_help">Hulp verkrijgen</string>
 
-<string name="permission_denied">Toegang geweigerd</string>
+    <string name="permission_denied">Toegang geweigerd</string>
 
-<string name="rounded_list">Afgeronde lijsthoeken</string>
+    <string name="rounded_list">Afgeronde lijsthoeken</string>
     <string name="rounded_bars">Afgeronde balkhoeken</string>
-    <string name="double_click">Screen doubleclick opens app menu</string>
-    <string name="swipe_down_notifications">Swipe down opens notifications</string>
-    <string name="swipe_up_keyboard">Swipe up opens keyboard</string>
-    <string name="swipe_left_opens_menu">Swipe left opens menu</string>
-    <string name="swipe_right_opens_menu">Swipe right opens menu</string>
-    <string name="share_settings">Save and Share Settings</string>
-    <string name="load_settings">Load Settings from file</string>
-    <string name="pinch_opens_menu">Pinch to open app menu</string>
 </resources>

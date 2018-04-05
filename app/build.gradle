@@ -4,11 +4,11 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
     defaultConfig {
-        applicationId 'fi.zmengames.zlauncher'
+        applicationId 'fr.neamar.kiss'
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 123
-        versionName "3.0.10"
+        versionCode 122
+        versionName "3.0.11"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -28,10 +28,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     implementation 'com.android.support:support-annotations:27.1.0'
- /*   implementation('com.googlecode.json-simple:json-simple:1.1.1') {
-        exclude module : 'hamcrest'
-        exclude module : 'hamcrest-core'
-    }*/
 }
 
 buildscript {
