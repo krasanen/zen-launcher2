@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.loader;
+package fr.neamar.kiss.loader;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +9,8 @@ import android.provider.Settings;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.pojo.SettingsPojo;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.pojo.SettingsPojo;
 
 public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
 

@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher;
+package fr.neamar.kiss;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -75,22 +75,23 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.zmengames.zlauncher.adapter.RecordAdapter;
-import fi.zmengames.zlauncher.broadcast.IncomingCallHandler;
-import fi.zmengames.zlauncher.broadcast.IncomingSmsHandler;
-import fi.zmengames.zlauncher.forwarder.ForwarderManager;
-import fi.zmengames.zlauncher.result.Result;
-import fi.zmengames.zlauncher.searcher.ApplicationsSearcher;
-import fi.zmengames.zlauncher.searcher.QueryInterface;
-import fi.zmengames.zlauncher.searcher.QuerySearcher;
-import fi.zmengames.zlauncher.searcher.Searcher;
-import fi.zmengames.zlauncher.ui.AnimatedListView;
-import fi.zmengames.zlauncher.ui.BottomPullEffectView;
-import fi.zmengames.zlauncher.ui.KeyboardScrollHider;
-import fi.zmengames.zlauncher.ui.ListPopup;
-import fi.zmengames.zlauncher.ui.SearchEditText;
-import fi.zmengames.zlauncher.utils.PackageManagerUtils;
-import fi.zmengames.zlauncher.utils.SystemUiVisibilityHelper;
+import fr.neamar.kiss.adapter.RecordAdapter;
+import fr.neamar.kiss.broadcast.IncomingCallHandler;
+import fr.neamar.kiss.broadcast.IncomingSmsHandler;
+import fr.neamar.kiss.db.DBHelper;
+import fr.neamar.kiss.forwarder.ForwarderManager;
+import fr.neamar.kiss.result.Result;
+import fr.neamar.kiss.searcher.ApplicationsSearcher;
+import fr.neamar.kiss.searcher.QueryInterface;
+import fr.neamar.kiss.searcher.QuerySearcher;
+import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.ui.AnimatedListView;
+import fr.neamar.kiss.ui.BottomPullEffectView;
+import fr.neamar.kiss.ui.KeyboardScrollHider;
+import fr.neamar.kiss.ui.ListPopup;
+import fr.neamar.kiss.ui.SearchEditText;
+import fr.neamar.kiss.utils.PackageManagerUtils;
+import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import fr.neamar.kiss.SaveGame;
 import fr.neamar.kiss.SelectSnapshotActivity;
 
@@ -710,16 +711,25 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
 
             case R.id.saveToGoogle:
-                String unique = Long.toString(System.currentTimeMillis());
-                currentSaveName = "snapshotTemp-" + unique;
-                saveSnapshot(null);
-                Toast.makeText(getBaseContext(), "Saved",
-                        Toast.LENGTH_SHORT).show();
+                if (mSignedIn) {
+                    String unique = Long.toString(System.currentTimeMillis());
+                    currentSaveName = "snapshotTemp-" + unique;
+                    saveSnapshot(null);
+                    Toast.makeText(getBaseContext(), "Saved",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "Not signed in to Google",
+                            Toast.LENGTH_SHORT).show();
+                }
                 return true;
 
             case R.id.loadFromGoogle:
-
+                if (mSignedIn) {
                 showSnapshots(getString(R.string.load_settings), false, true);
+                } else {
+                    Toast.makeText(getBaseContext(), "Not signed in to Google",
+                            Toast.LENGTH_SHORT).show();
+                }
                 return true;
 
             default:
@@ -974,7 +984,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     String getSerializedTags() throws JSONException {
-        Map<String, String> tags = fi.zmengames.zlauncher.db.DBHelper.loadTags(this);
+        Map<String, String> tags = DBHelper.loadTags(this);
         JSONObject json = new JSONObject(tags);
         return json.toString(1);
     }
@@ -993,7 +1003,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             json.putOpt(key, v + "_!_" + v.getClass().getSimpleName());
             //}
         }
-        Map<String, String> tags2 = fi.zmengames.zlauncher.db.DBHelper.loadTags(this);
+        Map<String, String> tags2 = DBHelper.loadTags(this);
         json.putOpt("tags", tags2 + "_!_" + "tags");
         return json.toString(1);
     }
@@ -1188,7 +1198,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
             }
             editor.commit();
-            fi.zmengames.zlauncher.KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
+            KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
             count += 1;
         }
         return count;

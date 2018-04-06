@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.androidTest;
+package fr.neamar.kiss.androidTest;
 
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -8,9 +8,9 @@ import android.view.WindowManager;
 
 import org.junit.Before;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
 
 abstract class AbstractMainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 

@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher;
+package fr.neamar.kiss;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -21,20 +21,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.zmengames.zlauncher.dataprovider.AppProvider;
-import fi.zmengames.zlauncher.dataprovider.ContactsProvider;
-import fi.zmengames.zlauncher.dataprovider.IProvider;
-import fi.zmengames.zlauncher.dataprovider.Provider;
-import fi.zmengames.zlauncher.dataprovider.SearchProvider;
-import fi.zmengames.zlauncher.dataprovider.ShortcutsProvider;
-import fi.zmengames.zlauncher.db.DBHelper;
-import fi.zmengames.zlauncher.db.ShortcutRecord;
-import fi.zmengames.zlauncher.db.ValuedHistoryRecord;
-import fi.zmengames.zlauncher.forwarder.Favorites;
-import fi.zmengames.zlauncher.pojo.Pojo;
-import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
-import fi.zmengames.zlauncher.searcher.Searcher;
-import fi.zmengames.zlauncher.utils.UserHandle;
+import fr.neamar.kiss.dataprovider.AppProvider;
+import fr.neamar.kiss.dataprovider.ContactsProvider;
+import fr.neamar.kiss.dataprovider.IProvider;
+import fr.neamar.kiss.dataprovider.Provider;
+import fr.neamar.kiss.dataprovider.SearchProvider;
+import fr.neamar.kiss.dataprovider.ShortcutsProvider;
+import fr.neamar.kiss.db.DBHelper;
+import fr.neamar.kiss.db.ShortcutRecord;
+import fr.neamar.kiss.db.ValuedHistoryRecord;
+import fr.neamar.kiss.forwarder.Favorites;
+import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.utils.UserHandle;
 
 public class DataHandler extends BroadcastReceiver
         implements SharedPreferences.OnSharedPreferenceChangeListener {

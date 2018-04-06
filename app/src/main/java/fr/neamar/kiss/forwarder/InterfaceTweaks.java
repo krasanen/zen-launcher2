@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.forwarder;
+package fr.neamar.kiss.forwarder;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -8,9 +8,9 @@ import android.os.Build;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.UIColors;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.UIColors;
 
 // Deals with any settings in the "User Interface" setting sub-screen
 class InterfaceTweaks extends Forwarder {

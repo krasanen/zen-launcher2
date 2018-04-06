@@ -1,11 +1,11 @@
-package fi.zmengames.zlauncher.broadcast;
+package fr.neamar.kiss.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.dataprovider.AppProvider;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.dataprovider.AppProvider;
 
 public class LocaleChangedReceiver extends BroadcastReceiver {
 

@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.normalizer;
+package fr.neamar.kiss.normalizer;
 
 public class PhoneNormalizer {
     public static String simplifyPhoneNumber(String phoneNumber) {

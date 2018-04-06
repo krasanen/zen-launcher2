@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.ui;
+package fr.neamar.kiss.ui;
 
 /*
  * Copyright (C) 2010 The Android Open Source Project

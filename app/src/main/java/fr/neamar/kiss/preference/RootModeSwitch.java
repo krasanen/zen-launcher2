@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.preference;
+package fr.neamar.kiss.preference;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.preference.SwitchPreference;
 import android.util.AttributeSet;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.R;
 
 public class RootModeSwitch extends SwitchPreference {
     public RootModeSwitch(Context context) {

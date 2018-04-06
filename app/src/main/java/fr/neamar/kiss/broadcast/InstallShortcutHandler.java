@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.broadcast;
+package fr.neamar.kiss.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,10 +10,10 @@ import android.util.Log;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-import fi.zmengames.zlauncher.DataHandler;
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.dataprovider.ShortcutsProvider;
-import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
+import fr.neamar.kiss.DataHandler;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.dataprovider.ShortcutsProvider;
+import fr.neamar.kiss.pojo.ShortcutsPojo;
 
 public class InstallShortcutHandler extends BroadcastReceiver {
 

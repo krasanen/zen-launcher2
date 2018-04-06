@@ -1,8 +1,8 @@
-package fi.zmengames.zlauncher.androidTest;
+package fr.neamar.kiss.androidTest;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.R;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

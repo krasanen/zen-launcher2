@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher;
+package fr.neamar.kiss;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fi.zmengames.zlauncher.db.DBHelper;
+import fr.neamar.kiss.db.DBHelper;
 
-import static fi.zmengames.zlauncher.MainActivity.mDebug;
+import static fr.neamar.kiss.MainActivity.mDebug;
 
 public class TagsHandler {
     private final Context context;

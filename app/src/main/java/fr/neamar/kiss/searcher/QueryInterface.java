@@ -1,6 +1,6 @@
-package fi.zmengames.zlauncher.searcher;
+package fr.neamar.kiss.searcher;
 
-import fi.zmengames.zlauncher.ui.ListPopup;
+import fr.neamar.kiss.ui.ListPopup;
 
 public interface QueryInterface {
     void launchOccurred();

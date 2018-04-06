@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.utils;
+package fr.neamar.kiss.utils;
 
 import android.content.ComponentName;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.preference;
+package fr.neamar.kiss.preference;
 
 import android.content.Context;
 
@@ -7,9 +7,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.SwitchPreference;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.SwitchPreference;
 
 public class SignInSwitch extends SwitchPreference {
     public SignInSwitch(Context context) {

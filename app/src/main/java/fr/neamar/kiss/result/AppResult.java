@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.result;
+package fr.neamar.kiss.result;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -24,13 +24,13 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.adapter.RecordAdapter;
-import fi.zmengames.zlauncher.pojo.AppPojo;
-import fi.zmengames.zlauncher.ui.ListPopup;
-import fi.zmengames.zlauncher.utils.SpaceTokenizer;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.adapter.RecordAdapter;
+import fr.neamar.kiss.pojo.AppPojo;
+import fr.neamar.kiss.ui.ListPopup;
+import fr.neamar.kiss.utils.SpaceTokenizer;
 
 public class AppResult extends Result {
     private final AppPojo appPojo;

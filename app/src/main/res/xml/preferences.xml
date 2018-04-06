@@ -5,12 +5,12 @@
         android:key="history_category"
         android:summary="@string/history_settings_summary"
         android:title="@string/title_history">
-        <fi.zmengames.zlauncher.preference.ResetPreference
+        <fr.neamar.kiss.preference.ResetPreference
             android:dialogMessage="@string/reset_warn"
             android:key="reset"
             android:order="10"
             android:title="@string/reset_name" />
-        <fi.zmengames.zlauncher.preference.ResetExcludedAppsPreference
+        <fr.neamar.kiss.preference.ResetExcludedAppsPreference
             android:dialogMessage="@string/reset_excluded_apps_warn"
             android:key="reset-excluded-apps"
             android:order="12"
@@ -30,7 +30,7 @@
             android:key="history-mode"
             android:summary="@string/history_mode_desc"
             android:title="@string/history_mode_name" />
-        <fi.zmengames.zlauncher.preference.FreezeHistorySwitch
+        <fr.neamar.kiss.preference.FreezeHistorySwitch
             android:defaultValue="false"
             android:key="freeze-history"
             android:order="47"
@@ -39,15 +39,15 @@
         <PreferenceCategory
             android:order="50"
             android:title="@string/alternate_history_inputs">
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="enable-sms-history"
                 android:title="@string/enable_sms" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="enable-phone-history"
                 android:title="@string/enable_phone" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="enable-app-history"
                 android:title="@string/enable_app" />
@@ -57,17 +57,17 @@
         android:key="history_favorites"
         android:summary="@string/history_favorites_summary"
         android:title="@string/title_favorites">
-        <fi.zmengames.zlauncher.preference.ResetFavoritesPreference
+        <fr.neamar.kiss.preference.ResetFavoritesPreference
             android:dialogMessage="@string/reset_favorites_warn"
             android:key="reset"
             android:title="@string/reset_favorites_name" />
-        <fi.zmengames.zlauncher.SwitchPreference
+        <fr.neamar.kiss.SwitchPreference
             android:defaultValue="true"
             android:key="enable-favorites-bar"
             android:summaryOff="@string/enable_favorites_bar_summary_off"
             android:summaryOn="@string/enable_favorites_bar_summary_on"
             android:title="@string/enable_favorites_bar" />
-        <fi.zmengames.zlauncher.SwitchPreference
+        <fr.neamar.kiss.SwitchPreference
             android:defaultValue="false"
             android:key="exclude-favorites"
             android:title="@string/exclude_favorites" />
@@ -86,55 +86,54 @@
             android:defaultValue="default"
             android:key="icons-pack"
             android:title="@string/icons_pack_name" />
-        <fi.zmengames.zlauncher.preference.ColorPreference
-            android:defaultValue="#00000000"
+        <fr.neamar.kiss.preference.ColorPreference
             android:key="notification-bar-color"
             android:title="@string/notification_bar_color" />
-        <fi.zmengames.zlauncher.preference.ColorPreference
+        <fr.neamar.kiss.preference.ColorPreference
             android:key="primary-color"
             android:title="@string/main_color" />
         <PreferenceCategory android:title="@string/misc">
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:key="transparent-search"
                 android:defaultValue="false"
                 android:title="@string/transparent_search_bar" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:key="transparent-favorites"
                 android:defaultValue="true"
                 android:title="@string/transparent_favorites_bar" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="large-search-bar"
                 android:title="@string/large_search_bar" />
-            <fi.zmengames.zlauncher.SwitchPreference
-                android:defaultValue="true"
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="false"
                 android:key="pref-rounded-list"
                 android:title="@string/rounded_list" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="pref-rounded-bars"
                 android:title="@string/rounded_bars" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="double-click-opens-apps"
                 android:title="@string/double_click" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-down-opens-notifications"
                 android:title="@string/swipe_down_notifications" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-up-opens-keyboard"
                 android:title="@string/swipe_up_keyboard" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-left"
                 android:title="@string/swipe_left_opens_menu" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-right"
                 android:title="@string/swipe_right_opens_menu" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="pinch-open"
                 android:title="@string/pinch_opens_menu" />
@@ -145,38 +144,38 @@
         android:summary="@string/user_experience_summary"
         android:title="@string/title_ux">
         <PreferenceCategory android:title="@string/keyboard_options">
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="display-keyboard"
                 android:title="@string/keyboard_name" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="enable-keyboard-workaround"
                 android:summary="@string/keyboard_workaround_desc"
                 android:title="@string/keyboard_workaround_name" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/history_hide_name">
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="history-hide"
                 android:summary="@string/history_hide_desc"
                 android:title="@string/history_hide_name" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:dependency="history-hide"
                 android:key="history-onclick"
                 android:title="@string/history_onclick_name" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:dependency="history-hide"
                 android:key="favorites-hide"
                 android:title="@string/favorites_hide" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="pref-hide-navbar"
                 android:summary="@string/pref_hide_navbar_desc"
                 android:title="@string/pref_hide_navbar" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="pref-hide-statusbar"
                 android:summary="@string/pref_hide_statusbar_desc"
@@ -184,7 +183,7 @@
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/misc">
 
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="force-portrait"
                 android:title="@string/portrait_title" />
@@ -194,11 +193,11 @@
                 android:entryValues="@array/sortAppListValues"
                 android:key="sort-apps"
                 android:title="@string/order_apps_name" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="tags-visible"
                 android:title="@string/tags_visible" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="icons-hide"
                 android:summary="@string/icons_hide_desc"
@@ -207,16 +206,16 @@
         <PreferenceScreen
             android:key="wallpaper-holder"
             android:title="@string/title_wallpaper">
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="lwp-touch"
                 android:title="@string/lwp_touch" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="lwp-drag"
                 android:summary="@string/lwp_drag_desc"
                 android:title="@string/lwp_drag" />
-            <fi.zmengames.zlauncher.SwitchPreference
+            <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="wp-drag-animate"
                 android:summary="@string/wp_drag_animate_desc"
@@ -228,32 +227,32 @@
         android:key="providers"
         android:summary="@string/providers_summary"
         android:title="@string/title_providers">
-        <fi.zmengames.zlauncher.SwitchPreference
+        <fr.neamar.kiss.SwitchPreference
             android:defaultValue="true"
             android:key="enable-contacts"
             android:title="@string/contacts_name" />
-        <fi.zmengames.zlauncher.SwitchPreference
+        <fr.neamar.kiss.SwitchPreference
             android:defaultValue="true"
             android:key="enable-settings"
             android:title="@string/settings_name" />
-        <fi.zmengames.zlauncher.SwitchPreference
+        <fr.neamar.kiss.SwitchPreference
             android:defaultValue="true"
             android:key="enable-phone"
             android:title="@string/phone_name" />
-        <fi.zmengames.zlauncher.SwitchPreference
+        <fr.neamar.kiss.SwitchPreference
             android:defaultValue="true"
             android:key="enable-shortcuts"
             android:title="@string/shortcuts_name" />
-        <fi.zmengames.zlauncher.SwitchPreference
+        <fr.neamar.kiss.SwitchPreference
             android:defaultValue="true"
             android:key="enable-search"
             android:title="@string/search_name" />
         <PreferenceCategory android:title="@string/search_name">
-            <fi.zmengames.zlauncher.preference.AddSearchProviderPreference
+            <fr.neamar.kiss.preference.AddSearchProviderPreference
                 android:key="custom-search-provider-add"
                 android:textColor="?attr/searchColor"
                 android:title="@string/custom_search_provider" />
-            <fi.zmengames.zlauncher.preference.ResetSearchProvidersPreference
+            <fr.neamar.kiss.preference.ResetSearchProvidersPreference
                 android:dialogMessage="@string/search_provider_reset_desc"
                 android:key="reset"
                 android:order="11"
@@ -261,26 +260,26 @@
         </PreferenceCategory>
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/title_advanced">
-        <fi.zmengames.zlauncher.preference.DefaultLauncherPreference
+        <fr.neamar.kiss.preference.DefaultLauncherPreference
             android:dialogMessage="@string/default_launcher_warn"
             android:key="default-launcher"
             android:title="@string/default_launcher_title" />
-        <fi.zmengames.zlauncher.preference.RootModeSwitch
+        <fr.neamar.kiss.preference.RootModeSwitch
             android:defaultValue="false"
             android:key="root-mode"
             android:summary="@string/root_mode_desc"
             android:title="@string/root_mode_name" />
-        <fi.zmengames.zlauncher.preference.SignInSwitch
+        <fr.neamar.kiss.preference.SignInSwitch
             android:defaultValue="false"
             android:key="google-signin"
             android:summary="@string/common_signin_button_text"
             android:title="@string/common_signin_button_text" />
-        <fi.zmengames.zlauncher.preference.RestartPreference
+        <fr.neamar.kiss.preference.RestartPreference
             android:dialogMessage="@string/restart_warn"
             android:key="restart"
             android:summary="@string/restart_desc"
             android:title="@string/restart_name" />
-        <fi.zmengames.zlauncher.preference.ProximitySwitch
+        <fr.neamar.kiss.preference.ProximitySwitch
             android:defaultValue="false"
             android:key="proximity-switch"
             android:summary="@string/proximity_switch"

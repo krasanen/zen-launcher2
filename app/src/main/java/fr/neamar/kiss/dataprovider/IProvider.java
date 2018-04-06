@@ -1,7 +1,7 @@
-package fi.zmengames.zlauncher.dataprovider;
+package fr.neamar.kiss.dataprovider;
 
-import fi.zmengames.zlauncher.pojo.Pojo;
-import fi.zmengames.zlauncher.searcher.Searcher;
+import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.searcher.Searcher;
 
 /**
  * Public interface exposed by every Z-Launcher data provider

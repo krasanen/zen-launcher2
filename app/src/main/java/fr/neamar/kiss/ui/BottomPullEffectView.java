@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.ui;
+package fr.neamar.kiss.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;

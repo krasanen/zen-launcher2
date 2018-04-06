@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher;
+package fr.neamar.kiss;
 
 // Copyright 2016 Google Inc. All rights reserved.
 //

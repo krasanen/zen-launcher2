@@ -1,11 +1,11 @@
-package fi.zmengames.zlauncher.pojo;
+package fr.neamar.kiss.pojo;
 
 import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.zmengames.zlauncher.normalizer.StringNormalizer;
+import fr.neamar.kiss.normalizer.StringNormalizer;
 
 public class PojoWithTags extends Pojo {
     // tags normalized, for faster search

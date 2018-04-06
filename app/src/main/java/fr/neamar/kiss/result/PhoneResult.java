@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.result;
+package fr.neamar.kiss.result;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,11 +17,11 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.Collections;
 
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.adapter.RecordAdapter;
-import fi.zmengames.zlauncher.forwarder.Permission;
-import fi.zmengames.zlauncher.pojo.PhonePojo;
-import fi.zmengames.zlauncher.ui.ListPopup;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.adapter.RecordAdapter;
+import fr.neamar.kiss.forwarder.Permission;
+import fr.neamar.kiss.pojo.PhonePojo;
+import fr.neamar.kiss.ui.ListPopup;
 
 public class PhoneResult extends Result {
     private final PhonePojo phonePojo;

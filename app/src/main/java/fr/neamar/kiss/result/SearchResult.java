@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.result;
+package fr.neamar.kiss.result;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,12 +13,12 @@ import android.widget.TextView;
 
 import java.util.Collections;
 
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.adapter.RecordAdapter;
-import fi.zmengames.zlauncher.pojo.SearchPojo;
-import fi.zmengames.zlauncher.ui.ListPopup;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.adapter.RecordAdapter;
+import fr.neamar.kiss.pojo.SearchPojo;
+import fr.neamar.kiss.ui.ListPopup;
 
-import static fi.zmengames.zlauncher.R.drawable.search;
+import static fr.neamar.kiss.R.drawable.search;
 
 public class SearchResult extends Result {
     private final SearchPojo searchPojo;

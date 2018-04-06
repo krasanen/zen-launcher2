@@ -26,7 +26,7 @@ import android.widget.ProgressBar;
 
 import com.android.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
 
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.R;
 
 /**
  * A dialog which takes in as input an array of colors and creates a palette allowing the user to

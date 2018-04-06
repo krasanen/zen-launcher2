@@ -1,16 +1,16 @@
-package fi.zmengames.zlauncher.dataprovider;
+package fr.neamar.kiss.dataprovider;
 
 import android.util.Pair;
 
 import java.util.List;
 
-import fi.zmengames.zlauncher.loader.LoadShortcutsPojos;
-import fi.zmengames.zlauncher.normalizer.StringNormalizer;
-import fi.zmengames.zlauncher.pojo.Pojo;
-import fi.zmengames.zlauncher.pojo.PojoWithTags;
-import fi.zmengames.zlauncher.pojo.ShortcutsPojo;
-import fi.zmengames.zlauncher.searcher.Searcher;
-import fi.zmengames.zlauncher.utils.FuzzyScore;
+import fr.neamar.kiss.loader.LoadShortcutsPojos;
+import fr.neamar.kiss.normalizer.StringNormalizer;
+import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.pojo.PojoWithTags;
+import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.utils.FuzzyScore;
 
 public class ShortcutsProvider extends Provider<ShortcutsPojo> {
 

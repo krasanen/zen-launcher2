@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.normalizer;
+package fr.neamar.kiss.normalizer;
 
 /**
  * Simple integer sequence class that allows adding individual elements and exporting those

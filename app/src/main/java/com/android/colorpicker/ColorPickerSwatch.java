@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.R;
 
 /**
  * Creates a circular swatch of a specified color.  Adds a checkmark if marked as checked.

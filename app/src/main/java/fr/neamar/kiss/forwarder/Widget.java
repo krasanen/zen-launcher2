@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.forwarder;
+package fr.neamar.kiss.forwarder;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetHost;
@@ -16,15 +16,15 @@ import android.view.ViewGroup;
 
 import java.util.HashMap;
 
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
 
 class Widget extends Forwarder {
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
 
     private static final int APPWIDGET_HOST_ID = 442;
-    private static final String WIDGET_PREFERENCE_ID = "fi.zmengames.zlauncher.widgetprefs";
+    private static final String WIDGET_PREFERENCE_ID = "widgetprefs";
 
     private SharedPreferences widgetPrefs;
 

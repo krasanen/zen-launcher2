@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.preference;
+package fr.neamar.kiss.preference;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,8 +21,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.dataprovider.SearchProvider;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.dataprovider.SearchProvider;
 
 public class AddSearchProviderPreference extends DialogPreference {
 

@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.dataprovider;
+package fr.neamar.kiss.dataprovider;
 
 import android.database.ContentObserver;
 import android.provider.ContactsContract;
@@ -6,13 +6,13 @@ import android.util.Pair;
 
 import java.util.List;
 
-import fi.zmengames.zlauncher.forwarder.Permission;
-import fi.zmengames.zlauncher.loader.LoadContactsPojos;
-import fi.zmengames.zlauncher.normalizer.PhoneNormalizer;
-import fi.zmengames.zlauncher.normalizer.StringNormalizer;
-import fi.zmengames.zlauncher.pojo.ContactsPojo;
-import fi.zmengames.zlauncher.searcher.Searcher;
-import fi.zmengames.zlauncher.utils.FuzzyScore;
+import fr.neamar.kiss.forwarder.Permission;
+import fr.neamar.kiss.loader.LoadContactsPojos;
+import fr.neamar.kiss.normalizer.PhoneNormalizer;
+import fr.neamar.kiss.normalizer.StringNormalizer;
+import fr.neamar.kiss.pojo.ContactsPojo;
+import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.utils.FuzzyScore;
 
 public class ContactsProvider extends Provider<ContactsPojo> {
 

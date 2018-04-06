@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.preference;
+package fr.neamar.kiss.preference;
 
 import android.app.AlertDialog;
 import android.content.Context;

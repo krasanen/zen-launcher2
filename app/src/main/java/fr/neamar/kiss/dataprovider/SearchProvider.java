@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.dataprovider;
+package fr.neamar.kiss.dataprovider;
 
 import android.content.Context;
 import android.webkit.URLUtil;
@@ -10,11 +10,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.loader.LoadSearchPojos;
-import fi.zmengames.zlauncher.pojo.Pojo;
-import fi.zmengames.zlauncher.pojo.SearchPojo;
-import fi.zmengames.zlauncher.searcher.Searcher;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.loader.LoadSearchPojos;
+import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.pojo.SearchPojo;
+import fr.neamar.kiss.searcher.Searcher;
 
 public class SearchProvider extends Provider<SearchPojo> {
     private static final String URL_REGEX = "^(?:[a-z]+://)?(?:[a-z0-9-]|[^\\x00-\\x7F])+(?:[.](?:[a-z0-9-]|[^\\x00-\\x7F])+)+.*$";

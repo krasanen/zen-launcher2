@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.preference;
+package fr.neamar.kiss.preference;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.preference.CheckBoxPreference;
 import android.util.AttributeSet;
 
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.R;
 
 class FreezeHistoryPreference extends CheckBoxPreference {
 

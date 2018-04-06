@@ -34,7 +34,7 @@ import com.google.android.gms.games.snapshot.SnapshotMetadata;
 
 import java.util.ArrayList;
 
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.R;
 
 /**
  * Activity to select a snapshot from a list of snapshots or snapshot metadata.  The intended

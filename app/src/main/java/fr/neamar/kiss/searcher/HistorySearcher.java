@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.searcher;
+package fr.neamar.kiss.searcher;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -6,10 +6,10 @@ import android.preference.PreferenceManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.forwarder.Favorites;
-import fi.zmengames.zlauncher.pojo.Pojo;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.forwarder.Favorites;
+import fr.neamar.kiss.pojo.Pojo;
 
 /**
  * Retrieve pojos from history

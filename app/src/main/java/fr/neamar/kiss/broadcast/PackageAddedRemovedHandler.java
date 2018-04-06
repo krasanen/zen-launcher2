@@ -1,13 +1,13 @@
-package fi.zmengames.zlauncher.broadcast;
+package fr.neamar.kiss.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.dataprovider.AppProvider;
-import fi.zmengames.zlauncher.utils.UserHandle;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.dataprovider.AppProvider;
+import fr.neamar.kiss.utils.UserHandle;
 
 /**
  * This class gets called when an application is created or removed on the

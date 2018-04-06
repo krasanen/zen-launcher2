@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.forwarder;
+package fr.neamar.kiss.forwarder;
 
 import android.Manifest;
 import android.content.Context;
@@ -10,10 +10,10 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.dataprovider.ContactsProvider;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.dataprovider.ContactsProvider;
 
 
 public class Permission extends Forwarder {

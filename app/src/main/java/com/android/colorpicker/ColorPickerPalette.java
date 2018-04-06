@@ -27,7 +27,7 @@ import android.widget.TableRow;
 
 import com.android.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
 
-import fi.zmengames.zlauncher.R;
+import fr.neamar.kiss.R;
 
 /**
  * A color picker custom view which creates an grid of color squares.  The number of squares per

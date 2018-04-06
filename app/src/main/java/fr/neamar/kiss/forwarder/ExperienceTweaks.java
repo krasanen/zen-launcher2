@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.forwarder;
+package fr.neamar.kiss.forwarder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,15 +20,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.searcher.HistorySearcher;
-import fi.zmengames.zlauncher.searcher.NullSearcher;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.searcher.HistorySearcher;
+import fr.neamar.kiss.searcher.NullSearcher;
 
-import static fi.zmengames.zlauncher.MainActivity.mDebug;
+import static fr.neamar.kiss.MainActivity.mDebug;
+
 
 // Deals with any settings in the "User Experience" setting sub-screen
-class ExperienceTweaks extends fi.zmengames.zlauncher.forwarder.Forwarder {
+class ExperienceTweaks extends Forwarder {
     private static final String TAG = ExperienceTweaks.class.getSimpleName();
 
     /**

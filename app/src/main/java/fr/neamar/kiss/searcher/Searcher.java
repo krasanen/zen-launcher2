@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.searcher;
+package fr.neamar.kiss.searcher;
 
 
 import android.content.Context;
@@ -14,11 +14,11 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.MainActivity;
-import fi.zmengames.zlauncher.pojo.Pojo;
-import fi.zmengames.zlauncher.pojo.PojoComparator;
-import fi.zmengames.zlauncher.result.Result;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.pojo.PojoComparator;
+import fr.neamar.kiss.result.Result;
 
 public abstract class Searcher extends AsyncTask<Void, Result, Void> {
     // define a different thread than the default AsyncTask thread or else we will block everything else that uses AsyncTask while we search

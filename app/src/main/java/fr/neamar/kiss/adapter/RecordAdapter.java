@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.adapter;
+package fr.neamar.kiss.adapter;
 
 import android.content.Context;
 import android.os.Handler;
@@ -10,16 +10,16 @@ import android.widget.BaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.result.AppResult;
-import fi.zmengames.zlauncher.result.ContactsResult;
-import fi.zmengames.zlauncher.result.PhoneResult;
-import fi.zmengames.zlauncher.result.Result;
-import fi.zmengames.zlauncher.result.SearchResult;
-import fi.zmengames.zlauncher.result.SettingsResult;
-import fi.zmengames.zlauncher.result.ShortcutsResult;
-import fi.zmengames.zlauncher.searcher.QueryInterface;
-import fi.zmengames.zlauncher.ui.ListPopup;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.result.AppResult;
+import fr.neamar.kiss.result.ContactsResult;
+import fr.neamar.kiss.result.PhoneResult;
+import fr.neamar.kiss.result.Result;
+import fr.neamar.kiss.result.SearchResult;
+import fr.neamar.kiss.result.SettingsResult;
+import fr.neamar.kiss.result.ShortcutsResult;
+import fr.neamar.kiss.searcher.QueryInterface;
+import fr.neamar.kiss.ui.ListPopup;
 
 public class RecordAdapter extends BaseAdapter {
     private final Context context;

@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.pojo;
+package fr.neamar.kiss.pojo;
 
 import android.graphics.Bitmap;
 

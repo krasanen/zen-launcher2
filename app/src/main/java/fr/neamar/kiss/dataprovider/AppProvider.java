@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.dataprovider;
+package fr.neamar.kiss.dataprovider;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -16,16 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.broadcast.PackageAddedRemovedHandler;
-import fi.zmengames.zlauncher.loader.LoadAppPojos;
-import fi.zmengames.zlauncher.normalizer.StringNormalizer;
-import fi.zmengames.zlauncher.pojo.AppPojo;
-import fi.zmengames.zlauncher.pojo.Pojo;
-import fi.zmengames.zlauncher.pojo.PojoWithTags;
-import fi.zmengames.zlauncher.searcher.Searcher;
-import fi.zmengames.zlauncher.utils.FuzzyScore;
-import fi.zmengames.zlauncher.utils.UserHandle;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.broadcast.PackageAddedRemovedHandler;
+import fr.neamar.kiss.loader.LoadAppPojos;
+import fr.neamar.kiss.normalizer.StringNormalizer;
+import fr.neamar.kiss.pojo.AppPojo;
+import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.pojo.PojoWithTags;
+import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.utils.FuzzyScore;
+import fr.neamar.kiss.utils.UserHandle;
 
 public class AppProvider extends Provider<AppPojo> {
 

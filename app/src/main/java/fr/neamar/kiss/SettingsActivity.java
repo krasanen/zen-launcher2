@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher;
+package fr.neamar.kiss;
 
 import android.Manifest;
 import android.content.Intent;
@@ -25,12 +25,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import fi.zmengames.zlauncher.broadcast.IncomingCallHandler;
-import fi.zmengames.zlauncher.broadcast.IncomingSmsHandler;
-import fi.zmengames.zlauncher.dataprovider.AppProvider;
-import fi.zmengames.zlauncher.dataprovider.SearchProvider;
-import fi.zmengames.zlauncher.searcher.QuerySearcher;
-import fi.zmengames.zlauncher.utils.PackageManagerUtils;
+import fr.neamar.kiss.broadcast.IncomingCallHandler;
+import fr.neamar.kiss.broadcast.IncomingSmsHandler;
+import fr.neamar.kiss.dataprovider.AppProvider;
+import fr.neamar.kiss.dataprovider.SearchProvider;
+import fr.neamar.kiss.searcher.QuerySearcher;
+import fr.neamar.kiss.utils.PackageManagerUtils;
 
 @SuppressWarnings("FragmentInjection")
 public class SettingsActivity extends PreferenceActivity implements

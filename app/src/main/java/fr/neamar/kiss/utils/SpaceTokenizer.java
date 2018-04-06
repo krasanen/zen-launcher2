@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.utils;
+package fr.neamar.kiss.utils;
 
 import android.text.SpannableString;
 import android.text.Spanned;

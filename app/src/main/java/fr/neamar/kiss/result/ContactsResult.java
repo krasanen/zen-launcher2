@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.result;
+package fr.neamar.kiss.result;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,15 +19,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import fi.zmengames.zlauncher.KissApplication;
-import fi.zmengames.zlauncher.R;
-import fi.zmengames.zlauncher.UIColors;
-import fi.zmengames.zlauncher.adapter.RecordAdapter;
-import fi.zmengames.zlauncher.forwarder.Permission;
-import fi.zmengames.zlauncher.pojo.ContactsPojo;
-import fi.zmengames.zlauncher.searcher.QueryInterface;
-import fi.zmengames.zlauncher.ui.ImprovedQuickContactBadge;
-import fi.zmengames.zlauncher.ui.ListPopup;
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.UIColors;
+import fr.neamar.kiss.adapter.RecordAdapter;
+import fr.neamar.kiss.forwarder.Permission;
+import fr.neamar.kiss.pojo.ContactsPojo;
+import fr.neamar.kiss.searcher.QueryInterface;
+import fr.neamar.kiss.ui.ImprovedQuickContactBadge;
+import fr.neamar.kiss.ui.ListPopup;
 
 public class ContactsResult extends Result {
     private final ContactsPojo contactPojo;

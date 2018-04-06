@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.db;
+package fr.neamar.kiss.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

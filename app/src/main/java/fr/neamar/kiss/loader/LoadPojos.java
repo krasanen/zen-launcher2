@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher.loader;
+package fr.neamar.kiss.loader;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,8 +6,8 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import fi.zmengames.zlauncher.dataprovider.Provider;
-import fi.zmengames.zlauncher.pojo.Pojo;
+import fr.neamar.kiss.dataprovider.Provider;
+import fr.neamar.kiss.pojo.Pojo;
 
 public abstract class LoadPojos<T extends Pojo> extends AsyncTask<Void, Void, ArrayList<T>> {
 
