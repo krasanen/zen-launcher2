@@ -12,6 +12,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,9 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
      * IDs for the favorites buttons
      */
     private final static int[] FAV_IDS = new int[]{R.id.favorite0, R.id.favorite1, R.id.favorite2, R.id.favorite3, R.id.favorite4, R.id.favorite5};
+    private final static int[] FAV_IDS_TEXTS = new int[]{R.id.favorite0text, R.id.favorite1text, R.id.favorite2text, R.id.favorite3text, R.id.favorite4text, R.id.favorite5text};
     private View[] favoritesViews;
+    private TextView[] favoritesTexts;
 
     /**
      * Number of favorites that can be displayed
@@ -53,6 +56,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
      */
     private ArrayList<Pojo> favoritesPojo = new ArrayList<>();
 
+
     Favorites(MainActivity mainActivity) {
         super(mainActivity);
     }
@@ -69,8 +73,10 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
         }
 
         favoritesViews = new View[FAV_IDS.length];
+        favoritesTexts = new TextView[FAV_IDS_TEXTS.length];
         for (int i = 0; i < FAV_IDS.length; i++) {
             favoritesViews[i] = mainActivity.favoritesBar.findViewById(FAV_IDS[i]);
+            favoritesTexts[i] = mainActivity.favoritesBar.findViewById(FAV_IDS_TEXTS[i]);
         }
 
         registerClickOnFavorites();
@@ -119,7 +125,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             Pojo pojo = favoritesPojo.get(i);
 
             ImageView image = (ImageView) favoritesViews[i];
-
+            TextView textView = favoritesTexts[i];
+            textView.setText(pojo.getName());
             Result result = Result.fromPojo(mainActivity, pojo);
             Drawable drawable = result.getDrawable(mainActivity);
             if (drawable != null) {

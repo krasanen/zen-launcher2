@@ -3,9 +3,11 @@ package fr.neamar.kiss;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +15,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +39,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -94,6 +101,8 @@ import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import fr.neamar.kiss.SaveGame;
 import fr.neamar.kiss.SelectSnapshotActivity;
+
+import static android.graphics.Bitmap.createBitmap;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver {
 
@@ -250,18 +259,53 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return SnapshotCoordinator.getInstance().commitAndClose(mSnapshotsClient, snapshot, metadataChange);
     }
 
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    private Bitmap overlay(Bitmap bmp1, Bitmap bmp2) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, new Matrix(), null);
+        return bmOverlay;
+    }
     /**
      * Gets a screenshot to use with snapshots. Note that in practice you probably do not want to
      * use this approach because tablet screen sizes can become pretty large and because the image
      * will contain any UI and layout surrounding the area of interest.
      */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     Bitmap getScreenShot() {
         View root = getWindow().getDecorView().findViewById(android.R.id.content);
-        Bitmap coverImage;
+        final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+        Bitmap coverImage = drawableToBitmap(wallpaperDrawable);
+
         try {
             root.setDrawingCacheEnabled(true);
-            Bitmap base = root.getDrawingCache();
-            coverImage = base.copy(base.getConfig(), false /* isMutable */);
+            Bitmap base = createBitmap(root.getDrawingCache(),0, (int) (root.getHeight()*0.27),root.getWidth(), (int) (root.getHeight()*0.73));
+            coverImage = overlay(drawableToBitmap(wallpaperDrawable).copy(base.getConfig(),false), base);
+            //coverImage = base.copy(base.getConfig(), false /* isMutable */);
         } catch (Exception ex) {
             Log.i(TAG, "Failed to create screenshot", ex);
             coverImage = null;
@@ -520,8 +564,26 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        Log.d(TAG,"onCreateContextMenu");
+
+        /*ImageView image;
+
+        image = (ImageView) findViewById(R.id.imageView);
+        image.setImageResource(R.drawable.call);*/
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+        if (!mSignedIn){
+            MenuItem item = menu.findItem(R.id.saveToGoogle);
+            item.setVisible(false);
+            MenuItem item2 = menu.findItem(R.id.loadFromGoogle);
+            item2.setVisible(false);
+
+        } else {
+            MenuItem item = menu.findItem(R.id.saveToGoogle);
+            item.setVisible(true);
+            MenuItem item2 = menu.findItem(R.id.loadFromGoogle);
+            item2.setVisible(true);
+        }
         forwarderManager.onCreateContextMenu(menu, v, menuInfo);
     }
 
