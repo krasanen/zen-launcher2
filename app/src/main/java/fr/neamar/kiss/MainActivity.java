@@ -206,6 +206,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void signOut() {
         Log.d(TAG, "signOut");
         mGoogleSignInClient.signOut();
+        prefs.edit().putBoolean("wasSigned", false).apply();
+        mSignedIn=false;
     }
 
     private static final int RC_SAVED_GAMES = 9009;
@@ -269,14 +271,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void signInSilently() {
-        GoogleSignInOptions signInOption =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                        // Add the APPFOLDER scope for Snapshot support.
-                        .requestScopes(Drive.SCOPE_APPFOLDER)
-                        .build();
 
-        GoogleSignInClient signInClient = GoogleSignIn.getClient(this, signInOption);
-        signInClient.silentSignIn().addOnCompleteListener(this,
+        mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
                 new OnCompleteListener<GoogleSignInAccount>() {
                     @Override
                     public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
@@ -327,7 +323,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         IntentFilter intentFilterLoad = new IntentFilter();
         IntentFilter intentFilterLoadOver = new IntentFilter(LOAD_OVER);
         IntentFilter intentFilterFullLoadOver = new IntentFilter(FULL_LOAD_OVER);
-        IntentFilter signIn = new IntentFilter(SIGN_IN);
+        final IntentFilter signIn = new IntentFilter(SIGN_IN);
         IntentFilter signOut = new IntentFilter(SIGN_OUT);
         mReceiver = new BroadcastReceiver() {
             @Override
@@ -343,7 +339,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     // Run GC once to free all the garbage accumulated during provider initialization
                     System.gc();
                 } else if (intent.getAction().equalsIgnoreCase(SIGN_IN)) {
-                    signInSilently();
+                    if (prefs.getBoolean("wasSigned", false)) {
+                        signInSilently();
+                    } else {
+                        signIn();
+                    }
                 } else if (intent.getAction().equalsIgnoreCase(SIGN_OUT)) {
                     signOut();
                 }
@@ -799,10 +799,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         onActivityResult( REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME,  RESULT_OK, intent);
     }
 
+    private boolean mSignedIn=false;
     private void onAccountChanged(GoogleSignInAccount googleSignInAccount) {
         mSnapshotsClient = Games.getSnapshotsClient(this, googleSignInAccount);
 
         // Sign-in worked!
+        mSignedIn = true;
+        prefs.edit().putBoolean("wasSigned", true).apply();
         Log.d(TAG, "Sign-in successful! Loading game state from cloud.");
 
 
@@ -1047,7 +1050,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
             case RC_LIST_SAVED_GAMES:
                 Log.d(TAG,"RC_LIST_SAVED_GAMES");
-                if (data != null) {
+                if (data != null ) {
                     if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
                         // Load a snapshot.
                         SnapshotMetadata snapshotMetadata =
@@ -1055,6 +1058,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         currentSaveName = snapshotMetadata.getUniqueName();
                         loadFromSnapshot(snapshotMetadata);
                     } else if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
+                        Log.d(TAG,"RC_LIST_SAVED_GAMES EXTRA_SNAPSHOT_NEW");
                         // Create a new snapshot named with a unique string
                         String unique = Long.toString(System.currentTimeMillis());
                         currentSaveName = "snapshotTemp-" + unique;

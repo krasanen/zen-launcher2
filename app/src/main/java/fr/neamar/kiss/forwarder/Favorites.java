@@ -222,6 +222,19 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 }
             }
         }
+        {
+            //Default camera
+            Intent camera = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(camera, PackageManager.MATCH_DEFAULT_ONLY);
+            if (resolveInfo != null) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                Log.i(TAG, "Camera resolves to:" + packageName);
+                if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
+                    String activityName = resolveInfo.activityInfo.name;
+                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites(mainActivity, "app://" + packageName + "/" + activityName);
+                }
+            }
+        }
     }
 
     private void registerClickOnFavorites() {
