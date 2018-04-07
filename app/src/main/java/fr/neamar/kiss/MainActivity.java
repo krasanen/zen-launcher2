@@ -126,11 +126,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public SharedPreferences prefs;
 
     /**
-     * Receive events from providers
-     */
-    private BroadcastReceiver mReceiver;
-
-    /**
      * View for the Search text
      */
     public SearchEditText searchEditText;
@@ -602,7 +597,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.unregisterReceiver(this.mReceiver);
         EventBus.getDefault().unregister(this);
     }
 
