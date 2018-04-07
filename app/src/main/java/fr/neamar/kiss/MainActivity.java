@@ -39,7 +39,6 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -63,6 +62,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.drive.Drive;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,6 +84,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
 import fr.neamar.kiss.broadcast.IncomingSmsHandler;
@@ -99,20 +102,11 @@ import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
-import fr.neamar.kiss.SaveGame;
-import fr.neamar.kiss.SelectSnapshotActivity;
 
 import static android.graphics.Bitmap.createBitmap;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver {
-
-    public static final String START_LOAD = "fr.neamar.summon.START_LOAD";
-    public static final String LOAD_OVER = "fr.neamar.summon.LOAD_OVER";
-    public static final String FULL_LOAD_OVER = "fr.neamar.summon.FULL_LOAD_OVER";
-    public static final String SIGN_IN = "fr.neamar.summon.SIGN_IN";
-    public static final String SIGN_OUT = "fr.neamar.summon.SIGN_OUT";
-
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME = 13;
@@ -202,7 +196,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private boolean mKeyboardVisible;
     public static boolean mDebug = false;
     GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 50;
     private static final int RC_SAVE_SNAPSHOT = 51;
     private static final int RC_LOAD_SNAPSHOT = 52;
     private static final int RC_LIST_SAVED_GAMES = 53;
@@ -210,13 +203,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void signIn() {
         Log.d(TAG, "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        // The Task returned from this call is always completed, no need to attach
+        // a listener.
+
+        startActivity(signInIntent);
     }
+
 
     public void signOut() {
         Log.d(TAG, "signOut");
         mGoogleSignInClient.signOut();
-        prefs.edit().putBoolean("wasSigned", false).apply();
+
         mSignedIn=false;
     }
 
@@ -315,22 +312,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return coverImage;
     }
 
-    private void signInSilently() {
-
-        mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
-                new OnCompleteListener<GoogleSignInAccount>() {
-                    @Override
-                    public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                        if (task.isSuccessful()) {
-                            updateUI(task.getResult());
-                        } else {
-                            signIn();
-                        }
-                    }
-                });
-    }
-
-
     /**
      * Called when the activity is first created.
      */
@@ -338,7 +319,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
-
+        EventBus.getDefault().register(this);
         KissApplication.getApplication(this).initDataHandler();
 
         /*
@@ -362,47 +343,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         forwarderManager = new ForwarderManager(this);
 
-        /*
-         * Initialize data handler and start loading providers
-         */
-        IntentFilter intentFilterLoad = new IntentFilter();
-        IntentFilter intentFilterLoadOver = new IntentFilter(LOAD_OVER);
-        IntentFilter intentFilterFullLoadOver = new IntentFilter(FULL_LOAD_OVER);
-        final IntentFilter signIn = new IntentFilter(SIGN_IN);
-        IntentFilter signOut = new IntentFilter(SIGN_OUT);
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                //noinspection ConstantConditions
-                if (intent.getAction().equalsIgnoreCase(LOAD_OVER)) {
-                    updateSearchRecords();
-                } else if (intent.getAction().equalsIgnoreCase(FULL_LOAD_OVER)) {
-                    Log.v(TAG, "All providers are done loading.");
 
-                    displayLoader(false);
-
-                    // Run GC once to free all the garbage accumulated during provider initialization
-                    System.gc();
-                } else if (intent.getAction().equalsIgnoreCase(SIGN_IN)) {
-                    if (prefs.getBoolean("wasSigned", false)) {
-                        signInSilently();
-                    } else {
-                        signIn();
-                    }
-                } else if (intent.getAction().equalsIgnoreCase(SIGN_OUT)) {
-                    signOut();
-                }
-
-                // New provider might mean new favorites
-                onFavoriteChange();
-            }
-        };
-
-        this.registerReceiver(mReceiver, intentFilterLoad);
-        this.registerReceiver(mReceiver, intentFilterLoadOver);
-        this.registerReceiver(mReceiver, intentFilterFullLoadOver);
-        this.registerReceiver(mReceiver, signIn);
-        this.registerReceiver(mReceiver, signOut);
         /*
          * Set the view and store all useful components
          */
@@ -605,6 +546,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
             onAccountChanged(account);
+        } else {
+            mSignedIn = false;
+            Log.d(TAG, "Not signed to Google!");
         }
     }
 
@@ -659,6 +603,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(this.mReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -667,6 +612,30 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.onStop();
     }
 
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ZEvent event) {
+        Log.w(TAG, "Got message from service: " + event.getState());
+
+        switch (event.getState()) {
+            case GOOGLE_SIGNIN:
+                signIn();
+                break;
+            case GOOGLE_SIGNOUT:
+                signOut();
+                break;
+            case LOAD_OVER:
+                updateSearchRecords();
+                onFavoriteChange();
+                break;
+            case FULL_LOAD_OVER:
+                Log.v(TAG, "All providers are done loading.");
+                displayLoader(false);
+                onFavoriteChange();
+                // Run GC once to free all the garbage accumulated during provider initialization
+                System.gc();
+                break;
+        }
+    }
     @Override
     protected void onNewIntent(Intent intent) {
         // This is called when the user press Home again while already browsing MainActivity
@@ -1091,35 +1060,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             menuButton.showContextMenu();
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(getApplicationContext(), getResources().getText(R.string.common_google_play_services_notification_ticker) + " code:" + e.getStatusCode(), Toast.LENGTH_LONG).show();
-            updateUI(null);
-        }
-    }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 
         switch (requestCode) {
-            case RC_SIGN_IN:
-                Log.d(TAG,"RC_SIGN_IN");
-                // The Task returned from this call is always completed, no need to attach
-                // a listener.
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                handleSignInResult(task);
-                break;
+
             case RC_LIST_SAVED_GAMES:
                 Log.d(TAG,"RC_LIST_SAVED_GAMES");
                 if (data != null ) {
@@ -1260,9 +1207,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
             }
             editor.commit();
-            KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
             count += 1;
         }
+        //forwarderManager.onDataSetChanged();
+        KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
         return count;
     }
 

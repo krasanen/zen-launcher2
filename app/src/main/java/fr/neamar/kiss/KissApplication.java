@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import fi.zmengames.zlauncher.LauncherService;
+
 public class KissApplication extends Application {
     /**
      * Number of ms to wait, after a click occurred, to record a launch
@@ -46,8 +48,9 @@ public class KissApplication extends Application {
         }
         else if(dataHandler.allProvidersHaveLoaded) {
             // Already loaded! We still need to fire the FULL_LOAD event
-            Intent i = new Intent(MainActivity.FULL_LOAD_OVER);
-            sendBroadcast(i);
+            Intent intent = new Intent(this, LauncherService.class);
+            intent.setAction(LauncherService.FULL_LOAD_OVER);
+            this.startService(intent);
         }
     }
 

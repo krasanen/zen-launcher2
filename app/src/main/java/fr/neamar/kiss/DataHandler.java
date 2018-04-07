@@ -13,6 +13,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import fi.zmengames.zlauncher.LauncherService;
+import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.dataprovider.IProvider;
@@ -36,7 +42,7 @@ import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.UserHandle;
 
-public class DataHandler extends BroadcastReceiver
+public class DataHandler
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     final static private String TAG = "DataHandler";
 
@@ -65,11 +71,7 @@ public class DataHandler extends BroadcastReceiver
         //  to bind to services)
         this.context = context.getApplicationContext();
 
-        IntentFilter intentFilter = new IntentFilter(MainActivity.LOAD_OVER);
-        this.context.getApplicationContext().registerReceiver(this, intentFilter);
-
-        Intent i = new Intent(MainActivity.START_LOAD);
-        this.context.sendBroadcast(i);
+        EventBus.getDefault().register(this);
 
         // Monitor changes for service preferences (to automatically start and stop services)
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -192,6 +194,7 @@ public class DataHandler extends BroadcastReceiver
 
         // Remove provider from list
         this.providers.remove(name);
+
     }
 
     /**
@@ -215,19 +218,29 @@ public class DataHandler extends BroadcastReceiver
 
         // Broadcast the fact that the new providers list is ready
         try {
-            this.context.unregisterReceiver(this);
-            Intent i = new Intent(MainActivity.FULL_LOAD_OVER);
-            this.context.sendBroadcast(i);
+            Intent intent = new Intent(this.context, LauncherService.class);
+            intent.setAction(LauncherService.FULL_LOAD_OVER);
+            this.context.startService(intent);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        // A provider finished loading and contacted us
-        this.handleProviderLoaded();
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ZEvent event) {
+        Log.w(TAG, "Got message from service: " + event.getState());
+
+        switch (event.getState()) {
+            case LOAD_OVER:
+                this.handleProviderLoaded();
+                break;
+
+                default:
+
+        }
     }
+
 
     /**
      * Get records for this query.

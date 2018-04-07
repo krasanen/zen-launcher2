@@ -12,6 +12,8 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -123,7 +125,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
         // Don't look for items after favIds length, we won't be able to display them
         for (int i = 0; i < Math.min(favoritesIds.length, favoritesPojo.size()); i++) {
             Pojo pojo = favoritesPojo.get(i);
-
+            ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.VISIBLE);
             ImageView image = (ImageView) favoritesViews[i];
             TextView textView = favoritesTexts[i];
             textView.setText(pojo.getName());
@@ -146,7 +148,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
         // Hide empty favorites (not enough favorites yet)
         for (int i = favoritesPojo.size(); i < favoritesIds.length; i++) {
-            favoritesViews[i].setVisibility(View.GONE);
+            ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.GONE);
+
         }
     }
 
