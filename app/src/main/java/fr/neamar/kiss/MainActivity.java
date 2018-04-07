@@ -188,7 +188,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private PopupWindow mPopup;
 
     private ForwarderManager forwarderManager;
-    private boolean mKeyboardVisible;
+    private static boolean mKeyboardVisible;
     public static boolean mDebug = false;
     GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SAVE_SNAPSHOT = 51;
@@ -485,8 +485,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 // r.bottom is the position above soft keypad or device button.
                 // if keypad is shown, the r.bottom is smaller than that before.
                 int keypadHeight = screenHeight - r.bottom;
-
-                Log.d(TAG, "keypadHeight = " + keypadHeight);
 
                 if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                     mKeyboardVisible = true;
@@ -1521,7 +1519,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         list.animateChange();
     }
 
-    public boolean isKeyboardVisible() {
+    public static boolean isKeyboardVisible() {
         return mKeyboardVisible;
     }
 
