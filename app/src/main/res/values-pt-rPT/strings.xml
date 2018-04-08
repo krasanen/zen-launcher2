@@ -175,5 +175,6 @@
     <string name="write_snapshot_error">There was a problem writing the snapshot!</string>
     <string name="loading_from_cloud">Loading from cloud</string>
     <string name="load_from_google">Load from google</string>
+    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
 
 </resources>

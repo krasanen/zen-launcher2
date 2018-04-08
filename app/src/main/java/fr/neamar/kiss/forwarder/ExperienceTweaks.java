@@ -25,6 +25,8 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.NullSearcher;
 
+import static android.text.InputType.TYPE_CLASS_PHONE;
+import static fr.neamar.kiss.MainActivity.isKeyboardVisible;
 import static fr.neamar.kiss.MainActivity.mDebug;
 
 
@@ -63,6 +65,7 @@ class ExperienceTweaks extends Forwarder {
     private final ScaleGestureDetector sgd;
     private boolean scaling;
     int width, height;
+    private boolean mNumericInputTypeForced = false;
 
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);
@@ -152,10 +155,22 @@ class ExperienceTweaks extends Forwarder {
 
             @Override
             public boolean onDoubleTap(MotionEvent e1) {
-                if (prefs.getBoolean("double-click-opens-apps", false)) {
-                    mainActivity.launcherButton.performClick();
+                if (isKeyboardVisible()) {
+                    if (prefs.getBoolean("double-click-numeric-kb", false)) {
+                        if (mainActivity.searchEditText.getInputType() != TYPE_CLASS_PHONE) {
+                            mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
+                            mNumericInputTypeForced = true;
+                        } else {
+                            mNumericInputTypeForced = false;
+                            adjustInputType(mainActivity.searchEditText.getText().toString());
+                        }
+                    }
                 } else {
-                    toggleScreenOnOff();
+                    if (prefs.getBoolean("double-click-opens-apps", false)) {
+                        mainActivity.launcherButton.performClick();
+                    } else {
+                        toggleScreenOnOff();
+                    }
                 }
                 return true;
             }
@@ -222,6 +237,9 @@ class ExperienceTweaks extends Forwarder {
     }
 
     void onResume() {
+        if (mNumericInputTypeForced){
+            mNumericInputTypeForced = false;
+        }
         // Activity manifest specifies stateAlwaysHidden as windowSoftInputMode
         // so the keyboard will be hidden by default
         // we may want to display it if the setting is set
@@ -277,7 +295,9 @@ class ExperienceTweaks extends Forwarder {
     }
 
     void updateSearchRecords(String query) {
-        adjustInputType(query);
+        if (!mNumericInputTypeForced) {
+            adjustInputType(query);
+        }
 
         if (query.isEmpty()) {
             if (isMinimalisticModeEnabled()) {
@@ -300,7 +320,7 @@ class ExperienceTweaks extends Forwarder {
         int requiredInputType;
 
         if (currentText != null && Pattern.matches("[+]\\d+", currentText)) {
-            requiredInputType = InputType.TYPE_CLASS_PHONE;
+            requiredInputType = TYPE_CLASS_PHONE;
         } else if (isNonCompliantKeyboard()) {
             requiredInputType = INPUT_TYPE_WORKAROUND;
         } else {

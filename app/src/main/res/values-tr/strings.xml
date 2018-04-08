@@ -229,4 +229,5 @@
 
 <string name="rounded_list">Yuvarlatılmış liste köşeleri</string>
     <string name="rounded_bars">Yuvarlatılmış çubuk köşeleri</string>
-    </resources>
+    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
+</resources>

@@ -137,6 +137,11 @@
                 android:defaultValue="true"
                 android:key="pinch-open"
                 android:title="@string/pinch_opens_menu" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="true"
+                android:key="double-click-numeric-kb"
+                android:title="@string/double_click_numeric_kb" />
+
         </PreferenceCategory>
     </PreferenceScreen>
     <PreferenceScreen

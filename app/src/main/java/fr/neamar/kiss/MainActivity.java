@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -24,8 +25,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -39,6 +42,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -49,6 +53,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClientStatusCodes;
 import com.google.android.gms.games.SnapshotsClient;
@@ -70,10 +75,14 @@ import org.json.JSONObject;
 
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -115,6 +124,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     // intent data that is the retry count for retrying the conflict resolution.
     public static final String RETRY_COUNT = "retrycount";
+    public static boolean mInputTypeForced = false;
     /**
      * Adapter to display records
      */
@@ -209,7 +219,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Log.d(TAG, "signOut");
         mGoogleSignInClient.signOut();
 
-        mSignedIn=false;
+        mSignedIn = false;
     }
 
     private static final int RC_SAVED_GAMES = 9009;
@@ -229,20 +239,38 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         });
     }
+    public static byte[] objToByte(SaveGame tcpPacket) throws IOException {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
+        objStream.writeObject(tcpPacket);
+
+        return byteStream.toByteArray();
+    }
+
+    public static Object byteToObj(byte[] bytes) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
+        ObjectInputStream objStream = new ObjectInputStream(byteStream);
+        return objStream.readObject();
+    }
 
     // current save game - serializable to and from the saved game
     private SaveGame mSaveGame;
 
     private Task<SnapshotMetadata> writeSnapshot(Snapshot snapshot) {
         // Set the data payload for the snapshot.
-        Log.d(TAG,"writeSnapshot");
+        Log.d(TAG, "writeSnapshot");
         try {
-            mSaveGame = new SaveGame(getSerializedSettings());
+            mSaveGame = new SaveGame(getSerializedSettings(), getScreenShotWallPaper());
         } catch (JSONException e) {
-            Log.d(TAG,"writeSnapshot exception:"+e);
+            Log.d(TAG, "writeSnapshot exception:" + e);
         }
-        snapshot.getSnapshotContents().writeBytes(mSaveGame.getSaveGame().getBytes());
-        Log.d(TAG,"writeSnapshot: string:"+mSaveGame.toString());
+        try {
+            Log.d(TAG, "writeSnapshot, len:"+objToByte(mSaveGame).length);
+             snapshot.getSnapshotContents().writeBytes(objToByte(mSaveGame));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "writeSnapshot: string:" + mSaveGame.toString());
         // Save the snapshot.
         SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
                 .setCoverImage(getScreenShot())
@@ -252,17 +280,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap = null;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
+            if (bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }
         }
 
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
         } else {
             bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -281,6 +309,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         canvas.drawBitmap(bmp2, new Matrix(), null);
         return bmOverlay;
     }
+
     /**
      * Gets a screenshot to use with snapshots. Note that in practice you probably do not want to
      * use this approach because tablet screen sizes can become pretty large and because the image
@@ -295,8 +324,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         try {
             root.setDrawingCacheEnabled(true);
-            Bitmap base = createBitmap(root.getDrawingCache(),0, (int) (root.getHeight()*0.27),root.getWidth(), (int) (root.getHeight()*0.73));
-            coverImage = overlay(drawableToBitmap(wallpaperDrawable).copy(base.getConfig(),false), base);
+            Bitmap base = createBitmap(root.getDrawingCache(), 0, (int) (root.getHeight() * 0.27), root.getWidth(), (int) (root.getHeight() * 0.73));
+            coverImage = overlay(drawableToBitmap(wallpaperDrawable).copy(base.getConfig(), false), base);
             //coverImage = base.copy(base.getConfig(), false /* isMutable */);
         } catch (Exception ex) {
             Log.i(TAG, "Failed to create screenshot", ex);
@@ -305,6 +334,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             root.setDrawingCacheEnabled(false);
         }
         return coverImage;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    ByteArrayOutputStream getScreenShotWallPaper() {
+        final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ((BitmapDrawable)wallpaperDrawable).getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, bytes);
+
+        return bytes;
     }
 
     /**
@@ -498,7 +537,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        Log.d(TAG,"onCreateContextMenu");
+        Log.d(TAG, "onCreateContextMenu");
 
         /*ImageView image;
 
@@ -506,7 +545,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         image.setImageResource(R.drawable.call);*/
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
-        if (!mSignedIn){
+        if (!mSignedIn) {
             MenuItem item = menu.findItem(R.id.saveToGoogle);
             item.setVisible(false);
             MenuItem item2 = menu.findItem(R.id.loadFromGoogle);
@@ -628,6 +667,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
         }
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         // This is called when the user press Home again while already browsing MainActivity
@@ -748,7 +788,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             case R.id.loadFromGoogle:
                 if (mSignedIn) {
-                showSnapshots(getString(R.string.load_settings), false, true);
+                    showSnapshots(getString(R.string.load_settings), false, true);
                 } else {
                     Toast.makeText(getBaseContext(), "Not signed in to Google",
                             Toast.LENGTH_SHORT).show();
@@ -799,6 +839,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                             Log.w(TAG, "Conflict was not resolved automatically, waiting for user to resolve.");
                         } else {
                             try {
+                                /*ImageManager imageManager = ImageManager.create(MainActivity.this);
+                                imageManager.loadImage(new ImageManager.OnImageLoadedListener() {
+                                    @Override
+                                    public void onImageLoaded(Uri uri, Drawable drawable, boolean b) {
+                                        Log.i(TAG, "onImageLoaded");
+                                        getWindow().setBackgroundDrawable(drawable);
+                                    }
+                                }, snapshot.getMetadata().getCoverImageUri());*/
                                 readSavedGame(snapshot);
                                 Log.i(TAG, "Snapshot loaded.");
                             } catch (IOException e) {
@@ -824,15 +872,24 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void readSavedGame(Snapshot snapshot) throws IOException {
-        mSaveGame = new SaveGame(snapshot.getSnapshotContents().readFully());
+        try {
+            mSaveGame = (SaveGame) byteToObj(snapshot.getSnapshotContents().readFully());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(),0,mSaveGame.getData().length);
+        getApplicationContext().setWallpaper(bMap);
+        //getWindow().setBackgroundDrawable(new BitmapDrawable(bMap));
         Intent intent = new Intent();
         intent.setType("application/json");
         intent.putExtra("json", mSaveGame.getSaveGame());
         Log.d(TAG, "readSavedGame json:" + mSaveGame.getSaveGame());
-        onActivityResult( REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME,  RESULT_OK, intent);
+        onActivityResult(REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME, RESULT_OK, intent);
+
     }
 
-    private boolean mSignedIn=false;
+    private boolean mSignedIn = false;
+
     private void onAccountChanged(GoogleSignInAccount googleSignInAccount) {
         mSnapshotsClient = Games.getSnapshotsClient(this, googleSignInAccount);
 
@@ -1060,8 +1117,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         switch (requestCode) {
 
             case RC_LIST_SAVED_GAMES:
-                Log.d(TAG,"RC_LIST_SAVED_GAMES");
-                if (data != null ) {
+                Log.d(TAG, "RC_LIST_SAVED_GAMES");
+                if (data != null) {
                     if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
                         // Load a snapshot.
                         SnapshotMetadata snapshotMetadata =
@@ -1069,7 +1126,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         currentSaveName = snapshotMetadata.getUniqueName();
                         loadFromSnapshot(snapshotMetadata);
                     } else if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
-                        Log.d(TAG,"RC_LIST_SAVED_GAMES EXTRA_SNAPSHOT_NEW");
+                        Log.d(TAG, "RC_LIST_SAVED_GAMES EXTRA_SNAPSHOT_NEW");
                         // Create a new snapshot named with a unique string
                         String unique = Long.toString(System.currentTimeMillis());
                         currentSaveName = "snapshotTemp-" + unique;
@@ -1079,7 +1136,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 break;
             case REQUEST_LOAD_REPLACE_TAGS:
-                Log.d(TAG,"REQUEST_LOAD_REPLACE_TAGS");
+                Log.d(TAG, "REQUEST_LOAD_REPLACE_TAGS");
                 if (resultCode == RESULT_OK) {
                     TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
                     Uri selectedFile = data.getData();
@@ -1113,7 +1170,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 break;
             case REQUEST_LOAD_REPLACE_SETTINGS:
-                Log.d(TAG,"REQUEST_LOAD_REPLACE_SETTINGS");
+                Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS");
                 if (resultCode == RESULT_OK) {
                     Uri selectedFile = data.getData();
                     if (selectedFile != null) {
@@ -1140,7 +1197,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
 
             case REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME:
-                Log.d(TAG,"REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
+                Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
                 int count = 0;
                 try {
                     count = loadJson(data.getStringExtra("json"));
