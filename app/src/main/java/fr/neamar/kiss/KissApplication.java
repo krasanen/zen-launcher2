@@ -41,7 +41,9 @@ public class KissApplication extends Application {
     public void resetRootHandler(Context ctx) {
         rootHandler.resetRootHandler(ctx);
     }
-
+    public void nullDataHandler() {
+            dataHandler = null;
+        }
     public void initDataHandler() {
         if (dataHandler == null) {
             dataHandler = new DataHandler(this);

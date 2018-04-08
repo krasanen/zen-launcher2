@@ -5,6 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -16,6 +26,7 @@ public class DBHelper {
     private static SQLiteDatabase database = null;
 
     private DBHelper() {
+
     }
 
     private static SQLiteDatabase getDatabase(Context context) {
@@ -24,7 +35,25 @@ public class DBHelper {
         }
         return database;
     }
+    public static void writeDatabase(byte[] db, Context cnt) throws IOException {
+        if(database == null) {
+            database = new DB(cnt).getReadableDatabase();
+        }
+        InputStream is = new ByteArrayInputStream(db) {
+        }; // data.db
+        OutputStream os = new FileOutputStream(database.getPath());
 
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = is.read(buffer)) > 0) {
+            os.write(buffer, 0, length);
+        }
+
+        // Close the streams.
+        os.flush();
+        os.close();
+        is.close();
+    }
     private static ArrayList<ValuedHistoryRecord> readCursor(Cursor cursor) {
         ArrayList<ValuedHistoryRecord> records = new ArrayList<>();
 
@@ -275,5 +304,37 @@ public class DBHelper {
         cursor.close();
         return records;
 
+    }
+
+    public static void setDatabase(byte[] db) {
+        //database = db;
+    }
+
+    public static ByteArrayOutputStream getDatabaseBytes() {
+
+        ByteArrayOutputStream os=new ByteArrayOutputStream();
+        File file = new File(database.getPath());
+
+        byte[] b = new byte[(int) file.length()];
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.read(b);
+            for (int i = 0; i < b.length; i++) {
+                os.write((char)b[i]);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found.");
+            e.printStackTrace();
+        }
+        catch (IOException e1) {
+            System.out.println("Error Reading The File.");
+            e1.printStackTrace();
+        }
+        return os;
+    }
+
+
+    public static void clearCachedDb() {
+        database = null;
     }
 }

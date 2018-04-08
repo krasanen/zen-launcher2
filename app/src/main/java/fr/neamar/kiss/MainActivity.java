@@ -124,7 +124,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     // intent data that is the retry count for retrying the conflict resolution.
     public static final String RETRY_COUNT = "retrycount";
-    public static boolean mInputTypeForced = false;
+
     /**
      * Adapter to display records
      */
@@ -239,6 +239,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         });
     }
+
     public static byte[] objToByte(SaveGame tcpPacket) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
@@ -260,13 +261,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Set the data payload for the snapshot.
         Log.d(TAG, "writeSnapshot");
         try {
-            mSaveGame = new SaveGame(getSerializedSettings(), getScreenShotWallPaper());
+            mSaveGame = new SaveGame(getSerializedSettings2(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
         } catch (JSONException e) {
             Log.d(TAG, "writeSnapshot exception:" + e);
         }
         try {
-            Log.d(TAG, "writeSnapshot, len:"+objToByte(mSaveGame).length);
-             snapshot.getSnapshotContents().writeBytes(objToByte(mSaveGame));
+            Log.d(TAG, "writeSnapshot, len:" + objToByte(mSaveGame).length);
+            snapshot.getSnapshotContents().writeBytes(objToByte(mSaveGame));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -341,7 +342,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        ((BitmapDrawable)wallpaperDrawable).getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, bytes);
+        ((BitmapDrawable) wallpaperDrawable).getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, bytes);
 
         return bytes;
     }
@@ -526,9 +527,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 int keypadHeight = screenHeight - r.bottom;
 
                 if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                    Log.d(TAG, "mKeyboardVisible, true");
                     mKeyboardVisible = true;
                 } else {
+                    Log.d(TAG, "mKeyboardVisible, false");
                     mKeyboardVisible = false;
+                    forwarderManager.hideKeyboard();
                 }
             }
         });
@@ -593,7 +597,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Log.d(TAG, "onResume()");
         if (mDebug) {
             try {
-                String settings = this.getSerializedSettings();
+                String settings = this.getSerializedSettings2();
                 Log.d(TAG, "settings:" + settings);
             } catch (JSONException e) {
                 Log.d(TAG, "JSONException");
@@ -688,6 +692,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG, "onBackPressed");
         if (mPopup != null) {
             mPopup.dismiss();
         } else if (isViewingAllApps()) {
@@ -763,7 +768,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 intent.setAction(Intent.ACTION_SEND);
                 String serializedSettings;
                 try {
-                    serializedSettings = getSerializedSettings();
+                    serializedSettings = getSerializedSettings2();
                 } catch (JSONException e) {
                     serializedSettings = e.toString();
                 }
@@ -874,18 +879,39 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void readSavedGame(Snapshot snapshot) throws IOException {
         try {
             mSaveGame = (SaveGame) byteToObj(snapshot.getSnapshotContents().readFully());
+            DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
+            loadJson(mSaveGame.getSaveGame());
+            int count = 0;
+            try {
+                count = loadJson(mSaveGame.getSaveGame());
+            } catch (Exception e) {
+                Log.e(TAG, "can't load tags", e);
+                Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
+            }
+            Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(),0,mSaveGame.getData().length);
-        getApplicationContext().setWallpaper(bMap);
-        //getWindow().setBackgroundDrawable(new BitmapDrawable(bMap));
-        Intent intent = new Intent();
-        intent.setType("application/json");
-        intent.putExtra("json", mSaveGame.getSaveGame());
-        Log.d(TAG, "readSavedGame json:" + mSaveGame.getSaveGame());
-        onActivityResult(REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME, RESULT_OK, intent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(), 0, mSaveGame.getData().length);
+                try {
+                    getApplicationContext().setWallpaper(bMap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        DBHelper.clearCachedDb();
+        KissApplication.getApplication(this).nullDataHandler();
+        KissApplication.getApplication(this).initDataHandler();
+        KissApplication.getApplication(this).getDataHandler().reloadAll();
 
+        // todo app ja tag refressi ilman restarttia
     }
 
     private boolean mSignedIn = false;
@@ -1087,6 +1113,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         json.putOpt("tags", tags2 + "_!_" + "tags");
         return json.toString(1);
     }
+
+
+    String getSerializedSettings2() throws JSONException {
+        Map<String, ?> tags;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        tags = prefs.getAll();
+        JSONObject json = new JSONObject(tags);
+        for (Map.Entry<String, ?> entry : tags.entrySet()) {
+            Object v = entry.getValue();
+            String key = entry.getKey();
+          /*  if (key.equals("favorite-apps-list")){
+                json.putOpt(key, v + "_!_" + "java.util.HashSet");
+            } else { */
+            json.putOpt(key, v + "_!_" + v.getClass().getSimpleName());
+            //}
+        }
+
+        return json.toString(1);
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -1534,7 +1581,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void hideKeyboard() {
-
+        Log.d(TAG, "hideKeyboard");
+        forwarderManager.hideKeyboard();
         // Check if no view has focus:
         View view = this.getCurrentFocus();
         if (view != null) {

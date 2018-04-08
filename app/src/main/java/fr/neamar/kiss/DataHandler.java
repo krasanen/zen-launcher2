@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
@@ -331,6 +332,14 @@ public class DataHandler
 
     public void clearHistory() {
         DBHelper.clearHistory(this.context);
+    }
+
+    public void reloadAll(){
+        for (ProviderEntry entry : this.providers.values()) {
+            if (entry.provider != null && entry.provider.isLoaded() ) {
+                entry.provider.reload();
+            }
+        }
     }
 
     public void removeShortcut(ShortcutsPojo shortcut) {

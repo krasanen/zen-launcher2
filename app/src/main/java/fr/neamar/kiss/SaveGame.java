@@ -16,6 +16,7 @@
 package fr.neamar.kiss;
 
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -40,17 +41,24 @@ public class SaveGame implements Serializable {
     private static final String SERIAL_VERSION = "1.1";
     private String json;
     private byte[] data = null;
+    private byte[] database = null;
+
 
     public byte[] getData(){
         return data;
     }
 
-    public SaveGame(String serializedSettings, ByteArrayOutputStream screenShotWallPaper) {
+    public SaveGame(String serializedSettings, ByteArrayOutputStream screenShotWallPaper, ByteArrayOutputStream database) {
         this.json = serializedSettings;
         this.data = screenShotWallPaper.toByteArray();
+        this.database = database.toByteArray();
     }
 
     public String getSaveGame(){
         return this.json;
+    }
+
+    public byte[] getDataBase() {
+        return database;
     }
 }

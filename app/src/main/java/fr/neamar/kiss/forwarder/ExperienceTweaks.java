@@ -379,4 +379,12 @@ class ExperienceTweaks extends Forwarder {
     private boolean isKeyboardOnStartEnabled() {
         return prefs.getBoolean("display-keyboard", false);
     }
+
+    public void hideKeyboard() {
+        Log.d(TAG,"hideKeyboard");
+        if(mNumericInputTypeForced){
+            mNumericInputTypeForced = false;
+            adjustInputType(null);
+        }
+    }
 }
