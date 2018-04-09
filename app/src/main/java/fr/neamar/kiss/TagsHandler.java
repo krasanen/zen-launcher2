@@ -16,7 +16,7 @@ import java.util.Set;
 
 import fr.neamar.kiss.db.DBHelper;
 
-import static fr.neamar.kiss.MainActivity.mDebug;
+import static fr.neamar.kiss.MainActivity.mDebugJson;
 
 public class TagsHandler {
     private final Context context;
@@ -30,7 +30,7 @@ public class TagsHandler {
     }
 
     public void setTags(String id, String tags) {
-        if (mDebug) {
+        if (mDebugJson) {
             Log.d(TAG, "setTags, id:" + id + " tags:" + tags);
         }
         //remove existing tags for id
@@ -42,7 +42,7 @@ public class TagsHandler {
     }
 
     public String getTags(String id) {
-        if (mDebug) {
+        if (mDebugJson) {
             Log.d(TAG, "getTags, id:" + id);
         }
         String tag = tagsCache.get(id);

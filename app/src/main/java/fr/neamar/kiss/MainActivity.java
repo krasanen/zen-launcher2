@@ -8,10 +8,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
@@ -25,10 +23,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -42,7 +38,6 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -53,7 +48,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClientStatusCodes;
 import com.google.android.gms.games.SnapshotsClient;
@@ -86,12 +80,14 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
@@ -200,7 +196,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private ForwarderManager forwarderManager;
     private static boolean mKeyboardVisible;
-    public static boolean mDebug = false;
+    public static boolean mDebugJson = false;
     GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SAVE_SNAPSHOT = 51;
     private static final int RC_LOAD_SNAPSHOT = 52;
@@ -597,7 +593,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
         Log.d(TAG, "onResume()");
-        if (mDebug) {
+        if (mDebugJson) {
             try {
                 String settings = this.getSerializedSettings2();
                 Log.d(TAG, "settings:" + settings);
@@ -861,7 +857,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                         getWindow().setBackgroundDrawable(drawable);
                                     }
                                 }, snapshot.getMetadata().getCoverImageUri());*/
-                                readSavedGame(snapshot);
+                                loadSavedGame(snapshot);
                                 Log.i(TAG, "Snapshot loaded.");
                             } catch (IOException e) {
                                 Log.e(TAG, "Error while reading snapshot contents: " + e.getMessage());
@@ -885,7 +881,28 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 });
     }
 
-    private void readSavedGame(Snapshot snapshot) throws IOException {
+
+
+    String getSerializedSettings2() throws JSONException {
+        Map<String, ?> tags;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        tags = prefs.getAll();
+        JSONObject json = new JSONObject(tags);
+        for (Map.Entry<String, ?> entry : tags.entrySet()) {
+            Object v = entry.getValue();
+            String key = entry.getKey();
+          /*  if (key.equals("favorite-apps-list")){
+                json.putOpt(key, v + "_!_" + "java.util.HashSet");
+            } else { */
+            json.putOpt(key, v + "_!_" + v.getClass().getSimpleName());
+            //}
+        }
+
+        return json.toString(1);
+    }
+
+
+    private void loadSavedGame(Snapshot snapshot) throws IOException {
         try {
             mSaveGame = (SaveGame) byteToObj(snapshot.getSnapshotContents().readFully());
             DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
@@ -914,6 +931,58 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }).start();
     }
+    private int loadJson(String jsonText) throws JSONException {
+        int count = 0;
+        TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
+        Log.d(TAG, "jsonText:" + jsonText);
+        JSONObject json = new JSONObject(jsonText);
+        Iterator<String> iter = json.keys();
+        SharedPreferences.Editor editor = prefs.edit();
+        String booleanClassname = "Boolean";
+        String stringClassname = "String";
+        String hashsetClassname = "HashSet";
+
+        while (iter.hasNext()) {
+            String key = iter.next();
+            String[] values = json.get(key).toString().split("_!_");
+            String value = values[0];
+            String classValue = values[1];
+
+            Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+            if (classValue.equals(booleanClassname)) {
+                Log.d(TAG, "putBoolean");
+                editor.putBoolean(key, Boolean.parseBoolean(value));
+            } else if (classValue.equals(stringClassname)) {
+                Log.d(TAG, "putString");
+                editor.putString(key, value);
+            } else if (classValue.equals(hashsetClassname)) {
+                Log.d(TAG, "putStringSet:"+value);
+                String[] hsets = value.substring(1,value.length()-1).split(", ");
+                Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
+                editor.putStringSet(key, hs);
+            } else if (key.equals("tags")) {
+                Log.d(TAG, "value:" + value);
+                String toparse = value.substring(1, value.length() - 1);
+                Log.d(TAG, "toparse:" + toparse);
+                if (!toparse.isEmpty()) {
+                    String[] values2 = toparse.split(", ");
+                    for (int i = 0; i < values2.length; i++) {
+                        Log.d(TAG, "values2:" + values2[i]);
+                        String[] app = values2[i].split("=");
+                        Log.d(TAG, "appId:" + app[0]);
+                        Log.d(TAG, "tagsForApp:" + app[1]);
+                        tagsHandler.setTags(app[0], app[1]);
+                    }
+                }
+            }
+            editor.commit();
+            count += 1;
+        }
+        //forwarderManager.onDataSetChanged();
+        //KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
+        return count;
+    }
+
 
     private boolean mSignedIn = false;
 
@@ -1116,24 +1185,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-    String getSerializedSettings2() throws JSONException {
-        Map<String, ?> tags;
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        tags = prefs.getAll();
-        JSONObject json = new JSONObject(tags);
-        for (Map.Entry<String, ?> entry : tags.entrySet()) {
-            Object v = entry.getValue();
-            String key = entry.getKey();
-          /*  if (key.equals("favorite-apps-list")){
-                json.putOpt(key, v + "_!_" + "java.util.HashSet");
-            } else { */
-            json.putOpt(key, v + "_!_" + v.getClass().getSimpleName());
-            //}
-        }
-
-        return json.toString(1);
-    }
-
 
 
     @Override
@@ -1279,55 +1330,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private int loadJson(String jsonText) throws JSONException {
-        int count = 0;
-        TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
-        Log.d(TAG, "jsonText:" + jsonText);
-        JSONObject json = new JSONObject(jsonText);
-        Iterator<String> iter = json.keys();
-        SharedPreferences.Editor editor = prefs.edit();
-        String booleanClassname = "Boolean";
-        String stringClassname = "String";
-        String hashsetClassname = "HashSet";
 
-        while (iter.hasNext()) {
-            String key = iter.next();
-            String[] values = json.get(key).toString().split("_!_");
-            String value = values[0];
-            String classValue = values[1];
-
-            Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
-            if (classValue.equals(booleanClassname)) {
-                Log.d(TAG, "putBoolean");
-                editor.putBoolean(key, Boolean.parseBoolean(value));
-            } else if (classValue.equals(stringClassname)) {
-                Log.d(TAG, "putString");
-                editor.putString(key, value);
-            } else if (classValue.equals(hashsetClassname)) {
-                Log.d(TAG, "putStringSet");
-                editor.putStringSet(key, Collections.singleton(value));
-            } else if (key.equals("tags")) {
-                Log.d(TAG, "value:" + value);
-                String toparse = value.substring(1, value.length() - 1);
-                Log.d(TAG, "toparse:" + toparse);
-                if (!toparse.isEmpty()) {
-                    String[] values2 = toparse.split(", ");
-                    for (int i = 0; i < values2.length; i++) {
-                        Log.d(TAG, "values2:" + values2[i]);
-                        String[] app = values2[i].split("=");
-                        Log.d(TAG, "appId:" + app[0]);
-                        Log.d(TAG, "tagsForApp:" + app[1]);
-                        tagsHandler.setTags(app[0], app[1]);
-                    }
-                }
-            }
-            editor.commit();
-            count += 1;
-        }
-        //forwarderManager.onDataSetChanged();
-        //KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
-        return count;
-    }
 
     public static String convertStreamToString(InputStream is) throws IOException {
 

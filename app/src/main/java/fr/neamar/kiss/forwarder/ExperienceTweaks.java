@@ -1,12 +1,10 @@
 package fr.neamar.kiss.forwarder;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
@@ -27,7 +25,7 @@ import fr.neamar.kiss.searcher.NullSearcher;
 
 import static android.text.InputType.TYPE_CLASS_PHONE;
 import static fr.neamar.kiss.MainActivity.isKeyboardVisible;
-import static fr.neamar.kiss.MainActivity.mDebug;
+import static fr.neamar.kiss.MainActivity.mDebugJson;
 
 
 // Deals with any settings in the "User Experience" setting sub-screen
@@ -92,7 +90,7 @@ class ExperienceTweaks extends Forwarder {
         sgd = new ScaleGestureDetector(mainActivity, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
-                if (mDebug) {
+                if (mDebugJson) {
                     Log.d(TAG, "onScale");
                 }
                 scaling = true;
@@ -101,7 +99,7 @@ class ExperienceTweaks extends Forwarder {
 
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
-                if (mDebug) {
+                if (mDebugJson) {
                     Log.d(TAG, "onScaleBegin");
                 }
                 scaling = true;
@@ -110,7 +108,7 @@ class ExperienceTweaks extends Forwarder {
 
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
-                if (mDebug) {
+                if (mDebugJson) {
                     Log.d(TAG, "onScaleEnd");
                 }
                 if (prefs.getBoolean("pinch-open", false)) {
