@@ -910,9 +910,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                System.exit(0);
             }
         }).start();
-        System.exit(0);
     }
 
     private boolean mSignedIn = false;
