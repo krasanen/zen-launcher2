@@ -93,6 +93,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
@@ -204,14 +205,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int RC_SAVE_SNAPSHOT = 51;
     private static final int RC_LOAD_SNAPSHOT = 52;
     private static final int RC_LIST_SAVED_GAMES = 53;
+    private static final int RC_SIGN_IN = 54;
 
     public void signIn() {
         Log.d(TAG, "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         // The Task returned from this call is always completed, no need to attach
         // a listener.
+        startActivityForResult(signInIntent, RC_SIGN_IN);
 
-        startActivity(signInIntent);
     }
 
 
@@ -512,13 +514,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.onCreate();
         initializeKeyboardListener();
     }
-
+    Rect r = new Rect();
     private void initializeKeyboardListener() {
         emptyListView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-
-                Rect r = new Rect();
                 emptyListView.getWindowVisibleDisplayFrame(r);
                 int screenHeight = emptyListView.getRootView().getHeight();
 
@@ -527,10 +527,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 int keypadHeight = screenHeight - r.bottom;
 
                 if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
-                    Log.d(TAG, "mKeyboardVisible, true");
                     mKeyboardVisible = true;
                 } else {
-                    Log.d(TAG, "mKeyboardVisible, false");
                     mKeyboardVisible = false;
                     forwarderManager.hideKeyboard();
                 }
@@ -554,12 +552,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             item.setVisible(false);
             MenuItem item2 = menu.findItem(R.id.loadFromGoogle);
             item2.setVisible(false);
+            MenuItem item3 = menu.findItem(R.id.signIn);
+            item3.setVisible(true);
 
         } else {
             MenuItem item = menu.findItem(R.id.saveToGoogle);
             item.setVisible(true);
             MenuItem item2 = menu.findItem(R.id.loadFromGoogle);
             item2.setVisible(true);
+            MenuItem item3 = menu.findItem(R.id.signIn);
+            item3.setVisible(false);
         }
         forwarderManager.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -799,7 +801,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                             Toast.LENGTH_SHORT).show();
                 }
                 return true;
-
+            case R.id.signIn:
+                if (!mSignedIn) {
+                    Log.d(TAG,"signIn");
+                    Intent signInIntent = new Intent(this, LauncherService.class);
+                    signInIntent.setAction(LauncherService.GOOGLE_SIGN_IN);
+                    startService(signInIntent);
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -880,7 +889,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         try {
             mSaveGame = (SaveGame) byteToObj(snapshot.getSnapshotContents().readFully());
             DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
-            loadJson(mSaveGame.getSaveGame());
             int count = 0;
             try {
                 count = loadJson(mSaveGame.getSaveGame());
@@ -891,8 +899,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
         new Thread(new Runnable() {
@@ -906,12 +912,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
             }
         }).start();
-        DBHelper.clearCachedDb();
-        KissApplication.getApplication(this).nullDataHandler();
-        KissApplication.getApplication(this).initDataHandler();
-        KissApplication.getApplication(this).getDataHandler().reloadAll();
-
-        // todo app ja tag refressi ilman restarttia
+        System.exit(0);
     }
 
     private boolean mSignedIn = false;
@@ -922,7 +923,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Sign-in worked!
         mSignedIn = true;
         prefs.edit().putBoolean("wasSigned", true).apply();
-        Log.d(TAG, "Sign-in successful! Loading game state from cloud.");
+        Log.d(TAG, "Sign-in successful!");
 
 
     }
@@ -1156,13 +1157,31 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             menuButton.showContextMenu();
     }
 
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            updateUI(account);
+            showSnapshots(getString(R.string.load_settings), false, true);
+
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            updateUI(null);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 
         switch (requestCode) {
-
+            case RC_SIGN_IN:
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleSignInResult(task);
+                break;
             case RC_LIST_SAVED_GAMES:
                 Log.d(TAG, "RC_LIST_SAVED_GAMES");
                 if (data != null) {
@@ -1306,7 +1325,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             count += 1;
         }
         //forwarderManager.onDataSetChanged();
-        KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
+        //KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
         return count;
     }
 
@@ -1581,7 +1600,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void hideKeyboard() {
-        Log.d(TAG, "hideKeyboard");
         forwarderManager.hideKeyboard();
         // Check if no view has focus:
         View view = this.getCurrentFocus();

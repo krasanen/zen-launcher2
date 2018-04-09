@@ -41,7 +41,7 @@ public class LauncherService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        Log.w(TAG, "onStartCommand...");
+        Log.w(TAG, "onStartCommand..."+intent.getAction());
         if (intent == null || intent.getAction() == null) return START_NOT_STICKY;
 
         serviceExecutor.execute(new Runnable() {

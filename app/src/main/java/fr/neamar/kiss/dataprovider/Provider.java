@@ -52,7 +52,7 @@ public abstract class Provider<T extends Pojo> extends Service implements IProvi
     }
 
     public void reload() {
-        if(pojos.size() > 0) {
+        if(pojos!=null && pojos.size() > 0) {
             Log.v(TAG, "Reloading provider: " + this.getClass().getSimpleName());
         }
     }

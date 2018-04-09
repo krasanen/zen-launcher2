@@ -117,39 +117,43 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
     }
 
     void onFavoriteChange() {
-        int[] favoritesIds = FAV_IDS;
+        if(prefs.getBoolean("enable-favorites-bar",false)) {
+            int[] favoritesIds = FAV_IDS;
 
-        favoritesPojo = KissApplication.getApplication(mainActivity).getDataHandler()
-                .getFavorites(TRY_TO_RETRIEVE);
+            favoritesPojo = KissApplication.getApplication(mainActivity).getDataHandler()
+                    .getFavorites(TRY_TO_RETRIEVE);
 
-        // Don't look for items after favIds length, we won't be able to display them
-        for (int i = 0; i < Math.min(favoritesIds.length, favoritesPojo.size()); i++) {
-            Pojo pojo = favoritesPojo.get(i);
-            ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.VISIBLE);
-            ImageView image = (ImageView) favoritesViews[i];
-            TextView textView = favoritesTexts[i];
-            textView.setText(pojo.getName());
-            Result result = Result.fromPojo(mainActivity, pojo);
-            Drawable drawable = result.getDrawable(mainActivity);
-            if (drawable != null) {
-                if (result instanceof ContactsResult) {
-                    Bitmap iconBitmap = drawableToBitmap(drawable);
-                    drawable = new RoundedQuickContactBadge.RoundedDrawable(iconBitmap);
+            // Don't look for items after favIds length, we won't be able to display them
+            for (int i = 0; i < Math.min(favoritesIds.length, favoritesPojo.size()); i++) {
+                Pojo pojo = favoritesPojo.get(i);
+                ImageView image = (ImageView) favoritesViews[i];
+
+                ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.VISIBLE);
+                TextView textView = favoritesTexts[i];
+                textView.setText(pojo.getName());
+
+                Result result = Result.fromPojo(mainActivity, pojo);
+                Drawable drawable = result.getDrawable(mainActivity);
+                if (drawable != null) {
+                    if (result instanceof ContactsResult) {
+                        Bitmap iconBitmap = drawableToBitmap(drawable);
+                        drawable = new RoundedQuickContactBadge.RoundedDrawable(iconBitmap);
+                    }
+                    image.setImageDrawable(drawable);
+                } else {
+                    // Use a placeholder if no drawable found
+                    image.setImageResource(R.drawable.ic_launcher_white);
                 }
-                image.setImageDrawable(drawable);
-            } else {
-                // Use a placeholder if no drawable found
-                image.setImageResource(R.drawable.ic_launcher_white);
+
+                image.setVisibility(View.VISIBLE);
+                image.setContentDescription(pojo.getName());
             }
 
-            image.setVisibility(View.VISIBLE);
-            image.setContentDescription(pojo.getName());
-        }
+            // Hide empty favorites (not enough favorites yet)
+            for (int i = favoritesPojo.size(); i < favoritesIds.length; i++) {
+                ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.GONE);
 
-        // Hide empty favorites (not enough favorites yet)
-        for (int i = favoritesPojo.size(); i < favoritesIds.length; i++) {
-            ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.GONE);
-
+            }
         }
     }
 
