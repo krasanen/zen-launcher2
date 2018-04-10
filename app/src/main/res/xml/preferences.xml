@@ -114,7 +114,7 @@
                 android:key="pref-rounded-bars"
                 android:title="@string/rounded_bars" />
             <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
+                android:defaultValue="false"
                 android:key="double-click-opens-apps"
                 android:title="@string/double_click" />
             <fr.neamar.kiss.SwitchPreference
@@ -141,6 +141,10 @@
                 android:defaultValue="true"
                 android:key="double-click-numeric-kb"
                 android:title="@string/double_click_numeric_kb" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="true"
+                android:key="triple_tap_flashlight"
+                android:title="@string/triple_tap_flashlight" />
 
         </PreferenceCategory>
     </PreferenceScreen>

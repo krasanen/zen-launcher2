@@ -1,8 +1,11 @@
 package fr.neamar.kiss.forwarder;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.os.Handler;
 import android.text.InputType;
@@ -12,7 +15,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -119,59 +124,8 @@ class ExperienceTweaks extends Forwarder {
         });
 
         gd = new GestureDetector(mainActivity, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                // if minimalistic mode is enabled,
-                if (!scaling && isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
-                    // and we're currently in minimalistic mode with no results,
-                    // and we're not looking at the app list
-                    if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
-                        if ((mainActivity.list.getAdapter() == null) || (mainActivity.list.getAdapter().isEmpty())) {
-                            mainActivity.runTask(new HistorySearcher(mainActivity));
-                        }
-                    }
-                }
 
-                if (isMinimalisticModeEnabledForFavorites()) {
-                    mainActivity.favoritesBar.setVisibility(View.VISIBLE);
-                }
 
-                return super.onSingleTapConfirmed(e);
-            }
-
-            public void toggleScreenOnOff() {
-                // turn off/on screen backlight
-                WindowManager.LayoutParams params = mainActivity.getWindow().getAttributes();
-                if (params.screenBrightness == -1) {
-                    params.screenBrightness = 0;
-                } else {
-                    params.screenBrightness = -1;
-                }
-                params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-                mainActivity.getWindow().setAttributes(params);
-            }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent e1) {
-                if (isKeyboardVisible()) {
-                    if (prefs.getBoolean("double-click-numeric-kb", false)) {
-                        if (mainActivity.searchEditText.getInputType() != TYPE_CLASS_PHONE) {
-                            mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
-                            mNumericInputTypeForced = true;
-                        } else {
-                            mNumericInputTypeForced = false;
-                            adjustInputType(mainActivity.searchEditText.getText().toString());
-                        }
-                    }
-                } else {
-                    if (prefs.getBoolean("double-click-opens-apps", false)) {
-                        mainActivity.launcherButton.performClick();
-                    } else {
-                        toggleScreenOnOff();
-                    }
-                }
-                return true;
-            }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -254,7 +208,9 @@ class ExperienceTweaks extends Forwarder {
         } else {
             // Not used (thanks windowSoftInputMode)
             // unless coming back from Z-Launcher settings
-            mainActivity.hideKeyboard();
+            if(MainActivity.isKeyboardVisible()) {
+                mainActivity.hideKeyboard();
+            }
         }
 
         if (isMinimalisticModeEnabled()) {
@@ -264,12 +220,109 @@ class ExperienceTweaks extends Forwarder {
             mainActivity.searchEditText.setHint("");
         }
     }
-
+    Handler handler = new Handler();
+    int numberOfTaps = 0;
+    long lastTapTimeMs = 0;
+    long touchDownMs = 0;
     void onTouch(View view, MotionEvent event) {
         // Forward touch events to the gesture detector
         gd.onTouchEvent(event);
         sgd.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                touchDownMs = System.currentTimeMillis();
+                break;
+            case MotionEvent.ACTION_UP:
+                handler.removeCallbacksAndMessages(null);
+
+                if ((System.currentTimeMillis() - touchDownMs) > ViewConfiguration.getTapTimeout()) {
+                    //it was not a tap
+
+                    numberOfTaps = 0;
+                    lastTapTimeMs = 0;
+                    break;
+                }
+
+                if (numberOfTaps > 0
+                        && (System.currentTimeMillis() - lastTapTimeMs) < ViewConfiguration.getDoubleTapTimeout()) {
+                    numberOfTaps += 1;
+                } else {
+                    numberOfTaps = 1;
+                    Log.d(TAG,"onetap");
+                    onSingleTap();
+                }
+
+                lastTapTimeMs = System.currentTimeMillis();
+
+                if (numberOfTaps == 3) {
+                    Log.d(TAG,"tripletap");
+                    if (prefs.getBoolean("triple_tap_flashlight", false)) {
+                        mainActivity.toggleFlashLight();
+                    }
+                    numberOfTaps = 0;
+                    //handle triple tap
+                } else if (numberOfTaps == 2) {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG,"doubletap");
+                            if (numberOfTaps==2) {
+                                onDoubleTap();
+                            }
+                        }
+                    }, ViewConfiguration.getDoubleTapTimeout());
+                }
+        }
     }
+
+    public void onSingleTap() {
+        // if minimalistic mode is enabled,
+        if (!scaling && isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
+            // and we're currently in minimalistic mode with no results,
+            // and we're not looking at the app list
+            if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
+                if ((mainActivity.list.getAdapter() == null) || (mainActivity.list.getAdapter().isEmpty())) {
+                    mainActivity.runTask(new HistorySearcher(mainActivity));
+                }
+            }
+        }
+
+        if (isMinimalisticModeEnabledForFavorites()) {
+            mainActivity.favoritesBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void onDoubleTap() {
+        if (isKeyboardVisible()) {
+            if (prefs.getBoolean("double-click-numeric-kb", false)) {
+                if (mainActivity.searchEditText.getInputType() != TYPE_CLASS_PHONE) {
+                    mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
+                    mNumericInputTypeForced = true;
+                } else {
+                    mNumericInputTypeForced = false;
+                    adjustInputType(mainActivity.searchEditText.getText().toString());
+                }
+            }
+        } else {
+            if (prefs.getBoolean("double-click-opens-apps", false)) {
+                mainActivity.launcherButton.performClick();
+            } else {
+                toggleScreenOnOff();
+            }
+        }
+    }
+    public void toggleScreenOnOff() {
+        // turn off/on screen backlight
+        WindowManager.LayoutParams params = mainActivity.getWindow().getAttributes();
+        if (params.screenBrightness == -1) {
+            params.screenBrightness = 0;
+        } else {
+            params.screenBrightness = -1;
+        }
+        params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+        mainActivity.getWindow().setAttributes(params);
+    }
+
 
     void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus && isKeyboardOnStartEnabled()) {
