@@ -19,6 +19,8 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -584,6 +586,28 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             mSignedIn = false;
             Log.d(TAG, "Not signed to Google!");
         }
+    }
+    boolean flashToggle;
+    public void toggleFlashLight(){
+        flashToggle=!flashToggle;
+        try {
+            CameraManager cameraManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                for (String id : cameraManager.getCameraIdList()) {
+
+                    // Turn on the flash if camera has one
+                    if (cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.FLASH_INFO_AVAILABLE)) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            cameraManager.setTorchMode(id, flashToggle);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e2) {
+            Toast.makeText(getApplicationContext(), "Torch Failed: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     /**
