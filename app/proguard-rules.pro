@@ -8,3 +8,6 @@
     public static int d(...);
     public static int e(...);
 }
+-keepclassmembers class ** {
+    public void onEvent*(**);
+}
