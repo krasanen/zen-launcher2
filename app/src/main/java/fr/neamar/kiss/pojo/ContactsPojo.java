@@ -25,6 +25,12 @@ public class ContactsPojo extends Pojo {
     public final Boolean homeNumber = false;
 
     public String nickname = "";
+    public int contactId;
+    public int signalNumber ;
+
+    public int whatsAppNumber;
+    public int whatsAppMessaging;
+    public int signalMessaging;
 
     public void setNickname(String nickname) {
         this.nickname = StringNormalizer.normalize(nickname);

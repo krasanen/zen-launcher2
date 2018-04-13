@@ -2,6 +2,7 @@ package fi.zmengames.zlauncher;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,19 +19,39 @@ public class LauncherService extends Service {
     public static final String GOOGLE_SIGN_OUT = "GOOGLE_SIGN_OUT";
     public static final String LOAD_OVER = "PROVIDER_LOAD_OVER" ;
     public static final String FULL_LOAD_OVER = "PROVIDER_FULL_LOAD_OVER";
-
+    private IBinder mBinder = new MyBinder();
     private ExecutorService serviceExecutor = Executors.newCachedThreadPool();
+
+    public class MyBinder extends Binder {
+        public LauncherService getService() {
+            return LauncherService.this;
+        }
+    }
+
     @Override
     public void onCreate() {
         Log.w(TAG, "onCreate...");
         super.onCreate();
     }
     @Nullable
+
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        Log.v(TAG, "in onBind");
+        return mBinder;
     }
 
+    @Override
+    public void onRebind(Intent intent) {
+        Log.v(TAG, "in onRebind");
+        super.onRebind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.v(TAG, "in onUnbind");
+        return true;
+    }
     private void sendMessageSticky(ZEvent event) {
         EventBus.getDefault().postSticky(event);
     }

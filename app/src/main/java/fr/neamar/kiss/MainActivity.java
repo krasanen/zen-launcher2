@@ -8,8 +8,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
@@ -24,6 +26,7 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -91,6 +94,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import fi.zmengames.zlauncher.ContactsProjection;
 import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -511,6 +515,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         forwarderManager.onCreate();
         initializeKeyboardListener();
+
     }
     Rect r = new Rect();
     private void initializeKeyboardListener() {
@@ -577,7 +582,23 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
         forwarderManager.onStart();
+
+        Intent intent = new Intent(this, LauncherService.class);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        forwarderManager.onStop();
+        super.onStop();
+        if (mServiceBound) {
+            unbindService(mServiceConnection);
+            mServiceBound = false;
+        }
+    }
+
+
 
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
@@ -661,12 +682,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        forwarderManager.onStop();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -1672,6 +1687,23 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static boolean isKeyboardVisible() {
         return mKeyboardVisible;
     }
+    LauncherService mBoundService;
+    boolean mServiceBound = false;
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mServiceBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LauncherService.MyBinder myBinder = (LauncherService.MyBinder) service;
+            mBoundService = myBinder.getService();
+            mServiceBound = true;
+        }
+    };
+
 
     /*
     private boolean saveSharedPreferencesToFile(File dst) {

@@ -1,14 +1,17 @@
 package fr.neamar.kiss.result;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -30,6 +33,7 @@ import fr.neamar.kiss.ui.ImprovedQuickContactBadge;
 import fr.neamar.kiss.ui.ListPopup;
 
 public class ContactsResult extends Result {
+    private static final String TAG = ContactsResult.class.getSimpleName();
     private final ContactsPojo contactPojo;
     private final QueryInterface queryInterface;
     private Drawable icon = null;
@@ -59,13 +63,12 @@ public class ContactsResult extends Result {
         if (!contactPojo.nickname.isEmpty()) {
             contactNickname.setVisibility(View.VISIBLE);
             contactNickname.setText(contactPojo.nickname);
-        }
-        else {
+        } else {
             contactNickname.setVisibility(View.GONE);
         }
 
         // Contact photo
-        ImprovedQuickContactBadge contactIcon = view
+        final ImprovedQuickContactBadge contactIcon = view
                 .findViewById(R.id.item_contact_icon);
 
         if (contactIcon.getTag() instanceof ContactsPojo && contactPojo.equals(contactIcon.getTag())) {
@@ -86,9 +89,60 @@ public class ContactsResult extends Result {
         });
 
         int primaryColor = UIColors.getPrimaryColor(context);
+        int secondaryColor = UIColors.COLOR_DEFAULT;
         // Phone action
         ImageButton phoneButton = view.findViewById(R.id.item_contact_action_phone);
         phoneButton.setColorFilter(primaryColor);
+
+        // SOME call
+        ImageButton someCallButton = view.findViewById(R.id.item_contact_action_some_call);
+        someCallButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (contactPojo.whatsAppNumber!=0) {
+                    Log.d(TAG, "whatsAppNumber:" + contactPojo.whatsAppNumber);
+                    openWhatsApp(contactPojo.whatsAppNumber, v.getContext(), true);
+                } else if (contactPojo.signalNumber!=0) {
+                    Log.d(TAG, "signalNumber:" + contactPojo.signalNumber);
+                    openSignalApp(contactPojo.signalNumber, v.getContext(), true);
+                }
+            }
+        });
+        // IM Phone action
+        if (contactPojo.whatsAppNumber!=0||contactPojo.signalNumber!=0){
+            // IM Phone action
+            someCallButton.setVisibility(View.VISIBLE);
+        } else {
+            someCallButton.setVisibility(View.GONE);
+        }
+
+        // SOME message
+        ImageButton someMessageButton = view.findViewById(R.id.item_contact_action_some_message);
+        someMessageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (contactPojo.whatsAppMessaging!=0) {
+                    Log.d(TAG, "whatsAppMessaging:" + contactPojo.whatsAppMessaging);
+                    openWhatsApp(contactPojo.whatsAppMessaging, v.getContext(), false);
+                } else if (contactPojo.signalMessaging!=0) {
+                    Log.d(TAG, "signalMessaging:" + contactPojo.signalMessaging);
+                    openSignalApp(contactPojo.signalMessaging, v.getContext(), false);
+                }
+
+            }
+        });
+        // SOME message button
+        if (contactPojo.whatsAppMessaging!=0||contactPojo.signalMessaging!=0){
+            // IM Phone action
+            someMessageButton.setVisibility(View.VISIBLE);
+        } else {
+            someMessageButton.setVisibility(View.GONE);
+        }
+
+
+
+
+
         // Message action
         ImageButton messageButton = view.findViewById(R.id.item_contact_action_message);
         messageButton.setColorFilter(primaryColor);
@@ -125,6 +179,7 @@ public class ContactsResult extends Result {
 
         return view;
     }
+
 
     @Override
     protected ListPopup buildPopupMenu(Context context, ArrayAdapter<ListPopup.Item> adapter, final RecordAdapter parent, View parentView) {
@@ -237,20 +292,126 @@ public class ContactsResult extends Result {
         phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // Make sure we have permission to call someone as this is considered a dangerous permission
-       if(Permission.ensureCallPhonePermission(phoneIntent)) {
-           // Pre-android 23, or we already have permission
-           context.startActivity(phoneIntent);
+        if (Permission.ensureCallPhonePermission(phoneIntent)) {
+            // Pre-android 23, or we already have permission
+            context.startActivity(phoneIntent);
 
-           // Register launch in the future
-           // (animation delay)
-           Handler handler = new Handler();
-           handler.postDelayed(new Runnable() {
-               @Override
-               public void run() {
-                   recordLaunch(context);
-                   queryInterface.launchOccurred();
-               }
-           }, KissApplication.TOUCH_DELAY);
-       }
+            // Register launch in the future
+            // (animation delay)
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recordLaunch(context);
+                    queryInterface.launchOccurred();
+                }
+            }, KissApplication.TOUCH_DELAY);
+        }
     }
+
+
+    private void launchWhatsAppCall(final Context context) {
+        // Create the intent to start a phone call
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        int contactId = contactPojo.contactId;
+        Log.d(TAG, "launchWhatsAppCall, contactId:" + contactId);
+        // the _ids you save goes here at the end of /data/12562
+        intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
+                "vnd.android.cursor.item/vnd.com.whatsapp.voip.call");
+        // intent.setPackage("com.whatsapp");
+
+        intent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.accountsync.ProfileActivity"));
+
+        if (Permission.ensureCallPhonePermission(intent)) {
+            // Pre-android 23, or we already have permission
+            context.startActivity(intent);
+
+            // Register launch in the future
+            // (animation delay)
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recordLaunch(context);
+                    queryInterface.launchOccurred();
+                }
+            }, KissApplication.TOUCH_DELAY);
+        }
+
+    }
+
+    private void launchSignalCall(final Context context) {
+        // Create the intent to start a phone call
+        String SIGNAL_CONTACT_MIMETYPE = "vnd.androidcursor.item/vnd.org.thoughtcrime.securesms.call";
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        int contactId = contactPojo.contactId;
+        Log.d(TAG, "launchSignalCall, contactId:" + contactId);
+        // the _ids you save goes here at the end of /data/12562
+        intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
+                SIGNAL_CONTACT_MIMETYPE);
+
+        intent.setComponent(new ComponentName("org.thoughtcrime.securesms", "org.thoughtcrime.securesms.webrtc.VoiceCallShare"));
+
+
+        if (Permission.ensureCallPhonePermission(intent)) {
+            // Pre-android 23, or we already have permission
+            context.startActivity(intent);
+
+            // Register launch in the future
+            // (animation delay)
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recordLaunch(context);
+                    queryInterface.launchOccurred();
+                }
+            }, KissApplication.TOUCH_DELAY);
+        }
+
+
+        /*
+                Log.d(TAG,"openSignalApp:"+signalNumber);
+        Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data.DATA1 + "=?",
+                new String[] { signalNumber }, null);
+        c.moveToFirst();
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + c.getString(0)));
+        Log.d(TAG,"c.getString(0):"+c.getString(0)+" i:"+i.getAction());
+        i.setDataAndType(Uri.parse("content://com.android.contacts/data/" + c.getString(0)),
+                SIGNAL_CALL_MIMETYPE);
+        context.startActivity(i);
+        c.close();
+         */
+
+    }
+    private void openSignalApp(int signalNumber, Context context, boolean call) {
+        Log.d(TAG,"openSignalApp:"+signalNumber);
+     /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
+                new String[] { Integer.toString(signalNumber) }, null);
+        c.moveToFirst();
+*/
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + signalNumber));
+
+        context.startActivity(i);
+     //   c.close();
+    }
+
+    private void openWhatsApp(int whatsAppnumber, Context context, boolean call) {
+        Log.d(TAG,"openWhatsApp:"+whatsAppnumber);
+     /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
+                new String[] { Integer.toString(whatsAppnumber) }, null);
+        c.moveToFirst();
+        //c.moveToNext(); //gets the call intent */
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + whatsAppnumber));
+        context.startActivity(i);
+      //  c.close();
+    }
+
 }

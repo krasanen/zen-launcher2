@@ -12,11 +12,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import fi.zmengames.zlauncher.ContactsProjection;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
 import fr.neamar.kiss.pojo.ContactsPojo;
 
+import static fi.zmengames.zlauncher.ContactsProjection.SIGNAL_CALL_MIMETYPE;
+import static fi.zmengames.zlauncher.ContactsProjection.SIGNAL_CONTACT_MIMETYPE;
+import static fi.zmengames.zlauncher.ContactsProjection.WHATSAPP_CALL_MIMETYPE;
+import static fi.zmengames.zlauncher.ContactsProjection.WHATSAPP_CONTACT_MIMETYPE;
+
 public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
+    private static final String TAG = LoadPojos.class.getSimpleName();
 
     public LoadContactsPojos(Context context) {
         super(context, "contact://");
@@ -28,12 +35,12 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
 
         ArrayList<ContactsPojo> contacts = new ArrayList<>();
         Context c = context.get();
-        if(c == null) {
+        if (c == null) {
             return contacts;
         }
 
         // Skip if we don't have permission to list contacts yet:(
-        if(!Permission.checkContactPermission(c)) {
+        if (!Permission.checkContactPermission(c)) {
             Permission.askContactPermission();
             return contacts;
         }
@@ -42,6 +49,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
         Cursor cur = context.get().getContentResolver().query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 new String[]{ContactsContract.Contacts.LOOKUP_KEY,
+                        ContactsContract.Contacts._ID,
                         ContactsContract.CommonDataKinds.Phone.TIMES_CONTACTED,
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                         ContactsContract.CommonDataKinds.Phone.NUMBER,
@@ -58,6 +66,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
         if (cur != null) {
             if (cur.getCount() > 0) {
                 int lookupIndex = cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY);
+                int contactId = cur.getColumnIndex(ContactsContract.Contacts._ID);
                 int timesContactedIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TIMES_CONTACTED);
                 int displayNameIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                 int numberIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
@@ -67,7 +76,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
 
                 while (cur.moveToNext()) {
                     ContactsPojo contact = new ContactsPojo();
-
+                    contact.contactId = cur.getInt(contactId);
                     contact.lookupKey = cur.getString(lookupIndex);
                     contact.timesContacted = cur.getInt(timesContactedIndex);
                     contact.setName(cur.getString(displayNameIndex));
@@ -110,7 +119,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 new String[]{
                         ContactsContract.CommonDataKinds.Nickname.NAME,
                         ContactsContract.Data.LOOKUP_KEY},
-                ContactsContract.Data.MIMETYPE + "= ?",
+                ContactsContract.Data.MIMETYPE + "= ? ",
                 new String[]{ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE},
                 null);
 
@@ -132,7 +141,84 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             nickCursor.close();
         }
 
+        // SIGNAL
+        String[] projection = new String[]{
+                ContactsContract.Data._ID,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.Data.MIMETYPE};
+        Cursor cursor = context.get().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                projection,
+                ContactsContract.Data.MIMETYPE
+                        + " = ? or " + ContactsContract.Data.MIMETYPE
+                        + " = ? or " + ContactsContract.Data.MIMETYPE
+                        + " = ? or " + ContactsContract.Data.MIMETYPE
+                        + " = ?",
+                new String[]{SIGNAL_CALL_MIMETYPE,
+                        WHATSAPP_CALL_MIMETYPE,
+                        WHATSAPP_CONTACT_MIMETYPE,
+                        SIGNAL_CONTACT_MIMETYPE},
+                null);
+
+        if (cursor != null) {
+            Log.d(TAG, "SIGNAL search:");
+            int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            int mimeTypeKeyIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
+            int contactIdIndex = cursor.getColumnIndex(ContactsContract.Data._ID);
+            while (cursor.moveToNext()) {
+
+                String mimeType = cursor.getString(mimeTypeKeyIndex);
+                String number = cursor.getString(numberIndex);
+                int contactId = cursor.getInt(contactIdIndex);
+
+
+                for (List<ContactsPojo> phones : mapContacts.values()) {
+                    // Find primary phone and add this one.
+
+                    for (ContactsPojo contact : phones) {
+
+                        if (mimeType.equals(SIGNAL_CALL_MIMETYPE)) {
+
+                            if (contact.phone.equals(number)) {
+                                Log.d(TAG, "SIGNAL! " + number);
+                                contact.signalNumber = contactId;
+                                if (!contact.primary) {
+                                    contact.primary = true;
+                                }
+                            }
+                        } else if (mimeType.equals(WHATSAPP_CALL_MIMETYPE)) {
+                            String numberSplit[] = number.split("@");
+                            if (contact.phone.equals("+" + numberSplit[0])) {
+                                Log.d(TAG, "WhatsApp! " + number);
+                                contact.whatsAppNumber = contactId;
+                                if (!contact.primary) {
+                                    contact.primary = true;
+                                }
+                            }
+                        } else if (mimeType.equals(WHATSAPP_CONTACT_MIMETYPE)) {
+
+                            String numberSplit2[] = number.split("@");
+                            if (contact.phone.equals("+" + numberSplit2[0])) {
+                                Log.d(TAG, "WhatsApp messaging! " + number);
+                                contact.whatsAppMessaging = contactId;
+
+                            }
+                        } else if (mimeType.equals(SIGNAL_CONTACT_MIMETYPE)) {
+
+                            if (contact.phone.equals(number)) {
+                                Log.d(TAG, "SIGNAL messaging! " + number);
+                                contact.signalMessaging = contactId;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        cursor.close();
+
+
         for (List<ContactsPojo> phones : mapContacts.values()) {
+
             // Find primary phone and add this one.
             Boolean hasPrimary = false;
             for (ContactsPojo contact : phones) {
@@ -154,6 +240,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 }
             }
         }
+
         long end = System.nanoTime();
         Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list contacts");
         return contacts;
