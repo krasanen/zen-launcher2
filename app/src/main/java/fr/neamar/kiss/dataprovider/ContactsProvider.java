@@ -4,13 +4,16 @@ import android.database.ContentObserver;
 import android.provider.ContactsContract;
 import android.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.loader.LoadContactsPojos;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
 import fr.neamar.kiss.normalizer.StringNormalizer;
+import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.ContactsPojo;
+import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.FuzzyScore;
 
@@ -45,6 +48,15 @@ public class ContactsProvider extends Provider<ContactsPojo> {
         super.onDestroy();
         //deregister content observer
         getContentResolver().unregisterContentObserver(cObserver);
+    }
+
+    public ArrayList<Pojo> getAllContacts() {
+        ArrayList<Pojo> records = new ArrayList<>(pojos.size());
+
+        for (ContactsPojo pojo : pojos) {
+            records.add(pojo);
+        }
+        return records;
     }
 
     @Override

@@ -22,6 +22,20 @@
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/ic_launcher_white"
         android:tag="hideMenu" />
+    <ImageView
+        android:id="@+id/whiteContactsButton"
+        android:layout_width="@dimen/launcher_button_width"
+        android:layout_height="@dimen/bar_height"
+        android:layout_toRightOf="@+id/whiteLauncherButton"
+        android:layout_toEndOf="@+id/whiteLauncherButton"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/main_kiss_back"
+        android:focusable="true"
+        android:onClick="onContactsButtonClicked"
+        android:paddingLeft="@dimen/launcher_button_padding"
+        android:paddingRight="@dimen/launcher_button_padding"
+        android:src="@drawable/ic_launcher_white"
+        android:tag="hideMenu"/>
 
     <LinearLayout
         android:id="@+id/embeddedFavoritesBar"

@@ -166,7 +166,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 null);
 
         if (cursor != null) {
-            Log.d(TAG, "SIGNAL search:");
+            Log.d(TAG, "Some search:");
             int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
             int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
             int mimeTypeKeyIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);

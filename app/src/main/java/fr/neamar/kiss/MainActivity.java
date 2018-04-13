@@ -104,6 +104,7 @@ import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
+import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.searcher.QuerySearcher;
 import fr.neamar.kiss.searcher.Searcher;
@@ -461,7 +462,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isViewingAllApps()) {
-                    displayKissBar(false, false);
+                    displayKissBar(false, false,false);
                 }
                 String text = s.toString();
                 updateSearchRecords(text);
@@ -1423,6 +1424,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         displayKissBar(launcherButton.getTag().equals("showMenu"));
     }
 
+    public void onContactsButtonClicked(View contactsButton) {
+        // Display or hide the Z-Launcher bar, according to current view tag (showMenu / hideMenu).
+        displayContacts(contactsButton.getTag().equals("hideMenu"));
+    }
+
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (mPopup != null) {
@@ -1486,10 +1493,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void displayKissBar(Boolean display) {
-        this.displayKissBar(display, true);
+        this.displayKissBar(display, true, false);
     }
 
-    private void displayKissBar(boolean display, boolean clearSearchText) {
+    private void displayContacts(Boolean display) {
+        this.displayKissBar(display, true, true);
+    }
+
+
+    private void displayKissBar(boolean display, boolean clearSearchText, boolean contacts) {
         // get the center for the clipping circle
         int cx = (launcherButton.getLeft() + launcherButton.getRight()) / 2;
         int cy = (launcherButton.getTop() + launcherButton.getBottom()) / 2;
@@ -1507,7 +1519,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // Needs to be done after setting the text content to empty
             isDisplayingKissBar = true;
 
-            searchTask = new ApplicationsSearcher(MainActivity.this);
+            if (contacts) {
+                searchTask = new ContactSearcher(MainActivity.this);
+            } else {
+                searchTask = new ApplicationsSearcher(MainActivity.this);
+            }
             searchTask.executeOnExecutor(Searcher.SEARCH_THREAD);
 
             // Reveal the bar
