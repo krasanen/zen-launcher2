@@ -16,6 +16,9 @@ public class ContactsProjection {
     public static final String WHATSAPP_CONTACT_MIMETYPE ="vnd.android.cursor.item/vnd.com.whatsapp.profile";
     public static final String SIGNAL_CALL_MIMETYPE = "vnd.android.cursor.item/vnd.org.thoughtcrime.securesms.call";
     public static final String WHATSAPP_CALL_MIMETYPE = "vnd.android.cursor.item/vnd.com.whatsapp.voip.call";
+    public static final String FACEBOOK_CALL_MIMETYPE = "vnd.android.cursor.item/com.facebook.messenger.audiocall";
+    public static final String FECEBOOK_CONTACT_MIMETYPE = "vnd.android.cursor.item/com.facebook.messenger.chat";
+
     String  sort = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
 
     private static final String TAG = ContactsProjection.class.getSimpleName();

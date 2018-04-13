@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -99,17 +98,22 @@ public class ContactsResult extends Result {
         someCallButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (contactPojo.whatsAppNumber!=0) {
-                    Log.d(TAG, "whatsAppNumber:" + contactPojo.whatsAppNumber);
-                    openWhatsApp(contactPojo.whatsAppNumber, v.getContext(), true);
-                } else if (contactPojo.signalNumber!=0) {
-                    Log.d(TAG, "signalNumber:" + contactPojo.signalNumber);
-                    openSignalApp(contactPojo.signalNumber, v.getContext(), true);
+                if (contactPojo.whatsAppCalling != 0) {
+                    Log.d(TAG, "whatsAppCalling:" + contactPojo.whatsAppCalling);
+                    openGenericSomeApp(contactPojo.whatsAppCalling, v.getContext());
+                } else if (contactPojo.SignalCalling != 0) {
+                    Log.d(TAG, "SignalCalling:" + contactPojo.SignalCalling);
+                    openGenericSomeApp(contactPojo.SignalCalling, v.getContext());
+                } else if (contactPojo.faceCalling != 0) {
+                    Log.d(TAG, "faceCalling:" + contactPojo.faceCalling);
+                    openFacebook(contactPojo.faceCalling, v.getContext(), true);
                 }
             }
         });
         // IM Phone action
-        if (contactPojo.whatsAppNumber!=0||contactPojo.signalNumber!=0){
+        if (contactPojo.whatsAppCalling != 0 ||
+                contactPojo.SignalCalling != 0 ||
+                contactPojo.faceCalling != 0) {
             // IM Phone action
             someCallButton.setVisibility(View.VISIBLE);
         } else {
@@ -121,26 +125,28 @@ public class ContactsResult extends Result {
         someMessageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (contactPojo.whatsAppMessaging!=0) {
+                if (contactPojo.whatsAppMessaging != 0) {
                     Log.d(TAG, "whatsAppMessaging:" + contactPojo.whatsAppMessaging);
-                    openWhatsApp(contactPojo.whatsAppMessaging, v.getContext(), false);
-                } else if (contactPojo.signalMessaging!=0) {
+                    openGenericSomeApp(contactPojo.whatsAppMessaging, v.getContext());
+                } else if (contactPojo.signalMessaging != 0) {
                     Log.d(TAG, "signalMessaging:" + contactPojo.signalMessaging);
-                    openSignalApp(contactPojo.signalMessaging, v.getContext(), false);
+                    openGenericSomeApp(contactPojo.signalMessaging, v.getContext());
+                } else if (contactPojo.faceMessaging != 0) {
+                    Log.d(TAG, "faceMessaging:" + contactPojo.faceMessaging);
+                    openFacebook(contactPojo.faceMessaging, v.getContext(), false);
                 }
 
             }
         });
         // SOME message button
-        if (contactPojo.whatsAppMessaging!=0||contactPojo.signalMessaging!=0){
+        if (contactPojo.whatsAppMessaging != 0 ||
+                contactPojo.signalMessaging != 0 ||
+                contactPojo.faceMessaging != 0) {
             // IM Phone action
             someMessageButton.setVisibility(View.VISIBLE);
         } else {
             someMessageButton.setVisibility(View.GONE);
         }
-
-
-
 
 
         // Message action
@@ -375,10 +381,10 @@ public class ContactsResult extends Result {
 
 
         /*
-                Log.d(TAG,"openSignalApp:"+signalNumber);
+                Log.d(TAG,"openGenericSomeApp:"+SignalCalling);
         Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data.DATA1 + "=?",
-                new String[] { signalNumber }, null);
+                new String[] { SignalCalling }, null);
         c.moveToFirst();
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + c.getString(0)));
         Log.d(TAG,"c.getString(0):"+c.getString(0)+" i:"+i.getAction());
@@ -389,29 +395,41 @@ public class ContactsResult extends Result {
          */
 
     }
-    private void openSignalApp(int signalNumber, Context context, boolean call) {
-        Log.d(TAG,"openSignalApp:"+signalNumber);
+
+    private void openGenericSomeApp(int signalNumber, Context context) {
+        Log.d(TAG, "openGenericSomeApp:" + signalNumber);
      /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
-                new String[] { Integer.toString(signalNumber) }, null);
+                new String[] { Integer.toString(SignalCalling) }, null);
         c.moveToFirst();
 */
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + signalNumber));
 
         context.startActivity(i);
-     //   c.close();
+        //   c.close();
     }
 
-    private void openWhatsApp(int whatsAppnumber, Context context, boolean call) {
-        Log.d(TAG,"openWhatsApp:"+whatsAppnumber);
+    private void openFacebook(int whatsAppnumber, Context context, boolean call) {
+        Log.d(TAG, "openFacebook:" + whatsAppnumber);
      /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
                 new String[] { Integer.toString(whatsAppnumber) }, null);
         c.moveToFirst();
         //c.moveToNext(); //gets the call intent */
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + whatsAppnumber));
+        if (!call) {
+            i.setDataAndType(Uri.parse("content://com.android.contacts/data/" + whatsAppnumber),
+                    "vnd.android.cursor.item/com.facebook.messenger.chat");
+        } else {
+            i.setDataAndType(Uri.parse("content://com.android.contacts/data/" + whatsAppnumber),
+                    "vnd.android.cursor.item/com.facebook.messenger.audiocall");
+        }
+
+
+        i.setComponent(new ComponentName("com.facebook.orca", "com.facebook.messenger.intents.IntentHandlerActivity"));
+        ;
         context.startActivity(i);
-      //  c.close();
+        //  c.close();
     }
 
 }

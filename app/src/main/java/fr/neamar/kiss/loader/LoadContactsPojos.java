@@ -12,11 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import fi.zmengames.zlauncher.ContactsProjection;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
 import fr.neamar.kiss.pojo.ContactsPojo;
 
+import static fi.zmengames.zlauncher.ContactsProjection.FACEBOOK_CALL_MIMETYPE;
+import static fi.zmengames.zlauncher.ContactsProjection.FECEBOOK_CONTACT_MIMETYPE;
 import static fi.zmengames.zlauncher.ContactsProjection.SIGNAL_CALL_MIMETYPE;
 import static fi.zmengames.zlauncher.ContactsProjection.SIGNAL_CONTACT_MIMETYPE;
 import static fi.zmengames.zlauncher.ContactsProjection.WHATSAPP_CALL_MIMETYPE;
@@ -145,6 +146,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
         String[] projection = new String[]{
                 ContactsContract.Data._ID,
                 ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                 ContactsContract.Data.MIMETYPE};
         Cursor cursor = context.get().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 projection,
@@ -152,22 +154,28 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         + " = ? or " + ContactsContract.Data.MIMETYPE
                         + " = ? or " + ContactsContract.Data.MIMETYPE
                         + " = ? or " + ContactsContract.Data.MIMETYPE
+                        + " = ? or " + ContactsContract.Data.MIMETYPE
+                        + " = ? or " + ContactsContract.Data.MIMETYPE
                         + " = ?",
                 new String[]{SIGNAL_CALL_MIMETYPE,
                         WHATSAPP_CALL_MIMETYPE,
                         WHATSAPP_CONTACT_MIMETYPE,
-                        SIGNAL_CONTACT_MIMETYPE},
+                        SIGNAL_CONTACT_MIMETYPE,
+                        FACEBOOK_CALL_MIMETYPE,
+                        FECEBOOK_CONTACT_MIMETYPE},
                 null);
 
         if (cursor != null) {
             Log.d(TAG, "SIGNAL search:");
             int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
             int mimeTypeKeyIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
             int contactIdIndex = cursor.getColumnIndex(ContactsContract.Data._ID);
             while (cursor.moveToNext()) {
 
                 String mimeType = cursor.getString(mimeTypeKeyIndex);
                 String number = cursor.getString(numberIndex);
+                String name = cursor.getString(nameIndex);
                 int contactId = cursor.getInt(contactIdIndex);
 
 
@@ -180,7 +188,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
 
                             if (contact.phone.equals(number)) {
                                 Log.d(TAG, "SIGNAL! " + number);
-                                contact.signalNumber = contactId;
+                                contact.SignalCalling = contactId;
                                 if (!contact.primary) {
                                     contact.primary = true;
                                 }
@@ -189,7 +197,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                             String numberSplit[] = number.split("@");
                             if (contact.phone.equals("+" + numberSplit[0])) {
                                 Log.d(TAG, "WhatsApp! " + number);
-                                contact.whatsAppNumber = contactId;
+                                contact.whatsAppCalling = contactId;
                                 if (!contact.primary) {
                                     contact.primary = true;
                                 }
@@ -207,6 +215,18 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                             if (contact.phone.equals(number)) {
                                 Log.d(TAG, "SIGNAL messaging! " + number);
                                 contact.signalMessaging = contactId;
+
+                            }
+                        } else if (mimeType.equals(FACEBOOK_CALL_MIMETYPE)) {
+                            if (contact.getName().equals(name)) {
+                                Log.d(TAG, "FACEBOOK call! " + contact.getName());
+                                contact.faceCalling = contactId;
+
+                            }
+                        } else if (mimeType.equals(FECEBOOK_CONTACT_MIMETYPE)) {
+                            if (contact.getName().equals(name)) {
+                                Log.d(TAG, "FACEBOOK messaging! " + contact.getName());
+                                contact.faceMessaging = contactId;
 
                             }
                         }
