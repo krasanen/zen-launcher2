@@ -687,7 +687,7 @@ public final class HistoryDetails extends Activity {
         }
 
         @Override
-        public void run() {
+        public synchronized void run() {
             try {
                 db.open();
                 db.insertChanges(row);
