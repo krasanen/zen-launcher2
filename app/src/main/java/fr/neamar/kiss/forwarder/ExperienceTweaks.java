@@ -150,6 +150,8 @@ class ExperienceTweaks extends Forwarder {
                             if (prefs.getBoolean("swipe-left", false)) {
                                 Log.d(TAG, "Left add menu");
                                 mainActivity.menuButton.performClick();
+                            } else {
+                                mainActivity.idNow();
                             }
                         }
                         return true;

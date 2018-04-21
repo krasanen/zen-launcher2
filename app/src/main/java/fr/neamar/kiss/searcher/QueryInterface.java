@@ -6,4 +6,5 @@ public interface QueryInterface {
     void launchOccurred();
 
     void registerPopup(ListPopup popup);
+
 }

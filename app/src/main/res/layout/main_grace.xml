@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/off_white"
+    
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="120dip"
+        android:background="@color/dark_red"
+        android:orientation="vertical" >
+      
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/statusLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="50dip"
+                android:layout_marginLeft="15dp"
+                android:gravity="center_vertical"
+                android:text="Status:"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="wrap_content"
+                android:layout_height="50dip"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="0.86"
+                android:gravity="left|center_vertical"
+                android:text=" "
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+        </LinearLayout>
+         
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="72dip"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1.2"
+            android:gravity="top|center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/buttoncancel"
+                android:layout_width="fill_parent"
+                android:layout_height="72dip"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableLeft="@drawable/cancel_43_white"
+                android:gravity="center_vertical|left"
+                android:paddingTop="20dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.7"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="horizontal" >
+                        
+            <TextView
+                android:id="@+id/sdkVersionText"
+                android:layout_width="wrap_content"
+                android:layout_height="72dip"
+                android:gravity="center_vertical"
+                android:text="Gracenote SDK"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1.2"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/buttonSettings"
+                android:layout_width="fill_parent"
+                android:layout_height="72dip"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableRight="@drawable/options_gear_43_white"
+                android:gravity="center_vertical|right"
+                android:paddingTop="13dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </LinearLayout>    <!-- end of top bar -->
+    
+    <LinearLayout
+        android:id="@+id/linearLayoutVisContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:background="@color/light_gray"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/buttonVisShowHide"
+            android:layout_width="fill_parent"
+            android:layout_height="35dip"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_border_red"
+            android:gravity="center"
+            android:text="Show Visualization"
+            android:textColor="@color/off_white" />
+
+    </LinearLayout>	  
+    
+    <LinearLayout
+        android:id="@+id/linearLayoutResultsContainer"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip" >
+  
+        <TextView
+            android:id="@+id/statusText2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dip"
+            android:paddingLeft="5dip"
+            android:visibility="gone" />
+
+        <ScrollView
+            android:id="@+id/resultsScroller"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/off_white"
+            android:paddingLeft="5dip" >
+
+                <LinearLayout
+                    android:id="@+id/metadataListing"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical" />
+            
+        </ScrollView>
+    </LinearLayout>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_panel"
+        android:orientation="horizontal" >
+<!-- 
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:background="@color/light_gray"
+  				android:layout_height="72dip"
+                android:orientation="horizontal" >  -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_height="65dip"
+                android:gravity="center"
+                android:orientation="horizontal" >
+                
+ 				 <Button
+                    android:id="@+id/buttonLibraryID"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:layout_marginTop="10dp"
+                    android:drawablePadding="2dp"
+                    android:drawableTop="@drawable/libraryid"
+                    android:gravity="bottom|center_horizontal"
+                    android:text="Library ID"
+                    android:textColor="@color/very_dark_gray"
+                    android:textSize="9sp" />
+                
+                
+               </LinearLayout>
+
+     <LinearLayout
+         android:layout_width="fill_parent"
+         android:layout_weight="1.2"
+         android:layout_height="82dip"
+         android:gravity="center"
+         android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/buttonIDNow"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableTop="@drawable/idnow"
+                    android:gravity="center|center_vertical"
+                    android:paddingBottom="10dp" />
+                
+	</LinearLayout>
+
+
+     <LinearLayout
+         android:layout_width="fill_parent"
+
+         android:layout_gravity="center"
+         android:layout_weight="1"
+         android:layout_height="65dip"
+         android:gravity="center"
+         android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/buttonText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:layout_marginTop="10dp"
+                    android:drawablePadding="2dp"
+                    android:drawableTop="@drawable/textsearch"
+                    android:gravity="bottom|center_horizontal"
+                    android:text="Text Search"
+                    android:textColor="@color/very_dark_gray"
+                    android:textSize="9sp" />
+
+                <Button
+                    android:id="@+id/buttonHistory"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:layout_marginTop="10dp"
+                    android:drawablePadding="2dp"
+                    android:drawableTop="@drawable/clock"
+                    android:gravity="bottom|center_horizontal"
+                    android:text="History"
+                    android:textColor="@color/very_dark_gray"
+                    android:textSize="9sp" />
+                </LinearLayout>
+                
+ <!--           </LinearLayout>  -->
+
+    </TableRow>
+
+</LinearLayout>

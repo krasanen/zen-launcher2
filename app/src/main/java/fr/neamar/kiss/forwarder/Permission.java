@@ -77,7 +77,6 @@ public class Permission extends Forwarder {
         if (grantResults.length == 0) {
             return;
         }
-
         if (requestCode == PERMISSION_READ_CONTACTS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // Great! Reload the contact provider. We're done :)
             ContactsProvider contactsProvider = KissApplication.getApplication(mainActivity).getDataHandler().getContactsProvider();
@@ -96,6 +95,36 @@ public class Permission extends Forwarder {
             } else {
                 Toast.makeText(mainActivity, R.string.permission_denied, Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == MainActivity.MY_PERMISSIONS_REQUEST_READ_STORAGE) {
+            //premission to read storage
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //mainActivity.checkAudio();
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+
+            } else {
+
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+                Toast.makeText(mainActivity, "We Need permission Storage", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }else if (requestCode == MainActivity.MY_PERMISSIONS_RECORD_AUDIO) {
+            //premission to read storage
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //mainActivity.checkAudio();
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+
+            } else {
+
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+                Toast.makeText(mainActivity, "We Need permission to record", Toast.LENGTH_SHORT).show();
+            }
+            return;
         }
     }
 }

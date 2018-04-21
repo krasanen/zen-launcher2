@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/off_white"
+    android:padding="5dp" >
+
+  <TableRow android:paddingBottom="20dp" >
+      
+     <TextView
+        android:id="@+id/spacer"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text=""
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+     
+    <TextView
+        android:id="@+id/duration"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Duration:  "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+          
+  </TableRow>
+  
+  
+  <TableRow android:paddingBottom="20dp" >
+
+    <TextView
+        android:id="@+id/matchPosition"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Match Position:  "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+      
+    <TextView
+        android:id="@+id/currentPosition"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Current Position: "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+
+  </TableRow>
+  
+    <TableRow android:paddingBottom="20dp" >
+
+    <TextView
+        android:id="@+id/genre"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Genre: "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+
+    <TextView
+        android:id="@+id/mood"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Mood: "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+
+  </TableRow>
+  
+      <TableRow android:paddingBottom="20dp" >
+
+    <TextView
+        android:id="@+id/tempo"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Tempo: "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+
+    <TextView
+        android:id="@+id/origin"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Origin: "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+
+  </TableRow>
+  
+    <TableRow android:paddingBottom="20dp" >
+
+    <TextView
+        android:id="@+id/queryTime"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Time to Match: "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+
+    <TextView
+        android:id="@+id/lookupSource"
+        android:layout_weight="0.5"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Lookup Source: "
+        android:textColor="@color/very_dark_gray"
+        android:width="0px" />
+
+  </TableRow>    
+    
+  <TableRow android:paddingBottom="20dp" >
+
+     <Button
+                android:id="@+id/artistBio"
+                android:layout_width="fill_parent"
+                android:layout_height="35dip"
+                android:layout_gravity="bottom"
+  				android:layout_marginLeft="10dp"
+  				android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/button_border"
+                android:textColor="@color/off_white"
+                android:text="Artist Biography"
+ 													/>
+
+
+     <Button
+                android:id="@+id/albumReview"
+                android:layout_width="fill_parent"
+                android:layout_height="35dip"
+                android:layout_gravity="bottom"
+				android:layout_marginLeft="10dp"
+  				android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:textColor="@color/off_white"
+                android:text="  Album Review"
+                android:gravity="center"
+          											/>
+     
+
+  </TableRow>    
+  
+
+    
+  
+</TableLayout>

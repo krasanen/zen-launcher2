@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+
     signingConfigs {
         debug {
             keyAlias 'rasanen'
@@ -32,6 +33,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+        sourceSets {
+            main {
+                jniLibs.srcDirs = ['libs']
+            }
+        }
     }
 }
 def gitVersion() {
@@ -48,8 +54,9 @@ def buildTimeStamp() {
     def formattedDate = date.format('yyyy-MM-dd')
     return formattedDate
 }
+
 dependencies {
-    implementation "com.google.android.gms:play-services-games:12.0.1"
+    implementation 'com.google.android.gms:play-services-games:12.0.1'
     implementation 'com.google.android.gms:play-services-auth:12.0.1'
     api 'com.google.android.gms:play-services-drive:12.0.1'
     androidTestImplementation('com.android.support.test:runner:1.0.1') {
@@ -60,10 +67,12 @@ dependencies {
     }
     implementation 'com.android.support:support-annotations:27.1.0'
     /*   implementation('com.googlecode.json-simple:json-simple:1.1.1') {
-                exclude module : 'hamcrest'
-                exclude module : 'hamcrest-core'
-            }*/
+                            exclude module : 'hamcrest'
+                            exclude module : 'hamcrest-core'
+                        }*/
     implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation files('libs/gnsdk.jar')
+    implementation files('libs/gnsdk_helpers.jar')
 }
 
 buildscript {

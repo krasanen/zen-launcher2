@@ -10,6 +10,25 @@
         <item name="appSelectableItemBackground">?android:attr/selectableItemBackground</item>
     </style>
 
+    <style name="BaseThemeGrace" parent="@android:style/Theme.Holo">
+        <item name="appSelectableItemBackground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="AppThemeDarkGrace" parent="BaseThemeGrace">
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textColor">@color/kiss_text_on_dark</item>
+        <item name="android:textColorSecondary">#7f7f7f</item>
+
+        <item name="searchColor">@color/kiss_text_on_dark</item>
+        <item name="resultColor">@color/kiss_text_on_dark</item>
+        <item name="resultShadowColor">@android:color/black</item>
+        <item name="listBackgroundColor">@color/kiss_list_background_inverse</item>
+        <item name="searchBackgroundColor">@color/kiss_list_background_inverse</item>
+        <item name="dividerDrawable">@drawable/list_separator_dark</item>
+        <item name="textShadowRadius">0</item>
+    </style>
+
     <style name="AppThemeLight" parent="BaseThemeLight">
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

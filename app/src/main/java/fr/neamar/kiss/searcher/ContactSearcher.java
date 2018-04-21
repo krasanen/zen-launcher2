@@ -25,7 +25,7 @@ public class ContactSearcher extends Searcher {
     PriorityQueue<Pojo> getPojoProcessor(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         // Apply app sorting preference
-        if (prefs.getString("sort-apps", "alphabetical").equals("invertedAlphabetical")) {
+        if (prefs.getString("sort-contacts", "alphabetical").equals("alphabetical")) {
             return new PriorityQueue<>(DEFAULT_MAX_RESULTS, new PojoComparator());
         } else {
             return new PriorityQueue<>(DEFAULT_MAX_RESULTS, Collections.reverseOrder(new PojoComparator()));

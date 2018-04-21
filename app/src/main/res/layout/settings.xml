@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/text_search_container"
+              android:layout_width="fill_parent" 
+              android:layout_height="fill_parent" 
+              android:orientation="vertical" 
+              android:gravity="top" >
+   <!--            android:stretchColumns="*"> -->
+                    
+<TableRow android:layout_width="fill_parent" 
+          android:layout_height="wrap_content" 
+          android:orientation="horizontal" 
+          android:gravity="center_horizontal"
+          android:background="@color/light_gray"
+          android:padding="3px">
+
+
+  <TextView
+    android:text="Debug Logging"
+    android:textStyle="bold" 
+    android:textColor="@color/dark_gray"   
+    android:id="@+id/debugLogLabel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"/>   
+    
+    <CheckBox 
+        android:id="@+id/debugLogCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@drawable/box"/>   
+
+
+</TableRow>
+
+
+<TableRow android:layout_width="fill_parent" 
+          android:layout_height="wrap_content" 
+          android:orientation="horizontal" 
+          android:gravity="center_horizontal"
+          android:background="@color/light_gray"
+          android:padding="3px">
+
+    
+  <TextView
+    android:text="Local Search Only"
+    android:textStyle="bold"
+    android:textColor="@color/dark_gray"  
+    android:id="@+id/localSearchLabel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"/>
+   
+ <CheckBox 
+        android:id="@+id/localSearchCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@drawable/box"/>   
+
+</TableRow>
+
+
+
+</TableLayout>

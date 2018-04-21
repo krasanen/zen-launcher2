@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/text_search_container"
+              android:layout_width="fill_parent" 
+              android:layout_height="fill_parent" 
+              android:orientation="vertical" 
+              android:gravity="top"
+              android:stretchColumns="*">
+                    
+<TableRow android:layout_width="fill_parent" 
+          android:layout_height="wrap_content" 
+          android:orientation="horizontal" 
+          android:gravity="center_horizontal"
+          android:background="@color/light_gray"
+          android:padding="3px">
+
+  <TextView
+    android:text=" Artist"
+    android:id="@+id/TextArtistLabel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textColor="@color/very_dark_gray"
+    >
+  </TextView>
+  
+  <EditText
+    android:text=""
+    android:id="@+id/TextArtist"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textColor="@color/very_dark_gray"
+    >
+  </EditText>
+
+</TableRow>
+
+<TableRow android:layout_width="fill_parent" 
+          android:layout_height="wrap_content" 
+          android:orientation="horizontal" 
+          android:gravity="center_horizontal"
+          android:background="@color/light_gray"
+          android:padding="3px">
+
+  <TextView
+    android:text=" Album"
+    android:id="@+id/TextAlbumLabel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textColor="@color/very_dark_gray"
+    >
+  </TextView>
+  
+  <EditText
+    android:text=""
+    android:id="@+id/TextAlbum"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textColor="@color/very_dark_gray"
+    >
+  </EditText>
+
+</TableRow>
+
+<TableRow android:layout_width="fill_parent" 
+          android:layout_height="wrap_content" 
+          android:orientation="horizontal" 
+          android:gravity="center_horizontal"
+          android:background="@color/light_gray"
+          android:padding="3px">
+
+  <TextView
+    android:text=" Track"
+    android:id="@+id/TextTrackLabel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textColor="@color/very_dark_gray"
+    >
+  </TextView>
+  
+  <EditText
+    android:text=""
+    android:id="@+id/TextTrack"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textColor="@color/very_dark_gray"
+    >
+  </EditText>
+
+</TableRow>
+
+</TableLayout>

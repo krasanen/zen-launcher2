@@ -12,4 +12,15 @@
     <color name="kiss_background_light_transparent">#88FFFFFF</color>
     <color name="kiss_background_dark_transparent">#99222222</color>
     <color name="kiss_green_semitransparent">#884caf50</color>
+
+    <color name="gracenote_red">#ffbd0400</color>
+    <color name="gray">#ff757575</color>
+    <color name="off_white">#f0f0f0</color>
+    <color name="dark_red">#930000</color>
+    <color name="very_dark_gray">#2e2e2e</color>
+    <color name="light_gray">#eae8e8</color>
+    <color name="dark_gray">#6E6B6B</color>
+    <color name="red">#C2000E</color>
+    <color name="black">#000000</color>
+    <color name="bright_red">#FF0000</color>
 </resources>

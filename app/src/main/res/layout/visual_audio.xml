@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/visual_audio_container"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="top"
+    android:orientation="vertical" >
+
+   <!--            android:stretchColumns="*"> -->
+                    
+<TableRow
+    android:id="@+id/tableRowVisImageContainer"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/solid_rectangle"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="3px" >
+
+    <FrameLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:measureAllChildren="true"
+      android:gravity="center"
+      >
+	            
+	    <ImageView
+	        android:id="@+id/imageViewAudioVisBottomLayer"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:src="@drawable/colored_ring" />
+	
+	    <ImageView
+	         android:id="@+id/imageViewAudioVisTopLayer"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:layout_gravity="center"
+	         android:src="@drawable/gracenote_logo" />
+    
+  </FrameLayout>    
+
+</TableRow>
+
+</TableLayout>

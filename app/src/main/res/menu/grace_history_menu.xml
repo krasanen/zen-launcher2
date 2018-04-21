@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/listen"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Listen"/>
+
+
+    <item
+        android:id="@+id/grace_history_delete"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Delete"/>
+
+    <item
+        android:id="@+id/grace_clearall"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="Clear all"/>
+
+
+</menu>

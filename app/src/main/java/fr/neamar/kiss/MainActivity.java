@@ -1,11 +1,13 @@
 package fr.neamar.kiss;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
@@ -13,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,12 +26,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -76,6 +85,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,7 +105,12 @@ import java.util.Map;
 import java.util.Set;
 
 import fi.zmengames.zlauncher.ContactsProjection;
+import fi.zmengames.zlauncher.GracenoteMusicID;
+import fi.zmengames.zlauncher.HTTPSender;
+import fi.zmengames.zlauncher.HistoryDetails;
+import fi.zmengames.zlauncher.IdNowService;
 import fi.zmengames.zlauncher.LauncherService;
+import fi.zmengames.zlauncher.WavAudioRecorder;
 import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
@@ -123,6 +138,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME = 13;
+    public static final int  MY_PERMISSIONS_REQUEST_READ_STORAGE = 14;
+    public static final int  MY_PERMISSIONS_RECORD_AUDIO = 15;
     // intent data that is the conflict id.  used when resolving a conflict.
     public static final String CONFLICT_ID = "conflictId";
 
@@ -352,13 +369,75 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return bytes;
     }
 
+
+    public void checkPermissionReadStorage(Activity activity){
+        if (ContextCompat.checkSelfPermission(activity,      Manifest.permission.READ_EXTERNAL_STORAGE) !=     PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+    }
+    public void checkPermissionRecordAudio(Activity activity){
+        if (ContextCompat.checkSelfPermission(activity,      Manifest.permission.RECORD_AUDIO) !=     PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    Manifest.permission.RECORD_AUDIO)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.RECORD_AUDIO},
+                        MY_PERMISSIONS_RECORD_AUDIO);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+    }
+
+    public void idNow(){
+        Intent aboutScreen = new Intent(MainActivity.this, HistoryDetails.class);
+        this.startActivity(aboutScreen);
+
+    }
+
+
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.d(TAG, "onCreate()");
+        checkPermissionReadStorage(this);
+        checkPermissionRecordAudio(this);
         EventBus.getDefault().register(this);
         KissApplication.getApplication(this).initDataHandler();
 
@@ -1391,7 +1470,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        forwarderManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            forwarderManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -1720,8 +1799,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     };
 
-
-    /*
+    //
+    //
+    // TODO: https://acoustid.org/api-key ZlN4KdPFMn
+    /*Z-Launcher 1.0 FkPa1JhL2a
     private boolean saveSharedPreferencesToFile(File dst) {
         boolean res = false;
         ObjectOutputStream output = null;

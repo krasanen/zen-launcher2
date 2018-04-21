@@ -237,4 +237,5 @@
     <string name="proximity_switch">Turn on/off screen with proximity sensor</string>
     <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
     <string name="triple_tap_flashlight">Tripletap flashlight</string>
+    <string name="order_contacts_name">Contacts list sort order</string>
 </resources>
