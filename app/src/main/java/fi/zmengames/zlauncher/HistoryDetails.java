@@ -6,6 +6,7 @@ package fi.zmengames.zlauncher;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,12 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -28,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
@@ -35,19 +40,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.gracenote.gnsdk.GnAlbum;
-import com.gracenote.gnsdk.GnAlbumIterator;
 import com.gracenote.gnsdk.GnDescriptor;
 import com.gracenote.gnsdk.GnError;
 import com.gracenote.gnsdk.GnException;
-import com.gracenote.gnsdk.GnImageSize;
 import com.gracenote.gnsdk.GnLanguage;
 import com.gracenote.gnsdk.GnLicenseInputMode;
 import com.gracenote.gnsdk.GnList;
 import com.gracenote.gnsdk.GnLocale;
 import com.gracenote.gnsdk.GnLocaleGroup;
 import com.gracenote.gnsdk.GnLookupData;
-import com.gracenote.gnsdk.GnLookupLocalStream;
 import com.gracenote.gnsdk.GnLookupLocalStreamIngest;
 import com.gracenote.gnsdk.GnLookupLocalStreamIngestStatus;
 import com.gracenote.gnsdk.GnManager;
@@ -95,6 +96,100 @@ public final class HistoryDetails extends Activity {
     private GnUser gnUser;
     private Activity activity;
     private Context context;
+
+    private static final String TAG = HistoryDetails.class.getSimpleName();
+    /**
+     * This class is used as a database Adapter to render a history.
+     */
+    private class HistoryListAdapter extends CursorAdapter {
+        private final LayoutInflater mInflater;
+
+        public HistoryListAdapter(Context context, Cursor cursor) {
+            super(context, cursor);
+            mInflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return super.getItemId(position);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return super.getView(position, convertView, parent);
+        }
+
+        @Override
+        public void bindView(View view, Context context, final Cursor cursor) {
+            coverArtImage = (ImageView) view.findViewById(R.id.CoverArtImage);
+            coverArtImage.setImageResource(R.drawable.no_cover_art);
+            final String artist=cursor.getString(3);
+            final String track=cursor.getString(2);
+
+            byte[] theByteArray = cursor.getBlob(4);
+            if (theByteArray != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(theByteArray, 0,
+                        theByteArray.length);
+                coverArtImage.setImageBitmap(bitmap);
+            }
+            coverArtImage.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    String uri = "https://www.google.com/#q="+URLEncoder.encode(artist +" "+ track+ " lyrics");
+                    Log.d(TAG,"uri"+uri);
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(browserIntent);
+                }
+            });
+            trackText = (TextView) view.findViewById(R.id.TrackTextView);
+            trackText.setText(track);
+
+            artistText = (TextView) view.findViewById(R.id.ArtistTextView);
+            artistText.setText(artist);
+
+            albumText = (TextView) view.findViewById(R.id.AlbumTextView);
+            albumText.setText(cursor.getString(1));
+
+            dateText = (TextView) view.findViewById(R.id.DateTimeTextView);
+            dateText.setText(currentTimeZonedate(cursor.getString(5)));
+
+            deletecheckBox.setTag(cursor.getString(0));
+            deletecheckBox.setOnClickListener(new OnClickListener() {
+
+                public void onClick(View v) {
+                    CheckBox chk = (CheckBox) v;
+                    if (chk.isChecked()) {
+                        deleteId.add(chk.getTag().toString());
+                        //System.out.println("Chaked......" + chk.getTag());
+                    } else {
+                        deleteId.remove(chk.getTag().toString());
+                        //System.out.println("UnChaked......" + chk.getTag());
+                    }
+                }
+            });
+        }
+
+        @Override
+        public View newView(Context context, final Cursor cursor,
+                            ViewGroup parent) {
+            final View view = mInflater.inflate(R.layout.history_row, parent,
+                    false);
+            view.setTag(cursor.getString(0));
+            deletecheckBox = (CheckBox) view.findViewById(R.id.DeleteCheckbox);
+            return view;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Helpers to read license file from assets as string
@@ -308,10 +403,17 @@ public final class HistoryDetails extends Activity {
         super.onCreate(savedInstanceState);
 
 
-        setContentView(R.layout.hostory_layout);
+        setContentView(R.layout.history_layout);
+
         historylist = (ListView) findViewById(R.id.HistoryList);
         historylist.setVisibility(View.VISIBLE);
-
+        View launcherButton = findViewById(android.R.id.home);
+        launcherButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         activity = this;
         context = this.getApplicationContext();
@@ -401,15 +503,68 @@ public final class HistoryDetails extends Activity {
 
         }
 
-
     }
 
-    void idNow() {
 
+
+    public void displayLoader(Boolean display) {
+        View launcherButton = findViewById(android.R.id.home);
+        final View loaderSpinner = findViewById(R.id.loaderBar2);
+        int animationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
+        launcherButton.setVisibility(View.INVISIBLE);
+        // Do not display animation if launcher button is already visible
+        if (!display && launcherButton.getVisibility() == View.INVISIBLE) {
+            launcherButton.setVisibility(View.VISIBLE);
+
+            // Animate transition from loader to launch button
+            launcherButton.setAlpha(0);
+            launcherButton.animate()
+                    .alpha(1f)
+                    .setDuration(animationDuration)
+                    .setListener(null);
+            loaderSpinner.animate()
+                    .alpha(0f)
+                    .setDuration(animationDuration)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            loaderSpinner.setVisibility(View.GONE);
+                            loaderSpinner.setAlpha(1);
+                        }
+                    });
+        } else if (display) {
+            launcherButton.setVisibility(View.INVISIBLE);
+            loaderSpinner.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void animate(){
+        View launcherButton = findViewById(android.R.id.home);
+        int animationDuration = 2000;
+        // get the center for the clipping circle
+        int cx = (launcherButton.getLeft() + launcherButton.getRight()) / 2;
+        int cy = (launcherButton.getTop() + launcherButton.getBottom()) / 2;
+
+        // get the final radius for the clipping circle
+        int finalRadius = getActionBar().getHeight();
+        final Animator anim = ViewAnimationUtils.createCircularReveal(launcherButton, cx, cy, 0, finalRadius);
+        anim.setDuration(animationDuration);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+        anim.start();
+    }
+
+    private static boolean idRunning = false;
+    void idNow() {
         if (gnMusicIdStream == null || gnMicrophone == null) {
             return;
         }
-
+        animate();
         audioProcessThread = new Thread(new AudioProcessRunnable());
         audioProcessThread.start();
 
@@ -567,6 +722,12 @@ public final class HistoryDetails extends Activity {
                 try {
 
                     Log.i(appString, "calling idnow");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            animate();
+                        }
+                    });
                     gnMusicIdStream.identifyAlbumAsync();
 
 
@@ -656,7 +817,7 @@ public final class HistoryDetails extends Activity {
 
         @Override
         public void run() {
-
+            idRunning = false;
             if (albumsResult.resultCount() == 0) {
 
                 setStatus("No match", true);
@@ -668,7 +829,6 @@ public final class HistoryDetails extends Activity {
                 trackChanges(albumsResult);
 
             }
-
 
         }
     }
@@ -728,10 +888,10 @@ public final class HistoryDetails extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.listen:
-                lastLookup_startTime = SystemClock.elapsedRealtime();
-                idNow();
-
-
+                if (!idRunning) {
+                    lastLookup_startTime = SystemClock.elapsedRealtime();
+                    idNow();
+                }
                 break;
             case R.id.grace_history_delete:
                 //System.out.println("delete click");
@@ -755,77 +915,7 @@ public final class HistoryDetails extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * This class is used as a database Adapter to render a history.
-     */
-    private class HistoryListAdapter extends CursorAdapter {
-        private final LayoutInflater mInflater;
 
-        public HistoryListAdapter(Context context, Cursor cursor) {
-            super(context, cursor);
-            mInflater = LayoutInflater.from(context);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return super.getItemId(position);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return super.getView(position, convertView, parent);
-        }
-
-        @Override
-        public void bindView(View view, Context context, final Cursor cursor) {
-            coverArtImage = (ImageView) view.findViewById(R.id.CoverArtImage);
-            coverArtImage.setImageResource(R.drawable.no_cover_art);
-
-            byte[] theByteArray = cursor.getBlob(4);
-            if (theByteArray != null) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(theByteArray, 0,
-                        theByteArray.length);
-                coverArtImage.setImageBitmap(bitmap);
-            }
-
-            trackText = (TextView) view.findViewById(R.id.TrackTextView);
-            trackText.setText(cursor.getString(2));
-
-            artistText = (TextView) view.findViewById(R.id.ArtistTextView);
-            artistText.setText(cursor.getString(3));
-
-            albumText = (TextView) view.findViewById(R.id.AlbumTextView);
-            albumText.setText(cursor.getString(1));
-
-            dateText = (TextView) view.findViewById(R.id.DateTimeTextView);
-            dateText.setText(currentTimeZonedate(cursor.getString(5)));
-
-            deletecheckBox.setTag(cursor.getString(0));
-            deletecheckBox.setOnClickListener(new OnClickListener() {
-
-                public void onClick(View v) {
-                    CheckBox chk = (CheckBox) v;
-                    if (chk.isChecked()) {
-                        deleteId.add(chk.getTag().toString());
-                        //System.out.println("Chaked......" + chk.getTag());
-                    } else {
-                        deleteId.remove(chk.getTag().toString());
-                        //System.out.println("UnChaked......" + chk.getTag());
-                    }
-                }
-            });
-        }
-
-        @Override
-        public View newView(Context context, final Cursor cursor,
-                            ViewGroup parent) {
-            final View view = mInflater.inflate(R.layout.histrory_row, parent,
-                    false);
-            view.setTag(cursor.getString(0));
-            deletecheckBox = (CheckBox) view.findViewById(R.id.DeleteCheckbox);
-            return view;
-        }
-    }
 
     public void getHistory() {
         //System.out.println("count i :"+i++);
@@ -869,6 +959,27 @@ public final class HistoryDetails extends Activity {
             cursor.close();
         if (db != null)
             db.close();
+        if ( gnMusicIdStream != null ) {
+
+            try {
+
+                // to ensure no pending identifications deliver results while your app is
+                // paused it is good practice to call cancel
+                // it is safe to call identifyCancel if no identify is pending
+                gnMusicIdStream.identifyCancel();
+
+                // stopping audio processing stops the audio processing thread started
+                // in onResume
+                gnMusicIdStream.audioProcessStop();
+                idRunning = false;
+            } catch (GnException e) {
+
+                Log.e( appString, e.errorCode() + ", " + e.errorDescription() + ", " + e.errorModule() );
+                showError( e.errorAPI() + ": " +  e.errorDescription() );
+
+            }
+
+        }
     }
 
     @Override
@@ -882,7 +993,6 @@ public final class HistoryDetails extends Activity {
         super.onResume();
 
         if (gnMusicIdStream != null) {
-
             // Create a thread to process the data pulled from GnMic
             // Internally pulling data is a blocking call, repeatedly called until
             // audio processing is stopped. This cannot be called on the main thread.
@@ -900,12 +1010,14 @@ public final class HistoryDetails extends Activity {
         @Override
         public void run() {
             try {
-
+                idRunning = true;
                 // start audio processing with GnMic, GnMusicIdStream pulls data from GnMic internally
+
                 gnMusicIdStream.audioProcessStart(gnMicrophone);
 
-            } catch (GnException e) {
 
+            } catch (GnException e) {
+                idRunning = false;
                 Log.e(appString, e.errorCode() + ", " + e.errorDescription() + ", " + e.errorModule());
                 showError(e.errorAPI() + ": " + e.errorDescription());
 
