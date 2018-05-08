@@ -145,7 +145,8 @@ public class DataHandler
 
         // Send "start service" command first so that the service can run independently
         // of the activity
-        this.context.startService(intent);
+
+        KissApplication.startLaucherService(intent, this.context);
 
         final ProviderEntry entry = new ProviderEntry();
 
@@ -221,7 +222,7 @@ public class DataHandler
         try {
             Intent intent = new Intent(this.context, LauncherService.class);
             intent.setAction(LauncherService.FULL_LOAD_OVER);
-            this.context.startService(intent);
+            KissApplication.startLaucherService(intent, this.context);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }

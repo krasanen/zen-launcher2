@@ -69,6 +69,8 @@ import com.gracenote.gnsdk.IGnLookupLocalStreamIngestEvents;
 import com.gracenote.gnsdk.IGnMusicIdStreamEvents;
 import com.gracenote.gnsdk.IGnSystemEvents;
 
+import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 
 import static fi.zmengames.zlauncher.GracenoteMusicID.gnsdkClientId;
@@ -404,7 +406,7 @@ public final class HistoryDetails extends Activity {
 
 
         setContentView(R.layout.history_layout);
-
+        MainActivity.checkPermissionRecordAudio(this);
         historylist = (ListView) findViewById(R.id.HistoryList);
         historylist.setVisibility(View.VISIBLE);
         View launcherButton = findViewById(android.R.id.home);
@@ -955,30 +957,34 @@ public final class HistoryDetails extends Activity {
     public void onPause() {
         super.onPause();
         Log.i("TAG", "on pause");
+        idRunning = false;
         if (cursor != null)
             cursor.close();
         if (db != null)
             db.close();
         if ( gnMusicIdStream != null ) {
+            Log.d(TAG,"stop gnMusicIdStream");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
 
-            try {
+                        // to ensure no pending identifications deliver results while your app is
+                        // paused it is good practice to call cancel
+                        // it is safe to call identifyCancel if no identify is pending
+                        gnMusicIdStream.identifyCancel();
 
-                // to ensure no pending identifications deliver results while your app is
-                // paused it is good practice to call cancel
-                // it is safe to call identifyCancel if no identify is pending
-                gnMusicIdStream.identifyCancel();
+                        // stopping audio processing stops the audio processing thread started
+                        // in onResume
+                        gnMusicIdStream.audioProcessStop();
+                    } catch (GnException e) {
 
-                // stopping audio processing stops the audio processing thread started
-                // in onResume
-                gnMusicIdStream.audioProcessStop();
-                idRunning = false;
-            } catch (GnException e) {
+                        Log.e( appString, e.errorCode() + ", " + e.errorDescription() + ", " + e.errorModule() );
+                        showError( e.errorAPI() + ": " +  e.errorDescription() );
 
-                Log.e( appString, e.errorCode() + ", " + e.errorDescription() + ", " + e.errorModule() );
-                showError( e.errorAPI() + ": " +  e.errorDescription() );
-
-            }
-
+                    }
+                }
+            }).start();
         }
     }
 

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.zmengames.zlauncher.LauncherService;
+import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.loader.LoadPojos;
 import fr.neamar.kiss.pojo.Pojo;
@@ -73,7 +74,7 @@ public abstract class Provider<T extends Pojo> extends Service implements IProvi
 
         Intent intent = new Intent(this, LauncherService.class);
         intent.setAction(LauncherService.LOAD_OVER);
-        startService(intent);
+        KissApplication.startLaucherService(intent,this);
     }
 
     /**

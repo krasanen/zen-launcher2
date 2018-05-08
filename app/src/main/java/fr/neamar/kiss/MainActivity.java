@@ -395,7 +395,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
-    public void checkPermissionRecordAudio(Activity activity){
+    public static void checkPermissionRecordAudio(Activity activity){
         if (ContextCompat.checkSelfPermission(activity,      Manifest.permission.RECORD_AUDIO) !=     PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
@@ -436,8 +436,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, "onCreate()");
-        checkPermissionReadStorage(this);
-        checkPermissionRecordAudio(this);
+
+
         EventBus.getDefault().register(this);
         KissApplication.getApplication(this).initDataHandler();
 
@@ -921,7 +921,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     Log.d(TAG,"signIn");
                     Intent signInIntent = new Intent(this, LauncherService.class);
                     signInIntent.setAction(LauncherService.GOOGLE_SIGN_IN);
-                    startService(signInIntent);
+                    KissApplication.startLaucherService(signInIntent,this);
                 }
                 return true;
             default:

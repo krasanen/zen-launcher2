@@ -3,6 +3,7 @@ package fr.neamar.kiss;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import fi.zmengames.zlauncher.LauncherService;
 
@@ -52,7 +53,7 @@ public class KissApplication extends Application {
             // Already loaded! We still need to fire the FULL_LOAD event
             Intent intent = new Intent(this, LauncherService.class);
             intent.setAction(LauncherService.FULL_LOAD_OVER);
-            this.startService(intent);
+            startLaucherService(intent,this);
         }
     }
 
@@ -68,4 +69,11 @@ public class KissApplication extends Application {
         iconsPackHandler = new IconsHandler(this);
     }
 
+    public static void startLaucherService(Intent intent, Context context){
+        try {
+            context.startService(intent);
+        }catch (IllegalStateException e){
+            Log.d("KissApplication", "app in background?");
+        }
+    }
 }

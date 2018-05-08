@@ -36,13 +36,13 @@ public class SignInSwitch extends SwitchPreference {
             Log.d("SignInSwitch","SIGN_IN2");
             Intent intent = new Intent(getContext(), LauncherService.class);
             intent.setAction(LauncherService.GOOGLE_SIGN_IN);
-            getContext().startService(intent);
+            KissApplication.startLaucherService(intent,getContext());
 
         } else {
             Log.d("SignInSwitch","SIGN_OUT2");
             Intent intent = new Intent(getContext(), LauncherService.class);
             intent.setAction(LauncherService.GOOGLE_SIGN_OUT);
-            getContext().startService(intent);
+            KissApplication.startLaucherService(intent,getContext());
         }
         super.onClick();
 
