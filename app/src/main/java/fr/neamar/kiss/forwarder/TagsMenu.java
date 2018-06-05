@@ -117,11 +117,9 @@ public class TagsMenu extends Forwarder {
 
     static class MenuItemTag implements TagsMenu.MenuItem {
         final String tag;
-        final boolean showButton;
 
-        MenuItemTag(String tag, boolean showButton) {
+        MenuItemTag(String tag) {
             this.tag = tag;
-            this.showButton = showButton;
         }
 
         @Override
@@ -131,7 +129,7 @@ public class TagsMenu extends Forwarder {
 
         @Override
         public int getLayoutResource() {
-            return showButton ? R.layout.popup_tag_menu : R.layout.popup_list_item;
+            return R.layout.popup_list_item;
         }
     }
 
@@ -224,16 +222,13 @@ public class TagsMenu extends Forwarder {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         //build menu
-        boolean triStateBtn = prefs.getBoolean("pref-tags-menu-3state", false);
         adapter.add(new TagsMenu.MenuItemTitle(context, R.string.popup_tags_title));
         for (String tag : tagList) {
-            adapter.add(new TagsMenu.MenuItemTag(tag, triStateBtn));
+            adapter.add(new TagsMenu.MenuItemTag(tag));
         }
 
         // remember where the title should go
         int actionsTitlePosition = adapter.getCount();
-        if (triStateBtn)
-            adapter.add(new TagsMenu.MenuItemBtn(context, R.string.show_matching));
         if (!prefs.getBoolean("history-onclick", false))
             adapter.add(new TagsMenu.MenuItemBtn(context, R.string.show_history));
         // insert title only if at least an action was added
