@@ -17,8 +17,7 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.ui.ListPopup;
-
-import static fr.neamar.kiss.R.drawable.search;
+import fr.neamar.kiss.utils.FuzzyScore;
 
 public class SearchResult extends Result {
     private final SearchPojo searchPojo;
@@ -29,30 +28,36 @@ public class SearchResult extends Result {
     }
 
     @Override
-    public View display(Context context, int position, View v) {
+    public View display(Context context, int position, View v, FuzzyScore fuzzyScore) {
         if (v == null)
             v = inflateFromId(context, R.layout.item_search);
 
-        TextView appName = v.findViewById(R.id.item_search_text);
+        TextView searchText = v.findViewById(R.id.item_search_text);
         ImageView image = v.findViewById(R.id.item_search_icon);
 
         String text;
         int pos;
         int len;
 
-        if (searchPojo.direct) {
+        if (searchPojo.type == SearchPojo.URL_QUERY) {
             text = String.format(context.getString(R.string.ui_item_visit), this.pojo.getName());
             pos = text.indexOf(this.pojo.getName());
             len = this.pojo.getName().length();
             image.setImageResource(R.drawable.ic_public);
-        } else {
+        } else if(searchPojo.type == SearchPojo.SEARCH_QUERY){
             text = String.format(context.getString(R.string.ui_item_search), this.pojo.getName(), searchPojo.query);
             pos = text.indexOf(searchPojo.query);
             len = searchPojo.query.length();
-            image.setImageResource(search);
+            image.setImageResource(R.drawable.search);
+        }
+        else {
+            text = searchPojo.query;
+            pos = text.indexOf("=");
+            len = text.length() - pos;
+            image.setImageResource(R.drawable.ic_functions);
         }
 
-        appName.setText(enrichText(text, Collections.singletonList(new Pair<Integer, Integer>(pos, pos + len)), context));
+        displayHighlighted(text, Collections.singletonList(new Pair<>(pos, pos + len)), searchText, context);
 
         image.setColorFilter(getThemeFillColor(context), PorterDuff.Mode.SRC_IN);
         return v;

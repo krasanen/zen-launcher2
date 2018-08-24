@@ -30,6 +30,7 @@ import fr.neamar.kiss.pojo.ContactsPojo;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ImprovedQuickContactBadge;
 import fr.neamar.kiss.ui.ListPopup;
+import fr.neamar.kiss.utils.FuzzyScore;
 
 public class ContactsResult extends Result {
     private static final String TAG = ContactsResult.class.getSimpleName();
@@ -44,30 +45,29 @@ public class ContactsResult extends Result {
     }
 
     @Override
-    public View display(Context context, int position, View convertView) {
+    public View display(Context context, int position, View convertView, FuzzyScore fuzzyScore) {
         View view = convertView;
         if (convertView == null)
             view = inflateFromId(context, R.layout.item_contact);
 
         // Contact name
         TextView contactName = view.findViewById(R.id.item_contact_name);
-        contactName.setText(enrichText(contactPojo.getName(), contactPojo.nameMatchPositions, context));
+        displayHighlighted(contactPojo.normalizedName, contactPojo.getName(), fuzzyScore, contactName, context);
 
         // Contact phone
         TextView contactPhone = view.findViewById(R.id.item_contact_phone);
-        contactPhone.setText(contactPojo.phone);
+        displayHighlighted(contactPojo.normalizedPhone, contactPojo.phone, fuzzyScore, contactPhone, context);
 
         // Contact nickname
         TextView contactNickname = view.findViewById(R.id.item_contact_nickname);
-        if (!contactPojo.nickname.isEmpty()) {
-            contactNickname.setVisibility(View.VISIBLE);
-            contactNickname.setText(contactPojo.nickname);
-        } else {
+        if (contactPojo.getNickname().isEmpty()) {
             contactNickname.setVisibility(View.GONE);
+        } else {
+            displayHighlighted(contactPojo.normalizedNickname, contactPojo.getNickname(), fuzzyScore, contactNickname, context);
         }
 
         // Contact photo
-        final ImprovedQuickContactBadge contactIcon = view
+        ImprovedQuickContactBadge contactIcon = view
                 .findViewById(R.id.item_contact_icon);
 
         if (contactIcon.getTag() instanceof ContactsPojo && contactPojo.equals(contactIcon.getTag())) {
@@ -186,7 +186,6 @@ public class ContactsResult extends Result {
         return view;
     }
 
-
     @Override
     protected ListPopup buildPopupMenu(Context context, ArrayAdapter<ListPopup.Item> adapter, final RecordAdapter parent, View parentView) {
         adapter.add(new ListPopup.Item(context, R.string.menu_remove));
@@ -298,21 +297,21 @@ public class ContactsResult extends Result {
         phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // Make sure we have permission to call someone as this is considered a dangerous permission
-        if (Permission.ensureCallPhonePermission(phoneIntent)) {
-            // Pre-android 23, or we already have permission
-            context.startActivity(phoneIntent);
+       if(Permission.ensureCallPhonePermission(phoneIntent)) {
+           // Pre-android 23, or we already have permission
+           context.startActivity(phoneIntent);
 
-            // Register launch in the future
-            // (animation delay)
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    recordLaunch(context);
-                    queryInterface.launchOccurred();
-                }
-            }, KissApplication.TOUCH_DELAY);
-        }
+           // Register launch in the future
+           // (animation delay)
+           Handler handler = new Handler();
+           handler.postDelayed(new Runnable() {
+               @Override
+               public void run() {
+                   recordLaunch(context);
+                   queryInterface.launchOccurred();
+               }
+           }, KissApplication.TOUCH_DELAY);
+       }
     }
 
 

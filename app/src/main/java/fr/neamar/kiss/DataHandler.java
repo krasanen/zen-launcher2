@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ import fr.neamar.kiss.dataprovider.IProvider;
 import fr.neamar.kiss.dataprovider.Provider;
 import fr.neamar.kiss.dataprovider.SearchProvider;
 import fr.neamar.kiss.dataprovider.ShortcutsProvider;
+import fr.neamar.kiss.dataprovider.simpleprovider.CalculatorProvider;
+import fr.neamar.kiss.dataprovider.simpleprovider.PhoneProvider;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.db.ValuedHistoryRecord;
@@ -79,11 +82,25 @@ public class DataHandler
         prefs.registerOnSharedPreferenceChangeListener(this);
 
         // Connect to initial providers
+        // Those are the complex providers, that are defined as Android services
+        // to survive even if the app's UI is killed
+        // (this way, we don't need to reload the app list everytime for instance)
         for (String providerName : PROVIDER_NAMES) {
             if (prefs.getBoolean("enable-" + providerName, true)) {
                 this.connectToProvider(providerName);
             }
         }
+
+        // Some basic providers are defined directly,
+        // as we don't need the overhead of a service for them
+        // Those providers don't expose a service connection,
+        // and you can't bind / unbind to them dynamically.
+        ProviderEntry calculatorEntry = new ProviderEntry();
+        calculatorEntry.provider = new CalculatorProvider();
+        this.providers.put("calculator", calculatorEntry);
+        ProviderEntry phoneEntry = new ProviderEntry();
+        phoneEntry.provider = new PhoneProvider(context);
+        this.providers.put("phone", phoneEntry);
     }
 
     @Override
@@ -274,13 +291,13 @@ public class DataHandler
      * @param itemsToExclude Items to exclude from history
      * @return pojos in recent history
      */
-    public ArrayList<Pojo> getHistory(Context context, int itemCount, boolean smartHistory, ArrayList<Pojo> itemsToExclude) {
+    public ArrayList<Pojo> getHistory(Context context, int itemCount, String historyMode, ArrayList<Pojo> itemsToExclude) {
         // Pre-allocate array slots that are likely to be used based on the current maximum item
         // count
         ArrayList<Pojo> history = new ArrayList<>(Math.min(itemCount, 256));
 
         // Read history
-        List<ValuedHistoryRecord> ids = DBHelper.getHistory(context, itemCount, smartHistory);
+        List<ValuedHistoryRecord> ids = DBHelper.getHistory(context, itemCount, historyMode);
 
         // Find associated items
         for (int i = 0; i < ids.size(); i++) {
@@ -328,6 +345,7 @@ public class DataHandler
             this.getShortcutsProvider().reload();
         }
 
+        Log.d(TAG, "Shortcut " + shortcut.id + " added.");
         Toast.makeText(context, R.string.shortcut_added, Toast.LENGTH_SHORT).show();
     }
 
@@ -452,6 +470,52 @@ public class DataHandler
         }
 
         return favorites;
+    }
+
+    /**
+     * This method is used to set the specific position of an app in the fav array.
+     *
+     * @param context  The mainActivity context
+     * @param id       the app you want to set the position of
+     * @param position the new position of the fav
+     */
+    public void setFavoritePosition(MainActivity context, String id, int position) {
+        String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
+                getString("favorite-apps-list", "");
+        List<String> favAppsList = new ArrayList<>(Arrays.asList(favApps.split(";")));
+
+        int currentPos = favAppsList.indexOf(id);
+        if (currentPos == -1) {
+            Log.e(TAG, "Couldn't find id in favAppsList");
+            return;
+        }
+        // Clamp the position so we dont just extend past the end of the array.
+        position = Math.min(position, favAppsList.size() - 1);
+
+        favAppsList.remove(currentPos);
+        // Because we're removing ourselves from the array, positions may change, we should take that into account
+        favAppsList.add(currentPos > position ? position + 1 : position, id);
+        String newFavList = TextUtils.join(";", favAppsList);
+
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putString("favorite-apps-list", newFavList + ";").apply();
+
+        context.onFavoriteChange();
+    }
+
+    /**
+     * Helper function to get the position of a favorite. Used mainly by the drag and drop system to know where to place the dropped app.
+     *
+     * @param context mainActivity context
+     * @param id      the app you want to get the position of.
+     * @return
+     */
+    public int getFavoritePosition(MainActivity context, String id) {
+        String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
+                getString("favorite-apps-list", "");
+        List<String> favAppsList = new ArrayList<>(Arrays.asList(favApps.split(";")));
+
+        return favAppsList.indexOf(id);
     }
 
     public void addToFavorites(MainActivity context, String id) {

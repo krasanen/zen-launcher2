@@ -1,13 +1,11 @@
 package fr.neamar.kiss.dataprovider;
 
-import android.util.Pair;
+import android.widget.Toast;
 
-import java.util.List;
-
+import fr.neamar.kiss.R;
 import fr.neamar.kiss.loader.LoadShortcutsPojos;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.pojo.PojoWithTags;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -17,7 +15,18 @@ public class ShortcutsProvider extends Provider<ShortcutsPojo> {
     @Override
     public void reload() {
         super.reload();
-        this.initialize(new LoadShortcutsPojos(this));
+        // If the user tries to add a new shortcut, but KISS isn't the default launcher
+        // AND the services are not running (low memory), then we won't be able to
+        // spawn a new service on Android 8.1+.
+
+        try {
+            this.initialize(new LoadShortcutsPojos(this));
+        }
+        catch(IllegalStateException e) {
+            // TODO: string from
+            Toast.makeText(this, "unable to initialize", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -29,75 +38,27 @@ public class ShortcutsProvider extends Provider<ShortcutsPojo> {
         }
 
         FuzzyScore fuzzyScore = new FuzzyScore(queryNormalized.codePoints);
-        FuzzyScore.MatchInfo matchInfo = new FuzzyScore.MatchInfo();
+        FuzzyScore.MatchInfo matchInfo;
+        boolean match;
 
         for (ShortcutsPojo pojo : pojos) {
-            boolean match = fuzzyScore.match(pojo.normalizedName.codePoints, matchInfo);
-            boolean bDisplayNameSet = false;
-            boolean bDisplayTagsSet = false;
+            matchInfo = fuzzyScore.match(pojo.normalizedName.codePoints);
+            match = matchInfo.match;
             pojo.relevance = matchInfo.score;
-
-            if (match) {
-                List<Pair<Integer, Integer>> positions = matchInfo.getMatchedSequences();
-                try {
-                    pojo.setNameHighlight(positions);
-                } catch (Exception e) {
-                    pojo.setNameHighlight(0, pojo.normalizedName.length());
-                }
-                bDisplayNameSet = true;
-            }
 
             // check relevance for tags
             if (pojo.normalizedTags != null) {
-                if (fuzzyScore.match(pojo.normalizedTags.codePoints, matchInfo)) {
-                    if (!match || (matchInfo.score > pojo.relevance)) {
-                        match = true;
-                        pojo.relevance = matchInfo.score;
-                        pojo.setTagHighlight(matchInfo.getMatchedSequences());
-                        bDisplayTagsSet = true;
-                    }
+                matchInfo = fuzzyScore.match(pojo.normalizedTags.codePoints);
+                if (matchInfo.match && (!match || matchInfo.score > pojo.relevance)) {
+                    match = true;
+                    pojo.relevance = matchInfo.score;
                 }
             }
 
-            if (match) {
-                if (!bDisplayNameSet)
-                    pojo.clearNameHighlight();
-                if (!bDisplayTagsSet)
-                    pojo.clearTagHighlight();
-                if (!searcher.addResult(pojo))
-                    return;
+            if (match && !searcher.addResult(pojo)) {
+                return;
             }
         }
-    }
-
-    /**
-     * Return a Pojo
-     *
-     * @param id              we're looking for
-     * @param allowSideEffect do we allow this function to have potential side effect? Set to false to ensure none.
-     * @return an AppPojo, or null
-     */
-    private Pojo findById(String id, Boolean allowSideEffect) {
-        for (Pojo pojo : pojos) {
-            if (pojo.id.equals(id)) {
-                if (allowSideEffect) {
-                    pojo.clearNameHighlight();
-                    if (pojo instanceof PojoWithTags) {
-                        PojoWithTags tagsPojo = (PojoWithTags) pojo;
-                        tagsPojo.clearTagHighlight();
-                    }
-                }
-                return pojo;
-            }
-
-        }
-
-        return null;
-    }
-
-    @Override
-    public Pojo findById(String id) {
-        return findById(id, true);
     }
 
     public Pojo findByName(String name) {
@@ -107,6 +68,4 @@ public class ShortcutsProvider extends Provider<ShortcutsPojo> {
         }
         return null;
     }
-
-
 }

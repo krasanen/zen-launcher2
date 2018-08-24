@@ -9,7 +9,7 @@ public class ContactsPojo extends Pojo {
 
     public String phone = "";
     //phone without special characters
-    public String phoneSimplified = "";
+    public StringNormalizer.Result normalizedPhone = null;
     public Uri icon = null;
 
     // Is this a primary phone?
@@ -33,8 +33,20 @@ public class ContactsPojo extends Pojo {
     public int signalMessaging;
     public int faceMessaging;
     public int faceCalling;
+    public StringNormalizer.Result normalizedNickname = null;
+
+    public String getNickname() {
+        return nickname;
+    }
 
     public void setNickname(String nickname) {
-        this.nickname = StringNormalizer.normalize(nickname);
+        if (nickname != null) {
+            // Set the actual user-friendly name
+            this.nickname = nickname;
+            this.normalizedNickname = StringNormalizer.normalizeWithResult(this.nickname, false);
+        } else {
+            this.nickname = null;
+            this.normalizedNickname = null;
+        }
     }
 }

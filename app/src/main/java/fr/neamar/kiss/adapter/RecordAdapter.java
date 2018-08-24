@@ -1,16 +1,23 @@
 package fr.neamar.kiss.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.SectionIndexer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.PhoneResult;
@@ -20,20 +27,28 @@ import fr.neamar.kiss.result.SettingsResult;
 import fr.neamar.kiss.result.ShortcutsResult;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ListPopup;
+import fr.neamar.kiss.utils.FuzzyScore;
 
-public class RecordAdapter extends BaseAdapter {
+public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     private final Context context;
     private final QueryInterface parent;
+    private FuzzyScore fuzzyScore;
 
     /**
      * Array list containing all the results currently displayed
      */
     private List<Result> results;
 
+    // Mapping from letter to a position (only used for fast scroll, when viewing app list)
+    private HashMap<String, Integer> alphaIndexer = new HashMap<>();
+    // List of available sections (only used for fast scroll)
+    private String[] sections = new String[0];
+
     public RecordAdapter(Context context, QueryInterface parent, ArrayList<Result> results) {
         this.context = context;
         this.parent = parent;
         this.results = results;
+        this.fuzzyScore = null;
     }
 
     @Override
@@ -93,7 +108,7 @@ public class RecordAdapter extends BaseAdapter {
                 convertView = null;
             }
         }
-        View view = results.get(position).display(context, results.size() - position, convertView);
+        View view = results.get(position).display(context, results.size() - position, convertView, fuzzyScore);
         //Log.d( "TBog", "getView pos " + position + " convertView " + ((convertView == null) ? "null" : convertView.toString()) + " will return " + view.toString() );
         view.setTag(getItemViewType(position));
         return view;
@@ -139,13 +154,87 @@ public class RecordAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void updateResults(List<Result> results) {
+    public void updateResults(List<Result> results, String query) {
         this.results = results;
+        StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, false);
+
+        fuzzyScore = new FuzzyScore(queryNormalized.codePoints, true);
         notifyDataSetChanged();
     }
 
     public void clear() {
         this.results.clear();
         notifyDataSetChanged();
+    }
+
+    /**
+     * When using fast scroll, generate a mapping to know where a given letter starts in the list
+     * (can only be used with a sorted result set!)
+     */
+    public void buildSections(boolean contacts) {
+        alphaIndexer.clear();
+        int size = results.size();
+
+        // Generate the mapping letter => number
+        for (int x = 0; x < size; x++) {
+            String s = results.get(x).getSection();
+
+            // Put the first one
+            if (!alphaIndexer.containsKey(s)) {
+                alphaIndexer.put(s, x);
+            }
+        }
+
+        // Generate section list
+        Set<String> sectionLetters = alphaIndexer.keySet();
+        ArrayList<String> sectionList = new ArrayList<>(sectionLetters);
+        Collections.sort(sectionList);
+        // We're displaying from A to Z, everything needs to be reversed
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        // Apply app sorting preference
+        if (!contacts) {
+            if (!prefs.getString("sort-apps", "alphabetical").equals("invertedAlphabetical")) {
+                Collections.reverse(sectionList);
+            }
+        } else {
+            if (prefs.getString("sort-contacts", "alphabetical").equals("invertedAlphabetical")) {
+                Collections.reverse(sectionList);
+            }
+        }
+
+            sections = new String[sectionList.size()];
+        sectionList.toArray(sections);
+    }
+
+
+    @Override
+    public Object[] getSections() {
+        return sections;
+    }
+
+    @Override
+    public int getPositionForSection(int sectionIndex) {
+
+        if (sectionIndex > 0) {
+            return alphaIndexer.get(sections[sectionIndex]);
+        } else {
+            return 0;
+        }
+
+    }
+
+    @Override
+    public int getSectionForPosition(int position) {
+        for (int i = 0; i < sections.length; i++) {
+            if (alphaIndexer.get(sections[i]) > position) {
+                return i - 1;
+            }
+        }
+
+        // If apps starting with the letter "A" cover more than a full screen,
+        // we will never get > position
+        // so we just return the before-last section
+        // See #1005
+        return sections.length - 2;
     }
 }

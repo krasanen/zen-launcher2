@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,6 +54,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -119,10 +122,12 @@ import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
+import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.searcher.QuerySearcher;
 import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.searcher.TagsSearcher;
 import fr.neamar.kiss.ui.AnimatedListView;
 import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
@@ -130,8 +135,9 @@ import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
-
 import static android.graphics.Bitmap.createBitmap;
+
+import static android.view.HapticFeedbackConstants.LONG_PRESS;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -434,7 +440,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d(TAG, "onCreate()");
 
 
@@ -548,6 +553,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 displayClearOnInput();
             }
         });
+
+
+        // Fixes bug when dropping onto a textEdit widget which can cause a NPE
+        // This fix should be on ALL TextEdit Widgets !!!
+        // See : https://stackoverflow.com/a/23483957
+        searchEditText.setOnDragListener( new View.OnDragListener() {
+            @Override
+            public boolean onDrag( View v, DragEvent event) {
+                return true;
+            }
+        });
+
 
         // On validate, launch first record
         searchEditText.setOnEditorActionListener(new OnEditorActionListener() {
@@ -748,6 +765,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // We need to update the history in case an external event created new items
         // (for instance, installed a new app, got a phone call or simply clicked on a favorite)
         updateSearchRecords();
+        displayClearOnInput();
 
         if (isViewingAllApps()) {
             displayKissBar(false);
@@ -805,6 +823,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (isViewingAllApps()) {
             displayKissBar(false);
         }
+
+        // Close the backButton context menu
+        closeContextMenu();
     }
 
     @Override
@@ -829,6 +850,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (keycode == KeyEvent.KEYCODE_MENU) {
             // For devices with a physical menu button, we still want to display *our* contextual menu
             menuButton.showContextMenu();
+            menuButton.performHapticFeedback(LONG_PRESS);
             return true;
         }
 
@@ -1323,10 +1345,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onMenuButtonClicked(View menuButton) {
         // When the Z-Launcher bar is displayed, the button can still be clicked in a few areas (due to favorite margin)
         // To fix this, we discard any click event occurring when the kissbar is displayed
-        if (isViewingSearchResults())
-            menuButton.showContextMenu();
+        if (!isViewingSearchResults()) {
+            return;
+        }
+        if (!forwarderManager.onMenuButtonClicked(this.menuButton)) {
+            this.menuButton.showContextMenu();
+            this.menuButton.performHapticFeedback(LONG_PRESS);
+        }
     }
-
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -1342,7 +1368,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             updateUI(null);
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -1468,9 +1493,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-            forwarderManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        forwarderManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -1511,18 +1535,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (mPopup != null) {
-            View popupContentView = mPopup.getContentView();
-            int[] popupPos = {0, 0};
-            popupContentView.getLocationOnScreen(popupPos);
-            final float offsetX = -popupPos[0];
-            final float offsetY = -popupPos[1];
-            ev.offsetLocation(offsetX, offsetY);
-            boolean handled = popupContentView.dispatchTouchEvent(ev);
-            ev.offsetLocation(-offsetX, -offsetY);
-            if (!handled)
-                handled = super.dispatchTouchEvent(ev);
-            return handled;
+        if (mPopup != null && ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            dismissPopup();
+            return true;
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -1579,8 +1594,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.displayKissBar(display, true, true);
     }
 
-
     private void displayKissBar(boolean display, boolean clearSearchText, boolean contacts) {
+        dismissPopup();
         // get the center for the clipping circle
         int cx = (launcherButton.getLeft() + launcherButton.getRight()) / 2;
         int cy = (launcherButton.getTop() + launcherButton.getBottom()) / 2;
@@ -1615,6 +1630,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 anim.start();
             }
             kissBar.setVisibility(View.VISIBLE);
+
+            // Display the alphabet on the scrollbar (#926)
+            list.setFastScrollEnabled(true);
         } else {
             isDisplayingKissBar = false;
             // Hide the bar
@@ -1622,16 +1640,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 int animationDuration = getResources().getInteger(
                         android.R.integer.config_shortAnimTime);
 
-                Animator anim = ViewAnimationUtils.createCircularReveal(kissBar, cx, cy, finalRadius, 0);
-                anim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        kissBar.setVisibility(View.GONE);
-                        super.onAnimationEnd(animation);
-                    }
-                });
-                anim.setDuration(animationDuration);
-                anim.start();
+                try {
+                    Animator anim = ViewAnimationUtils.createCircularReveal(kissBar, cx, cy, finalRadius, 0);
+                    anim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            kissBar.setVisibility(View.GONE);
+                            super.onAnimationEnd(animation);
+                        }
+                    });
+                    anim.setDuration(animationDuration);
+                    anim.start();
+                } catch(IllegalStateException e) {
+                    // If the view hasn't been laid out yet, we can't animate it
+                    kissBar.setVisibility(View.GONE);
+                }
             } else {
                 // No animation before Lollipop
                 kissBar.setVisibility(View.GONE);
@@ -1640,6 +1663,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             if (clearSearchText) {
                 searchEditText.setText("");
             }
+
+            // Do not display the alphabetical scrollbar (#926)
+            // They only make sense when displaying apps alphabetically, not for searching
+            list.setFastScrollEnabled(false);
         }
 
         forwarderManager.onDisplayKissBar(display);
@@ -1658,12 +1685,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void updateSearchRecords(String query) {
         resetTask();
-
-        if (mPopup != null)
-            mPopup.dismiss();
+        dismissPopup();
 
         forwarderManager.updateSearchRecords(query);
-
         if (query.isEmpty()) {
             systemUiVisibilityHelper.resetScroll();
         } else {
@@ -1705,8 +1729,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void registerPopup(ListPopup popup) {
         if (mPopup == popup)
             return;
-        if (mPopup != null)
-            mPopup.dismiss();
+        dismissPopup();
         mPopup = popup;
         popup.setVisibilityHelper(systemUiVisibilityHelper);
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -1747,8 +1770,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
 
         systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
-        if (mPopup != null)
-            mPopup.dismiss();
+        dismissPopup();
     }
 
     @Override
@@ -1779,8 +1801,26 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         list.animateChange();
     }
 
+    public void dismissPopup() {
+        if (mPopup != null)
+            mPopup.dismiss();
+    }
     public static boolean isKeyboardVisible() {
         return mKeyboardVisible;
+    }
+
+    public void showMatchingTags( String tag ) {
+        runTask(new TagsSearcher(this, tag));
+
+        clearButton.setVisibility(View.VISIBLE);
+        menuButton.setVisibility(View.INVISIBLE);
+    }
+
+    public void showHistory() {
+        runTask(new HistorySearcher(this));
+
+        clearButton.setVisibility(View.VISIBLE);
+        menuButton.setVisibility(View.INVISIBLE);
     }
     LauncherService mBoundService;
     boolean mServiceBound = false;

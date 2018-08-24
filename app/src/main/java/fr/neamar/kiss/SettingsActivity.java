@@ -12,6 +12,7 @@ import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import fr.neamar.kiss.broadcast.IncomingCallHandler;
 import fr.neamar.kiss.broadcast.IncomingSmsHandler;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.dataprovider.SearchProvider;
+import fr.neamar.kiss.forwarder.TagsMenu;
 import fr.neamar.kiss.searcher.QuerySearcher;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 
@@ -40,7 +42,7 @@ public class SettingsActivity extends PreferenceActivity implements
     private static final int PERMISSION_READ_PHONE_STATE = 1;
 
     // Those settings require the app to restart
-    final static private String settingsRequiringRestart = "primary-color transparent-search transparent-favorites pref-rounded-list pref-rounded-bars history-hide enable-favorites-bar notification-bar-color";
+    final static private String settingsRequiringRestart = "primary-color transparent-search transparent-favorites pref-rounded-list pref-rounded-bars history-hide enable-favorites-bar notification-bar-color black-notification-icons";
     final static private String settingsRequiringRestartForSettingsActivity = "theme force-portrait require-settings-update";
     private boolean requireFullRestart = false;
 
@@ -86,6 +88,16 @@ public class SettingsActivity extends PreferenceActivity implements
         addExcludedAppSettings(prefs);
 
         addCustomSearchProvidersPreferences(prefs);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            removePreference("colors-section", "black-notification-icons");
+        }
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            removePreference("history-hide-section", "pref-hide-navbar");
+            removePreference("history-hide-section", "pref-hide-statusbar");
+        }
+
+        addHiddenTagsTogglesInformation(prefs);
     }
 
     @Override
@@ -104,6 +116,12 @@ public class SettingsActivity extends PreferenceActivity implements
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void removePreference(String parent, String category) {
+        PreferenceCategory p = (PreferenceCategory) findPreference(parent);
+        Preference c = findPreference(category);
+        p.removePreference(c);
     }
 
     private void loadExcludedAppsToPreference(MultiSelectListPreference multiSelectList) {
@@ -293,12 +311,6 @@ public class SettingsActivity extends PreferenceActivity implements
             addCustomSearchProvidersPreferences(prefs);
         } else if (key.equalsIgnoreCase("icons-pack")) {
             KissApplication.getApplication(this).getIconsHandler().loadIconsPack(sharedPreferences.getString(key, "default"));
-        } else if (key.equalsIgnoreCase("sort-apps")) {
-            // Reload application list
-            final AppProvider provider = KissApplication.getApplication(this).getDataHandler().getAppProvider();
-            if (provider != null) {
-                provider.reload();
-            }
         } else if (key.equalsIgnoreCase("enable-sms-history")) {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.RECEIVE_SMS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -417,4 +429,23 @@ public class SettingsActivity extends PreferenceActivity implements
         lp.setDefaultValue("default");
         lp.setEntryValues(entryValues);
     }
+
+	private void addHiddenTagsTogglesInformation( SharedPreferences prefs )
+	{
+        Set<String> menuTags = TagsMenu.getPrefTags( prefs, getApplicationContext() );
+        MultiSelectListPreference selectListPreference = (MultiSelectListPreference)findPreference( "pref-toggle-tags-list" );
+        Set<String> tagsSet = KissApplication.getApplication(this)
+                                             .getDataHandler()
+                                             .getTagsHandler()
+                                             .getAllTagsAsSet();
+
+        // append tags that are available to toggle now
+        tagsSet.addAll( menuTags );
+
+        String[] tagArray = tagsSet.toArray( new String[0] );
+        Arrays.sort(tagArray);
+        selectListPreference.setEntries( tagArray );
+        selectListPreference.setEntryValues( tagArray );
+        selectListPreference.setValues( menuTags );
+	}
 }

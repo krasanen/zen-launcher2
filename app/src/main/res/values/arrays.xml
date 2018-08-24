@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string-array name="themesEntries">
-        <item>Light theme (default)</item>
+        <item>Light theme</item>
         <item>Semi-transparent theme</item>
         <item>Transparent theme</item>
         <item>Dark theme</item>
@@ -29,17 +29,21 @@
         <item>invertedAlphabetical</item>
     </string-array>
     <string-array name="historyModeEntries">
-        <item>Most recent first</item>
-        <item>Most frequent first (frecency)</item>
+        <item>Accessed recently first</item>
+        <item>Accessed frequently recently</item>
+        <item>Accessed frequently</item>
     </string-array>
     <string-array name="historyModeValues" translatable="false">
         <item>recency</item>
         <item>frecency</item>
+        <item>frequency</item>
     </string-array>
     <string-array name="defaultSearchProviders" tools:ignore="InconsistentArrays">
         <item>Bing|https://www.bing.com/search?q={q}</item>
         <item>DuckDuckGo|https://duckduckgo.com/?q={q}</item>
         <item>Google|https://encrypted.google.com/search?q={q}</item>
         <item>Yahoo|https://search.yahoo.com/search?p={q}</item>
+    </string-array>
+    <string-array name="toggleTagsDefault">
     </string-array>
 </resources>

@@ -31,7 +31,6 @@ public class ContactSearcher extends Searcher {
             return new PriorityQueue<>(DEFAULT_MAX_RESULTS, Collections.reverseOrder(new PojoComparator()));
         }
     }
-
     @Override
     protected int getMaxResultCount() {
         return Integer.MAX_VALUE;
@@ -46,5 +45,12 @@ public class ContactSearcher extends Searcher {
         List<Pojo> pojos = KissApplication.getApplication(activity).getDataHandler().getContactsProvider().getAllContacts();
         this.addResult(pojos.toArray(new Pojo[0]));
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void param) {
+        super.onPostExecute(param);
+        // Build sections for fast scrolling
+        activityWeakReference.get().adapter.buildSections(true);
     }
 }

@@ -205,10 +205,10 @@ public class KeyboardScrollHider implements View.OnTouchListener {
         }
 
         // Hide the keyboard if the user has scrolled down by about half a result item
-        if ((this.offsetYCurrent - this.offsetYStart) > THRESHOLD) {
+       /* if ((this.offsetYCurrent - this.offsetYStart) > THRESHOLD) {
             this.handler.hideKeyboard();
             this.handler.applyScrollSystemUi();
-        }
+        }*/
 
         return false;
     }

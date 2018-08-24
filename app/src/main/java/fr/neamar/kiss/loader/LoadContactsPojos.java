@@ -7,10 +7,12 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
@@ -59,10 +61,8 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         ContactsContract.Contacts.PHOTO_ID,
                         ContactsContract.CommonDataKinds.Phone.CONTACT_ID}, null, null, ContactsContract.CommonDataKinds.Phone.TIMES_CONTACTED + " DESC");
 
-        // Prevent duplicates by keeping in memory encountered phones.
-        // The string key is "phone" + "|" + "name" (so if two contacts
-        // with distinct name share same number, they both get displayed)
-        Map<String, ArrayList<ContactsPojo>> mapContacts = new HashMap<>();
+        // Prevent duplicates by keeping in memory encountered contacts.
+        Map<String, Set<ContactsPojo>> mapContacts = new HashMap<>();
 
         if (cur != null) {
             if (cur.getCount() > 0) {
@@ -86,7 +86,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (contact.phone == null) {
                         contact.phone = "";
                     }
-                    contact.phoneSimplified = PhoneNormalizer.simplifyPhoneNumber(contact.phone);
+                    contact.normalizedPhone = PhoneNormalizer.simplifyPhoneNumber(contact.phone);
                     contact.starred = cur.getInt(starredIndex) != 0;
                     contact.primary = cur.getInt(isPrimaryIndex) != 0;
                     String photoId = cur.getString(photoIdIndex);
@@ -104,7 +104,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (mapContacts.containsKey(contact.lookupKey))
                             mapContacts.get(contact.lookupKey).add(contact);
                         else {
-                            ArrayList<ContactsPojo> phones = new ArrayList<>();
+                            Set<ContactsPojo> phones = new HashSet<>();
                             phones.add(contact);
                             mapContacts.put(contact.lookupKey, phones);
                         }
@@ -120,7 +120,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 new String[]{
                         ContactsContract.CommonDataKinds.Nickname.NAME,
                         ContactsContract.Data.LOOKUP_KEY},
-                ContactsContract.Data.MIMETYPE + "= ? ",
+                ContactsContract.Data.MIMETYPE + "= ?",
                 new String[]{ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE},
                 null);
 
@@ -179,7 +179,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 int contactId = cursor.getInt(contactIdIndex);
 
 
-                for (List<ContactsPojo> phones : mapContacts.values()) {
+                for (Set<ContactsPojo> phones : mapContacts.values()) {
                     // Find primary phone and add this one.
 
                     for (ContactsPojo contact : phones) {
@@ -237,7 +237,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
         cursor.close();
 
 
-        for (List<ContactsPojo> phones : mapContacts.values()) {
+        for (Set<ContactsPojo> phones : mapContacts.values()) {
 
             // Find primary phone and add this one.
             Boolean hasPrimary = false;
@@ -249,20 +249,19 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 }
             }
 
-            // If no primary available, add all (excluding duplicates).
-            if (!hasPrimary) {
-                HashSet<String> added = new HashSet<>(phones.size());
-                for (ContactsPojo contact : phones) {
-                    if (!added.contains(contact.phoneSimplified)) {
-                        added.add(contact.phoneSimplified);
-                        contacts.add(contact);
+                // If no primary available, add all (excluding duplicates).
+                if (!hasPrimary) {
+                    HashSet<String> added = new HashSet<>(phones.size());
+                    for (ContactsPojo contact : phones) {
+                        if (!added.contains(contact.normalizedPhone.toString())) {
+                            added.add(contact.normalizedPhone.toString());
+                            contacts.add(contact);
+                        }
                     }
                 }
             }
-        }
-
-        long end = System.nanoTime();
-        Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list contacts");
-        return contacts;
+            long end = System.nanoTime();
+            Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list contacts");
+            return contacts;
     }
 }

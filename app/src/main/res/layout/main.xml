@@ -209,26 +209,23 @@
         tools:ignore="UnusedAttribute"
         tools:visibility="visible">
 
-
-        <fr.neamar.kiss.ui.BottomPullEffectView
-            android:id="@+id/listEdgeEffect"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start|bottom"
-            android:scrollbarAlwaysDrawHorizontalTrack="true"
-            android:scrollbars="horizontal" />
-
         <fr.neamar.kiss.ui.AnimatedListView
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="top|left"
+            android:layout_gravity="top|center_horizontal"
             android:cacheColorHint="@android:color/transparent"
             android:divider="?attr/dividerDrawable"
             android:dividerHeight="1dp"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll"
             tools:listitem="@layout/item_app" />
+
+        <fr.neamar.kiss.ui.BottomPullEffectView
+            android:id="@+id/listEdgeEffect"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|bottom" />
 
     </FrameLayout>
 
