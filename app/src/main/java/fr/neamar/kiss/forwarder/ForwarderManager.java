@@ -16,8 +16,6 @@ public class ForwarderManager extends Forwarder {
     private final ExperienceTweaks experienceTweaks;
     private final Favorites favoritesForwarder;
     private final Permission permissionForwarder;
-    private final OreoShortcuts shortcutsForwarder;
-    private final TagsMenu tagsMenu;
 
 
     public ForwarderManager(MainActivity mainActivity) {
@@ -29,8 +27,6 @@ public class ForwarderManager extends Forwarder {
         this.experienceTweaks = new ExperienceTweaks(mainActivity);
         this.favoritesForwarder = new Favorites(mainActivity);
         this.permissionForwarder = new Permission(mainActivity);
-        this.shortcutsForwarder = new OreoShortcuts(mainActivity);
-        this.tagsMenu = new TagsMenu(mainActivity);
     }
 
     public void onCreate() {
@@ -38,14 +34,11 @@ public class ForwarderManager extends Forwarder {
         widgetForwarder.onCreate();
         interfaceTweaks.onCreate();
         experienceTweaks.onCreate();
-        shortcutsForwarder.onCreate();
-        tagsMenu.onCreate();
     }
 
     public void onResume() {
         interfaceTweaks.onResume();
         experienceTweaks.onResume();
-        tagsMenu.onResume();
     }
 
     public void onStart() {
@@ -106,6 +99,11 @@ public class ForwarderManager extends Forwarder {
         }
         return false;
     }
+
+    public void onWallpaperScroll(float fCurrent) {
+        widgetForwarder.onWallpaperScroll(fCurrent);
+    }
+
 
     public void hideKeyboard() {
         experienceTweaks.hideKeyboard();

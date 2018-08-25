@@ -8,18 +8,19 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Build;
-import android.view.ContextMenu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.util.HashMap;
-
+import android.view.*;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
+import fr.neamar.kiss.ui.WidgetLayout;
+import fr.neamar.kiss.ui.WidgetMenu;
+import fr.neamar.kiss.ui.WidgetPreferences;
 
-class Widget extends Forwarder {
+import java.util.Map;
+
+public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
+    public static final int REQUEST_REFRESH_APPWIDGET = 10;
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
 
@@ -33,12 +34,11 @@ class Widget extends Forwarder {
      */
     private AppWidgetManager mAppWidgetManager;
     private AppWidgetHost mAppWidgetHost;
-    private boolean widgetUsed = false;
 
     /**
      * View widgets are added to
      */
-    private ViewGroup widgetArea;
+    private WidgetLayout widgetArea;
 
     Widget(MainActivity mainActivity) {
         super(mainActivity);
@@ -51,6 +51,15 @@ class Widget extends Forwarder {
         mAppWidgetManager = AppWidgetManager.getInstance(mainActivity);
         mAppWidgetHost = new AppWidgetHost(mainActivity, APPWIDGET_HOST_ID);
         widgetArea = mainActivity.findViewById(R.id.widgetLayout);
+
+        //set the size of the Widget Area
+        Point size = new Point();
+        mainActivity.getWindowManager().getDefaultDisplay().getSize(size);
+        ViewGroup.LayoutParams params = widgetArea.getLayoutParams();
+        //TODO: Fix this! We assume the widget area size is 3x screen size
+        params.width = size.x * 3;
+        widgetArea.setLayoutParams(params);
+        widgetArea.scrollWidgets(.5f);
 
         restoreWidgets();
     }
@@ -74,6 +83,9 @@ class Widget extends Forwarder {
                 case REQUEST_PICK_APPWIDGET:
                     configureAppWidget(data);
                     break;
+                case REQUEST_REFRESH_APPWIDGET:
+                    refreshAppWidget(data);
+                    break;
             }
         } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
             //if widget was not selected, delete id
@@ -85,8 +97,12 @@ class Widget extends Forwarder {
     }
 
     boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.widget) {
-            if (!widgetUsed) {
+        if (item.getItemId() != R.id.widget) {
+            return false;
+        }
+
+        if (getWidgetHostViewCount() == 0) {
+            if (canAddWidget()) {
                 // request widget picker, a selection will lead to a call of onActivityResult
                 int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
                 Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
@@ -96,18 +112,35 @@ class Widget extends Forwarder {
                 // if we already have a widget we remove it
                 removeAllWidgets();
             }
-            return true;
+        } else {
+            WidgetMenu menu = new WidgetMenu(this);
+            if (canAddWidget())
+                menu.add(mainActivity, R.string.menu_widget_add);
+            for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
+                AppWidgetHostView hostView = getWidgetHostView(i);
+                if (hostView == null)
+                    continue;
+                AppWidgetProviderInfo info = hostView.getAppWidgetInfo();
+                String label;
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    label = info.label;
+                } else {
+                    label = info.loadLabel(mainActivity.getPackageManager());
+                }
+                menu.add(hostView.getAppWidgetId(), label);
+            }
+            mainActivity.registerPopup(menu.show(widgetArea));
         }
-
-        return false;
-    }
+        return true;
+  }
 
     void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if (prefs.getBoolean("history-hide", true)) {
-            if (widgetUsed) {
-                menu.findItem(R.id.widget).setTitle(R.string.menu_widget_remove);
-            } else {
-                menu.findItem(R.id.widget).setTitle(R.string.menu_widget_add);
+            if (getWidgetHostViewCount() == 0) {
+                if (canAddWidget())
+                    menu.findItem(R.id.widget).setTitle(R.string.menu_widget_add);
+                else
+                    menu.findItem(R.id.widget).setTitle(R.string.menu_widget_remove);
             }
         } else {
             menu.findItem(R.id.widget).setVisible(false);
@@ -115,7 +148,7 @@ class Widget extends Forwarder {
     }
 
     void onDataSetChanged() {
-        if (widgetUsed && mainActivity.adapter.isEmpty()) {
+        if ((getWidgetHostViewCount() > 0) && mainActivity.adapter.isEmpty()) {
             // when a widget is displayed the empty list would prevent touches on the widget
             mainActivity.emptyListView.setVisibility(View.GONE);
         }
@@ -125,9 +158,9 @@ class Widget extends Forwarder {
      * Restores all previously added widgets
      */
     private void restoreWidgets() {
-        HashMap<String, Integer> widgetIds = (HashMap<String, Integer>) widgetPrefs.getAll();
-        for (int appWidgetId : widgetIds.values()) {
-            addWidgetToLauncher(appWidgetId);
+        Map<String, ?> widgetIds = widgetPrefs.getAll();
+        for (String appWidgetId : widgetIds.keySet()) {
+            addWidgetToLauncher(Integer.parseInt(appWidgetId));
         }
     }
 
@@ -136,7 +169,7 @@ class Widget extends Forwarder {
      *
      * @param appWidgetId id of widget to add
      */
-    private void addWidgetToLauncher(int appWidgetId) {
+    private WidgetPreferences addWidgetToLauncher(int appWidgetId) {
         // only add widgets if in minimal mode (may need launcher restart when turned on)
         if (prefs.getBoolean("history-hide", true)) {
             // remove empty list view when using widgets, this would block touches on the widget
@@ -144,27 +177,80 @@ class Widget extends Forwarder {
             //add widget to view
             AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             if (appWidgetInfo == null) {
-                removeAllWidgets();
-                return;
+                //removeAllWidgets();
+                removeAppWidget(appWidgetId);
+                return null;
             }
             AppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, appWidgetId, appWidgetInfo);
             hostView.setMinimumHeight(appWidgetInfo.minHeight);
             hostView.setAppWidget(appWidgetId, appWidgetInfo);
-            if (Build.VERSION.SDK_INT > 15) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
             }
-            widgetArea.addView(hostView);
+            addWidgetHostView(hostView);
+
+            WidgetPreferences wp = new WidgetPreferences();
+            wp.load( hostView );
+            return wp;
         }
-        // only one widget allowed so widgetUsed is true now, even if not added to view
-        widgetUsed = true;
+        return null;
+    }
+
+    private void addWidgetHostView(final AppWidgetHostView hostView) {
+        String data = widgetPrefs.getString(String.valueOf(hostView.getAppWidgetId()), null);
+        WidgetPreferences wp = WidgetPreferences.unserialize(data);
+
+        int w = ViewGroup.LayoutParams.WRAP_CONTENT;
+        int h = ViewGroup.LayoutParams.WRAP_CONTENT;
+        if (wp != null) {
+            w = wp.width;
+            h = wp.height;
+        }
+
+        WidgetLayout.LayoutParams layoutParams = new WidgetLayout.LayoutParams(w, h);
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        if (wp != null)
+            wp.apply(layoutParams);
+
+        //hostView.setBackgroundColor(0x3F7f0000);
+        hostView.setLayoutParams(layoutParams);
+
+        widgetArea.post(new Runnable() {
+            @Override
+            public void run() {
+                widgetArea.addView(hostView);
+            }
+        });
+    }
+
+    private void removeWidgetHostView(AppWidgetHostView hostView) {
+        int childCount = widgetArea.getChildCount();
+        for (int i = 0; i < childCount; i += 1) {
+            if (widgetArea.getChildAt(i) == hostView) {
+                widgetArea.removeViewAt(i);
+                return;
+            }
+        }
+    }
+
+    private AppWidgetHostView getWidgetHostView(int index) {
+        return (AppWidgetHostView) widgetArea.getChildAt(index);
+    }
+
+    private AppWidgetHostView getWidgetHostView(View view) {
+        return (AppWidgetHostView) view;
+    }
+
+    private int getWidgetHostViewCount() {
+        return widgetArea.getChildCount();
     }
 
     /**
      * Removes all widgets from the launcher
      */
     private void removeAllWidgets() {
-        while (widgetArea.getChildCount() > 0) {
-            AppWidgetHostView widget = (AppWidgetHostView) widgetArea.getChildAt(0);
+        while (getWidgetHostViewCount() > 0) {
+            AppWidgetHostView widget = getWidgetHostView(0);
             removeAppWidget(widget);
         }
     }
@@ -177,14 +263,26 @@ class Widget extends Forwarder {
     private void removeAppWidget(AppWidgetHostView hostView) {
         // remove widget from view
         int appWidgetId = hostView.getAppWidgetId();
+        removeAppWidget(appWidgetId);
+        removeWidgetHostView(hostView);
+    }
+
+    /**
+     * Removes a single widget and deletes it from persistent prefs
+     *
+     * @param appWidgetId id of widget that should get removed
+     */
+    private void removeAppWidget(int appWidgetId) {
+        // remove widget from view
         mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-        widgetArea.removeView(hostView);
         // remove widget id from persistent prefs
         SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
         widgetPrefsEditor.remove(String.valueOf(appWidgetId));
         widgetPrefsEditor.apply();
-        // only one widget allowed so widgetUsed is false now
-        widgetUsed = false;
+    }
+
+    private boolean canAddWidget() {
+        return true;
     }
 
     /**
@@ -195,10 +293,11 @@ class Widget extends Forwarder {
     private void addAppWidget(Intent data) {
         int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         //add widget
-        addWidgetToLauncher(appWidgetId);
+        WidgetPreferences wp = addWidgetToLauncher(appWidgetId);
+
         // Save widget in preferences
         SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
-        widgetPrefsEditor.putInt(String.valueOf(appWidgetId), appWidgetId);
+        widgetPrefsEditor.putString(String.valueOf(appWidgetId), WidgetPreferences.serialize(wp));
         widgetPrefsEditor.apply();
     }
 
@@ -223,6 +322,62 @@ class Widget extends Forwarder {
         } else {
             // Otherwise, finish adding the widget.
             addAppWidget(data);
+        }
+    }
+
+    private void refreshAppWidget(Intent intent) {
+        int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
+        WidgetPreferences wp = WidgetPreferences.unserialize(data);
+        if (wp == null)
+            return;
+        for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
+            AppWidgetHostView hostView = getWidgetHostView(i);
+            if (hostView.getAppWidgetId() == appWidgetId) {
+                WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
+                wp.apply(layoutParams);
+                hostView.setLayoutParams(layoutParams);
+                break;
+            }
+        }
+    }
+
+    public void onWallpaperScroll(float fCurrent) {
+        widgetArea.scrollWidgets(fCurrent);
+    }
+
+    @Override
+    public void onWidgetAdd() {
+        // request widget picker, a selection will lead to a call of onActivityResult
+        int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+        Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
+        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        mainActivity.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
+    }
+
+    @Override
+    public void onWidgetEdit(int appWidgetId) {
+        for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
+            AppWidgetHostView hostView = getWidgetHostView(i);
+            if (hostView.getAppWidgetId() == appWidgetId) {
+                String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
+                WidgetPreferences wp = WidgetPreferences.unserialize(data);
+                if (wp == null)
+                    wp = new WidgetPreferences();
+                wp.showEditMenu(mainActivity, widgetPrefs, hostView);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onWidgetRemove(int appWidgetId) {
+        for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
+            AppWidgetHostView hostView = getWidgetHostView(i);
+            if (hostView.getAppWidgetId() == appWidgetId) {
+                removeAppWidget(hostView);
+                break;
+            }
         }
     }
 }
