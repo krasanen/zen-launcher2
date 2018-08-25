@@ -3,23 +3,196 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:id="@+id/main"
     android:orientation="vertical">
 
     <!--<fr.neamar.kiss.ui.NoTouchScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:fillViewport="true">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:fillViewport="true">-->
 
-    <fr.neamar.kiss.ui.WidgetLayout
-        android:id="@+id/widgetLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/resultLayout"
-        android:layout_alignParentTop="true"
-        android:gravity="center">
+        <fr.neamar.kiss.ui.WidgetLayout
+            android:id="@+id/widgetLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/resultLayout"
+            android:layout_alignParentTop="true"
+            android:gravity="center">
 
-    </fr.neamar.kiss.ui.WidgetLayout>
+        </fr.neamar.kiss.ui.WidgetLayout>
     <!--</fr.neamar.kiss.ui.NoTouchScrollView>-->
+
+    <RelativeLayout
+        android:id="@+id/letters"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/A"
+                style="@style/alphabetTextView"
+                android:tag="A"
+                android:text="A" />
+
+            <TextView
+                android:id="@+id/B"
+                style="@style/alphabetTextView"
+                android:tag="B"
+                android:text="B" />
+
+            <TextView
+                android:id="@+id/C"
+                style="@style/alphabetTextView"
+                android:tag="C"
+                android:text="C" />
+
+            <TextView
+                android:id="@+id/D"
+                style="@style/alphabetTextView"
+                android:tag="D"
+                android:text="D" />
+
+            <TextView
+                android:id="@+id/E"
+                style="@style/alphabetTextView"
+                android:tag="E"
+                android:text="E" />
+
+            <TextView
+                android:id="@+id/F"
+                style="@style/alphabetTextView"
+                android:tag="F"
+                android:text="F" />
+
+            <TextView
+                android:id="@+id/G"
+                style="@style/alphabetTextView"
+                android:tag="G"
+                android:text="G" />
+
+            <TextView
+                android:id="@+id/H"
+                style="@style/alphabetTextView"
+                android:tag="H"
+                android:text="H" />
+
+            <TextView
+                android:id="@+id/I"
+                style="@style/alphabetTextView"
+                android:tag="I"
+                android:text="I" />
+
+            <TextView
+                android:id="@+id/J"
+                style="@style/alphabetTextView"
+                android:tag="J"
+                android:text="J" />
+
+            <TextView
+                android:id="@+id/K"
+                style="@style/alphabetTextView"
+                android:tag="K"
+                android:text="K" />
+
+            <TextView
+                android:id="@+id/L"
+                style="@style/alphabetTextView"
+                android:tag="L"
+                android:text="L" />
+
+            <TextView
+                android:id="@+id/M"
+                style="@style/alphabetTextView"
+                android:tag="M"
+                android:text="M" />
+
+            <TextView
+                android:id="@+id/N"
+                style="@style/alphabetTextView"
+                android:tag="N"
+                android:text="N" />
+
+            <TextView
+                android:id="@+id/O"
+                style="@style/alphabetTextView"
+                android:tag="O"
+                android:text="O" />
+
+            <TextView
+                android:id="@+id/P"
+                style="@style/alphabetTextView"
+                android:tag="P"
+                android:text="P" />
+
+            <TextView
+                android:id="@+id/R"
+                style="@style/alphabetTextView"
+                android:tag="R"
+                android:text="R" />
+
+            <TextView
+                android:id="@+id/Q"
+                style="@style/alphabetTextView"
+                android:tag="Q"
+                android:text="Q" />
+
+            <TextView
+                android:id="@+id/S"
+                style="@style/alphabetTextView"
+                android:tag="S"
+                android:text="S" />
+
+            <TextView
+                android:id="@+id/T"
+                style="@style/alphabetTextView"
+                android:tag="T"
+                android:text="T" />
+
+            <TextView
+                android:id="@+id/U"
+                style="@style/alphabetTextView"
+                android:tag="U"
+                android:text="U" />
+
+            <TextView
+                android:id="@+id/V"
+                style="@style/alphabetTextView"
+                android:tag="V"
+                android:text="V" />
+
+            <TextView
+                android:id="@+id/W"
+                style="@style/alphabetTextView"
+                android:tag="W"
+                android:text="W" />
+
+            <TextView
+                android:id="@+id/X"
+                style="@style/alphabetTextView"
+                android:tag="X"
+                android:text="X" />
+
+            <TextView
+                android:id="@+id/Y"
+                style="@style/alphabetTextView"
+                android:tag="Y"
+                android:text="Y" />
+
+            <TextView
+                android:id="@+id/Z"
+                style="@style/alphabetTextView"
+                android:tag="Z"
+                android:text="Z" />
+
+        </LinearLayout>
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/resultLayout"
@@ -29,9 +202,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="false"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
         android:background="?attr/listBackgroundColor"
         android:elevation="2dp"
@@ -48,7 +221,8 @@
             android:divider="?attr/dividerDrawable"
             android:dividerHeight="1dp"
             android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"
+            android:fastScrollEnabled="true"
+            android:fastScrollAlwaysVisible="true"
             tools:listitem="@layout/item_app" />
 
         <fr.neamar.kiss.ui.BottomPullEffectView
@@ -61,11 +235,10 @@
 
     <LinearLayout
         android:id="@+id/externalFavoriteBar"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="80dp"
         android:layout_above="@+id/searchEditLayout"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:background="?attr/searchBackgroundColor"
@@ -75,77 +248,195 @@
         android:orientation="horizontal"
         tools:ignore="UnusedAttribute">
 
-        <ImageView
-            android:id="@+id/favorite0"
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/appSelectableItemBackground"
-            android:contentDescription="@null"
-            android:padding="@dimen/favorite_padding"
-            android:tag="0"
-            tools:ignore="DuplicateIncludedIds"
-            tools:src="@drawable/ic_contact" />
 
-        <ImageView
-            android:id="@+id/favorite1"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="0px"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="?attr/appSelectableItemBackground"
-            android:contentDescription="@null"
-            android:padding="@dimen/favorite_padding"
-            android:tag="1"
-            tools:ignore="DuplicateIncludedIds"
-            tools:src="@drawable/ic_contact" />
+            android:layout_height="match_parent" >
 
-        <ImageView
-            android:id="@+id/favorite2"
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/appSelectableItemBackground"
-            android:contentDescription="@null"
-            android:padding="@dimen/favorite_padding"
-            android:tag="2"
-            tools:ignore="DuplicateIncludedIds"
-            tools:src="@drawable/ic_contact" />
+            <ImageView
+                android:id="@+id/favorite0"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="top"
+                android:background="?attr/appSelectableItemBackground"
+                android:contentDescription="@null"
+                android:padding="@dimen/favorite_padding"
+                android:tag="0"
+                tools:ignore="DuplicateIncludedIds"
+                tools:src="@drawable/ic_contact" />
 
-        <ImageView
-            android:id="@+id/favorite3"
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/appSelectableItemBackground"
-            android:contentDescription="@null"
-            android:padding="@dimen/favorite_padding"
-            android:tag="3"
-            tools:ignore="DuplicateIncludedIds"
-            tools:src="@drawable/ic_contact" />
+            <TextView
+                android:id="@+id/favorite0text"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:textColor="@color/kiss_text_on_light"
+                android:gravity="center"
+                android:shadowColor="@color/kiss_text_on_semi_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"/>
 
-        <ImageView
-            android:id="@+id/favorite4"
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/appSelectableItemBackground"
-            android:contentDescription="@null"
-            android:padding="@dimen/favorite_padding"
-            android:tag="4"
-            tools:ignore="DuplicateIncludedIds"
-            tools:src="@drawable/ic_contact" />
 
-        <ImageView
-            android:id="@+id/favorite5"
+        </RelativeLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="0px"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="?attr/appSelectableItemBackground"
-            android:contentDescription="@null"
-            android:padding="@dimen/favorite_padding"
-            android:tag="5"
-            tools:ignore="DuplicateIncludedIds"
-            tools:src="@drawable/ic_contact" />
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/favorite1"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="top"
+                android:background="?attr/appSelectableItemBackground"
+                android:contentDescription="@null"
+                android:padding="@dimen/favorite_padding"
+                android:tag="1"
+                tools:ignore="DuplicateIncludedIds"
+                tools:src="@drawable/ic_contact" />
+
+            <TextView
+                android:id="@+id/favorite1text"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:textColor="@color/kiss_text_on_light"
+                android:gravity="center"
+                android:shadowColor="@color/kiss_text_on_semi_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"/>
+        </RelativeLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="0px"
+            android:layout_weight="1"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/favorite2"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="top"
+                android:background="?attr/appSelectableItemBackground"
+                android:contentDescription="@null"
+                android:padding="@dimen/favorite_padding"
+                android:tag="2"
+                tools:ignore="DuplicateIncludedIds"
+                tools:src="@drawable/ic_contact" />
+
+            <TextView
+                android:id="@+id/favorite2text"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:textColor="@color/kiss_text_on_light"
+                android:gravity="center"
+                android:shadowColor="@color/kiss_text_on_semi_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"/>
+        </RelativeLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="0px"
+            android:layout_weight="1"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/favorite3"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="top"
+                android:background="?attr/appSelectableItemBackground"
+                android:contentDescription="@null"
+                android:padding="@dimen/favorite_padding"
+                android:tag="3"
+                tools:ignore="DuplicateIncludedIds"
+                tools:src="@drawable/ic_contact" />
+
+            <TextView
+                android:id="@+id/favorite3text"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:textColor="@color/kiss_text_on_light"
+                android:gravity="center"
+                android:shadowColor="@color/kiss_text_on_semi_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"/>
+        </RelativeLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="0px"
+            android:layout_weight="1"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/favorite4"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="top"
+                android:background="?attr/appSelectableItemBackground"
+                android:contentDescription="@null"
+                android:padding="@dimen/favorite_padding"
+                android:tag="4"
+                tools:ignore="DuplicateIncludedIds"
+                tools:src="@drawable/ic_contact" />
+
+            <TextView
+                android:id="@+id/favorite4text"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:textColor="@color/kiss_text_on_light"
+                android:gravity="center"
+                android:shadowColor="@color/kiss_text_on_semi_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"/>
+        </RelativeLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="0px"
+            android:layout_weight="1"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/favorite5"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="top"
+                android:background="?attr/appSelectableItemBackground"
+                android:contentDescription="@null"
+                android:padding="@dimen/favorite_padding"
+                android:tag="5"
+                tools:ignore="DuplicateIncludedIds"
+                tools:src="@drawable/ic_contact" />
+
+            <TextView
+                android:id="@+id/favorite5text"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:textColor="@color/kiss_text_on_light"
+                android:gravity="center"
+                android:shadowColor="@color/kiss_text_on_semi_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <RelativeLayout
