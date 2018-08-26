@@ -24,8 +24,6 @@ android {
         targetSdkVersion 27
         versionName=buildTimeStamp() + "@" +gitLastCommit()
         versionCode=gitVersion()
-        versionCode 137
-        versionName "3.5.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
