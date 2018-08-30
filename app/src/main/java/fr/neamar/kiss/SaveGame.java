@@ -40,6 +40,7 @@ public class SaveGame implements Serializable {
     // serialization format version
     private static final String SERIAL_VERSION = "1.1";
     private String json;
+    private String jsonWidgets;
     private byte[] data = null;
     private byte[] database = null;
 
@@ -48,14 +49,19 @@ public class SaveGame implements Serializable {
         return data;
     }
 
-    public SaveGame(String serializedSettings, ByteArrayOutputStream screenShotWallPaper, ByteArrayOutputStream database) {
+    public SaveGame(String serializedSettings, String serializedWidgetSettings,  ByteArrayOutputStream screenShotWallPaper, ByteArrayOutputStream database) {
         this.json = serializedSettings;
+        this.jsonWidgets = serializedWidgetSettings;
         this.data = screenShotWallPaper.toByteArray();
         this.database = database.toByteArray();
     }
 
-    public String getSaveGame(){
+    public String getSavedSettings(){
         return this.json;
+    }
+
+    public String getSavedWidgets(){
+        return this.jsonWidgets;
     }
 
     public byte[] getDataBase() {

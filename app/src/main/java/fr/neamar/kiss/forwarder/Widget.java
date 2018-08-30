@@ -25,7 +25,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     private static final int REQUEST_CREATE_APPWIDGET = 5;
 
     private static final int APPWIDGET_HOST_ID = 442;
-    private static final String WIDGET_PREFERENCE_ID = "widgetprefs";
+    public static final String WIDGET_PREFERENCE_ID = "widgetprefs";
 
     private SharedPreferences widgetPrefs;
 

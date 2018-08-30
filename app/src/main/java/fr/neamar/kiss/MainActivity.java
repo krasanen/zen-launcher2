@@ -7,10 +7,8 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -27,13 +25,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -54,7 +48,6 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -88,7 +81,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,13 +99,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import fi.zmengames.zlauncher.ContactsProjection;
-import fi.zmengames.zlauncher.GracenoteMusicID;
-import fi.zmengames.zlauncher.HTTPSender;
 import fi.zmengames.zlauncher.HistoryDetails;
-import fi.zmengames.zlauncher.IdNowService;
 import fi.zmengames.zlauncher.LauncherService;
-import fi.zmengames.zlauncher.WavAudioRecorder;
 import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
@@ -134,11 +121,13 @@ import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
+import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import static android.graphics.Bitmap.createBitmap;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
+import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -290,7 +279,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Set the data payload for the snapshot.
         Log.d(TAG, "writeSnapshot");
         try {
-            mSaveGame = new SaveGame(getSerializedSettings2(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
+            mSaveGame = new SaveGame(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
         } catch (JSONException e) {
             Log.d(TAG, "writeSnapshot exception:" + e);
         }
@@ -912,7 +901,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 } catch (JSONException e) {
                     serializedSettings = e.toString();
                 }
-                intent.putExtra(Intent.EXTRA_TEXT, serializedSettings);
+                String serializedWidgetSettings;
+                try {
+                    serializedWidgetSettings = getSerializedWidgetSettings();
+                } catch (JSONException e) {
+                    serializedWidgetSettings = e.toString();
+                }
+                intent.putExtra(Intent.EXTRA_TEXT, serializedSettings+serializedWidgetSettings);
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Z-Launcher_settings" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
                 intent.setType("application/json");
                 startActivity(Intent.createChooser(intent, getString(R.string.share_settings)));
@@ -1040,9 +1035,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             //}
         }
 
+
         return json.toString(1);
     }
+    private String getSerializedWidgetSettings() throws JSONException {
+        Map<String, ?> tags;
+        SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
+        tags = prefsWidget.getAll();
+        JSONObject jsonWidget = new JSONObject(tags);
+        for (Map.Entry<String, ?> entry : tags.entrySet()) {
+            Object v = entry.getValue();
+            String key = entry.getKey();
+          /*  if (key.equals("favorite-apps-list")){
+                json.putOpt(key, v + "_!_" + "java.util.HashSet");
+            } else { */
+            jsonWidget.putOpt(key, v + "_!_" + v.getClass().getSimpleName());
+            //}
+        }
 
+        Log.d(TAG,"getSerializedWidgetSettings:"+jsonWidget.toString(1));
+        return jsonWidget.toString(1);
+    }
 
     private void loadSavedGame(Snapshot snapshot) throws IOException {
         try {
@@ -1050,7 +1063,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
             int count = 0;
             try {
-                count = loadJson(mSaveGame.getSaveGame());
+                count = loadJson(mSaveGame.getSavedSettings());
+            } catch (Exception e) {
+                Log.e(TAG, "can't load tags", e);
+                Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
+            }
+            Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
+            try {
+                count = loadWidgetJson(mSaveGame.getSavedWidgets());
             } catch (Exception e) {
                 Log.e(TAG, "can't load tags", e);
                 Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
@@ -1122,6 +1142,62 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
         //forwarderManager.onDataSetChanged();
         //KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
+
+        return count;
+    }
+
+    private int loadWidgetJson(String jsonText) throws JSONException {
+        int count = 0;
+        TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
+        Log.d(TAG, "jsonText:" + jsonText);
+        JSONObject json = new JSONObject(jsonText);
+        Iterator<String> iter = json.keys();
+        SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = prefsWidget.edit();
+        String booleanClassname = "Boolean";
+        String stringClassname = "String";
+        String hashsetClassname = "HashSet";
+
+        while (iter.hasNext()) {
+            String key = iter.next();
+            String[] values = json.get(key).toString().split("_!_");
+            String value = values[0];
+            String classValue = values[1];
+
+            Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+            if (classValue.equals(booleanClassname)) {
+                Log.d(TAG, "putBoolean");
+                editor.putBoolean(key, Boolean.parseBoolean(value));
+            } else if (classValue.equals(stringClassname)) {
+                Log.d(TAG, "putString");
+                editor.putString(key, value);
+            } else if (classValue.equals(hashsetClassname)) {
+                Log.d(TAG, "putStringSet:"+value);
+                String[] hsets = value.substring(1,value.length()-1).split(", ");
+                Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
+                editor.putStringSet(key, hs);
+            } else if (key.equals("tags")) {
+                Log.d(TAG, "value:" + value);
+                String toparse = value.substring(1, value.length() - 1);
+                Log.d(TAG, "toparse:" + toparse);
+                if (!toparse.isEmpty()) {
+                    String[] values2 = toparse.split(", ");
+                    for (int i = 0; i < values2.length; i++) {
+                        Log.d(TAG, "values2:" + values2[i]);
+                        String[] app = values2[i].split("=");
+                        Log.d(TAG, "appId:" + app[0]);
+                        Log.d(TAG, "tagsForApp:" + app[1]);
+                        tagsHandler.setTags(app[0], app[1]);
+                    }
+                }
+            }
+            editor.commit();
+            count += 1;
+        }
+        //forwarderManager.onDataSetChanged();
+        //KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
+
         return count;
     }
 
