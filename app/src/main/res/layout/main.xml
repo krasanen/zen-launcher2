@@ -222,7 +222,8 @@
             android:dividerHeight="1dp"
             android:stackFromBottom="true"
             android:fastScrollEnabled="true"
-            android:fastScrollAlwaysVisible="true"
+
+            android:transcriptMode="alwaysScroll"
             tools:listitem="@layout/item_app" />
 
         <fr.neamar.kiss.ui.BottomPullEffectView
@@ -235,6 +236,7 @@
 
     <LinearLayout
         android:id="@+id/externalFavoriteBar"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_above="@+id/searchEditLayout"
