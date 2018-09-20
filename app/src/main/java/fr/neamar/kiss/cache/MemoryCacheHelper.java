@@ -50,6 +50,14 @@ public class MemoryCacheHelper {
         new AsyncAppIconLoad(context, className, userHandle, null).execute();
     }
 
+    @Nullable
+    public static Drawable getCachedAppIconDrawable(ComponentName className, UserHandle userHandle) {
+        AppIconHandle handle = new AppIconHandle(className, userHandle);
+        synchronized (sAppIconCache) {
+            return sAppIconCache.get(handle);
+        }
+    }
+
     private static class AsyncAppIconLoad extends AsyncTask<Void, Void, Drawable> {
         final WeakReference<Context> contextRef;
         final ComponentName className;
