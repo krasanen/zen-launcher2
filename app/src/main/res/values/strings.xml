@@ -286,4 +286,6 @@
     <string name="flashlight_on">Flashlight On</string>
     <string name="flashlight_off">Flashlight Off</string>
     <string name="pref_hide_circle">Hide Z-icon</string>
+    <string name="keep_icons_in_memory_title">Keep icons in memory</string>
+    <string name="keep_icons_in_memory_desc">Keep all app icons in memory.</string>
 </resources>

@@ -2,6 +2,7 @@ package fr.neamar.kiss.cache;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import androidx.annotation.NonNull;
@@ -16,13 +17,10 @@ import fr.neamar.kiss.utils.UserHandle;
 public class MemoryCacheHelper {
 
     private static final HashMap<AppIconHandle, Drawable> sAppIconCache = new HashMap<>();
-
-    public static <T> void getAppIconDrawable(@NonNull Context context, ComponentName className, UserHandle userHandle, @NonNull OnDrawableReady<T> callback) {
-        new AsyncAppIconLoad(context, className, userHandle, callback).execute();
-    }
+    private static boolean sPrefNoCache = false;
 
     /**
-     * This is called from the async task. To prevent accidents, do not access sAppIconCache without a sync block
+     * If the app icon is not found in the cache we load it. Else return cache value. Synchronous function.
      *
      * @param context    context to use
      * @param className  app
@@ -31,6 +29,17 @@ public class MemoryCacheHelper {
      */
     public static Drawable getAppIconDrawable(@NonNull Context context, ComponentName className, UserHandle userHandle) {
         AppIconHandle handle = new AppIconHandle(className, userHandle);
+        return getAppIconDrawable(context, handle);
+    }
+
+    /**
+     * This is called from the async task. To prevent accidents, do not access sAppIconCache without a sync block
+     *
+     * @param context context to use
+     * @param handle  wrapper for app name
+     * @return app icon drawable from cache
+     */
+    private static Drawable getAppIconDrawable(@NonNull Context context, AppIconHandle handle) {
         Drawable drawable;
         synchronized (sAppIconCache) {
             drawable = sAppIconCache.get(handle);
@@ -39,15 +48,26 @@ public class MemoryCacheHelper {
                 if (sAppIconCache.containsKey(handle))
                     return null;
                 drawable = KissApplication.getApplication(context).getIconsHandler()
-                        .getDrawableIconForPackage(className, userHandle);
-                sAppIconCache.put(handle, drawable);
+                        .getDrawableIconForPackage(handle.componentName, handle.userHandle);
+                if (!sPrefNoCache)
+                    sAppIconCache.put(handle, drawable);
             }
         }
         return drawable;
     }
 
     public static void cacheAppIconDrawable(@NonNull Context context, ComponentName className, UserHandle userHandle) {
-        new AsyncAppIconLoad(context, className, userHandle, null).execute();
+        if (sPrefNoCache)
+            return;
+        AppIconHandle handle = new AppIconHandle(className, userHandle);
+        if (!sAppIconCache.containsKey(handle))
+            new AsyncAppIconLoad(context, handle).execute();
+    }
+
+    public static void trimMemory() {
+        synchronized (sAppIconCache) {
+            sAppIconCache.clear();
+        }
     }
 
     @Nullable
@@ -58,17 +78,19 @@ public class MemoryCacheHelper {
         }
     }
 
+    public static void updatePreferences(SharedPreferences prefs) {
+        sPrefNoCache = !prefs.getBoolean("keep-icons-in-memory", false);
+        if (sPrefNoCache)
+            trimMemory();
+    }
+
     private static class AsyncAppIconLoad extends AsyncTask<Void, Void, Drawable> {
         final WeakReference<Context> contextRef;
-        final ComponentName className;
-        final UserHandle userHandle;
-        final OnDrawableReady callback;
+        final AppIconHandle handle;
 
-        public AsyncAppIconLoad(@NonNull Context context, ComponentName className, UserHandle userHandle, @Nullable OnDrawableReady callback) {
+        public AsyncAppIconLoad(@NonNull Context context, AppIconHandle handle) {
             this.contextRef = new WeakReference<>(context);
-            this.className = className;
-            this.userHandle = userHandle;
-            this.callback = callback;
+            this.handle = handle;
         }
 
         @Override
@@ -76,19 +98,11 @@ public class MemoryCacheHelper {
             Context context = contextRef.get();
             if (isCancelled() || context == null)
                 return null;
-            return getAppIconDrawable(context, className, userHandle);
-        }
-
-        @Override
-        protected void onPostExecute(Drawable drawable) {
-            super.onPostExecute(drawable);
-            if (isCancelled() || callback == null)
-                return;
-            callback.onDrawableReady(drawable);
+            return getAppIconDrawable(context, handle.componentName, handle.userHandle);
         }
     }
 
-    static class AppIconHandle implements Comparable<AppIconHandle> {
+    private static class AppIconHandle implements Comparable<AppIconHandle> {
         final ComponentName componentName;
         final UserHandle userHandle;
 
@@ -118,17 +132,7 @@ public class MemoryCacheHelper {
 
         @Override
         public int compareTo(@NonNull AppIconHandle o) {
-            return 0;
+            return userHandle.equals(o.userHandle) ? componentName.compareTo(o.componentName) : (userHandle.hashCode() - o.userHandle.hashCode());
         }
-    }
-
-    public abstract static class OnDrawableReady<T> {
-        public T data;
-
-        public OnDrawableReady(T data) {
-            this.data = data;
-        }
-
-        public abstract void onDrawableReady(@Nullable Drawable drawable);
     }
 }

@@ -114,6 +114,8 @@ import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.forwarder.ExperienceTweaks;
+
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.forwarder.Widget;
 import fr.neamar.kiss.result.Result;
@@ -464,6 +466,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        MemoryCacheHelper.updatePreferences( prefs );
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile.
