@@ -226,7 +226,7 @@ class ExperienceTweaks extends Forwarder {
     int numberOfTaps = 0;
     long lastTapTimeMs = 0;
     long touchDownMs = 0;
-    void onTouch(View view, MotionEvent event) {
+    boolean onTouch(View view, MotionEvent event) {
         // Forward touch events to the gesture detector
         gd.onTouchEvent(event);
         sgd.onTouchEvent(event);
@@ -251,7 +251,10 @@ class ExperienceTweaks extends Forwarder {
                 } else {
                     numberOfTaps = 1;
                     Log.d(TAG,"onetap");
-                    onSingleTap();
+                    if (!onSingleTap()) {
+                        Log.d(TAG,"no action for singletap");
+                    }
+
                 }
 
                 lastTapTimeMs = System.currentTimeMillis();
@@ -274,10 +277,14 @@ class ExperienceTweaks extends Forwarder {
                         }
                     }, ViewConfiguration.getDoubleTapTimeout());
                 }
+                break;
+            default:
+                return false;
         }
+        return true;
     }
 
-    public void onSingleTap() {
+    public boolean onSingleTap() {
         // if minimalistic mode is enabled,
         if (!scaling && isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
             // and we're currently in minimalistic mode with no results,
@@ -285,13 +292,16 @@ class ExperienceTweaks extends Forwarder {
             if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
                 if ((mainActivity.list.getAdapter() == null) || (mainActivity.list.getAdapter().isEmpty())) {
                     mainActivity.runTask(new HistorySearcher(mainActivity));
+                    return true;
                 }
             }
         }
 
         if (isMinimalisticModeEnabledForFavorites()) {
             mainActivity.favoritesBar.setVisibility(View.VISIBLE);
+            return true;
         }
+        return false;
     }
 
     public void onDoubleTap() {

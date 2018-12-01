@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -45,7 +47,7 @@ public class ContactsResult extends Result {
     }
 
     @Override
-    public View display(Context context, int position, View convertView, FuzzyScore fuzzyScore) {
+    public View display(Context context, int position, final View convertView, FuzzyScore fuzzyScore) {
         View view = convertView;
         if (convertView == null)
             view = inflateFromId(context, R.layout.item_contact);
@@ -88,24 +90,33 @@ public class ContactsResult extends Result {
         });
 
         int primaryColor = UIColors.getPrimaryColor(context);
-        int secondaryColor = UIColors.COLOR_DEFAULT;
-        // Phone action
-        ImageButton phoneButton = view.findViewById(R.id.item_contact_action_phone);
-        phoneButton.setColorFilter(primaryColor);
 
         // SOME call
-        ImageButton someCallButton = view.findViewById(R.id.item_contact_action_some_call);
+        final ImageButton someCallButton = view.findViewById(R.id.item_contact_action_some_call);
+        if (contactPojo.whatsAppCalling != 0) {
+            someCallButton.setImageResource(R.drawable.callwhatsapp);
+        } else if (contactPojo.SignalCalling != 0) {
+            someCallButton.setImageResource(R.drawable.no_cover_art);
+        } else if (contactPojo.faceCalling != 0) {
+            someCallButton.setImageResource(R.drawable.call_facebook);
+        }
+
+
         someCallButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (contactPojo.whatsAppCalling != 0) {
                     Log.d(TAG, "whatsAppCalling:" + contactPojo.whatsAppCalling);
+        //            someCallButton.setBackgroundResource(R.drawable.button_border_red);
                     openGenericSomeApp(contactPojo.whatsAppCalling, v.getContext());
                 } else if (contactPojo.SignalCalling != 0) {
                     Log.d(TAG, "SignalCalling:" + contactPojo.SignalCalling);
+        //            someCallButton.setBackgroundResource(R.drawable.button_border);
                     openGenericSomeApp(contactPojo.SignalCalling, v.getContext());
                 } else if (contactPojo.faceCalling != 0) {
+                    someCallButton.setImageResource(R.drawable.ic_functions);
                     Log.d(TAG, "faceCalling:" + contactPojo.faceCalling);
+        //            someCallButton.setBackgroundResource(R.drawable.border);
                     openFacebook(contactPojo.faceCalling, v.getContext(), true);
                 }
             }
@@ -139,6 +150,18 @@ public class ContactsResult extends Result {
             }
         });
         // SOME message button
+        if (contactPojo.whatsAppMessaging != 0) {
+            someMessageButton.setImageResource(R.drawable.message_cs);
+            someMessageButton.setColorFilter(R.color.kiss_greenwhatsapp);
+        } else if (contactPojo.signalMessaging != 0) {
+            someMessageButton.setImageResource(R.drawable.message_cs);
+            someMessageButton.setColorFilter(R.color.kiss_bluefacebook);
+        } else if (contactPojo.faceMessaging != 0) {
+            someMessageButton.setImageResource(R.drawable.message_cs);
+            someMessageButton.setColorFilter(R.color.kiss_bluefacebook);
+        }
+
+
         if (contactPojo.whatsAppMessaging != 0 ||
                 contactPojo.signalMessaging != 0 ||
                 contactPojo.faceMessaging != 0) {
@@ -147,8 +170,10 @@ public class ContactsResult extends Result {
         } else {
             someMessageButton.setVisibility(View.GONE);
         }
-
-
+        someMessageButton.setColorFilter(null);
+        // Phone action
+        ImageButton phoneButton = view.findViewById(R.id.item_contact_action_phone);
+        phoneButton.setColorFilter(primaryColor);
         // Message action
         ImageButton messageButton = view.findViewById(R.id.item_contact_action_message);
         messageButton.setColorFilter(primaryColor);

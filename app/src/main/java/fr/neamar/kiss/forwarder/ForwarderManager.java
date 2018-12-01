@@ -73,8 +73,10 @@ public class ForwarderManager extends Forwarder {
     }
 
     public boolean onTouch(View view, MotionEvent event) {
-        experienceTweaks.onTouch(view, event); // always return false anyway
-        return liveWallpaperForwarder.onTouch(view, event);
+        if (experienceTweaks.onTouch(view, event))
+            return true;
+        else
+            return liveWallpaperForwarder.onTouch(view, event);
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {

@@ -1612,6 +1612,20 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        Log.d(TAG,"dispatchTouchEvent: "+ev.getAction());
+        final float x = ev.getX();
+        final float y = ev.getY();
+        int location[] = new int[2];
+        searchEditText.getLocationOnScreen(location);
+        int viewX = location[0];
+        int viewY = location[1];
+
+        if(((x > viewX && x < (viewX + searchEditText.getWidth())) &&
+                (y > viewY && y < (viewY + searchEditText.getHeight())))) {
+            Log.d(TAG,"dispatchTouchEvent2: "+ev.getAction());
+            forwarderManager.onTouch(searchEditText, ev);
+        }
+
         if (mPopup != null && ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             dismissPopup();
             return true;
