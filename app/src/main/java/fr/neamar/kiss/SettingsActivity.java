@@ -1,4 +1,4 @@
-package fr.neamar.kiss;
+ package fr.neamar.kiss;
 
 import android.Manifest;
 import android.content.Intent;

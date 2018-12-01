@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import fr.neamar.kiss.dataprovider.IProvider;
+import fr.neamar.kiss.pojo.PhoneAddPojo;
 import fr.neamar.kiss.pojo.PhonePojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.searcher.Searcher;
@@ -26,6 +27,7 @@ public class PhoneProvider implements IProvider {
         // Append an item only if query looks like a phone number and device has phone capabilities
         if (deviceIsPhone && phonePattern.matcher(query).find()) {
             searcher.addResult(getResult(query));
+            searcher.addResult(getResultAdd(query));
         }
     }
 
@@ -57,6 +59,14 @@ public class PhoneProvider implements IProvider {
 
     private Pojo getResult(String phoneNumber) {
         PhonePojo pojo = new PhonePojo();
+        pojo.id = PHONE_SCHEME + phoneNumber;
+        pojo.phone = phoneNumber;
+        pojo.relevance = 20;
+        pojo.setName(phoneNumber, false);
+        return pojo;
+    }
+    private Pojo getResultAdd(String phoneNumber) {
+        PhoneAddPojo pojo = new PhoneAddPojo();
         pojo.id = PHONE_SCHEME + phoneNumber;
         pojo.phone = phoneNumber;
         pojo.relevance = 20;

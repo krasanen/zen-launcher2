@@ -34,6 +34,7 @@ import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.ContactsPojo;
+import fr.neamar.kiss.pojo.PhoneAddPojo;
 import fr.neamar.kiss.pojo.PhonePojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.SearchPojo;
@@ -63,6 +64,8 @@ public abstract class Result {
             return new SearchResult((SearchPojo) pojo);
         else if (pojo instanceof SettingsPojo)
             return new SettingsResult((SettingsPojo) pojo);
+        else if (pojo instanceof PhoneAddPojo)
+            return new AddPhoneResult((PhoneAddPojo) pojo);
         else if (pojo instanceof PhonePojo)
             return new PhoneResult((PhonePojo) pojo);
         else if (pojo instanceof ShortcutsPojo)
