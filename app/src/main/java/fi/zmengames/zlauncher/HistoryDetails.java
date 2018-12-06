@@ -73,15 +73,20 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 
-import static fi.zmengames.zlauncher.GracenoteMusicID.gnsdkClientId;
-import static fi.zmengames.zlauncher.GracenoteMusicID.gnsdkClientTag;
-import static fi.zmengames.zlauncher.GracenoteMusicID.gnsdkLicenseFilename;
+
 import static fi.zmengames.zlauncher.GracenoteMusicIDWidget.appString;
 
 /**
  * This class is used to render history detail into the screen.
  */
 public final class HistoryDetails extends Activity {
+
+    public static final String 				gnsdkClientId 			= "485123343";
+    public static final String 				gnsdkClientTag 			= "D5310AEAD2EBCEED3387025F2E996131";
+    public static final String 				gnsdkLicenseFilename 	= "license.txt";	// app expects this file as an "asset"
+    private static final String    		gnsdkLogFilename 		= "sample.log";
+    private static final String 		appString				= "GFM Sample";
+
     CheckBox deletecheckBox;
     DatabaseAdapter db = null;
     List<String> deleteId = new ArrayList<String>();
@@ -406,7 +411,7 @@ public final class HistoryDetails extends Activity {
 
 
         setContentView(R.layout.history_layout);
-        MainActivity.checkPermissionRecordAudio(this);
+                MainActivity.checkPermissionRecordAudio(this);
         historylist = (ListView) findViewById(R.id.HistoryList);
         historylist.setVisibility(View.VISIBLE);
         View launcherButton = findViewById(android.R.id.home);

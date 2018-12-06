@@ -318,8 +318,6 @@ class ExperienceTweaks extends Forwarder {
         } else {
             if (prefs.getBoolean("double-click-opens-apps", false)) {
                 mainActivity.launcherButton.performClick();
-            } else {
-                toggleScreenOnOff();
             }
         }
     }

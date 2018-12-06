@@ -8,6 +8,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.UiModeManager;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,7 +30,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -124,6 +127,7 @@ import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
+
 import static android.graphics.Bitmap.createBitmap;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
@@ -134,8 +138,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME = 13;
-    public static final int  MY_PERMISSIONS_REQUEST_READ_STORAGE = 14;
-    public static final int  MY_PERMISSIONS_RECORD_AUDIO = 15;
+    public static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 14;
+    public static final int MY_PERMISSIONS_RECORD_AUDIO = 15;
     // intent data that is the conflict id.  used when resolving a conflict.
     public static final String CONFLICT_ID = "conflictId";
 
@@ -366,8 +370,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-    public void checkPermissionReadStorage(Activity activity){
-        if (ContextCompat.checkSelfPermission(activity,      Manifest.permission.READ_EXTERNAL_STORAGE) !=     PackageManager.PERMISSION_GRANTED) {
+    public void checkPermissionReadStorage(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
@@ -391,8 +395,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
-    public static void checkPermissionRecordAudio(Activity activity){
-        if (ContextCompat.checkSelfPermission(activity,      Manifest.permission.RECORD_AUDIO) !=     PackageManager.PERMISSION_GRANTED) {
+
+    public void checkPermissionOverlay(Activity activity) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, 1234);
+            }
+        } else {
+            Log.d(TAG, "overlay permission ok");
+        }
+    }
+
+    public static void checkPermissionRecordAudio(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
@@ -417,7 +434,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    public void idNow(){
+    public void idNow() {
         Intent aboutScreen = new Intent(MainActivity.this, HistoryDetails.class);
         this.startActivity(aboutScreen);
 
@@ -431,10 +448,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
-
-
+        //setNightMode(this,true);
+        checkPermissionOverlay(this);
         EventBus.getDefault().register(this);
-        KissApplication.getApplication(this).initDataHandler();
+//        KissApplication.getApplication(this).initDataHandler();
 
         /*
          * Initialize preferences
@@ -536,7 +553,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isViewingAllApps()) {
-                    displayKissBar(false, false,false);
+                    displayKissBar(false, false, false);
                 }
                 String text = s.toString();
                 updateSearchRecords(text);
@@ -548,9 +565,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Fixes bug when dropping onto a textEdit widget which can cause a NPE
         // This fix should be on ALL TextEdit Widgets !!!
         // See : https://stackoverflow.com/a/23483957
-        searchEditText.setOnDragListener( new View.OnDragListener() {
+        searchEditText.setOnDragListener(new View.OnDragListener() {
             @Override
-            public boolean onDrag( View v, DragEvent event) {
+            public boolean onDrag(View v, DragEvent event) {
                 return true;
             }
         });
@@ -604,7 +621,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         initializeKeyboardListener();
 
     }
+
     Rect r = new Rect();
+
     private void initializeKeyboardListener() {
         emptyListView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -624,6 +643,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
             }
         });
+
+
     }
 
     @Override
@@ -686,7 +707,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
             onAccountChanged(account);
@@ -695,9 +715,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Log.d(TAG, "Not signed to Google!");
         }
     }
+
     boolean flashToggle;
-    public void toggleFlashLight(){
-        flashToggle=!flashToggle;
+
+    public void toggleFlashLight() {
+        flashToggle = !flashToggle;
         try {
             CameraManager cameraManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -715,6 +737,20 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Toast.makeText(getApplicationContext(), "Torch Failed: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
+
+    }
+
+    public static void setNightMode(Context target, boolean state) {
+
+        UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
+
+        if (state) {
+            //uiManager.enableCarMode(0);
+            uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+        } else {
+            // uiManager.disableCarMode(0);
+            uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+        }
 
     }
 
@@ -907,7 +943,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 } catch (JSONException e) {
                     serializedWidgetSettings = e.toString();
                 }
-                intent.putExtra(Intent.EXTRA_TEXT, serializedSettings+serializedWidgetSettings);
+                intent.putExtra(Intent.EXTRA_TEXT, serializedSettings + serializedWidgetSettings);
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Z-Launcher_settings" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
                 intent.setType("application/json");
                 startActivity(Intent.createChooser(intent, getString(R.string.share_settings)));
@@ -936,11 +972,23 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
             case R.id.signIn:
                 if (!mSignedIn) {
-                    Log.d(TAG,"signIn");
+                    Log.d(TAG, "signIn");
                     Intent signInIntent = new Intent(this, LauncherService.class);
                     signInIntent.setAction(LauncherService.GOOGLE_SIGN_IN);
-                    KissApplication.startLaucherService(signInIntent,this);
+                    KissApplication.startLaucherService(signInIntent, this);
                 }
+                return true;
+            case R.id.nightModeOn:
+                Log.d(TAG, "nightModeOn");
+                Intent nighton = new Intent(this, LauncherService.class);
+                nighton.setAction(LauncherService.NIGHTMODE_ON);
+                KissApplication.startLaucherService(nighton, this);
+                return true;
+            case R.id.nightModeOff:
+                Log.d(TAG, "nightModeOff");
+                Intent nightoff = new Intent(this, LauncherService.class);
+                nightoff.setAction(LauncherService.NIGHTMODE_OFF);
+                KissApplication.startLaucherService(nightoff, this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1019,7 +1067,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-
     String getSerializedSettings2() throws JSONException {
         Map<String, ?> tags;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1038,6 +1085,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         return json.toString(1);
     }
+
     private String getSerializedWidgetSettings() throws JSONException {
         Map<String, ?> tags;
         SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
@@ -1053,7 +1101,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             //}
         }
 
-        Log.d(TAG,"getSerializedWidgetSettings:"+jsonWidget.toString(1));
+        Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
         return jsonWidget.toString(1);
     }
 
@@ -1093,6 +1141,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }).start();
     }
+
     private int loadJson(String jsonText) throws JSONException {
         int count = 0;
         TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
@@ -1118,8 +1167,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 Log.d(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                Log.d(TAG, "putStringSet:"+value);
-                String[] hsets = value.substring(1,value.length()-1).split(", ");
+                Log.d(TAG, "putStringSet:" + value);
+                String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
@@ -1173,8 +1222,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 Log.d(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                Log.d(TAG, "putStringSet:"+value);
-                String[] hsets = value.substring(1,value.length()-1).split(", ");
+                Log.d(TAG, "putStringSet:" + value);
+                String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
@@ -1403,8 +1452,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -1430,6 +1477,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             this.menuButton.performHapticFeedback(LONG_PRESS);
         }
     }
+
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -1445,6 +1493,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             updateUI(null);
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -1552,7 +1601,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-
     public static String convertStreamToString(InputStream is) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
@@ -1612,7 +1660,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.d(TAG,"dispatchTouchEvent: "+ev.getAction());
+        Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
         final float x = ev.getX();
         final float y = ev.getY();
         int location[] = new int[2];
@@ -1620,9 +1668,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         int viewX = location[0];
         int viewY = location[1];
 
-        if(((x > viewX && x < (viewX + searchEditText.getWidth())) &&
+        if (((x > viewX && x < (viewX + searchEditText.getWidth())) &&
                 (y > viewY && y < (viewY + searchEditText.getHeight())))) {
-            Log.d(TAG,"dispatchTouchEvent2: "+ev.getAction());
+            Log.d(TAG, "dispatchTouchEvent2: " + ev.getAction());
             forwarderManager.onTouch(searchEditText, ev);
         }
 
@@ -1742,7 +1790,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     });
                     anim.setDuration(animationDuration);
                     anim.start();
-                } catch(IllegalStateException e) {
+                } catch (IllegalStateException e) {
                     // If the view hasn't been laid out yet, we can't animate it
                     kissBar.setVisibility(View.GONE);
                 }
@@ -1822,8 +1870,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             return;
         dismissPopup();
         mPopup = popup;
-        if ( popup instanceof ListPopup )
-            ((ListPopup)popup).setVisibilityHelper(systemUiVisibilityHelper);
+        if (popup instanceof ListPopup)
+            ((ListPopup) popup).setVisibilityHelper(systemUiVisibilityHelper);
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -1903,11 +1951,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (mPopup != null)
             mPopup.dismiss();
     }
+
     public static boolean isKeyboardVisible() {
         return mKeyboardVisible;
     }
 
-    public void showMatchingTags( String tag ) {
+    public void showMatchingTags(String tag) {
         runTask(new TagsSearcher(this, tag));
 
         clearButton.setVisibility(View.VISIBLE);
@@ -1920,6 +1969,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         clearButton.setVisibility(View.VISIBLE);
         menuButton.setVisibility(View.INVISIBLE);
     }
+
     public void onWallpaperScroll(float fCurrent) {
         forwarderManager.onWallpaperScroll(fCurrent);
     }

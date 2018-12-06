@@ -52,6 +52,10 @@ import java.util.List;
 
 import fr.neamar.kiss.R;
 
+import static fi.zmengames.zlauncher.HistoryDetails.gnsdkClientId;
+import static fi.zmengames.zlauncher.HistoryDetails.gnsdkClientTag;
+import static fi.zmengames.zlauncher.HistoryDetails.gnsdkLicenseFilename;
+
 public class 
 GracenoteMusicIDWidget {
 
@@ -100,7 +104,7 @@ GracenoteMusicIDWidget {
 		Log.i(appString, "GnInit()");
 		
 		// check the client id and tag have been set
-		if ( (GracenoteMusicID.gnsdkClientId == null) || (GracenoteMusicID.gnsdkClientTag == null) ){
+		if ( (gnsdkClientId == null) || (gnsdkClientTag == null) ){
 			setStatus("Please set Client ID and Client Tag" );
 			Log.e(appString, "client id/tag is null");
 			return;
@@ -108,12 +112,12 @@ GracenoteMusicIDWidget {
 		
 		// get the gnsdk license from the application assets
 		String gnsdkLicense = null;
-		if ( (GracenoteMusicID.gnsdkLicenseFilename == null) || (GracenoteMusicID.gnsdkLicenseFilename.length() == 0) ){
+		if ( (gnsdkLicenseFilename == null) || (gnsdkLicenseFilename.length() == 0) ){
 			 setStatus("License filename not set" );
 		} else {
-			gnsdkLicense = getAssetAsString( GracenoteMusicID.gnsdkLicenseFilename );
+			gnsdkLicense = getAssetAsString( gnsdkLicenseFilename );
 			if ( gnsdkLicense == null ){
-				setStatus( "License file not found: " + GracenoteMusicID.gnsdkLicenseFilename );
+				setStatus( "License file not found: " + gnsdkLicenseFilename );
 				return;
 			}
 		}
@@ -128,7 +132,7 @@ GracenoteMusicIDWidget {
 			
 			// get a user, if no user stored persistently a new user is registered and stored 
 			// Note: Android persistent storage used, so no GNSDK storage provider needed to store user
-			gnUser = new GnUser( new GnUserStore(context), GracenoteMusicID.gnsdkClientId, GracenoteMusicID.gnsdkClientTag, appString );
+			gnUser = new GnUser( new GnUserStore(context), gnsdkClientId, gnsdkClientTag, appString );
 
 			// enable storage provider allowing GNSDK to use its persistent stores
 			GnStorageSqlite.enable();

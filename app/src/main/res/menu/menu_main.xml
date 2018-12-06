@@ -51,4 +51,12 @@
         android:id="@+id/signIn"
         android:showAsAction="never"
         android:title="@string/common_signin_button_text" />
+    <item
+        android:id="@+id/nightModeOn"
+        android:showAsAction="always"
+        android:title="NightMode On" />
+    <item
+        android:id="@+id/nightModeOff"
+        android:showAsAction="always"
+        android:title="NightMode Off" />
 </menu>
