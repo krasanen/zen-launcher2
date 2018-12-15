@@ -38,7 +38,6 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
@@ -110,7 +109,6 @@ import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
-import fr.neamar.kiss.broadcast.IncomingSmsHandler;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.forwarder.ExperienceTweaks;
 import fr.neamar.kiss.forwarder.ForwarderManager;
@@ -129,13 +127,9 @@ import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
-import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import xiaofei.library.hermeseventbus.HermesEventBus;
-
-import static android.graphics.Bitmap.createBitmap;
-
 import static android.text.InputType.TYPE_CLASS_PHONE;
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
@@ -628,8 +622,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         );
         this.hider.start();
 
-        // Enable/disable phone/sms broadcast receiver
-        PackageManagerUtils.enableComponent(this, IncomingSmsHandler.class, prefs.getBoolean("enable-sms-history", false));
+        // Enable/disable phone broadcast receiver
         PackageManagerUtils.enableComponent(this, IncomingCallHandler.class, prefs.getBoolean("enable-phone-history", false));
 
         // Hide the "X" after the text field, instead displaying the menu button
