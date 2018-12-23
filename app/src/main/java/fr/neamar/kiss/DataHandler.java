@@ -135,7 +135,7 @@ public class DataHandler
         try {
             return new Intent(this.context, Class.forName(className.toString()));
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace(); // it is just not loaded yet
             return null;
         }
     }

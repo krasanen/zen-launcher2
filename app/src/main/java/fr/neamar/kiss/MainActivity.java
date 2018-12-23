@@ -30,7 +30,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -124,7 +123,6 @@ import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
-import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 
@@ -140,11 +138,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME = 13;
     public static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 14;
     public static final int MY_PERMISSIONS_RECORD_AUDIO = 15;
+    private static final int MY_PERMISSIONS_OVERLAY = 16;
+
     // intent data that is the conflict id.  used when resolving a conflict.
     public static final String CONFLICT_ID = "conflictId";
 
     // intent data that is the retry count for retrying the conflict resolution.
     public static final String RETRY_COUNT = "retrycount";
+
 
     /**
      * Adapter to display records
@@ -396,15 +397,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    public void checkPermissionOverlay(Activity activity) {
+    public boolean checkPermissionOverlay(Activity activity) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, 1234);
+                startActivityForResult(intent, MY_PERMISSIONS_OVERLAY);
+                return false;
             }
-        } else {
             Log.d(TAG, "overlay permission ok");
+            return true;
+        } else {
+            Log.d(TAG, "overlay permission ok, sdk:"+Build.VERSION.SDK_INT);
+            return true;
         }
     }
 
@@ -449,7 +454,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
         //setNightMode(this,true);
-        checkPermissionOverlay(this);
+
         EventBus.getDefault().register(this);
 //        KissApplication.getApplication(this).initDataHandler();
 
@@ -619,9 +624,47 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         forwarderManager.onCreate();
         initializeKeyboardListener();
+        Log.d(TAG,">setOnDragListener");
+        findViewById(R.id.letters).setOnTouchListener(new MyDragListener());
+        Log.d(TAG,"<setOnDragListener");
 
     }
 
+    public void onLaunchButtonClicked(View view) {
+    }
+
+    class MyDragListener implements View.OnTouchListener {
+        Drawable enterShape = getResources().getDrawable(
+                R.drawable.box_on);
+        Drawable normalShape = getResources().getDrawable(R.drawable.box_off);
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            int action = event.getAction();
+            Log.d(TAG,"onTouch");
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    // do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    v.setBackgroundDrawable(enterShape);
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    v.setBackgroundDrawable(normalShape);
+                    break;
+                case DragEvent.ACTION_DROP:
+                    // Dropped, reassign View to ViewGroup
+
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    v.setBackgroundDrawable(normalShape);
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }
+    }
     Rect r = new Rect();
 
     private void initializeKeyboardListener() {
@@ -740,16 +783,28 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
-    public static void setNightMode(Context target, boolean state) {
+    public void setNightMode(Context target, boolean state) {
+
 
         UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
 
         if (state) {
-            //uiManager.enableCarMode(0);
-            uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+            if (checkPermissionOverlay(this)){
+                uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+                Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
+                //setTheme(R.style.AppThemeDark);
+                //setContentView(R.layout.main);
+            }
+            else
+            {
+                Toast.makeText(getBaseContext(), "Retry after accepting permission",
+                        Toast.LENGTH_SHORT).show();
+            }
+
         } else {
             // uiManager.disableCarMode(0);
             uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+            Toast.makeText(this, "Night mode off", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -980,15 +1035,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
             case R.id.nightModeOn:
                 Log.d(TAG, "nightModeOn");
+                setNightMode(this, true);/*
                 Intent nighton = new Intent(this, LauncherService.class);
                 nighton.setAction(LauncherService.NIGHTMODE_ON);
-                KissApplication.startLaucherService(nighton, this);
+                KissApplication.startLaucherService(nighton, this); */
                 return true;
             case R.id.nightModeOff:
                 Log.d(TAG, "nightModeOff");
+                setNightMode(this, false); /*
                 Intent nightoff = new Intent(this, LauncherService.class);
                 nightoff.setAction(LauncherService.NIGHTMODE_OFF);
-                KissApplication.startLaucherService(nightoff, this);
+                KissApplication.startLaucherService(nightoff, this); */
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1499,6 +1556,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 
         switch (requestCode) {
+            case MY_PERMISSIONS_OVERLAY:
+                setNightMode(this, true);
+                break;
             case RC_SIGN_IN:
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 handleSignInResult(task);
@@ -1991,6 +2051,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             mServiceBound = true;
         }
     };
+
+    public void onClick(View view) {
+        Log.d(TAG,"onClick:"+view.getTag());
+        searchEditText.setText((CharSequence) view.getTag());
+        //displayKissBar(false,false,false);
+    }
+
 
     //
     //

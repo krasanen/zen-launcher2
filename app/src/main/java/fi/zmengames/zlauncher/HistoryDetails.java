@@ -74,7 +74,7 @@ import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 
 
-import static fi.zmengames.zlauncher.GracenoteMusicIDWidget.appString;
+
 
 /**
  * This class is used to render history detail into the screen.

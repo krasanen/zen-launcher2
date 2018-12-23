@@ -15,6 +15,7 @@
             android:id="@+id/widgetLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="14dp"
             android:layout_above="@+id/resultLayout"
             android:layout_alignParentTop="true"
             android:gravity="center">
@@ -22,177 +23,310 @@
         </fr.neamar.kiss.ui.WidgetLayout>
     <!--</fr.neamar.kiss.ui.NoTouchScrollView>-->
 
-    <RelativeLayout
+
+    <LinearLayout
         android:id="@+id/letters"
-
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end">
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="end"
+        android:hapticFeedbackEnabled="true"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:gravity="end"
-            android:orientation="vertical">
+        <TextView
+            android:id="@+id/A"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:hapticFeedbackEnabled="true"
+            android:onClick="onClick"
+            android:tag="A"
+            android:text="A"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/A"
-                style="@style/alphabetTextView"
-                android:tag="A"
-                android:text="A" />
+        <TextView
+            android:id="@+id/B"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:hapticFeedbackEnabled="true"
+            android:onClick="onClick"
+            android:tag="B"
+            android:text="B"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/B"
-                style="@style/alphabetTextView"
-                android:tag="B"
-                android:text="B" />
+        <TextView
+            android:id="@+id/C"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="C"
+            android:text="C"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/C"
-                style="@style/alphabetTextView"
-                android:tag="C"
-                android:text="C" />
+        <TextView
+            android:id="@+id/D"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="D"
+            android:text="D"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/D"
-                style="@style/alphabetTextView"
-                android:tag="D"
-                android:text="D" />
+        <TextView
+            android:id="@+id/E"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="E"
+            android:text="E"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/E"
-                style="@style/alphabetTextView"
-                android:tag="E"
-                android:text="E" />
+        <TextView
+            android:id="@+id/F"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="F"
+            android:text="F"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/F"
-                style="@style/alphabetTextView"
-                android:tag="F"
-                android:text="F" />
+        <TextView
+            android:id="@+id/G"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="G"
+            android:text="G"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/G"
-                style="@style/alphabetTextView"
-                android:tag="G"
-                android:text="G" />
+        <TextView
+            android:id="@+id/H"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="H"
+            android:text="H"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/H"
-                style="@style/alphabetTextView"
-                android:tag="H"
-                android:text="H" />
+        <TextView
+            android:id="@+id/I"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="I"
+            android:text="I"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/I"
-                style="@style/alphabetTextView"
-                android:tag="I"
-                android:text="I" />
+        <TextView
+            android:id="@+id/J"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="J"
+            android:text="J"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/J"
-                style="@style/alphabetTextView"
-                android:tag="J"
-                android:text="J" />
+        <TextView
+            android:id="@+id/K"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="K"
+            android:text="K"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/K"
-                style="@style/alphabetTextView"
-                android:tag="K"
-                android:text="K" />
+        <TextView
+            android:id="@+id/L"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="L"
+            android:text="L"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/L"
-                style="@style/alphabetTextView"
-                android:tag="L"
-                android:text="L" />
+        <TextView
+            android:id="@+id/M"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="M"
+            android:text="M"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/M"
-                style="@style/alphabetTextView"
-                android:tag="M"
-                android:text="M" />
+        <TextView
+            android:id="@+id/N"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="N"
+            android:text="N"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/N"
-                style="@style/alphabetTextView"
-                android:tag="N"
-                android:text="N" />
+        <TextView
+            android:id="@+id/O"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="O"
+            android:text="O"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/O"
-                style="@style/alphabetTextView"
-                android:tag="O"
-                android:text="O" />
+        <TextView
+            android:id="@+id/P"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="P"
+            android:text="P"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/P"
-                style="@style/alphabetTextView"
-                android:tag="P"
-                android:text="P" />
+        <TextView
+            android:id="@+id/R"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="R"
+            android:text="R"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/R"
-                style="@style/alphabetTextView"
-                android:tag="R"
-                android:text="R" />
+        <TextView
+            android:id="@+id/Q"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="Q"
+            android:text="Q"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/Q"
-                style="@style/alphabetTextView"
-                android:tag="Q"
-                android:text="Q" />
+        <TextView
+            android:id="@+id/S"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="S"
+            android:text="S"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/S"
-                style="@style/alphabetTextView"
-                android:tag="S"
-                android:text="S" />
+        <TextView
+            android:id="@+id/T"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="T"
+            android:text="T"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/T"
-                style="@style/alphabetTextView"
-                android:tag="T"
-                android:text="T" />
+        <TextView
+            android:id="@+id/U"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="U"
+            android:text="U"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/U"
-                style="@style/alphabetTextView"
-                android:tag="U"
-                android:text="U" />
+        <TextView
+            android:id="@+id/V"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="V"
+            android:text="V"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/V"
-                style="@style/alphabetTextView"
-                android:tag="V"
-                android:text="V" />
+        <TextView
+            android:id="@+id/W"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="W"
+            android:text="W"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/W"
-                style="@style/alphabetTextView"
-                android:tag="W"
-                android:text="W" />
+        <TextView
+            android:id="@+id/X"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="X"
+            android:text="X"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/X"
-                style="@style/alphabetTextView"
-                android:tag="X"
-                android:text="X" />
+        <TextView
+            android:id="@+id/Y"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="Y"
+            android:text="Y"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/Y"
-                style="@style/alphabetTextView"
-                android:tag="Y"
-                android:text="Y" />
+        <TextView
+            android:id="@+id/Z"
+            style="@style/alphabetTextView"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:tag="Z"
+            android:text="Z"
+            android:textColor="@color/kiss_green"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/Z"
-                style="@style/alphabetTextView"
-                android:tag="Z"
-                android:text="Z" />
+    </LinearLayout>
 
-        </LinearLayout>
-    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/resultLayout"
@@ -204,7 +338,7 @@
         android:layout_alignParentTop="false"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="14dp"
         android:layout_marginTop="10dp"
         android:background="?attr/listBackgroundColor"
         android:elevation="2dp"
@@ -220,15 +354,15 @@
             android:cacheColorHint="@android:color/transparent"
             android:divider="?attr/dividerDrawable"
             android:dividerHeight="1dp"
-            android:stackFromBottom="true"
             android:fastScrollEnabled="false"
+            android:stackFromBottom="true"
 
             android:transcriptMode="alwaysScroll"
             tools:listitem="@layout/item_app" />
 
         <fr.neamar.kiss.ui.BottomPullEffectView
             android:id="@+id/listEdgeEffect"
-            android:layout_width="match_parent"
+            android:layout_width="364dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|bottom" />
 
@@ -450,10 +584,10 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="15dp"
         android:background="?attr/searchBackgroundColor"
         android:clipToPadding="false"
-        android:elevation="2dp"
+
         tools:ignore="UnusedAttribute">
 
         <ImageView
@@ -469,7 +603,7 @@
             android:onClick="onLauncherButtonClicked"
             android:paddingLeft="@dimen/launcher_button_padding"
             android:paddingRight="@dimen/launcher_button_padding"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/ic_z"
             android:tag="showMenu" />
 
         <ProgressBar
@@ -489,10 +623,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/launcherButton"
-            android:layout_toLeftOf="@+id/clearButton"
-            android:layout_toRightOf="@+id/launcherButton"
             android:layout_toStartOf="@+id/clearButton"
+            android:layout_toLeftOf="@+id/clearButton"
+            android:layout_toEndOf="@+id/launcherButton"
+            android:layout_toRightOf="@+id/launcherButton"
             android:background="?attr/searchBackgroundColor"
             android:hint="@string/ui_search_hint"
             android:imeOptions="flagNoExtractUi|actionSearch"
@@ -535,6 +669,21 @@
             android:src="@drawable/clear_dark"
             android:tint="?attr/searchColor"
             android:visibility="visible" />
+        <ImageView
+            android:id="@+id/launchButton"
+            android:layout_width="@dimen/launcher_button_width"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/clearButton"
+            android:background="?attr/appSelectableItemBackground"
+            android:contentDescription="@string/main_clear"
+            android:focusable="true"
+            android:onClick="onLaunchButtonClicked"
+            android:paddingLeft="@dimen/launcher_button_padding"
+            android:paddingRight="@dimen/launcher_button_padding"
+            android:src="@drawable/ic_forward"
+            android:tint="?attr/searchColor"
+            android:visibility="visible" />
     </RelativeLayout>
 
     <ScrollView
@@ -553,13 +702,15 @@
     <include
         android:id="@+id/mainKissbar"
         layout="@layout/main_kissbar"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@android:id/list"
         android:layout_margin="10dp"
+        android:layout_marginRight="20dp"
+
         android:visibility="gone"
         tools:ignore="DuplicateIncludedIds" />
 

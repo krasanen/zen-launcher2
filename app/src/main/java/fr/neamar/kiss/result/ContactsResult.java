@@ -2,11 +2,13 @@ package fr.neamar.kiss.result;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import fi.zmengames.zlauncher.IconHelper;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
@@ -91,14 +95,23 @@ public class ContactsResult extends Result {
 
         int primaryColor = UIColors.getPrimaryColor(context);
 
+
         // SOME call
         final ImageButton someCallButton = view.findViewById(R.id.item_contact_action_some_call);
+        ViewGroup.LayoutParams viewParams = someCallButton.getLayoutParams();
+        int width = viewParams.width;
+        int height = viewParams.height;
         if (contactPojo.whatsAppCalling != 0) {
-            someCallButton.setImageResource(R.drawable.callwhatsapp);
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("com.whatsapp", width, height, "Call", Color.WHITE));
+
+           // someCallButton.setImageResource(R.drawable.call_whatsapp);
         } else if (contactPojo.SignalCalling != 0) {
-            someCallButton.setImageResource(R.drawable.no_cover_art);
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("org.thoughtcrime.securesms", width, height, "Call", Color.WHITE));
         } else if (contactPojo.faceCalling != 0) {
-            someCallButton.setImageResource(R.drawable.call_facebook);
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("com.facebook.orca", width, height, "Call", Color.BLUE));
         }
 
 
@@ -107,16 +120,16 @@ public class ContactsResult extends Result {
             public void onClick(View v) {
                 if (contactPojo.whatsAppCalling != 0) {
                     Log.d(TAG, "whatsAppCalling:" + contactPojo.whatsAppCalling);
-        //            someCallButton.setBackgroundResource(R.drawable.button_border_red);
+
                     openGenericSomeApp(contactPojo.whatsAppCalling, v.getContext());
                 } else if (contactPojo.SignalCalling != 0) {
                     Log.d(TAG, "SignalCalling:" + contactPojo.SignalCalling);
-        //            someCallButton.setBackgroundResource(R.drawable.button_border);
+
                     openGenericSomeApp(contactPojo.SignalCalling, v.getContext());
                 } else if (contactPojo.faceCalling != 0) {
-                    someCallButton.setImageResource(R.drawable.ic_functions);
+
                     Log.d(TAG, "faceCalling:" + contactPojo.faceCalling);
-        //            someCallButton.setBackgroundResource(R.drawable.border);
+
                     openFacebook(contactPojo.faceCalling, v.getContext(), true);
                 }
             }
@@ -149,16 +162,21 @@ public class ContactsResult extends Result {
 
             }
         });
+
         // SOME message button
+        ViewGroup.LayoutParams viewParamsMsg = someMessageButton.getLayoutParams();
+        int widthMsg = viewParamsMsg.width;
+        int heightMsg = viewParamsMsg.height;
         if (contactPojo.whatsAppMessaging != 0) {
-            someMessageButton.setImageResource(R.drawable.message_cs);
-            someMessageButton.setColorFilter(R.color.kiss_greenwhatsapp);
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("com.whatsapp", widthMsg, heightMsg, "Msg", Color.WHITE));
+            // someCallButton.setImageResource(R.drawable.call_whatsapp);
         } else if (contactPojo.signalMessaging != 0) {
-            someMessageButton.setImageResource(R.drawable.message_cs);
-            someMessageButton.setColorFilter(R.color.kiss_bluefacebook);
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("org.thoughtcrime.securesms", widthMsg, heightMsg, "Msg", Color.WHITE));
         } else if (contactPojo.faceMessaging != 0) {
-            someMessageButton.setImageResource(R.drawable.message_cs);
-            someMessageButton.setColorFilter(R.color.kiss_bluefacebook);
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("com.facebook.orca", widthMsg, heightMsg, "Msg", Color.BLUE));
         }
 
 
@@ -257,15 +275,22 @@ public class ContactsResult extends Result {
     @Override
     public Drawable getDrawable(Context context) {
         synchronized (this) {
+            Log.d(TAG,"getDrawable:"+contactPojo.icon);
             if (isDrawableCached())
                 return icon;
             if (contactPojo.icon != null) {
+                Log.d(TAG,"getDrawable:"+contactPojo.icon);
                 InputStream inputStream = null;
                 try {
                     inputStream = context.getContentResolver()
                             .openInputStream(contactPojo.icon);
                     return icon = Drawable.createFromStream(inputStream, null);
                 } catch (FileNotFoundException ignored) {
+                    Log.d(TAG,"getDrawable FileNotFoundException"+contactPojo.icon);
+                    //inputStream = getPhotoInputStream(contactPojo.icon, context);
+                    //return icon = Drawable.createFromStream(inputStream, null);
+
+                   // loadDisplayPhoto(getWhatsappPhotoUri(context), context);
                 } finally {
                     if (inputStream != null) {
                         try {
@@ -281,6 +306,25 @@ public class ContactsResult extends Result {
                     .getDrawable(R.drawable.ic_contact);
         }
     }
+
+    public Uri getWhatsappPhotoUri(int whatsappContactId, Context context) {
+        ContentResolver cr = context.getContentResolver();
+
+        Cursor contactCursor = cr.query(
+                ContactsContract.RawContacts.CONTENT_URI,
+                new String[] { ContactsContract.RawContacts._ID, ContactsContract.RawContacts.CONTACT_ID } ,
+                ContactsContract.RawContacts.ACCOUNT_TYPE + "= ?",
+                new String[] { "com.whatsapp" }, null);
+        if (contactCursor  != null && contactCursor .moveToFirst()) {
+            Uri photoId = ContentUris.withAppendedId(ContactsContract.RawContacts.CONTENT_URI, whatsappContactId);
+            Uri photoUri = Uri.withAppendedPath(photoId, ContactsContract.RawContacts.DisplayPhoto.CONTENT_DIRECTORY);
+            return photoUri;
+        }
+        return null;
+
+    }
+
+
 
     @Override
     public void doLaunch(Context context, View v) {

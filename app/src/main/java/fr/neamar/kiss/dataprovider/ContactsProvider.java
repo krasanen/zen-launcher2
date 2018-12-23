@@ -121,4 +121,14 @@ public class ContactsProvider extends Provider<ContactsPojo> {
 
         return null;
     }
+    public ContactsPojo findById(int id) {
+
+        for (ContactsPojo pojo : pojos) {
+            if (pojo.contactId == id) {
+                return pojo;
+            }
+        }
+
+        return null;
+    }
 }

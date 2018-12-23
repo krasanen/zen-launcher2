@@ -62,7 +62,7 @@
             android:key="reset"
             android:title="@string/reset_favorites_name" />
         <fr.neamar.kiss.SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="enable-favorites-bar"
             android:summaryOff="@string/enable_favorites_bar_summary_off"
             android:summaryOn="@string/enable_favorites_bar_summary_on"

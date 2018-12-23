@@ -52,7 +52,7 @@
         android:name=".KissApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_z"
         android:label="@string/app_name"
         android:theme="@style/AppThemeLight"
         tools:ignore="GoogleAppIndexingWarning"
@@ -101,7 +101,7 @@
             </intent-filter>
             <meta-data
                 android:name="com.android.systemui.action_assist_icon"
-                android:resource="@drawable/ic_launcher" />
+                android:resource="@drawable/ic_z" />
         </activity>
 
         <activity android:name="fi.zmengames.zlauncher.HistoryDetails"

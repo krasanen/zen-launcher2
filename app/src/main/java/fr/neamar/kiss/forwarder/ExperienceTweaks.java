@@ -129,55 +129,57 @@ class ExperienceTweaks extends Forwarder {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                float directionY = e2.getY() - e1.getY();
-                float directionX = e2.getX() - e1.getX();
-                Log.d(TAG, "directionX:" + directionX);
-                Log.d(TAG, "directionY:" + directionY);
-                Log.d(TAG, "e1x:" + e1.getX());
-                Log.d(TAG, "e2x:" + e2.getX());
+                if (e1!=null&&e2!=null) {
+                    float directionY = e2.getY() - e1.getY();
+                    float directionX = e2.getX() - e1.getX();
+                    Log.d(TAG, "directionX:" + directionX);
+                    Log.d(TAG, "directionY:" + directionY);
+                    Log.d(TAG, "e1x:" + e1.getX());
+                    Log.d(TAG, "e2x:" + e2.getX());
 
 
-                if (!mainActivity.isViewingAllApps() && !scaling) {
-                    if (Math.abs(directionX) > width / 3) {
-                        if (directionX > 0) {
-                            Log.d(TAG, "swipeRight");
-                            if (prefs.getBoolean("swipe-right", false)) {
-                                Log.d(TAG, "swipeRight add menu");
-                                mainActivity.launcherButton.performClick();
-                            }
-                        } else {
-                            Log.d(TAG, "swipeLeft");
-                            if (prefs.getBoolean("swipe-left", false)) {
-                                Log.d(TAG, "Left add menu");
-                                mainActivity.menuButton.performClick();
+                    if (!mainActivity.isViewingAllApps() && !scaling) {
+                        if (Math.abs(directionX) > width / 3) {
+                            if (directionX > 0) {
+                                Log.d(TAG, "swipeRight");
+                                if (prefs.getBoolean("swipe-right", false)) {
+                                    Log.d(TAG, "swipeRight add menu");
+                                    mainActivity.launcherButton.performClick();
+                                }
                             } else {
-                                mainActivity.idNow();
+                                Log.d(TAG, "swipeLeft");
+                                if (prefs.getBoolean("swipe-left", false)) {
+                                    Log.d(TAG, "Left add menu");
+                                    mainActivity.menuButton.performClick();
+                                } else {
+                                    mainActivity.idNow();
+                                }
                             }
+                            return true;
                         }
-                        return true;
-                    }
-                    if (Math.abs(directionY) > height / 5) {
+                        if (Math.abs(directionY) > height / 5) {
 
-                        if (directionY < 0) {
-                            Log.d(TAG, "swipeUp");
-                            // Fling up: display keyboard
-                            if (prefs.getBoolean("swipe-up-opens-keyboard", false)) {
-                                mainActivity.showKeyboard();
-                            }
-                        } else {
-                            Log.d(TAG, "swipeDown");
-                            // Fling down: display notifications
-                            if (mainActivity.isKeyboardVisible()) {
-                                mainActivity.hideKeyboard();
+                            if (directionY < 0) {
+                                Log.d(TAG, "swipeUp");
+                                // Fling up: display keyboard
+                                if (prefs.getBoolean("swipe-up-opens-keyboard", false)) {
+                                    mainActivity.showKeyboard();
+                                }
                             } else {
-                                if (prefs.getBoolean("swipe-down-opens-notifications", false)) {
-                                    displayNotificationDrawer();
+                                Log.d(TAG, "swipeDown");
+                                // Fling down: display notifications
+                                if (mainActivity.isKeyboardVisible()) {
+                                    mainActivity.hideKeyboard();
+                                } else {
+                                    if (prefs.getBoolean("swipe-down-opens-notifications", false)) {
+                                        displayNotificationDrawer();
+                                    }
                                 }
                             }
                         }
+
+
                     }
-
-
                 }
                 return true;
             }
