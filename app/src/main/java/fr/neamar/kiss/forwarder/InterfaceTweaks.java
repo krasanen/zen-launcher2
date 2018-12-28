@@ -38,6 +38,9 @@ class InterfaceTweaks extends Forwarder {
             case "transparent-dark":
                 mainActivity.setTheme(R.style.AppThemeTransparentDark);
                 break;
+            case "amoled-dark":
+                mainActivity.setTheme(R.style.AppThemeAmoledDark);
+                break;
         }
     }
 
