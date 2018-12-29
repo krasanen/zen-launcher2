@@ -1,16 +1,20 @@
 package fr.neamar.kiss.result;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import fi.zmengames.zlauncher.LauncherService;
+import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -41,8 +45,8 @@ public class SettingsResult extends Result {
     @SuppressWarnings("deprecation")
     @Override
     public Drawable getDrawable(Context context) {
-        if (settingPojo.icon != -1) {
-            return context.getResources().getDrawable(settingPojo.icon);
+        if (settingPojo.icon != null) {
+            return settingPojo.icon;
         }
 
         return null;
@@ -61,9 +65,14 @@ public class SettingsResult extends Result {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         try {
-            context.startActivity(intent);
+            Intent launchIntent = new Intent(v.getContext(), LauncherService.class);
+            launchIntent.setAction(LauncherService.LAUNCH_INTENT);
+            launchIntent.putExtra(Intent.EXTRA_INTENT, intent);
+            KissApplication.startLaucherService(launchIntent, v.getContext());
+
         }
-        catch(ActivityNotFoundException e) {
+        catch(Exception e) {
+
             e.printStackTrace();
             Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
         }

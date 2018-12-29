@@ -1,62 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/preferences"
         android:icon="@drawable/ic_contact"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/activity_setting" />
+        android:title="@string/activity_setting"
+        app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/wallpaper"
-        android:showAsAction="never"
-        android:title="@string/menu_wallpaper" />
+        android:title="@string/menu_wallpaper"
+        app:showAsAction="never" />
     <item
         android:id="@+id/widget"
-        android:showAsAction="never"
-        android:title="@string/menu_widget_settings" />
+        android:title="@string/menu_widget_settings"
+        app:showAsAction="never" />
     <item
         android:id="@+id/settings"
-        android:showAsAction="never"
-        android:title="@string/menu_settings" />
+        android:title="@string/menu_settings"
+        app:showAsAction="never" />
     <item
         android:id="@+id/shareTags"
-        android:showAsAction="never"
         android:visible="false"
-        android:title="@string/share_tags" />
+        android:title="@string/share_tags"
+        app:showAsAction="never" />
     <item
         android:id="@+id/loadReplaceTags"
-        android:showAsAction="never"
         android:visible="false"
-        android:title="@string/load_replace_tags" />
+        android:title="@string/load_replace_tags"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/loadReplaceSettings"
-        android:showAsAction="never"
         android:visible="true"
-        android:title="@string/load_settings" />
+        android:title="@string/load_settings"
+        app:showAsAction="never" />
     <item
         android:id="@+id/shareSettings"
-        android:showAsAction="never"
         android:visible="true"
-        android:title="@string/share_settings" />
+        android:title="@string/share_settings"
+        app:showAsAction="never" />
     <item
         android:id="@+id/saveToGoogle"
-        android:showAsAction="never"
 
-        android:title="@string/save_to_google" />
+        android:title="@string/save_to_google"
+        app:showAsAction="never" />
     <item
         android:id="@+id/loadFromGoogle"
-        android:showAsAction="never"
-        android:title="@string/load_from_google" />
+        android:title="@string/load_from_google"
+        app:showAsAction="never" />
     <item
         android:id="@+id/signIn"
-        android:showAsAction="never"
-        android:title="@string/common_signin_button_text" />
+        android:title="@string/common_signin_button_text_long"
+        app:showAsAction="never" />
     <item
         android:id="@+id/nightModeOn"
-        android:showAsAction="always"
-        android:title="NightMode On" />
+        android:title="NightMode On"
+        app:showAsAction="always" />
     <item
         android:id="@+id/nightModeOff"
-        android:showAsAction="always"
-        android:title="NightMode Off" />
+        android:title="NightMode Off"
+        app:showAsAction="always" />
 </menu>

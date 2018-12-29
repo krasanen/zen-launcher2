@@ -31,17 +31,15 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:clickable="true"
-        android:focusable="true"
         android:gravity="end"
-        android:hapticFeedbackEnabled="true"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/A"
             style="@style/alphabetTextView"
-            android:clickable="true"
             android:hapticFeedbackEnabled="true"
+
             android:onClick="onClick"
             android:tag="A"
             android:text="A"
@@ -338,7 +336,7 @@
         android:layout_alignParentTop="false"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="14dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
         android:background="?attr/listBackgroundColor"
         android:elevation="2dp"

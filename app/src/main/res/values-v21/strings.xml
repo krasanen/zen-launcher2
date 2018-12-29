@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="double_click">Screen doubleclick opens app menu</string>
-    <string name="swipe_down_notifications">Swipe down opens notifications</string>
-    <string name="swipe_up_keyboard">Swipe up opens keyboard</string>
-    <string name="swipe_left_opens_menu">Swipe left opens menu</string>
-    <string name="swipe_right_opens_menu">Swipe right opens menu</string>
+    <string name="swipe_down_notifications">Swipe down for notifications</string>
+    <string name="swipe_up_keyboard">Swipe up for keyboard</string>
+    <string name="swipe_left_opens_menu">Swipe left for contacts</string>
+    <string name="swipe_right_opens_menu">Swipe right for apps</string>
     <string name="share_settings">Save and Share Settings</string>
     <string name="load_settings">Load Settings from file</string>
     <string name="pinch_opens_menu">Pinch to open app menu</string>
-    <string name="save_to_google">Save to Google</string>
+    <string name="save_to_google">Save to GDrive</string>
     <string name="error_opening_metadata">Error opening metadata</string>
     <string name="error_opening_filename">Error opening filename</string>
     <string name="select_conflicted_game">Select conflicted game</string>

@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -45,6 +44,7 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.UserHandle;
+import xiaofei.library.hermeseventbus.HermesEventBus;
 
 public class DataHandler
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -69,13 +69,14 @@ public class DataHandler
     /**
      * Initialize all providers
      */
+
     public DataHandler(Context context) {
         // Make sure we are in the context of the main activity
         // (otherwise we might receive an exception about broadcast listeners not being able
         //  to bind to services)
         this.context = context.getApplicationContext();
 
-        EventBus.getDefault().register(this);
+        HermesEventBus.getDefault().register(this);
 
         // Monitor changes for service preferences (to automatically start and stop services)
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -246,7 +247,7 @@ public class DataHandler
     }
 
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ZEvent event) {
         Log.w(TAG, "Got message from service: " + event.getState());
 

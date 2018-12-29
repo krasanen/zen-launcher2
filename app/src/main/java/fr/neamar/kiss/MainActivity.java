@@ -73,7 +73,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.drive.Drive;
 
-import org.greenrobot.eventbus.EventBus;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
@@ -125,6 +125,7 @@ import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
+import xiaofei.library.hermeseventbus.HermesEventBus;
 
 import static android.graphics.Bitmap.createBitmap;
 
@@ -454,8 +455,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
         //setNightMode(this,true);
-
-        EventBus.getDefault().register(this);
+        HermesEventBus.getDefault().init(this);
+        HermesEventBus.getDefault().register(this);
 //        KissApplication.getApplication(this).initDataHandler();
 
         /*
@@ -624,9 +625,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         forwarderManager.onCreate();
         initializeKeyboardListener();
-        Log.d(TAG,">setOnDragListener");
-        findViewById(R.id.letters).setOnTouchListener(new MyDragListener());
-        Log.d(TAG,"<setOnDragListener");
+        //Log.d(TAG,">setOnDragListener");
+        //findViewById(R.id.letters).setOnTouchListener(new MyDragListener());
+        //Log.d(TAG,"<setOnDragListener");
 
     }
 
@@ -634,35 +635,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     class MyDragListener implements View.OnTouchListener {
-        Drawable enterShape = getResources().getDrawable(
+/*        Drawable enterShape = getResources().getDrawable(
                 R.drawable.box_on);
-        Drawable normalShape = getResources().getDrawable(R.drawable.box_off);
+        Drawable normalShape = getResources().getDrawable(R.drawable.box_off);*/
+
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            int action = event.getAction();
-            Log.d(TAG,"onTouch");
-            switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    // do nothing
-                    break;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    v.setBackgroundDrawable(enterShape);
-                    break;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    v.setBackgroundDrawable(normalShape);
-                    break;
-                case DragEvent.ACTION_DROP:
-                    // Dropped, reassign View to ViewGroup
-
-                    break;
-                case DragEvent.ACTION_DRAG_ENDED:
-                    v.setBackgroundDrawable(normalShape);
-                    break;
-                default:
-                    break;
-            }
-            return true;
+            Log.d(TAG,"onTouch:"+ v);
+            return false;
         }
     }
     Rect r = new Rect();
@@ -860,10 +841,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        HermesEventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ZEvent event) {
         Log.w(TAG, "Got message from service: " + event.getState());
 
@@ -884,6 +865,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 onFavoriteChange();
                 // Run GC once to free all the garbage accumulated during provider initialization
                 System.gc();
+                break;
+            case SHOW_TOAST:
+                Log.v(TAG, "Show toast");
+                Toast.makeText(getBaseContext(), event.getText(),
+                        Toast.LENGTH_LONG).show();
+
                 break;
         }
     }
@@ -1177,7 +1164,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             try {
                 count = loadWidgetJson(mSaveGame.getSavedWidgets());
             } catch (Exception e) {
-                Log.e(TAG, "can't load tags", e);
+                Log.e(TAG, "can't load widgets", e);
                 Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
             }
             Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
@@ -1547,6 +1534,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            Toast.makeText(this, "Error: "+e.getStatusCode(), Toast.LENGTH_LONG).show();
             updateUI(null);
         }
     }
@@ -1717,7 +1705,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         displayContacts(contactsButton.getTag().equals("hideMenu"));
     }
 
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
@@ -1785,11 +1772,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.onFavoriteChange();
     }
 
-    private void displayKissBar(Boolean display) {
+    public void displayKissBar(Boolean display) {
         this.displayKissBar(display, true, false);
     }
 
-    private void displayContacts(Boolean display) {
+    public void displayContacts(Boolean display) {
         this.displayKissBar(display, true, true);
     }
 
@@ -1820,7 +1807,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             searchTask.executeOnExecutor(Searcher.SEARCH_THREAD);
 
             // Reveal the bar
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !contacts) {
                 int animationDuration = getResources().getInteger(
                         android.R.integer.config_shortAnimTime);
 
@@ -2034,8 +2021,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.onWallpaperScroll(fCurrent);
     }
 
-
-    LauncherService mBoundService;
     boolean mServiceBound = false;
     private ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -2046,8 +2031,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            LauncherService.MyBinder myBinder = (LauncherService.MyBinder) service;
-            mBoundService = myBinder.getService();
+
             mServiceBound = true;
         }
     };

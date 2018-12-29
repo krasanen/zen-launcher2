@@ -35,6 +35,9 @@ public class SettingsProvider extends Provider<SettingsPojo> {
         for (SettingsPojo pojo : pojos) {
             matchInfo = fuzzyScore.match(pojo.normalizedName.codePoints);
             match = matchInfo.match;
+            if (query.toLowerCase().contains("set")){
+                match = true;
+            }
             pojo.relevance = matchInfo.score;
 
             if (!match) {

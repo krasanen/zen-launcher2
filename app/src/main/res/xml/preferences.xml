@@ -131,7 +131,7 @@
                 android:key="swipe-up-opens-keyboard"
                 android:title="@string/swipe_up_keyboard" />
             <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
+                android:defaultValue="true"
                 android:key="swipe-left"
                 android:title="@string/swipe_left_opens_menu" />
             <fr.neamar.kiss.SwitchPreference

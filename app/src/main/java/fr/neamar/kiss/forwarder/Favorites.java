@@ -163,7 +163,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                     image.setImageDrawable(drawable);
                 } else {
                     // Use a placeholder if no drawable found
-                    image.setImageResource(R.drawable.ic_launcher_white);
+                    image.setImageResource(R.drawable.ic_z);
                 }
 
                 image.setVisibility(View.VISIBLE);

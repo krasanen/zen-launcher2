@@ -23,19 +23,26 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 
-import org.greenrobot.eventbus.EventBus;
+
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import fr.neamar.kiss.MainActivity;
 
+import xiaofei.library.hermeseventbus.HermesEventBus;
+
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
+import static fi.zmengames.zlauncher.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
+    public static final String LAUNCH_INTENT = "LAUNCH_INTENT";
     private static final String TAG = LauncherService.class.getSimpleName();
     public static final String GOOGLE_SIGN_IN = "GOOGLE_SIGN_IN";
     public static final String GOOGLE_SIGN_OUT = "GOOGLE_SIGN_OUT";
@@ -80,7 +87,8 @@ public class LauncherService extends Service {
     @Override
     public void onCreate() {
         Log.w(TAG, "onCreate...");
-
+        HermesEventBus.getDefault().register(this);
+        HermesEventBus.getDefault().connectApp(this, getPackageName());
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mAccessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
@@ -88,7 +96,12 @@ public class LauncherService extends Service {
 
         super.onCreate();
     }
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEventMainThread(ZEvent event) {
+        Log.w(TAG, "in service" +
+                ", Got message from service: " + event.getState());
 
+    }
     @Nullable
 
     @Override
@@ -116,11 +129,11 @@ public class LauncherService extends Service {
     }
 
     private void sendMessageSticky(ZEvent event) {
-        EventBus.getDefault().postSticky(event);
+        HermesEventBus.getDefault().postSticky(event);
     }
 
     private void sendMessageNotSticky(ZEvent event) {
-        EventBus.getDefault().post(event);
+        HermesEventBus.getDefault().post(event);
     }
 
     @Override
@@ -138,10 +151,28 @@ public class LauncherService extends Service {
                     handleProviderFullLoadOver(intent);
                 else if (intent.getAction().equals(NIGHTMODE_ON)) createMaskView();
                 else if (intent.getAction().equals(NIGHTMODE_OFF)) destroyMaskView();
+                else if (intent.getAction().equals(LAUNCH_INTENT)) launchIntent(intent);
             }
         });
 
         return START_NOT_STICKY;
+    }
+
+    private void launchIntent(Intent intent) {
+        Log.d(TAG, "launchIntent");
+        Intent toLaunch = intent.getParcelableExtra(Intent.EXTRA_INTENT);
+        try {
+            startActivity(toLaunch);
+        }
+        catch(SecurityException e){
+            handleShowToast(e.getMessage());
+        }
+        catch(Exception e) {
+
+            e.printStackTrace();
+            handleShowToast(e.getMessage());
+        }
+
     }
 
     private void handleProviderFullLoadOver(Intent intent) {
@@ -163,6 +194,11 @@ public class LauncherService extends Service {
         Log.d(TAG, "handleGoogleSignOut");
         sendMessageNotSticky(new ZEvent(ZEvent.State.GOOGLE_SIGNOUT));
     }
+    private void handleShowToast(String text) {
+        Log.d(TAG, "handleShowToast");
+        sendMessageNotSticky(new ZEvent(SHOW_TOAST, text));
+    }
+
     /// Helper Methods
 
     private boolean isAllowed(Intent intent) {

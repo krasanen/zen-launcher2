@@ -143,16 +143,14 @@ class ExperienceTweaks extends Forwarder {
                             if (directionX > 0) {
                                 Log.d(TAG, "swipeRight");
                                 if (prefs.getBoolean("swipe-right", false)) {
-                                    Log.d(TAG, "swipeRight add menu");
-                                    mainActivity.launcherButton.performClick();
+                                    mainActivity.displayKissBar(true);
                                 }
                             } else {
                                 Log.d(TAG, "swipeLeft");
                                 if (prefs.getBoolean("swipe-left", false)) {
-                                    Log.d(TAG, "Left add menu");
-                                    mainActivity.menuButton.performClick();
+                                    mainActivity.displayContacts(true);
                                 } else {
-                                    mainActivity.idNow();
+                                    // mainActivity.idNow(); TODO: beta feature, add or not
                                 }
                             }
                             return true;

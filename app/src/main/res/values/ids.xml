@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="nightModeOn" type="id">Nigth Mode ON</item>
-    <item name="nightModeOff" type="id">Night Mode OFF</item>
+    <item name="nightModeOn" type="id">Blue light filter ON</item>
+    <item name="nightModeOff" type="id">Blue light filter OFF</item>
 </resources>
