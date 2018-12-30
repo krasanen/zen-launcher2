@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,6 +39,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
@@ -123,6 +126,7 @@ import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
+import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import xiaofei.library.hermeseventbus.HermesEventBus;
@@ -146,6 +150,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     // intent data that is the retry count for retrying the conflict resolution.
     public static final String RETRY_COUNT = "retrycount";
+    public static final int REQUEST_BIND_APPWIDGET = 17;
 
 
     /**
@@ -299,7 +304,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Save the snapshot.
         SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
                 .setCoverImage(getScreenShot())
-                .setDescription("Modified data at: " + Calendar.getInstance().getTime())
+                .setDescription("Z-Launcher at: " + Calendar.getInstance().getTime())
                 .build();
         return SnapshotCoordinator.getInstance().commitAndClose(mSnapshotsClient, snapshot, metadataChange);
     }
@@ -342,23 +347,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
     Bitmap getScreenShot() {
-        View root = getWindow().getDecorView().findViewById(android.R.id.content);
         final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
-        Bitmap coverImage = drawableToBitmap(wallpaperDrawable);
+        View root = getWindow().getDecorView().getRootView();
+        Bitmap screenshot = Bitmap.createBitmap(root.getWidth(), root.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap coverImage = ((BitmapDrawable) wallpaperDrawable).getBitmap();
+        Bitmap combo = overlay(screenshot,coverImage);
+        Canvas canvas = new Canvas(combo);
+        root.draw(canvas);
+        return RotateBitmap(combo,270f);
 
-        try {
-            root.setDrawingCacheEnabled(true);
-            Bitmap base = createBitmap(root.getDrawingCache(), 0, (int) (root.getHeight() * 0.27), root.getWidth(), (int) (root.getHeight() * 0.73));
-            coverImage = overlay(drawableToBitmap(wallpaperDrawable).copy(base.getConfig(), false), base);
-            //coverImage = base.copy(base.getConfig(), false /* isMutable */);
-        } catch (Exception ex) {
-            Log.i(TAG, "Failed to create screenshot", ex);
-            coverImage = null;
-        } finally {
-            root.setDrawingCacheEnabled(false);
-        }
-        return coverImage;
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -370,7 +369,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         return bytes;
     }
-
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
 
     public void checkPermissionReadStorage(Activity activity) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -468,7 +472,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Configure sign-in to request the user's ID, email address, and basic
         // profile.
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestScopes(Drive.SCOPE_APPFOLDER)
                 .build();
@@ -1134,6 +1138,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Map<String, ?> tags;
         SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
         tags = prefsWidget.getAll();
+
         JSONObject jsonWidget = new JSONObject(tags);
         for (Map.Entry<String, ?> entry : tags.entrySet()) {
             Object v = entry.getValue();
@@ -1160,14 +1165,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 Log.e(TAG, "can't load tags", e);
                 Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
             }
-            Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_SHORT).show();
             try {
                 count = loadWidgetJson(mSaveGame.getSavedWidgets());
             } catch (Exception e) {
                 Log.e(TAG, "can't load widgets", e);
                 Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
             }
-            Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "loaded widges for " + count + " app(s)", Toast.LENGTH_LONG).show();
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -1443,6 +1448,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     void saveSnapshot(final SnapshotMetadata snapshotMetadata) {
+
         waitForClosedAndOpen(snapshotMetadata)
                 .addOnCompleteListener(new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
                     @Override
@@ -1526,9 +1532,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            // Signed in successfully, show authenticated UI.
+            // Signed in successfully
             updateUI(account);
-            showSnapshots(getString(R.string.load_settings), false, true);
+            Toast.makeText(this, "Ready to store&load launcher views!", Toast.LENGTH_LONG).show();
 
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -1544,6 +1550,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 
         switch (requestCode) {
+            case REQUEST_BIND_APPWIDGET:
+            /*    appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(newWidgetId);
+                AppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, newWidgetId, appWidgetInfo);
+                hostView.setMinimumHeight(appWidgetInfo.minHeight);
+                hostView.setAppWidget(newWidgetId, appWidgetInfo);
+                addWidgetHostView(hostView);
+                SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
+                widgetPrefsEditor.remove(String.valueOf(appWidgetId));
+                widgetPrefsEditor.putString(String.valueOf(newWidgetId), WidgetPreferences.serialize(wp));
+                widgetPrefsEditor.apply();
+                refreshWidget(newWidgetId);*/
+                break;
             case MY_PERMISSIONS_OVERLAY:
                 setNightMode(this, true);
                 break;

@@ -62,7 +62,7 @@
             android:key="reset"
             android:title="@string/reset_favorites_name" />
         <fr.neamar.kiss.SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="enable-favorites-bar"
             android:summaryOff="@string/enable_favorites_bar_summary_off"
             android:summaryOn="@string/enable_favorites_bar_summary_on"
@@ -118,6 +118,50 @@
                 android:defaultValue="true"
                 android:key="pref-rounded-bars"
                 android:title="@string/rounded_bars" />
+
+        </PreferenceCategory>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:key="ux-holder"
+        android:summary="@string/user_experience_summary"
+        android:title="@string/title_ux">
+        <PreferenceCategory android:title="@string/keyboard_options">
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="false"
+                android:key="display-keyboard"
+                android:title="@string/keyboard_name" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="false"
+                android:key="enable-keyboard-workaround"
+                android:summary="@string/keyboard_workaround_desc"
+                android:title="@string/keyboard_workaround_name" />
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/history_hide_name" android:key="history-hide-section">
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="true"
+                android:key="history-hide"
+                android:summary="@string/history_hide_desc"
+                android:title="@string/history_hide_name" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="true"
+                android:dependency="history-hide"
+                android:key="history-onclick"
+                android:title="@string/history_onclick_name" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="false"
+                android:dependency="history-hide"
+                android:key="favorites-hide"
+                android:title="@string/favorites_hide" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="false"
+                android:key="pref-hide-navbar"
+                android:summary="@string/pref_hide_navbar_desc"
+                android:title="@string/pref_hide_navbar" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="false"
+                android:key="pref-hide-statusbar"
+                android:summary="@string/pref_hide_statusbar_desc"
+                android:title="@string/pref_hide_statusbar" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="double-click-opens-apps"
@@ -150,50 +194,6 @@
                 android:defaultValue="true"
                 android:key="triple_tap_flashlight"
                 android:title="@string/triple_tap_flashlight" />
-
-        </PreferenceCategory>
-    </PreferenceScreen>
-    <PreferenceScreen
-        android:key="ux-holder"
-        android:summary="@string/user_experience_summary"
-        android:title="@string/title_ux">
-        <PreferenceCategory android:title="@string/keyboard_options">
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="display-keyboard"
-                android:title="@string/keyboard_name" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="enable-keyboard-workaround"
-                android:summary="@string/keyboard_workaround_desc"
-                android:title="@string/keyboard_workaround_name" />
-        </PreferenceCategory>
-        <PreferenceCategory android:title="@string/history_hide_name" android:key="history-hide-section">
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="history-hide"
-                android:summary="@string/history_hide_desc"
-                android:title="@string/history_hide_name" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:dependency="history-hide"
-                android:key="history-onclick"
-                android:title="@string/history_onclick_name" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:dependency="history-hide"
-                android:key="favorites-hide"
-                android:title="@string/favorites_hide" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="pref-hide-navbar"
-                android:summary="@string/pref_hide_navbar_desc"
-                android:title="@string/pref_hide_navbar" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="pref-hide-statusbar"
-                android:summary="@string/pref_hide_statusbar_desc"
-                android:title="@string/pref_hide_statusbar" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/misc">
 

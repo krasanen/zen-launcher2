@@ -1,12 +1,12 @@
 package fr.neamar.kiss.ui;
 
-import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import fi.zmengames.zlauncher.ParcelableUtil;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -41,27 +42,39 @@ import fr.neamar.kiss.R;
 public class WidgetPreferences implements Serializable {
     static int MASK_GRAVITY_VERTICAL = Gravity.FILL_VERTICAL | Gravity.CLIP_VERTICAL;
     static int MASK_GRAVITY_HORIZONTAL = Gravity.FILL_HORIZONTAL | Gravity.CLIP_HORIZONTAL;
-
+    private static final String TAG = WidgetPreferences.class.getSimpleName();
     public int position = WidgetLayout.LayoutParams.POSITION_MIDDLE;
     public int width = 0;
     public int height = 0;
     public int offsetVertical = 0;
     public int offsetHorizontal = 0;
     public int gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+    public byte[] appWidgetProviderInfo;
+
 
     private boolean isValid() {
         return width > 0 && height > 0;
     }
 
-    public void apply(WidgetLayout.LayoutParams layoutParams) {
+    public void apply(WidgetLayout.LayoutParams layoutParams,byte[] appWidgetProviderInfo) {
         layoutParams.position = this.position;
         layoutParams.width = this.width;
         layoutParams.height = this.height;
         layoutParams.topMargin = this.offsetVertical;
         layoutParams.leftMargin = this.offsetHorizontal;
         layoutParams.gravity = this.gravity;
+        this.appWidgetProviderInfo = appWidgetProviderInfo;
     }
 
+    public void load(AppWidgetHostView hostView, byte[] appWidgetProviderInfo) {
+        WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
+        this.position = layoutParams.position;
+        this.width = hostView.getMeasuredWidth();
+        this.height = hostView.getMeasuredHeight();
+        this.offsetVertical = layoutParams.topMargin;
+        this.gravity = layoutParams.gravity;
+        this.appWidgetProviderInfo = appWidgetProviderInfo;
+    }
     public void load(AppWidgetHostView hostView) {
         WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
         this.position = layoutParams.position;
@@ -70,6 +83,7 @@ public class WidgetPreferences implements Serializable {
         this.offsetVertical = layoutParams.topMargin;
         this.gravity = layoutParams.gravity;
     }
+
 
     public void showEditMenu(MainActivity mainActivity, SharedPreferences widgetPrefs, AppWidgetHostView hostView) {
         if (!isValid())
@@ -92,7 +106,7 @@ public class WidgetPreferences implements Serializable {
             objectOutputStream.writeObject(o);
             objectOutputStream.close();
         } catch (IOException e) {
-            Log.e("Widget", "Serialize WidgetPreferences", e);
+            Log.e(TAG, "Serialize WidgetPreferences", e);
         }
         try {
             return byteArrayOutputStream.toString("ISO-8859-1");
@@ -109,7 +123,7 @@ public class WidgetPreferences implements Serializable {
             objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data.getBytes("ISO-8859-1")));
             return (WidgetPreferences) objectInputStream.readObject();
         } catch (Exception e) {
-            Log.e("Widget", "UnSerialize WidgetPreferences", e);
+            Log.e(TAG, "UnSerialize WidgetPreferences", e);
             return null;
         }
     }
@@ -131,7 +145,12 @@ public class WidgetPreferences implements Serializable {
         public void show(final MainActivity mainActivity, final WidgetPreferences widgetPreferences, final AppWidgetHostView hostView) {
             final View contentView = getContentView();
             final AppWidgetProviderInfo info = hostView.getAppWidgetInfo();
-
+            if (info.minWidth == 0) {
+                info.minWidth = contentView.getWidth();
+            }
+            if (info.minHeight == 0) {
+                info.minWidth = contentView.getHeight();
+            }
             contentView.findViewById(R.id.btn_apply).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

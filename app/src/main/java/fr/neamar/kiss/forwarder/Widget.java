@@ -10,7 +10,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.Log;
 import android.view.*;
+
+import fi.zmengames.zlauncher.ParcelableUtil;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.ui.WidgetLayout;
@@ -19,11 +22,13 @@ import fr.neamar.kiss.ui.WidgetPreferences;
 
 import java.util.Map;
 
+import static fr.neamar.kiss.MainActivity.REQUEST_BIND_APPWIDGET;
+
 public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     public static final int REQUEST_REFRESH_APPWIDGET = 10;
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
-
+    private static final String TAG = Widget.class.getSimpleName();
     private static final int APPWIDGET_HOST_ID = 442;
     public static final String WIDGET_PREFERENCE_ID = "widgetprefs";
 
@@ -158,8 +163,10 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * Restores all previously added widgets
      */
     private void restoreWidgets() {
+        Log.d("Widget", "restoreWidgets");
         Map<String, ?> widgetIds = widgetPrefs.getAll();
         for (String appWidgetId : widgetIds.keySet()) {
+            Log.d("Widget", "appWidgetId"+appWidgetId);
             addWidgetToLauncher(Integer.parseInt(appWidgetId));
         }
     }
@@ -170,6 +177,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * @param appWidgetId id of widget to add
      */
     private WidgetPreferences addWidgetToLauncher(int appWidgetId) {
+        Log.d("Widget", "addWidgetToLauncher"+appWidgetId);
         // only add widgets if in minimal mode (may need launcher restart when turned on)
         if (prefs.getBoolean("history-hide", true)) {
             // remove empty list view when using widgets, this would block touches on the widget
@@ -177,9 +185,23 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             //add widget to view
             AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             if (appWidgetInfo == null) {
-                //removeAllWidgets();
+                Log.d(TAG, "appWidgetInfo null, recreate widget");
+                String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
+                WidgetPreferences wp = WidgetPreferences.unserialize(data);
+
+
+                AppWidgetProviderInfo a = ParcelableUtil.unmarshall(wp.appWidgetProviderInfo,  AppWidgetProviderInfo.CREATOR);
+                mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, a.provider);
+                AppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, appWidgetId, a);
+                hostView.setAppWidget(appWidgetId, a);
+                addWidgetHostView(hostView);
+                SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
+                widgetPrefsEditor.remove(String.valueOf(appWidgetId));
                 removeAppWidget(appWidgetId);
-                return null;
+                widgetPrefsEditor.putString(String.valueOf(appWidgetId), WidgetPreferences.serialize(wp));
+                widgetPrefsEditor.apply();
+                mainActivity.refreshWidget(appWidgetId);
+                return wp;
             }
             AppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, appWidgetId, appWidgetInfo);
             hostView.setMinimumHeight(appWidgetInfo.minHeight);
@@ -190,7 +212,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             addWidgetHostView(hostView);
 
             WidgetPreferences wp = new WidgetPreferences();
-            wp.load( hostView );
+            wp.load( hostView, ParcelableUtil.marshall(appWidgetInfo) );
             return wp;
         }
         return null;
@@ -210,7 +232,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         WidgetLayout.LayoutParams layoutParams = new WidgetLayout.LayoutParams(w, h);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
         if (wp != null)
-            wp.apply(layoutParams);
+            wp.apply(layoutParams, wp.appWidgetProviderInfo);
 
         //hostView.setBackgroundColor(0x3F7f0000);
         hostView.setLayoutParams(layoutParams);
@@ -335,7 +357,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             AppWidgetHostView hostView = getWidgetHostView(i);
             if (hostView.getAppWidgetId() == appWidgetId) {
                 WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
-                wp.apply(layoutParams);
+                wp.apply(layoutParams, wp.appWidgetProviderInfo);
                 hostView.setLayoutParams(layoutParams);
                 break;
             }

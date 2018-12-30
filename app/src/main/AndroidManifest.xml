@@ -34,6 +34,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
 
     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     <uses-feature
