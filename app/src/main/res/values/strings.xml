@@ -225,6 +225,11 @@
     <string name="popup_tags_title">Available tags</string>
     <string name="popup_tags_actions">Available actions</string>
     <string name="show_history">Show history</string>
+    <string name="wp_animate_center">Center desktop background</string>
+    <string name="wp_animate_center_desc">The desktop background will return to the center after moving the screen</string>
+    <string name="wp_animate_sides">Side to which the desktop background will be drawn</string>
+    <string name="wp_animate_sides_desc">The desktop background will be drawn left or right after scrolling the screen</string>
+
 
     <!-- Omat -->
     <string name="share_tags">Share tags</string>

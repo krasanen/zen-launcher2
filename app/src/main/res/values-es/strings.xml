@@ -206,10 +206,6 @@
     <string name="triple_tap_flashlight">Tripletap flashlight</string>
     <string name="order_contacts_name">Contacts list sort order</string>
 
-<string name="wp_animate_center">Centrar fondo de escritorio</string>
-    <string name="wp_animate_center_desc">El fondo de escritorio volverá al centro después de desplazar la pantalla</string>
-    <string name="wp_animate_sides">Lado al que se pegará el fondo de escritorio</string>
-    <string name="wp_animate_sides_desc">El fondo de escritorio se pegará a izquierda o derecha después de desplazar la pantalla</string>
     <string name="rounded_list">Esquinas de lista redondeadas</string>
     <string name="rounded_bars">Esquinas de barra redondeadas</string>
     <string name="colors">Colores</string>
