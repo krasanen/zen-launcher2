@@ -26,13 +26,13 @@ public class ContactsPojo extends Pojo {
 
     public String nickname = "";
     public int contactId;
-    public int SignalCalling;
-
     public int whatsAppCalling;
     public int whatsAppMessaging;
+    public int signalCalling;
     public int signalMessaging;
-    public int faceMessaging;
-    public int faceCalling;
+    public int facebookCalling;
+    public int facebookMessaging;
+
     public StringNormalizer.Result normalizedNickname = null;
 
     public String getNickname() {

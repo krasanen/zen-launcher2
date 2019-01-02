@@ -71,9 +71,11 @@ public class IconHelper {
         paint.setColor(Color.TRANSPARENT);
         paint.setAlpha(255);
         //setTextSizeForWidth(paint, bitmap.getWidth(), "W");
-        setTextSizeForWidth(paint,120f, text);
-        paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(text,bitmap.getWidth()/2,bitmap.getHeight(),paint);
+        if (text!=null) {
+            setTextSizeForWidth(paint, 120f, text);
+            paint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(text, bitmap.getWidth() / 2, bitmap.getHeight(), paint);
+        }
         //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
         //return _bmp;
         return output;

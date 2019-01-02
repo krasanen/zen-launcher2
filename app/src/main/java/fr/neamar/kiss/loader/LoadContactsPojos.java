@@ -3,31 +3,16 @@ package fr.neamar.kiss.loader;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.provider.ContactsContract;
-import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.DataHandler;
-import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
 import fr.neamar.kiss.pojo.ContactsPojo;
@@ -263,7 +248,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                                 if(BuildConfig.DEBUG) Log.d(TAG, "SIGNAL! " + number);
-                                contact.SignalCalling = contactId;
+                                contact.signalCalling = contactId;
                                 if (!contact.primary) {
                                     contact.primary = true;
                                 }
@@ -309,7 +294,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                                 if(BuildConfig.DEBUG) Log.d(TAG, "FACEBOOK call! " + contactId);
-                                contact.faceCalling = contactId;
+                                contact.facebookCalling = contactId;
 
                             }
 
@@ -320,7 +305,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                                 if(BuildConfig.DEBUG) Log.d(TAG, "FACEBOOK messaging! " + contactId);
-                                contact.faceMessaging = contactId;
+                                contact.facebookMessaging = contactId;
                             }
                         }
 

@@ -2,6 +2,7 @@ package fr.neamar.kiss.searcher;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 
 import java.util.Collections;
@@ -20,7 +21,9 @@ public class ContactSearcher extends Searcher {
     public ContactSearcher(MainActivity activity) {
         super(activity, "<application>");
     }
-
+    public static Bitmap whatsAppIcon;
+    public static Bitmap signalIcon;
+    public static Bitmap facebookIcon;
     @Override
     PriorityQueue<Pojo> getPojoProcessor(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

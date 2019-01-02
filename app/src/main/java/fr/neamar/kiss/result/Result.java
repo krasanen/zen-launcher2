@@ -40,6 +40,7 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.pojo.SettingsPojo;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -176,7 +177,6 @@ public abstract class Result {
     ListPopup inflatePopupMenu(ArrayAdapter<ListPopup.Item> adapter, Context context) {
         ListPopup menu = new ListPopup(context);
         menu.setAdapter(adapter);
-
         // If app already pinned, do not display the "add to favorite" option
         // otherwise don't show the "remove favorite button"
         String favApps = PreferenceManager.getDefaultSharedPreferences(context).

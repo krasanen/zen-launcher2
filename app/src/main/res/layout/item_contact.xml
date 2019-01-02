@@ -108,10 +108,10 @@
         android:adjustViewBounds="false"
         android:background="?attr/appSelectableItemBackground"
         android:contentDescription="@string/ui_item_contact_hint_call"
-        android:src="@drawable/call_cs" />
+        android:src="@drawable/call" />
 
     <ImageButton
-        android:id="@+id/item_contact_action_some_call"
+        android:id="@+id/item_contact_action_some_message"
         android:layout_width="44dp"
         android:layout_height="48dp"
 
@@ -121,17 +121,6 @@
         android:background="?attr/appSelectableItemBackground"
         android:contentDescription="@string/ui_item_contact_hint_call" />
 
-    <ImageButton
-        android:id="@+id/item_contact_action_some_message"
-        android:layout_width="44dp"
-        android:layout_height="48dp"
-
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/item_contact_action_some_call"
-        android:layout_toStartOf="@+id/item_contact_action_some_call"
-        android:background="?attr/appSelectableItemBackground"
-        android:contentDescription="@string/ui_item_contact_hint_call"
-        android:src="@drawable/ic_message" />
 
 
 </RelativeLayout>

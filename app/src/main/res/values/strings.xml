@@ -262,4 +262,10 @@
     <string name="triple_tap_flashlight">Tripletap flashlight</string>
     <string name="order_contacts_name">Contacts list sort order</string>
     <string name="sign_in_gdrive">Sign in to GDrive</string>
+    <string name="ui_item_contact_hint_call_whatsapp">WhatsApp call</string>
+    <string name="ui_item_contact_hint_message_whatsapp">WhatsApp message</string>
+    <string name="ui_item_contact_hint_call_signal">Signal call</string>
+    <string name="ui_item_contact_hint_message_signal">Signal message</string>
+    <string name="ui_item_contact_hint_call_facebook">Facebook call</string>
+    <string name="ui_item_contact_hint_message_facebook">Facebook message</string>
 </resources>
