@@ -13,6 +13,7 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
@@ -59,7 +60,7 @@ public class OreoShortcuts extends Forwarder {
         final ShortcutInfo shortcutInfo = pinItemRequest.getShortcutInfo();
         assert shortcutInfo != null;
 
-        Log.d(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
+        if(BuildConfig.DEBUG) Log.d(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
 
 
         ShortcutsPojo pojo = new ShortcutsPojo();
@@ -73,7 +74,7 @@ public class OreoShortcuts extends Forwarder {
         } else if (shortcutInfo.getLongLabel() != null) {
             pojo.setName(shortcutInfo.getLongLabel().toString());
         } else {
-            Log.d(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
+            if(BuildConfig.DEBUG) Log.d(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
             return;
         }
 

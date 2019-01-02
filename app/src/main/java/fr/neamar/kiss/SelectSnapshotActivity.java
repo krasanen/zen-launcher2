@@ -105,7 +105,7 @@ public class SelectSnapshotActivity extends Activity implements AdapterView.OnIt
             intent.putExtra(RETRY_COUNT, mRetryCount);
         }
 
-        Log.d(TAG, "Finishing item at position " + position + " clicked");
+        if(BuildConfig.DEBUG) Log.d(TAG, "Finishing item at position " + position + " clicked");
         setResult(RESULT_OK, intent);
         finish();
     }

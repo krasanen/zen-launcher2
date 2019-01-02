@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import fr.neamar.kiss.BuildConfig;
+
 class DB extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "kiss.s3db";
@@ -29,7 +31,7 @@ class DB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        Log.d("onUpgrade", "Updating database from version " + oldVersion + " to version " + newVersion);
+        if(BuildConfig.DEBUG) Log.d("onUpgrade", "Updating database from version " + oldVersion + " to version " + newVersion);
         // See
         // http://www.drdobbs.com/database/using-sqlite-on-android/232900584
         if (oldVersion < newVersion) {

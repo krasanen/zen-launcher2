@@ -73,7 +73,7 @@ public class KissApplication extends Application {
         try {
             context.startService(intent);
         }catch (IllegalStateException e){
-            Log.d("KissApplication", "app in background?");
+            if(BuildConfig.DEBUG) Log.d("KissApplication", "app in background?");
         }
     }
 }

@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 
 import xiaofei.library.hermeseventbus.HermesEventBus;
@@ -86,7 +87,7 @@ public class LauncherService extends Service {
 
     @Override
     public void onCreate() {
-        Log.w(TAG, "onCreate...");
+        if(BuildConfig.DEBUG) Log.w(TAG, "onCreate...");
         HermesEventBus.getDefault().register(this);
         HermesEventBus.getDefault().connectApp(this, getPackageName());
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -98,7 +99,7 @@ public class LauncherService extends Service {
     }
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onEventMainThread(ZEvent event) {
-        Log.w(TAG, "in service" +
+        if(BuildConfig.DEBUG) Log.w(TAG, "in service" +
                 ", Got message from service: " + event.getState());
 
     }
@@ -106,7 +107,7 @@ public class LauncherService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(TAG, "in onBind");
+        if(BuildConfig.DEBUG) Log.v(TAG, "in onBind");
         return mBinder;
     }
 
@@ -118,13 +119,13 @@ public class LauncherService extends Service {
 
     @Override
     public void onRebind(Intent intent) {
-        Log.v(TAG, "in onRebind");
+        if(BuildConfig.DEBUG) Log.v(TAG, "in onRebind");
         super.onRebind(intent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.v(TAG, "in onUnbind");
+        if(BuildConfig.DEBUG) Log.v(TAG, "in onUnbind");
         return true;
     }
 
@@ -138,7 +139,7 @@ public class LauncherService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        Log.w(TAG, "onStartCommand..." + intent.getAction());
+        if(BuildConfig.DEBUG) Log.w(TAG, "onStartCommand..." + intent.getAction());
         if (intent == null || intent.getAction() == null) return START_NOT_STICKY;
 
         serviceExecutor.execute(new Runnable() {
@@ -159,7 +160,7 @@ public class LauncherService extends Service {
     }
 
     private void launchIntent(Intent intent) {
-        Log.d(TAG, "launchIntent");
+        if(BuildConfig.DEBUG) Log.d(TAG, "launchIntent");
         Intent toLaunch = intent.getParcelableExtra(Intent.EXTRA_INTENT);
         try {
             startActivity(toLaunch);
@@ -176,26 +177,26 @@ public class LauncherService extends Service {
     }
 
     private void handleProviderFullLoadOver(Intent intent) {
-        Log.d(TAG, "handleProviderFullLoadOver");
+        if(BuildConfig.DEBUG) Log.d(TAG, "handleProviderFullLoadOver");
         sendMessageNotSticky(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
     }
 
     private void handleProviderLoadOver(Intent intent) {
-        Log.d(TAG, "handleProviderLoadOver");
+        if(BuildConfig.DEBUG) Log.d(TAG, "handleProviderLoadOver");
         sendMessageNotSticky(new ZEvent(ZEvent.State.LOAD_OVER));
     }
 
     private void handleGoogleSignIn(Intent intent) {
-        Log.d(TAG, "handleGoogleSignIn");
+        if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignIn");
         sendMessageNotSticky(new ZEvent(ZEvent.State.GOOGLE_SIGNIN));
     }
 
     private void handleGoogleSignOut(Intent intent) {
-        Log.d(TAG, "handleGoogleSignOut");
+        if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignOut");
         sendMessageNotSticky(new ZEvent(ZEvent.State.GOOGLE_SIGNOUT));
     }
     private void handleShowToast(String text) {
-        Log.d(TAG, "handleShowToast");
+        if(BuildConfig.DEBUG) Log.d(TAG, "handleShowToast");
         sendMessageNotSticky(new ZEvent(SHOW_TOAST, text));
     }
 
@@ -208,7 +209,7 @@ public class LauncherService extends Service {
 
     private void createMaskView() {
 
-        Log.d(TAG, "createMaskView");
+        if(BuildConfig.DEBUG) Log.d(TAG, "createMaskView");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             public void run() {
                 if (mLayout == null) {
@@ -227,7 +228,7 @@ public class LauncherService extends Service {
                     mWindowManager.addView(mLayout, mLayoutParams);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d(TAG, "createMaskView CANNOT_START");
+                    if(BuildConfig.DEBUG) Log.d(TAG, "createMaskView CANNOT_START");
                     Intent broadcastIntent = new Intent();
                     broadcastIntent.setAction(MainActivity.class.getCanonicalName());
                     broadcastIntent.putExtra(Constants.Extra.EVENT_ID, Constants.Event.CANNOT_START);
@@ -348,7 +349,7 @@ public class LauncherService extends Service {
     }
 
     private void destroyMaskView() {
-        Log.d(TAG, "destroyMaskView");
+        if(BuildConfig.DEBUG) Log.d(TAG, "destroyMaskView");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             public void run() {
 

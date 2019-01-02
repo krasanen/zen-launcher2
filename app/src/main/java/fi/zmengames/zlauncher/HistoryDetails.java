@@ -69,6 +69,7 @@ import com.gracenote.gnsdk.IGnLookupLocalStreamIngestEvents;
 import com.gracenote.gnsdk.IGnMusicIdStreamEvents;
 import com.gracenote.gnsdk.IGnSystemEvents;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -144,7 +145,7 @@ public final class HistoryDetails extends Activity {
                 @Override
                 public void onClick(View v) {
                     String uri = "https://www.google.com/#q="+URLEncoder.encode(artist +" "+ track+ " lyrics");
-                    Log.d(TAG,"uri"+uri);
+                    if(BuildConfig.DEBUG) Log.d(TAG,"uri"+uri);
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                     startActivity(browserIntent);
                 }
@@ -872,7 +873,7 @@ public final class HistoryDetails extends Activity {
     }
 
     private void setStatus(String statusMessage, boolean clearStatus) {
-        Log.d("setStatus", "statusMessage" + statusMessage);
+        if(BuildConfig.DEBUG) Log.d("setStatus", "statusMessage" + statusMessage);
     }
 
     private void showError(String errorMessage) {
@@ -968,7 +969,7 @@ public final class HistoryDetails extends Activity {
         if (db != null)
             db.close();
         if ( gnMusicIdStream != null ) {
-            Log.d(TAG,"stop gnMusicIdStream");
+            if(BuildConfig.DEBUG) Log.d(TAG,"stop gnMusicIdStream");
             new Thread(new Runnable() {
                 @Override
                 public void run() {

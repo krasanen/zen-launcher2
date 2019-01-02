@@ -51,11 +51,11 @@ public class UIColors {
     }
 
     private static int getNotificationBarColor(Context context) {
-        Log.d(TAG,"getNotificationBarColor");
+        if(BuildConfig.DEBUG) Log.d(TAG,"getNotificationBarColor");
         int a = Color.parseColor(
                 PreferenceManager.getDefaultSharedPreferences(context)
                         .getString("notification-bar-color", "#00000000"));
-        Log.d(TAG,"getNotificationBarColor, a:"+a);
+        if(BuildConfig.DEBUG) Log.d(TAG,"getNotificationBarColor, a:"+a);
         return a;
     }
 

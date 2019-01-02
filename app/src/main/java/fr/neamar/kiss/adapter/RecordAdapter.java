@@ -109,7 +109,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
             }
         }
         View view = results.get(position).display(context, results.size() - position, convertView, fuzzyScore);
-        //Log.d( "TBog", "getView pos " + position + " convertView " + ((convertView == null) ? "null" : convertView.toString()) + " will return " + view.toString() );
+        //if(BuildConfig.DEBUG) Log.d( "TBog", "getView pos " + position + " convertView " + ((convertView == null) ? "null" : convertView.toString()) + " will return " + view.toString() );
         view.setTag(getItemViewType(position));
         return view;
     }

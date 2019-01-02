@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 
 public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChangeListener {
@@ -130,7 +131,7 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
         if ((visibility & View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) != 0)
             sb.append("\n SYSTEM_UI_FLAG_IMMERSIVE_STICKY");
 
-        Log.d("TBog", sb.toString());
+        if(BuildConfig.DEBUG) Log.d("TBog", sb.toString());
 
         if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0) {
             applySystemUi();

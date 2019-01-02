@@ -235,7 +235,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int RC_SIGN_IN = 54;
 
     public void signIn() {
-        Log.d(TAG, "signIn");
+        if(BuildConfig.DEBUG) Log.d(TAG, "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         // The Task returned from this call is always completed, no need to attach
         // a listener.
@@ -245,7 +245,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     public void signOut() {
-        Log.d(TAG, "signOut");
+        if(BuildConfig.DEBUG) Log.d(TAG, "signOut");
         mGoogleSignInClient.signOut();
 
         mSignedIn = false;
@@ -288,19 +288,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private Task<SnapshotMetadata> writeSnapshot(Snapshot snapshot) {
         // Set the data payload for the snapshot.
-        Log.d(TAG, "writeSnapshot");
+        if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot");
         try {
             mSaveGame = new SaveGame(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
         } catch (JSONException e) {
-            Log.d(TAG, "writeSnapshot exception:" + e);
+            if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot exception:" + e);
         }
         try {
-            Log.d(TAG, "writeSnapshot, len:" + objToByte(mSaveGame).length);
+            if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot, len:" + objToByte(mSaveGame).length);
             snapshot.getSnapshotContents().writeBytes(objToByte(mSaveGame));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "writeSnapshot: string:" + mSaveGame.toString());
+        if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot: string:" + mSaveGame.toString());
         // Save the snapshot.
         SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
                 .setCoverImage(getScreenShot())
@@ -410,10 +410,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 startActivityForResult(intent, MY_PERMISSIONS_OVERLAY);
                 return false;
             }
-            Log.d(TAG, "overlay permission ok");
+            if(BuildConfig.DEBUG) Log.d(TAG, "overlay permission ok");
             return true;
         } else {
-            Log.d(TAG, "overlay permission ok, sdk:"+Build.VERSION.SDK_INT);
+            if(BuildConfig.DEBUG) Log.d(TAG, "overlay permission ok, sdk:"+Build.VERSION.SDK_INT);
             return true;
         }
     }
@@ -457,7 +457,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate()");
+        if(BuildConfig.DEBUG) Log.d(TAG, "onCreate()");
         //setNightMode(this,true);
         HermesEventBus.getDefault().init(this);
         HermesEventBus.getDefault().register(this);
@@ -629,9 +629,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         forwarderManager.onCreate();
         initializeKeyboardListener();
-        //Log.d(TAG,">setOnDragListener");
+        //if(BuildConfig.DEBUG) Log.d(TAG,">setOnDragListener");
         //findViewById(R.id.letters).setOnTouchListener(new MyDragListener());
-        //Log.d(TAG,"<setOnDragListener");
+        //if(BuildConfig.DEBUG) Log.d(TAG,"<setOnDragListener");
 
     }
 
@@ -646,7 +646,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            Log.d(TAG,"onTouch:"+ v);
+            if(BuildConfig.DEBUG) Log.d(TAG,"onTouch:"+ v);
             return false;
         }
     }
@@ -678,7 +678,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        Log.d(TAG, "onCreateContextMenu");
+        if(BuildConfig.DEBUG) Log.d(TAG, "onCreateContextMenu");
 
         /*ImageView image;
 
@@ -740,7 +740,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             onAccountChanged(account);
         } else {
             mSignedIn = false;
-            Log.d(TAG, "Not signed to Google!");
+            if(BuildConfig.DEBUG) Log.d(TAG, "Not signed to Google!");
         }
     }
 
@@ -800,13 +800,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
-        Log.d(TAG, "onResume()");
+        if(BuildConfig.DEBUG) Log.d(TAG, "onResume()");
         if (mDebugJson) {
             try {
                 String settings = this.getSerializedSettings2();
-                Log.d(TAG, "settings:" + settings);
+                if(BuildConfig.DEBUG) Log.d(TAG, "settings:" + settings);
             } catch (JSONException e) {
-                Log.d(TAG, "JSONException");
+                if(BuildConfig.DEBUG) Log.d(TAG, "JSONException");
             }
         }
         if (prefs.getBoolean("require-layout-update", false)) {
@@ -902,7 +902,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "onBackPressed");
+        if(BuildConfig.DEBUG) Log.d(TAG, "onBackPressed");
         if (mPopup != null) {
             mPopup.dismiss();
         } else if (isViewingAllApps()) {
@@ -1018,21 +1018,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
             case R.id.signIn:
                 if (!mSignedIn) {
-                    Log.d(TAG, "signIn");
+                    if(BuildConfig.DEBUG) Log.d(TAG, "signIn");
                     Intent signInIntent = new Intent(this, LauncherService.class);
                     signInIntent.setAction(LauncherService.GOOGLE_SIGN_IN);
                     KissApplication.startLaucherService(signInIntent, this);
                 }
                 return true;
             case R.id.nightModeOn:
-                Log.d(TAG, "nightModeOn");
+                if(BuildConfig.DEBUG) Log.d(TAG, "nightModeOn");
                 setNightMode(this, true);/*
                 Intent nighton = new Intent(this, LauncherService.class);
                 nighton.setAction(LauncherService.NIGHTMODE_ON);
                 KissApplication.startLaucherService(nighton, this); */
                 return true;
             case R.id.nightModeOff:
-                Log.d(TAG, "nightModeOff");
+                if(BuildConfig.DEBUG) Log.d(TAG, "nightModeOff");
                 setNightMode(this, false); /*
                 Intent nightoff = new Intent(this, LauncherService.class);
                 nightoff.setAction(LauncherService.NIGHTMODE_OFF);
@@ -1150,7 +1150,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             //}
         }
 
-        Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
+        if(BuildConfig.DEBUG) Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
         return jsonWidget.toString(1);
     }
 
@@ -1194,7 +1194,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private int loadJson(String jsonText) throws JSONException {
         int count = 0;
         TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
-        Log.d(TAG, "jsonText:" + jsonText);
+        if(BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
         JSONObject json = new JSONObject(jsonText);
         Iterator<String> iter = json.keys();
         SharedPreferences.Editor editor = prefs.edit();
@@ -1208,29 +1208,29 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             String value = values[0];
             String classValue = values[1];
 
-            Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+            if(BuildConfig.DEBUG) Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
             if (classValue.equals(booleanClassname)) {
-                Log.d(TAG, "putBoolean");
+                if(BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
                 editor.putBoolean(key, Boolean.parseBoolean(value));
             } else if (classValue.equals(stringClassname)) {
-                Log.d(TAG, "putString");
+                if(BuildConfig.DEBUG) Log.d(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                Log.d(TAG, "putStringSet:" + value);
+                if(BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
-                Log.d(TAG, "value:" + value);
+                if(BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
                 String toparse = value.substring(1, value.length() - 1);
-                Log.d(TAG, "toparse:" + toparse);
+                if(BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
                     for (int i = 0; i < values2.length; i++) {
-                        Log.d(TAG, "values2:" + values2[i]);
+                        if(BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
                         String[] app = values2[i].split("=");
-                        Log.d(TAG, "appId:" + app[0]);
-                        Log.d(TAG, "tagsForApp:" + app[1]);
+                        if(BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
+                        if(BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
                     }
                 }
@@ -1247,7 +1247,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private int loadWidgetJson(String jsonText) throws JSONException {
         int count = 0;
         TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
-        Log.d(TAG, "jsonText:" + jsonText);
+        if(BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
         JSONObject json = new JSONObject(jsonText);
         Iterator<String> iter = json.keys();
         SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
@@ -1263,29 +1263,29 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             String value = values[0];
             String classValue = values[1];
 
-            Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+            if(BuildConfig.DEBUG) Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
             if (classValue.equals(booleanClassname)) {
-                Log.d(TAG, "putBoolean");
+                if(BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
                 editor.putBoolean(key, Boolean.parseBoolean(value));
             } else if (classValue.equals(stringClassname)) {
-                Log.d(TAG, "putString");
+                if(BuildConfig.DEBUG) Log.d(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                Log.d(TAG, "putStringSet:" + value);
+                if(BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
-                Log.d(TAG, "value:" + value);
+                if(BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
                 String toparse = value.substring(1, value.length() - 1);
-                Log.d(TAG, "toparse:" + toparse);
+                if(BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
                     for (int i = 0; i < values2.length; i++) {
-                        Log.d(TAG, "values2:" + values2[i]);
+                        if(BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
                         String[] app = values2[i].split("=");
-                        Log.d(TAG, "appId:" + app[0]);
-                        Log.d(TAG, "tagsForApp:" + app[1]);
+                        if(BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
+                        if(BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
                     }
                 }
@@ -1308,7 +1308,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Sign-in worked!
         mSignedIn = true;
         prefs.edit().putBoolean("wasSigned", true).apply();
-        Log.d(TAG, "Sign-in successful!");
+        if(BuildConfig.DEBUG) Log.d(TAG, "Sign-in successful!");
 
 
     }
@@ -1442,7 +1442,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         intent.putExtra(MainActivity.CONFLICT_ID, conflictId);
         intent.putExtra(MainActivity.RETRY_COUNT, retryCount);
 
-        Log.d(TAG, "Starting activity to select snapshot");
+        if(BuildConfig.DEBUG) Log.d(TAG, "Starting activity to select snapshot");
         startActivityForResult(intent, requestCode);
     }
 
@@ -1460,7 +1460,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                             return;
                         }
 
-                        Log.d(TAG, "Writing data to snapshot: " + snapshotToWrite.getMetadata().getUniqueName());
+                        if(BuildConfig.DEBUG) Log.d(TAG, "Writing data to snapshot: " + snapshotToWrite.getMetadata().getUniqueName());
                         writeSnapshot(snapshotToWrite)
                                 .addOnCompleteListener(new OnCompleteListener<SnapshotMetadata>() {
                                     @Override
@@ -1570,7 +1570,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 handleSignInResult(task);
                 break;
             case RC_LIST_SAVED_GAMES:
-                Log.d(TAG, "RC_LIST_SAVED_GAMES");
+                if(BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES");
                 if (data != null) {
                     if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
                         // Load a snapshot.
@@ -1579,7 +1579,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         currentSaveName = snapshotMetadata.getUniqueName();
                         loadFromSnapshot(snapshotMetadata);
                     } else if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
-                        Log.d(TAG, "RC_LIST_SAVED_GAMES EXTRA_SNAPSHOT_NEW");
+                        if(BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES EXTRA_SNAPSHOT_NEW");
                         // Create a new snapshot named with a unique string
                         String unique = Long.toString(System.currentTimeMillis());
                         currentSaveName = "snapshotTemp-" + unique;
@@ -1589,7 +1589,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 break;
             case REQUEST_LOAD_REPLACE_TAGS:
-                Log.d(TAG, "REQUEST_LOAD_REPLACE_TAGS");
+                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_TAGS");
                 if (resultCode == RESULT_OK) {
                     TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
                     Uri selectedFile = data.getData();
@@ -1623,7 +1623,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 break;
             case REQUEST_LOAD_REPLACE_SETTINGS:
-                Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS");
+                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS");
                 if (resultCode == RESULT_OK) {
                     Uri selectedFile = data.getData();
                     if (selectedFile != null) {
@@ -1650,7 +1650,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
 
             case REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME:
-                Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
+                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
                 int count = 0;
                 try {
                     count = loadJson(data.getStringExtra("json"));
@@ -1725,7 +1725,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
+        if(BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
         final float x = ev.getX();
         final float y = ev.getY();
         int location[] = new int[2];
@@ -1735,7 +1735,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         if (((x > viewX && x < (viewX + searchEditText.getWidth())) &&
                 (y > viewY && y < (viewY + searchEditText.getHeight())))) {
-            Log.d(TAG, "dispatchTouchEvent2: " + ev.getAction());
+            if(BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent2: " + ev.getAction());
             forwarderManager.onTouch(searchEditText, ev);
         }
 
@@ -2055,7 +2055,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     };
 
     public void onClick(View view) {
-        Log.d(TAG,"onClick:"+view.getTag());
+        if(BuildConfig.DEBUG) Log.d(TAG,"onClick:"+view.getTag());
         searchEditText.setText((CharSequence) view.getTag());
         //displayKissBar(false,false,false);
     }

@@ -346,7 +346,7 @@ public class DataHandler
             this.getShortcutsProvider().reload();
         }
 
-        Log.d(TAG, "Shortcut " + shortcut.id + " added.");
+        if(BuildConfig.DEBUG) Log.d(TAG, "Shortcut " + shortcut.id + " added.");
         Toast.makeText(context, R.string.shortcut_added, Toast.LENGTH_SHORT).show();
     }
 

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
@@ -105,7 +106,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (photoId != null) {
                         contact.icon = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI,
                                 Long.parseLong(photoId));
-                        Log.d(TAG,"icon1:"+ contact.icon);
+                        if(BuildConfig.DEBUG) Log.d(TAG,"icon1:"+ contact.icon);
                     }
 
                     contact.id = pojoScheme + contact.lookupKey + contact.phone;
@@ -181,7 +182,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 null);
 
         if (cursor != null) {
-            Log.d(TAG, "Some search:");
+            if(BuildConfig.DEBUG) Log.d(TAG, "Some search:");
             int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
             int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
             int lookupKeyIndex = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
@@ -234,13 +235,13 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                                     //Add Number to ArrayList
                                     myWhatsappContacts.add(number);
 
-                                    Log.d(TAG, " FaceBook contact id  :  " + id);
-                                    Log.d(TAG, " FaceBook contact name :  " + name);
-                                    Log.d(TAG, " FaceBook contact number :  " + number);
-                                    Log.d(TAG, " FaceBook contact data1 : " + data1);
-                                    Log.d(TAG, " FaceBook contact data2 : " + data2);
-                                    Log.d(TAG, " FaceBook contact data3 : " + data3);
-                                    Log.d(TAG, " FaceBook contact data4 : " + data4);
+                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact id  :  " + id);
+                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact name :  " + name);
+                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact number :  " + number);
+                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data1 : " + data1);
+                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data2 : " + data2);
+                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data3 : " + data3);
+                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data4 : " + data4);
                                 }
                             }
                         } while (contactCursor.moveToNext());
@@ -249,7 +250,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 }
             }
 
-            Log.d(TAG, " WhatsApp contact size :  " + myWhatsappContacts.size());*/
+            if(BuildConfig.DEBUG) Log.d(TAG, " WhatsApp contact size :  " + myWhatsappContacts.size());*/
 
             while (cursor.moveToNext()) {
                 String lookupKey = cursor.getString(lookupKeyIndex);
@@ -261,7 +262,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(SIGNAL_CALL_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                Log.d(TAG, "SIGNAL! " + number);
+                                if(BuildConfig.DEBUG) Log.d(TAG, "SIGNAL! " + number);
                                 contact.SignalCalling = contactId;
                                 if (!contact.primary) {
                                     contact.primary = true;
@@ -274,7 +275,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(WHATSAPP_CALL_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                Log.d(TAG, "WhatsApp! " + number);
+                                if(BuildConfig.DEBUG) Log.d(TAG, "WhatsApp! " + number);
                                 contact.whatsAppCalling = contactId;
                                 if (!contact.primary) {
                                     contact.primary = true;
@@ -290,7 +291,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(WHATSAPP_CONTACT_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                Log.d(TAG, "WhatsApp messaging! " + number);
+                                if(BuildConfig.DEBUG) Log.d(TAG, "WhatsApp messaging! " + number);
                                 contact.whatsAppMessaging = contactId;
                             }
                         }
@@ -298,7 +299,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(SIGNAL_CONTACT_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                Log.d(TAG, "SIGNAL messaging! " + number);
+                                if(BuildConfig.DEBUG) Log.d(TAG, "SIGNAL messaging! " + number);
                                 contact.signalMessaging = contactId;
                             }
                         }
@@ -307,7 +308,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(FACEBOOK_CALL_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                Log.d(TAG, "FACEBOOK call! " + contactId);
+                                if(BuildConfig.DEBUG) Log.d(TAG, "FACEBOOK call! " + contactId);
                                 contact.faceCalling = contactId;
 
                             }
@@ -318,7 +319,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(FECEBOOK_CONTACT_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                Log.d(TAG, "FACEBOOK messaging! " + contactId);
+                                if(BuildConfig.DEBUG) Log.d(TAG, "FACEBOOK messaging! " + contactId);
                                 contact.faceMessaging = contactId;
                             }
                         }

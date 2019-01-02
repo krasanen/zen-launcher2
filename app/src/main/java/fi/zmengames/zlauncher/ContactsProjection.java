@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.pojo.ContactsPojo;
 
 public class ContactsProjection {
@@ -38,7 +39,7 @@ public class ContactsProjection {
 
             String name=cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            Log.d(TAG,"id:"+id+"+ name:"+name +  " phoneNumber:"+phoneNumber);
+            if(BuildConfig.DEBUG) Log.d(TAG,"id:"+id+"+ name:"+name +  " phoneNumber:"+phoneNumber);
 
         }
 
@@ -47,13 +48,13 @@ public class ContactsProjection {
         while (phones.moveToNext()) {
             String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            Log.d(TAG,"name2:"+name +  " phoneNumber2:"+phoneNumber);
+            if(BuildConfig.DEBUG) Log.d(TAG,"name2:"+name +  " phoneNumber2:"+phoneNumber);
             int type = phones.getInt(phones.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID));
-            Log.d(TAG,"mimetype:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.MIMETYPE)));
+            if(BuildConfig.DEBUG) Log.d(TAG,"mimetype:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.MIMETYPE)));
 
-            Log.d(TAG,"data1:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA1)));
-            Log.d(TAG,"data2:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA2)));
-            Log.d(TAG,"data3:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA3)));
+            if(BuildConfig.DEBUG) Log.d(TAG,"data1:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA1)));
+            if(BuildConfig.DEBUG) Log.d(TAG,"data2:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA2)));
+            if(BuildConfig.DEBUG) Log.d(TAG,"data3:"+phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA3)));
 
 
 

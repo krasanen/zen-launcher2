@@ -11,6 +11,8 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.util.Log;
 
+import fr.neamar.kiss.BuildConfig;
+
 public class WavAudioRecorder {
     private final static int[] sampleRates = {44100};
 
@@ -88,11 +90,11 @@ public class WavAudioRecorder {
         //	periodic updates on the progress of the record head
         public void onPeriodicNotification(AudioRecord recorder) {
             if (State.STOPPED == state) {
-                Log.d(WavAudioRecorder.this.getClass().getName(), "recorder stopped");
+                if(BuildConfig.DEBUG) Log.d(WavAudioRecorder.this.getClass().getName(), "recorder stopped");
                 return;
             }
             int numOfBytes = audioRecorder.read(buffer, 0, buffer.length); // read audio data to buffer
-//			Log.d(WavAudioRecorder.this.getClass().getName(), state + ":" + numOfBytes);
+//			if(BuildConfig.DEBUG) Log.d(WavAudioRecorder.this.getClass().getName(), state + ":" + numOfBytes);
             try {
                 randomAccessWriter.write(buffer); 		  // write audio data to file
                 payloadSize += buffer.length;

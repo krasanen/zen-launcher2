@@ -230,7 +230,7 @@ public class SnapshotCoordinator {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Log.d(TAG, "Closed " + snapshot.getMetadata().getUniqueName());
+                                if(BuildConfig.DEBUG) Log.d(TAG, "Closed " + snapshot.getMetadata().getUniqueName());
                                 setClosed(snapshot.getMetadata().getUniqueName());
                             }
                         });
@@ -252,9 +252,9 @@ public class SnapshotCoordinator {
                     SnapshotsClient.DataOrConflict<Snapshot> result
                             = task.getResult();
                     if (result.isConflict()) {
-                        Log.d(TAG, "Open successful: " + filename + ", but with a conflict");
+                        if(BuildConfig.DEBUG) Log.d(TAG, "Open successful: " + filename + ", but with a conflict");
                     } else {
-                        Log.d(TAG, "Open successful: " + filename);
+                        if(BuildConfig.DEBUG) Log.d(TAG, "Open successful: " + filename);
                     }
                 }
             }
@@ -359,7 +359,7 @@ public class SnapshotCoordinator {
                             @Override
                             public void onComplete(@NonNull Task<SnapshotMetadata> task) {
                                 // even if commit and close fails, the file is closed.
-                                Log.d(TAG, "CommitAndClose complete, closing " +
+                                if(BuildConfig.DEBUG) Log.d(TAG, "CommitAndClose complete, closing " +
                                         filename);
                                 setClosed(filename);
                             }

@@ -166,7 +166,7 @@ public class StringNormalizer {
                 return this.codePoints.length - that.codePoints.length;
 
             if (BuildConfig.DEBUG && !this.equals(that)){
-                Log.d(TAG,"different case, this:"+this +" that:"+that);
+                if(BuildConfig.DEBUG) Log.d(TAG,"different case, this:"+this +" that:"+that);
             }
 
             // equal

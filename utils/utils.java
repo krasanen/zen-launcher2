@@ -8,15 +8,15 @@ public void checkAudio(){
 
         String fileName=(Environment.getExternalStorageDirectory()
         .getAbsolutePath()+File.separator+"biisi3.amr");
-        Log.d(TAG,"fileName:"+fileName);
+        if(BuildConfig.DEBUG) Log.d(TAG,"fileName:"+fileName);
         String length="50";
         String[]args={"-length",length,fileName};
         String result=FpCalc.fpCalc(args);
-        Log.d(TAG,"checkAudio, result:"+result);
+        if(BuildConfig.DEBUG) Log.d(TAG,"checkAudio, result:"+result);
         String duration=result.substring(9,result.indexOf("F"));
         String fingerprint=result.substring(result.lastIndexOf("FINGERPRINT=")+12);
-        Log.d(TAG,"DURATION:"+duration);
-        Log.d(TAG,"FINGERPRINT:"+fingerprint);
+        if(BuildConfig.DEBUG) Log.d(TAG,"DURATION:"+duration);
+        if(BuildConfig.DEBUG) Log.d(TAG,"FINGERPRINT:"+fingerprint);
         String biisi="?client=FkPa1JhL2a&duration="+duration+"&fingerprint="+fingerprint;
        /* JSONObject biisi = new JSONObject();
        /* try {

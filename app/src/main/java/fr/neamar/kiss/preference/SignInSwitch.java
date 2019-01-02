@@ -9,6 +9,7 @@ import android.util.Log;
 
 import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.SwitchPreference;
@@ -30,16 +31,16 @@ public class SignInSwitch extends SwitchPreference {
 
     @Override
     protected void onClick() {
-        Log.d("SignInSwitch","isChecked:"+isChecked());
+        if(BuildConfig.DEBUG) Log.d("SignInSwitch","isChecked:"+isChecked());
 
         if (!isChecked()){
-            Log.d("SignInSwitch","SIGN_IN2");
+            if(BuildConfig.DEBUG) Log.d("SignInSwitch","SIGN_IN2");
             Intent intent = new Intent(getContext(), LauncherService.class);
             intent.setAction(LauncherService.GOOGLE_SIGN_IN);
             KissApplication.startLaucherService(intent,getContext());
 
         } else {
-            Log.d("SignInSwitch","SIGN_OUT2");
+            if(BuildConfig.DEBUG) Log.d("SignInSwitch","SIGN_OUT2");
             Intent intent = new Intent(getContext(), LauncherService.class);
             intent.setAction(LauncherService.GOOGLE_SIGN_OUT);
             KissApplication.startLaucherService(intent,getContext());

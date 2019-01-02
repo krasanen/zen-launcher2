@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import fi.zmengames.zlauncher.IconHelper;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
@@ -119,16 +120,16 @@ public class ContactsResult extends Result {
             @Override
             public void onClick(View v) {
                 if (contactPojo.whatsAppCalling != 0) {
-                    Log.d(TAG, "whatsAppCalling:" + contactPojo.whatsAppCalling);
+                    if(BuildConfig.DEBUG) Log.d(TAG, "whatsAppCalling:" + contactPojo.whatsAppCalling);
 
                     openGenericSomeApp(contactPojo.whatsAppCalling, v.getContext());
                 } else if (contactPojo.SignalCalling != 0) {
-                    Log.d(TAG, "SignalCalling:" + contactPojo.SignalCalling);
+                    if(BuildConfig.DEBUG) Log.d(TAG, "SignalCalling:" + contactPojo.SignalCalling);
 
                     openGenericSomeApp(contactPojo.SignalCalling, v.getContext());
                 } else if (contactPojo.faceCalling != 0) {
 
-                    Log.d(TAG, "faceCalling:" + contactPojo.faceCalling);
+                    if(BuildConfig.DEBUG) Log.d(TAG, "faceCalling:" + contactPojo.faceCalling);
 
                     openFacebook(contactPojo.faceCalling, v.getContext(), true);
                 }
@@ -150,13 +151,13 @@ public class ContactsResult extends Result {
             @Override
             public void onClick(View v) {
                 if (contactPojo.whatsAppMessaging != 0) {
-                    Log.d(TAG, "whatsAppMessaging:" + contactPojo.whatsAppMessaging);
+                    if(BuildConfig.DEBUG) Log.d(TAG, "whatsAppMessaging:" + contactPojo.whatsAppMessaging);
                     openGenericSomeApp(contactPojo.whatsAppMessaging, v.getContext());
                 } else if (contactPojo.signalMessaging != 0) {
-                    Log.d(TAG, "signalMessaging:" + contactPojo.signalMessaging);
+                    if(BuildConfig.DEBUG) Log.d(TAG, "signalMessaging:" + contactPojo.signalMessaging);
                     openGenericSomeApp(contactPojo.signalMessaging, v.getContext());
                 } else if (contactPojo.faceMessaging != 0) {
-                    Log.d(TAG, "faceMessaging:" + contactPojo.faceMessaging);
+                    if(BuildConfig.DEBUG) Log.d(TAG, "faceMessaging:" + contactPojo.faceMessaging);
                     openFacebook(contactPojo.faceMessaging, v.getContext(), false);
                 }
 
@@ -275,18 +276,18 @@ public class ContactsResult extends Result {
     @Override
     public Drawable getDrawable(Context context) {
         synchronized (this) {
-            Log.d(TAG,"getDrawable:"+contactPojo.icon);
+            if(BuildConfig.DEBUG) Log.d(TAG,"getDrawable:"+contactPojo.icon);
             if (isDrawableCached())
                 return icon;
             if (contactPojo.icon != null) {
-                Log.d(TAG,"getDrawable:"+contactPojo.icon);
+                if(BuildConfig.DEBUG) Log.d(TAG,"getDrawable:"+contactPojo.icon);
                 InputStream inputStream = null;
                 try {
                     inputStream = context.getContentResolver()
                             .openInputStream(contactPojo.icon);
                     return icon = Drawable.createFromStream(inputStream, null);
                 } catch (FileNotFoundException ignored) {
-                    Log.d(TAG,"getDrawable FileNotFoundException"+contactPojo.icon);
+                    if(BuildConfig.DEBUG) Log.d(TAG,"getDrawable FileNotFoundException"+contactPojo.icon);
                     //inputStream = getPhotoInputStream(contactPojo.icon, context);
                     //return icon = Drawable.createFromStream(inputStream, null);
 
@@ -390,7 +391,7 @@ public class ContactsResult extends Result {
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         int contactId = contactPojo.contactId;
-        Log.d(TAG, "launchWhatsAppCall, contactId:" + contactId);
+        if(BuildConfig.DEBUG) Log.d(TAG, "launchWhatsAppCall, contactId:" + contactId);
         // the _ids you save goes here at the end of /data/12562
         intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
                 "vnd.android.cursor.item/vnd.com.whatsapp.voip.call");
@@ -423,7 +424,7 @@ public class ContactsResult extends Result {
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         int contactId = contactPojo.contactId;
-        Log.d(TAG, "launchSignalCall, contactId:" + contactId);
+        if(BuildConfig.DEBUG) Log.d(TAG, "launchSignalCall, contactId:" + contactId);
         // the _ids you save goes here at the end of /data/12562
         intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
                 SIGNAL_CONTACT_MIMETYPE);
@@ -449,13 +450,13 @@ public class ContactsResult extends Result {
 
 
         /*
-                Log.d(TAG,"openGenericSomeApp:"+SignalCalling);
+                if(BuildConfig.DEBUG) Log.d(TAG,"openGenericSomeApp:"+SignalCalling);
         Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data.DATA1 + "=?",
                 new String[] { SignalCalling }, null);
         c.moveToFirst();
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + c.getString(0)));
-        Log.d(TAG,"c.getString(0):"+c.getString(0)+" i:"+i.getAction());
+        if(BuildConfig.DEBUG) Log.d(TAG,"c.getString(0):"+c.getString(0)+" i:"+i.getAction());
         i.setDataAndType(Uri.parse("content://com.android.contacts/data/" + c.getString(0)),
                 SIGNAL_CALL_MIMETYPE);
         context.startActivity(i);
@@ -465,7 +466,7 @@ public class ContactsResult extends Result {
     }
 
     private void openGenericSomeApp(int signalNumber, Context context) {
-        Log.d(TAG, "openGenericSomeApp:" + signalNumber);
+        if(BuildConfig.DEBUG) Log.d(TAG, "openGenericSomeApp:" + signalNumber);
      /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
                 new String[] { Integer.toString(SignalCalling) }, null);
@@ -478,7 +479,7 @@ public class ContactsResult extends Result {
     }
 
     private void openFacebook(int whatsAppnumber, Context context, boolean call) {
-        Log.d(TAG, "openFacebook:" + whatsAppnumber);
+        if(BuildConfig.DEBUG) Log.d(TAG, "openFacebook:" + whatsAppnumber);
      /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
                 new String[] { Integer.toString(whatsAppnumber) }, null);

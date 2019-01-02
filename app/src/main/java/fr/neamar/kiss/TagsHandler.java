@@ -31,7 +31,7 @@ public class TagsHandler {
 
     public void setTags(String id, String tags) {
         if (mDebugJson) {
-            Log.d(TAG, "setTags, id:" + id + " tags:" + tags);
+            if(BuildConfig.DEBUG) Log.d(TAG, "setTags, id:" + id + " tags:" + tags);
         }
         //remove existing tags for id
         DBHelper.deleteTagsForId(this.context, id);
@@ -43,7 +43,7 @@ public class TagsHandler {
 
     public String getTags(String id) {
         if (mDebugJson) {
-            Log.d(TAG, "getTags, id:" + id);
+            if(BuildConfig.DEBUG) Log.d(TAG, "getTags, id:" + id);
         }
         String tag = tagsCache.get(id);
         if (tag == null) {
