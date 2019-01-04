@@ -107,9 +107,10 @@
                 android:resource="@mipmap/ic_launcher" />
         </activity>
 
-        <activity android:name="fi.zmengames.zlauncher.HistoryDetails"
+        <activity
+            android:name="fi.zmengames.zlauncher.HistoryDetails"
             android:theme="@style/AppThemeDarkGrace"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DummyActivity"
             android:enabled="false">

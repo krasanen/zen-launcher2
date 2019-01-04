@@ -173,69 +173,6 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             int lookupKeyIndex = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
             int mimeTypeKeyIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
             int contactIdIndex = cursor.getColumnIndex(ContactsContract.Data._ID);
-             /*Cursor contactCursor = context.get().getContentResolver().query(
-                    ContactsContract.RawContacts.CONTENT_URI,
-                    new String[]{ContactsContract.RawContacts._ID,
-                            ContactsContract.RawContacts.CONTACT_ID},
-                    ContactsContract.RawContacts.ACCOUNT_TYPE + "= ?",
-                    new String[]{"com.facebook"},
-                    null);
-
-
-            //ArrayList for Store Whatsapp Contact
-            ArrayList<String> myWhatsappContacts = new ArrayList<>();
-
-            if (contactCursor != null) {
-                if (contactCursor.getCount() > 0) {
-                    if (contactCursor.moveToFirst()) {
-                        do {
-                            //whatsappContactId for get Number,Name,Id ect... from  ContactsContract.CommonDataKinds.Phone
-                            String whatsappContactId = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.RawContacts.CONTACT_ID));
-
-                            if (whatsappContactId != null) {
-                                //Get Data from ContactsContract.CommonDataKinds.Phone of Specific CONTACT_ID
-                                Cursor whatsAppContactCursor = context.get().getContentResolver().query(
-                                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                        new String[]{ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-                                                ContactsContract.CommonDataKinds.Phone.NUMBER,
-                                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                                                ContactsContract.CommonDataKinds.Phone.DATA1,
-                                                ContactsContract.CommonDataKinds.Phone.DATA2,
-                                                ContactsContract.CommonDataKinds.Phone.DATA3,
-                                                ContactsContract.CommonDataKinds.Phone.DATA15},
-                                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                        new String[]{whatsappContactId}, null);
-
-                                if (whatsAppContactCursor != null) {
-                                    whatsAppContactCursor.moveToFirst();
-                                    String id = whatsAppContactCursor.getString(whatsAppContactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
-                                    String name = whatsAppContactCursor.getString(whatsAppContactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                                    String number = whatsAppContactCursor.getString(whatsAppContactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                    String data1 = whatsAppContactCursor.getString(whatsAppContactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA1));
-                                    String data2 = whatsAppContactCursor.getString(whatsAppContactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA2));
-                                    String data3 = whatsAppContactCursor.getString(whatsAppContactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA3));
-                                    String data4 = whatsAppContactCursor.getString(whatsAppContactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA15));
-                                    whatsAppContactCursor.close();
-
-                                    //Add Number to ArrayList
-                                    myWhatsappContacts.add(number);
-
-                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact id  :  " + id);
-                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact name :  " + name);
-                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact number :  " + number);
-                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data1 : " + data1);
-                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data2 : " + data2);
-                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data3 : " + data3);
-                                    if(BuildConfig.DEBUG) Log.d(TAG, " FaceBook contact data4 : " + data4);
-                                }
-                            }
-                        } while (contactCursor.moveToNext());
-
-                    }
-                }
-            }
-
-            if(BuildConfig.DEBUG) Log.d(TAG, " WhatsApp contact size :  " + myWhatsappContacts.size());*/
 
             while (cursor.moveToNext()) {
                 String lookupKey = cursor.getString(lookupKeyIndex);
@@ -247,7 +184,6 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(SIGNAL_CALL_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "SIGNAL! " + number);
                                 contact.signalCalling = contactId;
                                 if (!contact.primary) {
                                     contact.primary = true;
@@ -260,7 +196,6 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(WHATSAPP_CALL_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "WhatsApp! " + number);
                                 contact.whatsAppCalling = contactId;
                                 if (!contact.primary) {
                                     contact.primary = true;
@@ -276,7 +211,6 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(WHATSAPP_CONTACT_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "WhatsApp messaging! " + number);
                                 contact.whatsAppMessaging = contactId;
                             }
                         }
@@ -284,7 +218,6 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(SIGNAL_CONTACT_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "SIGNAL messaging! " + number);
                                 contact.signalMessaging = contactId;
                             }
                         }
@@ -293,7 +226,6 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(FACEBOOK_CALL_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "FACEBOOK call! " + contactId);
                                 contact.facebookCalling = contactId;
 
                             }
@@ -304,7 +236,6 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     if (mimeType.equals(FECEBOOK_CONTACT_MIMETYPE)) {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "FACEBOOK messaging! " + contactId);
                                 contact.facebookMessaging = contactId;
                             }
                         }

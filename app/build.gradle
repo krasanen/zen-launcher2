@@ -19,7 +19,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId 'fi.zmengames.zlauncher'
-        minSdkVersion 21
+        minSdkVersion 17
         targetSdkVersion 27
         versionName=buildTimeStamp() + "@" +gitLastCommit()
         versionCode=gitVersion()

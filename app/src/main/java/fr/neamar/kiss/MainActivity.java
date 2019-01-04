@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -636,6 +637,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onLaunchButtonClicked(View view) {
+        launchOccurred();
     }
 
     class MyDragListener implements View.OnTouchListener {
@@ -967,7 +969,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, getString(R.string.share_tags_chooser)), REQUEST_LOAD_REPLACE_TAGS);
                 return true;
-            case R.id.loadReplaceSettings:
+/*          case R.id.loadReplaceSettings:
                 intent = new Intent();
                 intent.setType("application/json");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -994,7 +996,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 intent.setType("application/json");
                 startActivity(Intent.createChooser(intent, getString(R.string.share_settings)));
                 return true;
-
+*/
             case R.id.saveToGoogle:
                 if (mSignedIn) {
                     String unique = Long.toString(System.currentTimeMillis());
@@ -1156,6 +1158,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private void loadSavedGame(Snapshot snapshot) throws IOException {
         try {
+            forwarderManager.removeWidgets();
             mSaveGame = (SaveGame) byteToObj(snapshot.getSnapshotContents().readFully());
             DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
             int count = 0;
@@ -1172,7 +1175,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 Log.e(TAG, "can't load widgets", e);
                 Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
             }
-            Toast.makeText(this, "loaded widges for " + count + " app(s)", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "loaded widgets for " + count + " app(s)", Toast.LENGTH_LONG).show();
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -1550,7 +1553,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 
         switch (requestCode) {
+
             case REQUEST_BIND_APPWIDGET:
+                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_BIND_APPWIDGET");
+                if (resultCode == Activity.RESULT_OK) {
+                    int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+                    data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                    addWidget(appWidgetId);
+                }
             /*    appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(newWidgetId);
                 AppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, newWidgetId, appWidgetInfo);
                 hostView.setMinimumHeight(appWidgetInfo.minHeight);
@@ -1950,6 +1960,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Intent intent = new Intent();
         intent.putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         forwarderManager.onActivityResult(Widget.REQUEST_REFRESH_APPWIDGET, RESULT_OK, intent);
+    }
+
+    public void addWidget(int appWidgetId) {
+        Intent intent = new Intent();
+        intent.putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        forwarderManager.onActivityResult(Widget.REQUEST_CREATE_APPWIDGET, RESULT_OK, intent);
     }
 
     @Override

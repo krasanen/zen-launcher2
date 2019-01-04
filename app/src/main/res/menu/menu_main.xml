@@ -29,7 +29,7 @@
         android:title="@string/load_replace_tags"
         app:showAsAction="never" />
 
-    <item
+    <!--<item
         android:id="@+id/loadReplaceSettings"
         android:visible="true"
         android:title="@string/load_settings"
@@ -38,7 +38,7 @@
         android:id="@+id/shareSettings"
         android:visible="true"
         android:title="@string/share_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" /> -->
     <item
         android:id="@+id/saveToGoogle"
 

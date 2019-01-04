@@ -89,7 +89,6 @@ public class LauncherService extends Service {
     public void onCreate() {
         if(BuildConfig.DEBUG) Log.w(TAG, "onCreate...");
         HermesEventBus.getDefault().register(this);
-        HermesEventBus.getDefault().connectApp(this, getPackageName());
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mAccessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
@@ -108,6 +107,8 @@ public class LauncherService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onBind");
+        HermesEventBus.getDefault().connectApp(this, getPackageName());
+
         return mBinder;
     }
 
@@ -120,12 +121,15 @@ public class LauncherService extends Service {
     @Override
     public void onRebind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onRebind");
+
+        HermesEventBus.getDefault().connectApp(this, getPackageName());
         super.onRebind(intent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onUnbind");
+        HermesEventBus.getDefault().destroy();
         return true;
     }
 
