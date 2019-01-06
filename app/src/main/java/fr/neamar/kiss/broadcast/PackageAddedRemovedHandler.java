@@ -36,9 +36,9 @@ public class PackageAddedRemovedHandler extends BroadcastReceiver {
         }
 
         if ("android.intent.action.PACKAGE_REMOVED".equals(action) && !replacing) {
-            // Removed all installed shortcuts
+            // Remove all installed shortcuts
             KissApplication.getApplication(ctx).getDataHandler().removeShortcuts(packageName);
-            KissApplication.getApplication(ctx).getDataHandler().removeFromExcluded(packageName, user);
+            KissApplication.getApplication(ctx).getDataHandler().removeFromExcluded(packageName);
         }
 
         KissApplication.getApplication(ctx).resetIconsHandler();
@@ -56,7 +56,7 @@ public class PackageAddedRemovedHandler extends BroadcastReceiver {
         String packageName = intent.getData().getSchemeSpecificPart();
 
         if (packageName.equalsIgnoreCase(ctx.getPackageName())) {
-            // When running Z-Launcher locally, sending a new version of the APK immediately triggers a "package removed" for fi.zmengames.zlauncher,
+            // When running KISS locally, sending a new version of the APK immediately triggers a "package removed" for fr.neamar.kiss,
             // There is no need to handle this event.
             // Discarding it makes startup time much faster locally as apps don't have to be loaded twice.
             return;

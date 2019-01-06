@@ -1,13 +1,11 @@
 package fr.neamar.kiss.result;
 
-import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,10 +43,13 @@ public class SettingsResult extends Result {
     @SuppressWarnings("deprecation")
     @Override
     public Drawable getDrawable(Context context) {
-        if (settingPojo.icon != null) {
-            return settingPojo.icon;
+        if (settingPojo.icon != -1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                return context.getDrawable(settingPojo.icon);
+            } else {
+                return context.getResources().getDrawable(settingPojo.icon);
+            }
         }
-
         return null;
     }
 

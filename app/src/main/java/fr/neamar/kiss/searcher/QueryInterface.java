@@ -1,9 +1,9 @@
 package fr.neamar.kiss.searcher;
 
-import android.widget.PopupWindow;
+import fr.neamar.kiss.ui.ListPopup;
 
 public interface QueryInterface {
     void launchOccurred();
 
-    void registerPopup(PopupWindow popup);
+    void registerPopup(ListPopup popup);
 }

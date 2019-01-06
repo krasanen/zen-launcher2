@@ -1,12 +1,29 @@
 package fr.neamar.kiss.pojo;
 
-import android.graphics.drawable.Drawable;
+
+import androidx.annotation.DrawableRes;
 
 public class SettingsPojo extends Pojo {
-    public String settingName;
-    public String packageName = "";
-    public Drawable icon;
+    public final String settingName;
+    public final String packageName;
+    public final @DrawableRes
+    int icon;
 
+    public SettingsPojo(String id, String settingName, @DrawableRes int icon) {
+    	super(id);
+
+        this.settingName = settingName;
+        this.packageName = "";
+        this.icon = icon;
+    }
+
+    public SettingsPojo(String id, String settingName, String packageName, @DrawableRes int icon) {
+	    super(id);
+
+        this.settingName = settingName;
+        this.packageName = packageName;
+        this.icon = icon;
+    }
     @Override
     public boolean equals (Object object) {
         boolean result = false;
@@ -21,4 +38,3 @@ public class SettingsPojo extends Pojo {
         return result;
     }
 }
-

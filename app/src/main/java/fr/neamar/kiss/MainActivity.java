@@ -35,9 +35,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -105,6 +103,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import fi.zmengames.zlauncher.HistoryDetails;
 import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
@@ -112,6 +112,7 @@ import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
 import fr.neamar.kiss.broadcast.IncomingSmsHandler;
 import fr.neamar.kiss.db.DBHelper;
+import fr.neamar.kiss.forwarder.ExperienceTweaks;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.forwarder.Widget;
 import fr.neamar.kiss.result.Result;
@@ -122,6 +123,7 @@ import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.searcher.QuerySearcher;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.searcher.TagsSearcher;
+import fr.neamar.kiss.searcher.UntaggedSearcher;
 import fr.neamar.kiss.ui.AnimatedListView;
 import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
@@ -134,6 +136,7 @@ import xiaofei.library.hermeseventbus.HermesEventBus;
 
 import static android.graphics.Bitmap.createBitmap;
 
+import static android.text.InputType.TYPE_CLASS_PHONE;
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
@@ -208,6 +211,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private View clearButton;
 
+    public View numericButton;
+
     /**
      * Task launched on text change
      */
@@ -243,7 +248,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
     }
-
 
     public void signOut() {
         if(BuildConfig.DEBUG) Log.d(TAG, "signOut");
@@ -499,6 +503,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.loaderSpinner = findViewById(R.id.loaderBar);
         this.launcherButton = findViewById(R.id.launcherButton);
         this.clearButton = findViewById(R.id.clearButton);
+        this.numericButton = findViewById(R.id.numericButton);
 
         /*
          * Initialize components behavior
@@ -576,9 +581,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Fixes bug when dropping onto a textEdit widget which can cause a NPE
         // This fix should be on ALL TextEdit Widgets !!!
         // See : https://stackoverflow.com/a/23483957
-        searchEditText.setOnDragListener(new View.OnDragListener() {
+        searchEditText.setOnDragListener( new View.OnDragListener() {
             @Override
-            public boolean onDrag(View v, DragEvent event) {
+            public boolean onDrag( View v, DragEvent event) {
                 return true;
             }
         });
@@ -636,8 +641,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
-    public void onLaunchButtonClicked(View view) {
-        launchOccurred();
+    public void onNumericKeypadClicked(View view) {
+        searchEditText.setInputType(TYPE_CLASS_PHONE);
+        ExperienceTweaks.mNumericInputTypeForced = true;
     }
 
     class MyDragListener implements View.OnTouchListener {
@@ -821,9 +827,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             return;
         }
 
-        if (mPopup != null) {
-            mPopup.dismiss();
-        }
+        dismissPopup();
 
         if (KissApplication.getApplication(this).getDataHandler().allProvidersHaveLoaded) {
             displayLoader(false);
@@ -847,7 +851,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        HermesEventBus.getDefault().unregister(this);
+        HermesEventBus.getDefault().destroy();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1745,7 +1749,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         if (((x > viewX && x < (viewX + searchEditText.getWidth())) &&
                 (y > viewY && y < (viewY + searchEditText.getHeight())))) {
-            if(BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent2: " + ev.getAction());
+            if(BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
+            systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
             forwarderManager.onTouch(searchEditText, ev);
         }
 
@@ -1865,7 +1870,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     });
                     anim.setDuration(animationDuration);
                     anim.start();
-                } catch (IllegalStateException e) {
+                } catch(IllegalStateException e) {
                     // If the view hasn't been laid out yet, we can't animate it
                     kissBar.setVisibility(View.GONE);
                 }
@@ -1902,6 +1907,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         dismissPopup();
 
         forwarderManager.updateSearchRecords(query);
+
         if (query.isEmpty()) {
             systemUiVisibilityHelper.resetScroll();
         } else {
@@ -1940,13 +1946,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    public void registerPopup(PopupWindow popup) {
+    public void registerPopup(ListPopup popup) {
         if (mPopup == popup)
             return;
         dismissPopup();
         mPopup = popup;
-        if (popup instanceof ListPopup)
-            ((ListPopup) popup).setVisibilityHelper(systemUiVisibilityHelper);
+        popup.setVisibilityHelper(systemUiVisibilityHelper);
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -1987,7 +1992,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void hideKeyboard() {
-        forwarderManager.hideKeyboard();
+
         // Check if no view has focus:
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -2033,12 +2038,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             mPopup.dismiss();
     }
 
-    public static boolean isKeyboardVisible() {
-        return mKeyboardVisible;
+    public void showMatchingTags( String tag ) {
+        runTask(new TagsSearcher(this, tag));
+
+        clearButton.setVisibility(View.VISIBLE);
+        menuButton.setVisibility(View.INVISIBLE);
     }
 
-    public void showMatchingTags(String tag) {
-        runTask(new TagsSearcher(this, tag));
+    public void showUntagged()
+    {
+        runTask(new UntaggedSearcher(this));
 
         clearButton.setVisibility(View.VISIBLE);
         menuButton.setVisibility(View.INVISIBLE);
@@ -2050,6 +2059,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         clearButton.setVisibility(View.VISIBLE);
         menuButton.setVisibility(View.INVISIBLE);
     }
+
+    public static boolean isKeyboardVisible() {
+        return mKeyboardVisible;
+    }
+
 
     public void onWallpaperScroll(float fCurrent) {
         forwarderManager.onWallpaperScroll(fCurrent);

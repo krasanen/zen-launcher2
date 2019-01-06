@@ -4,10 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +16,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -48,6 +48,11 @@ public class TagsMenu extends Forwarder {
 
     public boolean isTagMenuEnabled() {
         return prefs.getBoolean("pref-tags-menu", false);
+    }
+
+    public boolean isAutoDismiss()
+    {
+        return prefs.getBoolean("pref-tags-menu-dismiss", false);
     }
 
     private void loadTags() {
@@ -117,11 +122,9 @@ public class TagsMenu extends Forwarder {
 
     static class MenuItemTag implements TagsMenu.MenuItem {
         final String tag;
-        final boolean showButton;
 
-        MenuItemTag(String tag, boolean showButton) {
+        MenuItemTag(String tag) {
             this.tag = tag;
-            this.showButton = showButton;
         }
 
         @Override
@@ -131,7 +134,7 @@ public class TagsMenu extends Forwarder {
 
         @Override
         public int getLayoutResource() {
-            return showButton ? R.layout.popup_tag_menu : R.layout.popup_list_item;
+            return R.layout.popup_list_item;
         }
     }
 
@@ -224,18 +227,17 @@ public class TagsMenu extends Forwarder {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         //build menu
-        boolean triStateBtn = prefs.getBoolean("pref-tags-menu-3state", false);
         adapter.add(new TagsMenu.MenuItemTitle(context, R.string.popup_tags_title));
         for (String tag : tagList) {
-            adapter.add(new TagsMenu.MenuItemTag(tag, triStateBtn));
+            adapter.add(new TagsMenu.MenuItemTag(tag));
         }
 
         // remember where the title should go
         int actionsTitlePosition = adapter.getCount();
-        if (triStateBtn)
-            adapter.add(new TagsMenu.MenuItemBtn(context, R.string.show_matching));
         if (!prefs.getBoolean("history-onclick", false))
             adapter.add(new TagsMenu.MenuItemBtn(context, R.string.show_history));
+        if (prefs.getBoolean("pref-show-untagged", false))
+            adapter.add(new TagsMenu.MenuItemBtn(context, R.string.show_untagged));
         // insert title only if at least an action was added
         if (actionsTitlePosition != adapter.getCount())
             adapter.add(actionsTitlePosition, new TagsMenu.MenuItemTitle(context, R.string.popup_tags_actions));
@@ -245,7 +247,7 @@ public class TagsMenu extends Forwarder {
 
         // set popup interaction rules
         popupMenu.setAdapter(adapter);
-        popupMenu.setDismissOnItemClick(false);
+        popupMenu.setDismissOnItemClick( isAutoDismiss() );
         popupMenu.setOnItemClickListener(new ListPopup.OnItemClickListener() {
             @Override
             public void onItemClick(ListAdapter adapter, View view, int position) {
@@ -265,9 +267,8 @@ public class TagsMenu extends Forwarder {
                         case R.string.show_history:
                             mainActivity.showHistory();
                             break;
-                        case R.string.show_matching:
-                            // show all matching
-                            mainActivity.showMatchingTags(null);
+                        case R.string.show_untagged:
+                            mainActivity.showUntagged();
                             break;
                     }
                 }

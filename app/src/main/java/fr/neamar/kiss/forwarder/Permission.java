@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
@@ -77,6 +77,7 @@ public class Permission extends Forwarder {
         if (grantResults.length == 0) {
             return;
         }
+
         if (requestCode == PERMISSION_READ_CONTACTS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // Great! Reload the contact provider. We're done :)
             ContactsProvider contactsProvider = KissApplication.getApplication(mainActivity).getDataHandler().getContactsProvider();

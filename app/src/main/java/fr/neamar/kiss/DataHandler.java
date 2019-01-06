@@ -8,11 +8,11 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap.CompressFormat;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -21,13 +21,14 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import fi.zmengames.zlauncher.LauncherService;
-import fi.zmengames.zlauncher.ZEvent;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.dataprovider.IProvider;
@@ -39,12 +40,14 @@ import fr.neamar.kiss.dataprovider.simpleprovider.PhoneProvider;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.db.ValuedHistoryRecord;
-import fr.neamar.kiss.forwarder.Favorites;
+import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.UserHandle;
 import xiaofei.library.hermeseventbus.HermesEventBus;
+import fi.zmengames.zlauncher.LauncherService;
+import fi.zmengames.zlauncher.ZEvent;
 
 public class DataHandler
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -65,12 +68,14 @@ public class DataHandler
     private String currentQuery;
     private final Map<String, ProviderEntry> providers = new HashMap<>();
     public boolean allProvidersHaveLoaded = false;
+    private long start;
 
     /**
      * Initialize all providers
      */
-
     public DataHandler(Context context) {
+        start = System.currentTimeMillis();
+
         // Make sure we are in the context of the main activity
         // (otherwise we might receive an exception about broadcast listeners not being able
         //  to bind to services)
@@ -136,7 +141,7 @@ public class DataHandler
         try {
             return new Intent(this.context, Class.forName(className.toString()));
         } catch (ClassNotFoundException e) {
-            // e.printStackTrace(); // it is just not loaded yet
+            e.printStackTrace();
             return null;
         }
     }
@@ -214,7 +219,6 @@ public class DataHandler
 
         // Remove provider from list
         this.providers.remove(name);
-
     }
 
     /**
@@ -233,7 +237,9 @@ public class DataHandler
             }
         }
 
-        Log.v(TAG, "All providers are loaded.");
+        long time = System.currentTimeMillis() - start;
+        Log.v(TAG, "Time to load all providers: " + time + "ms");
+
         this.allProvidersHaveLoaded = true;
 
         // Broadcast the fact that the new providers list is ready
@@ -288,7 +294,7 @@ public class DataHandler
      *
      * @param context        android context
      * @param itemCount      max number of items to retrieve, total number may be less (search or calls are not returned for instance)
-     * @param smartHistory   Recency vs Frecency
+     * @param historyMode Recency vs Frecency vs Frequency
      * @param itemsToExclude Items to exclude from history
      * @return pojos in recent history
      */
@@ -327,7 +333,9 @@ public class DataHandler
         return DBHelper.getHistoryLength(this.context);
     }
 
-    public void addShortcut(ShortcutsPojo shortcut) {
+    public boolean addShortcut(ShortcutsPojo shortcut) {
+        boolean success = false;//this is here to know what info is being returned
+
         ShortcutRecord record = new ShortcutRecord();
         record.name = shortcut.getName();
         record.iconResource = shortcut.resourceName;
@@ -341,25 +349,18 @@ public class DataHandler
         }
 
         DBHelper.insertShortcut(this.context, record);
+        success = true;
 
         if (this.getShortcutsProvider() != null) {
             this.getShortcutsProvider().reload();
         }
 
-        if(BuildConfig.DEBUG) Log.d(TAG, "Shortcut " + shortcut.id + " added.");
-        Toast.makeText(context, R.string.shortcut_added, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Shortcut " + shortcut.id + " added.");
+        return success;
     }
 
     public void clearHistory() {
         DBHelper.clearHistory(this.context);
-    }
-
-    public void reloadAll(){
-        for (ProviderEntry entry : this.providers.values()) {
-            if (entry.provider != null && entry.provider.isLoaded() ) {
-                entry.provider.reload();
-            }
-        }
     }
 
     public void removeShortcut(ShortcutsPojo shortcut) {
@@ -378,22 +379,48 @@ public class DataHandler
         }
     }
 
-
-    public void addToExcluded(String packageName, UserHandle user) {
-        packageName = user.addUserSuffixToString(packageName, '#');
-
-        String excludedAppList = PreferenceManager.getDefaultSharedPreferences(context).
-                getString("excluded-apps-list", context.getPackageName() + ";");
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putString("excluded-apps-list", excludedAppList + packageName + ";").apply();
+    @NonNull
+    public Set<String> getExcludedFromHistory() {
+        Set<String> excluded = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("excluded-apps-from-history", null);
+        if (excluded == null) {
+            excluded = new HashSet<>();
+            excluded.add(context.getPackageName());
+        }
+        return excluded;
     }
 
-    public void removeFromExcluded(String packageName, UserHandle user) {
-        packageName = user.addUserSuffixToString(packageName, '#');
+    @NonNull
+    public Set<String> getExcluded() {
+        Set<String> excluded = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("excluded-apps", null);
+        if (excluded == null) {
+            excluded = new HashSet<>();
+            excluded.add(context.getPackageName());
+        }
+        return excluded;
+    }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
-        String excluded = prefs.getString("excluded-apps-list", context.getPackageName() + ";");
-        prefs.edit().putString("excluded-apps-list", excluded.replaceAll(packageName + ";", "")).apply();
+    public void addToExcludedFromHistory(AppPojo app) {
+        Set<String> excluded = getExcludedFromHistory();
+        excluded.add(app.id);
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps-from-history", excluded).apply();
+    }
+
+    public void addToExcluded(AppPojo app) {
+        Set<String> excluded = getExcluded();
+        excluded.add(app.getComponentName());
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps", excluded).apply();
+    }
+
+    public void removeFromExcluded(String packageName) {
+        Set<String> excluded = getExcluded();
+        Set<String> newExcluded = new HashSet<String>();
+        for (String excludedItem : excluded) {
+            if (!excludedItem.contains(packageName + "/")) {
+                newExcluded.add(excludedItem);
+            }
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps", newExcluded).apply();
     }
 
     public void removeFromExcluded(UserHandle user) {
@@ -402,18 +429,15 @@ public class DataHandler
             return;
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
-        String[] excludedList = prefs.getString("excluded-apps-list", context.getPackageName() + ";").split(";");
-
-        StringBuilder excluded = new StringBuilder();
-        for (String excludedItem : excludedList) {
+        Set<String> excluded = getExcluded();
+        Set<String> newExcluded = new HashSet<String>();
+        for (String excludedItem : excluded) {
             if (!user.hasStringUserSuffix(excludedItem, '#')) {
-                excluded.append(excludedItem)
-                        .append(";");
+                newExcluded.add(excludedItem);
             }
         }
 
-        prefs.edit().putString("excluded-apps-list", excluded.toString()).apply();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps", newExcluded).apply();
     }
 
     /**
@@ -421,25 +445,31 @@ public class DataHandler
      *
      * @return pojos for all applications
      */
-    public ArrayList<Pojo> getApplications() {
-        return this.getAppProvider().getAllApps();
+    @Nullable
+    public List<Pojo> getApplications() {
+        AppProvider appProvider = getAppProvider();
+        return appProvider != null ? appProvider.getAllApps() : null;
     }
 
+    @Nullable
     public ContactsProvider getContactsProvider() {
         ProviderEntry entry = this.providers.get("contacts");
         return (entry != null) ? ((ContactsProvider) entry.provider) : null;
     }
 
+    @Nullable
     public ShortcutsProvider getShortcutsProvider() {
         ProviderEntry entry = this.providers.get("shortcuts");
         return (entry != null) ? ((ShortcutsProvider) entry.provider) : null;
     }
 
+    @Nullable
     public AppProvider getAppProvider() {
         ProviderEntry entry = this.providers.get("app");
         return (entry != null) ? ((AppProvider) entry.provider) : null;
     }
 
+    @Nullable
     public SearchProvider getSearchProvider() {
         ProviderEntry entry = this.providers.get("search");
         return (entry != null) ? ((SearchProvider) entry.provider) : null;
@@ -449,24 +479,23 @@ public class DataHandler
      * Return most used items.<br />
      * May return null if no items were ever selected (app first use)
      *
-     * @param limit max number of items to retrieve. You may end with less items if favorites contains non existing items.
      * @return favorites' pojo
      */
-    public ArrayList<Pojo> getFavorites(int limit) {
-        ArrayList<Pojo> favorites = new ArrayList<>(limit);
+    public ArrayList<Pojo> getFavorites() {
+        ArrayList<Pojo> favorites = new ArrayList<>();
 
         String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
                 getString("favorite-apps-list", "");
         List<String> favAppsList = Arrays.asList(favApps.split(";"));
+
+        // We might skip some later but this avoid to expand memory multiple times
+        favorites.ensureCapacity(favAppsList.size());
 
         // Find associated items
         for (int i = 0; i < favAppsList.size(); i++) {
             Pojo pojo = getPojo(favAppsList.get(i));
             if (pojo != null) {
                 favorites.add(pojo);
-            }
-            if (favorites.size() >= limit) {
-                break;
             }
         }
 
@@ -481,6 +510,7 @@ public class DataHandler
      * @param position the new position of the fav
      */
     public void setFavoritePosition(MainActivity context, String id, int position) {
+        Log.e(TAG, "setFavoritePosition: "+id);
         String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
                 getString("favorite-apps-list", "");
         List<String> favAppsList = new ArrayList<>(Arrays.asList(favApps.split(";")));
@@ -509,7 +539,7 @@ public class DataHandler
      *
      * @param context mainActivity context
      * @param id      the app you want to get the position of.
-     * @return
+     * @return favorite position
      */
     public int getFavoritePosition(MainActivity context, String id) {
         String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
@@ -531,9 +561,6 @@ public class DataHandler
         }
 
         List<String> favAppsList = Arrays.asList(favApps.split(";"));
-        if (favAppsList.size() >= Favorites.FAVORITES_COUNT) {
-            favApps = favApps.substring(favApps.indexOf(";") + 1);
-        }
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString("favorite-apps-list", favApps + id + ";").apply();
@@ -570,7 +597,7 @@ public class DataHandler
         StringBuilder favApps = new StringBuilder();
         for (String favAppID : favAppList) {
             if (!favAppID.startsWith("app://") || !user.hasStringUserSuffix(favAppID, '/')) {
-                favApps.append(favAppID) ;
+                favApps.append(favAppID);
                 favApps.append(";");
             }
         }
@@ -588,7 +615,9 @@ public class DataHandler
         boolean frozen = PreferenceManager.getDefaultSharedPreferences(context).
                 getBoolean("freeze-history", false);
 
-        if (!frozen) {
+        Set<String> excludedFromHistory = getExcludedFromHistory();
+
+        if ((!frozen) && (!excludedFromHistory.contains(id))) {
             DBHelper.insertHistory(this.context, currentQuery, id);
         }
     }

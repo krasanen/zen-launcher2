@@ -34,7 +34,6 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
-import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 import fr.neamar.kiss.utils.SpaceTokenizer;
@@ -63,7 +62,7 @@ public class ShortcutsResult extends Result {
         // Hide tags view if tags are empty
         if (shortcutPojo.getTags().isEmpty()) {
             tagsView.setVisibility(View.GONE);
-        } else if (displayHighlighted(shortcutPojo.normalizedTags, shortcutPojo.getTags(),
+        } else if (displayHighlighted(shortcutPojo.getNormalizedTags(), shortcutPojo.getTags(),
                 fuzzyScore, tagsView, context) || prefs.getBoolean("tags-visible", true)) {
             tagsView.setVisibility(View.VISIBLE);
         } else {
@@ -102,14 +101,20 @@ public class ShortcutsResult extends Result {
             return v;
         }
 
-        if (shortcutPojo.icon != null) {
-            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), shortcutPojo.icon);
-            shortcutIcon.setImageDrawable(drawable);
-            appIcon.setImageDrawable(appDrawable);
-        } else {
-            // No icon for this shortcut, use app icon
-            shortcutIcon.setImageDrawable(appDrawable);
-            appIcon.setImageResource(android.R.drawable.ic_menu_send);
+        if (!prefs.getBoolean("icons-hide", false)) {
+
+            if (shortcutPojo.icon != null) {
+                BitmapDrawable drawable = new BitmapDrawable(context.getResources(), shortcutPojo.icon);
+                shortcutIcon.setImageDrawable(drawable);
+                appIcon.setImageDrawable(appDrawable);
+            } else {
+                // No icon for this shortcut, use app icon
+                shortcutIcon.setImageDrawable(appDrawable);
+                appIcon.setImageResource(android.R.drawable.ic_menu_send);
+            }
+        }
+        else {
+            appIcon.setImageDrawable(null);
         }
 
         return v;
@@ -183,7 +188,7 @@ public class ShortcutsResult extends Result {
     }
 
     @Override
-    Boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId) {
+    boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId, View parentView) {
         switch (stringId) {
             case R.string.menu_shortcut_remove:
                 launchUninstall(context, shortcutPojo);
@@ -195,7 +200,7 @@ public class ShortcutsResult extends Result {
                 return true;
 
         }
-        return super.popupMenuClickHandler(context, parent, stringId);
+        return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
 
     private void launchEditTagsDialog(final Context context, final ShortcutsPojo pojo) {

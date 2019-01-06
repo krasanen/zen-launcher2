@@ -45,30 +45,18 @@ public class PhoneProvider implements IProvider {
         return id.startsWith(PHONE_SCHEME);
     }
 
-    private ArrayList<Pojo> getResults(String query) {
-        ArrayList<Pojo> pojos = new ArrayList<>();
-
-
-
-        return pojos;
-    }
-
     public Pojo findById(String id) {
         return getResult(id.replaceFirst(Pattern.quote(PHONE_SCHEME), ""));
     }
 
     private Pojo getResult(String phoneNumber) {
-        PhonePojo pojo = new PhonePojo();
-        pojo.id = PHONE_SCHEME + phoneNumber;
-        pojo.phone = phoneNumber;
+        PhonePojo pojo = new PhonePojo(PHONE_SCHEME + phoneNumber, phoneNumber);
         pojo.relevance = 20;
         pojo.setName(phoneNumber, false);
         return pojo;
     }
     private Pojo getResultAdd(String phoneNumber) {
-        PhoneAddPojo pojo = new PhoneAddPojo();
-        pojo.id = PHONE_SCHEME + phoneNumber;
-        pojo.phone = phoneNumber;
+        PhoneAddPojo pojo = new PhoneAddPojo(PHONE_SCHEME + phoneNumber, phoneNumber);
         pojo.relevance = 20;
         pojo.setName(phoneNumber, false);
         return pojo;

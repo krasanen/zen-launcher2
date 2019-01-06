@@ -1,5 +1,6 @@
 package fr.neamar.kiss.forwarder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,8 +13,10 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,26 +38,12 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
     private static final String TAG = "FavoriteForwarder";
 
     // Package used by Android when an Intent can be matched with more than one app
-    private static final String DEFAULT_RESOLVER = "com.android.internal.app.ResolverActivity";
+    public static final String DEFAULT_RESOLVER = "com.android.internal.app.ResolverActivity";
 
     /**
      * IDs for the favorites buttons
      */
-    private final static int[] FAV_IDS = new int[]{R.id.favorite0, R.id.favorite1, R.id.favorite2, R.id.favorite3, R.id.favorite4, R.id.favorite5};
-    private final static int[] FAV_IDS_TEXTS = new int[]{R.id.favorite0text, R.id.favorite1text, R.id.favorite2text, R.id.favorite3text, R.id.favorite4text, R.id.favorite5text};
-    private View[] favoritesViews;
-    private TextView[] favoritesTexts;
-
-    /**
-     * Number of favorites that can be displayed
-     */
-    public final static int FAVORITES_COUNT = FAV_IDS.length;
-
-    /**
-     * Number of favorites to retrieve.
-     * We need to pad this number to account for removed items still in history
-     */
-    public final static int TRY_TO_RETRIEVE = FAVORITES_COUNT + 2;
+    private ArrayList<RelativeLayout> favoritesViews = new ArrayList<RelativeLayout>();
 
     /**
      * Currently displayed favorites
@@ -74,7 +63,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
     private final int MOVE_SENSITIVITY = 5; // How much you need to move your finger to be considered "moving"
     private final int LONG_PRESS_DELAY = 250; // How long to hold your finger in place to trigger the app menu.
 
-    // Use so we dont over process on the drag events.
+    // Use so we don't over process on the drag events.
     private boolean mDragEnabled = true;
     private boolean isDragging = false;
     private boolean contextMenuShown = false;
@@ -94,16 +83,6 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             // Hide the external bar
             mainActivity.findViewById(R.id.externalFavoriteBar).setVisibility(View.GONE);
         }
-
-        favoritesViews = new View[FAV_IDS.length];
-        favoritesTexts = new TextView[FAV_IDS_TEXTS.length];
-        for (int i = 0; i < FAV_IDS.length; i++) {
-            favoritesViews[i] = mainActivity.favoritesBar.findViewById(FAV_IDS[i]);
-            favoritesTexts[i] = mainActivity.favoritesBar.findViewById(FAV_IDS_TEXTS[i]);
-        }
-
-        registerTouchOnFavorites();
-        registerDragOnFavorites();
 
         if (prefs.getBoolean("firstRun", true)) {
             // It is the first run. Make sure this is not an update by checking if history is empty
@@ -138,47 +117,62 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
     }
 
     void onFavoriteChange() {
-        if(prefs.getBoolean("enable-favorites-bar",false)) {
-            int[] favoritesIds = FAV_IDS;
+        favoritesPojo = KissApplication.getApplication(mainActivity).getDataHandler()
+                .getFavorites();
 
-            favoritesPojo = KissApplication.getApplication(mainActivity).getDataHandler()
-                    .getFavorites(TRY_TO_RETRIEVE);
-            favCount = favoritesPojo.size();
-            // Don't look for items after favIds length, we won't be able to display them
-            for (int i = 0; i < Math.min(favoritesIds.length, favoritesPojo.size()); i++) {
-                Pojo pojo = favoritesPojo.get(i);
-                ImageView image = (ImageView) favoritesViews[i];
+        favCount = favoritesPojo.size();
+        LayoutInflater layoutInflater = null;
 
-                ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.VISIBLE);
-                TextView textView = favoritesTexts[i];
-                textView.setText(pojo.getName());
+        // Don't look for items after favIds length, we won't be able to display them
+        for (int i = 0; i < favoritesPojo.size(); i++) {
+            Pojo pojo = favoritesPojo.get(i);
 
-                Result result = Result.fromPojo(mainActivity, pojo);
-                Drawable drawable = result.getDrawable(mainActivity);
-                if (drawable != null) {
-                    if (result instanceof ContactsResult) {
-                        Bitmap iconBitmap = drawableToBitmap(drawable);
-                        drawable = new RoundedQuickContactBadge.RoundedDrawable(iconBitmap);
-                    }
-                    image.setImageDrawable(drawable);
-                } else {
-                    // Use a placeholder if no drawable found
-                    image.setImageResource(R.drawable.ic_z);
+            ImageView image;
+            TextView textView;
+            if (favoritesViews.size() <= i) {
+                if (layoutInflater == null) {
+                    layoutInflater = (LayoutInflater) mainActivity.favoritesBar.getContext()
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 }
-
-                image.setVisibility(View.VISIBLE);
-                image.setContentDescription(pojo.getName());
+                assert layoutInflater != null;
+                RelativeLayout layout = (RelativeLayout) layoutInflater.inflate(R.layout.favorite_item, (ViewGroup) mainActivity.favoritesBar, false);
+                image = layout.findViewById(R.id.favorite_item_image);
+                image.setTag(i);
+                image.setOnDragListener(this);
+                image.setOnTouchListener(this);
+                image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                textView = layout.findViewById(R.id.favorite_item_text);
+                textView.setText(pojo.getName());
+                ((ViewGroup) mainActivity.favoritesBar).addView(layout);
+                favoritesViews.add(layout);
+            } else {
+                image =  favoritesViews.get(i).findViewById(R.id.favorite_item_image);
+                textView = favoritesViews.get(i).findViewById(R.id.favorite_item_text);
             }
 
-            // Hide empty favorites (not enough favorites yet)
-            for (int i = favoritesPojo.size(); i < favoritesIds.length; i++) {
-                ((RelativeLayout) favoritesViews[i].getParent()).setVisibility(View.GONE);
-
+            Result result = Result.fromPojo(mainActivity, pojo);
+            Drawable drawable = result.getDrawable(mainActivity);
+            if (drawable != null) {
+                if (result instanceof ContactsResult) {
+                    Bitmap iconBitmap = drawableToBitmap(drawable);
+                    drawable = new RoundedQuickContactBadge.RoundedDrawable(iconBitmap);
+                }
+                image.setImageDrawable(drawable);
+            } else {
+                // Use a placeholder if no drawable found
+                image.setImageResource(R.drawable.ic_z);
             }
-            mDragEnabled = favCount > 1;
+            textView.setText(pojo.getName());
+            image.setVisibility(View.VISIBLE);
+            image.setContentDescription(pojo.getName());
         }
 
+        // Hide empty favorites (not enough favorites yet)
+        for (int i = favoritesPojo.size(); i < favoritesViews.size(); i++) {
+            favoritesViews.get(i).setVisibility(View.GONE);
+        }
 
+        mDragEnabled = favCount > 1;
     }
 
     void updateSearchRecords(String query) {
@@ -275,16 +269,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
         }
     }
 
-    private void registerTouchOnFavorites() {
-        for (View v : favoritesViews) {
-            v.setOnTouchListener(this);
-        }
-    }
-    private void registerDragOnFavorites() {
-        for (View v : favoritesViews) {
-            v.setOnDragListener(this);
-        }
-    }
+
 
     private Result getFavResult(int favNumber) {
         if (favNumber >= favoritesPojo.size()) {
@@ -300,7 +285,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
     @Override
     public void onClick(View v) {
-        int favNumber = Integer.parseInt((String) v.getTag());
+        Log.d(TAG,"onClick");
+        int favNumber = (int) v.getTag();
         final Result result = getFavResult(favNumber);
         result.fastLaunch(mainActivity, v);
         v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
@@ -309,15 +295,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
     @Override
     public boolean onLongClick(View v) {
-        int favNumber = Integer.parseInt((String) v.getTag());
-        if (favNumber >= favoritesPojo.size()) {
-            // Clicking on a favorite before everything is loaded.
-            Log.i(TAG, "Long clicking on an unitialized favorite.");
-            return false;
-        }
-        // Favorites handling
-        Pojo pojo = favoritesPojo.get(favNumber);
-        final Result result = Result.fromPojo(mainActivity, pojo);
+        int favNumber = (int) v.getTag();
+        final Result result = getFavResult(favNumber);
         ListPopup popup = result.getPopupMenu(mainActivity, mainActivity.adapter, v);
         mainActivity.registerPopup(popup);
         popup.show(v);
@@ -347,19 +326,18 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             this.onClick(view);
             return true;
         }
+        if(!contextMenuShown && holdTime > LONG_PRESS_DELAY) {
+            contextMenuShown = true;
+            this.onLongClick(view);
+            return true;
+        }
+
         // Drag handlers
         int intCurrentY = Math.round(motionEvent.getY());
         int intCurrentX = Math.round(motionEvent.getX());
         int intStartY = motionEvent.getHistorySize() > 0 ? Math.round(motionEvent.getHistoricalY(0)) : intCurrentY;
         int intStartX = motionEvent.getHistorySize() > 0 ? Math.round(motionEvent.getHistoricalX(0)) : intCurrentX;
         boolean hasMoved = (Math.abs(intCurrentX - intStartX) > MOVE_SENSITIVITY) || (Math.abs(intCurrentY - intStartY) > MOVE_SENSITIVITY);
-
-        if(!contextMenuShown && holdTime > LONG_PRESS_DELAY && !hasMoved) {
-            contextMenuShown = true;
-            this.onLongClick(view);
-            return true;
-        }
-
 
         if (hasMoved && mDragEnabled) {
             mDragEnabled = false;
@@ -390,7 +368,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                     return true;
                 }
 
-                overFavIndex = Integer.parseInt((String) v.getTag());
+                overFavIndex = (int) v.getTag();
                 overApp = favoritesPojo.get(overFavIndex);
 
                 currentX = (event.getX() != 0.0f) ? event.getX() : currentX;
@@ -420,7 +398,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                     break;
                 }
 
-                int draggedFavIndex = Integer.parseInt((String) draggedView.getTag());
+                int draggedFavIndex = (int) draggedView.getTag();
                 final Pojo draggedApp = favoritesPojo.get(draggedFavIndex);
 
                 int left = v.getLeft();

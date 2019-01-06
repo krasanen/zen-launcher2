@@ -20,7 +20,6 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.pojo.PhonePojo;
-import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 
@@ -60,7 +59,7 @@ public class PhoneResult extends Result {
     }
 
     @Override
-    protected Boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId) {
+    protected boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId, View parentView) {
         switch (stringId) {
             case R.string.menu_phone_create:
                 // Create a new contact with this phone number
@@ -78,7 +77,7 @@ public class PhoneResult extends Result {
                 return true;
         }
 
-        return super.popupMenuClickHandler(context, parent, stringId);
+        return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
 
     @SuppressLint("MissingPermission")

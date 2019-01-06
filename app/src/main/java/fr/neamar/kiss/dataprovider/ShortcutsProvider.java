@@ -23,15 +23,14 @@ public class ShortcutsProvider extends Provider<ShortcutsPojo> {
             this.initialize(new LoadShortcutsPojos(this));
         }
         catch(IllegalStateException e) {
-            // TODO: string from
-            Toast.makeText(this, "unable to initialize", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.unable_to_initialize_shortcuts, Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
 
     @Override
     public void requestResults(String query, Searcher searcher) {
-        StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, true);
+        StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, false);
 
         if (queryNormalized.codePoints.length == 0) {
             return;
@@ -47,8 +46,8 @@ public class ShortcutsProvider extends Provider<ShortcutsPojo> {
             pojo.relevance = matchInfo.score;
 
             // check relevance for tags
-            if (pojo.normalizedTags != null) {
-                matchInfo = fuzzyScore.match(pojo.normalizedTags.codePoints);
+            if (pojo.getNormalizedTags() != null) {
+                matchInfo = fuzzyScore.match(pojo.getNormalizedTags().codePoints);
                 if (matchInfo.match && (!match || matchInfo.score > pojo.relevance)) {
                     match = true;
                     pojo.relevance = matchInfo.score;

@@ -2,14 +2,12 @@ package fr.neamar.kiss.forwarder;
 
 import android.content.Context;
 import android.content.Intent;
-
-import android.support.annotation.NonNull;
-
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import fr.neamar.kiss.MainActivity;
 
 public class ForwarderManager extends Forwarder {
@@ -124,6 +122,7 @@ public class ForwarderManager extends Forwarder {
     public void removeWidgets() {
         widgetForwarder.removeAllWidgets();
     }
+
     public void updateWidgets(Context context) {
         widgetForwarder.updateWidgets(context);
     }

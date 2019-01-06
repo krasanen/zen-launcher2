@@ -2,14 +2,15 @@ package fr.neamar.kiss.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.StringRes;
 import fr.neamar.kiss.R;
 
 import java.util.ArrayList;

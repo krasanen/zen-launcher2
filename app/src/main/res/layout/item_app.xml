@@ -33,8 +33,7 @@
         android:layout_toEndOf="@+id/item_app_icon"
         android:layout_toRightOf="@+id/item_app_icon"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:scrollbars="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/item_app_name"

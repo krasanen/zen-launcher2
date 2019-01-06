@@ -25,7 +25,7 @@
 
     <string name="contacts_name">Contacts</string>
 
-    <string name="search_name">Web Search</string>
+    <string name="search_name">Web search</string>
 
     <string name="settings_name">Device Settings</string>
 
@@ -47,7 +47,11 @@
     <string name="reset_name">Reset history</string>
     <string name="reset_excluded_apps_name">Reset excluded app list</string>
     <string name="reset_excluded_apps_warn">Do you really want to reset your excluded app list?</string>
-    <string name="ui_excluded_apps">View or edit your excluded apps</string>
+    <string name="reset_excluded_from_history_apps_name">Reset excluded from history app list</string>
+    <string name="reset_excluded_from_history_apps_warn">Do you really want to reset your excluded from history app list?</string>
+    <string name="settings_excluded_apps">Excluded apps</string>
+    <string name="ui_excluded_apps">View or edit your excluded from KISS apps</string>
+    <string name="ui_excluded_from_history_apps">View or edit your excluded from history apps</string>
     <string name="ui_excluded_apps_dialog_title">Deselect the apps you would like to include</string>
     <string name="ui_excluded_apps_not_found">No apps have been excluded</string>
     <string name="reset_warn">Do you really want to reset your history?</string>
@@ -89,7 +93,7 @@
     <string name="root_mode_name">Root mode</string>
     <string name="root_mode_error">Unable to gain root privileges.</string>
     <string name="freeze_history_name">Freeze history</string>
-    <string name="freeze_history_warn">Are you sure you want to freeze history and disable all further updates? Your history will not change anymore.</string>
+    <string name="freeze_history_warn">Are you sure you want to freeze history and turn off further updates? Your history will not change anymore.</string>
 
     <string name="icons_pack_name">Theme icons (ADW.Launcher theme)</string>
     <string name="icons_pack_default_name">System icons</string>
@@ -121,14 +125,17 @@
     <string name="menu_favorites_add">Add to favorites</string>
     <string name="menu_tags_edit">Add or edit tags</string>
     <string name="tags_add_title">Add space separated tags</string>
-    <string name="tags_confirmation_added">Tag set</string>
+    <string name="tags_confirmation_added">Tags set</string>
     <string name="tags_visible">Show app tags</string>
     <string name="excluded_app_list_erased">List of excluded apps erased.</string>
     <string name="excluded_app_list_added">App excluded from Z-Launcher. Reset through the Z-Launcher settings</string>
+    <string name="excluded_app_history_added">App excluded from history. Reset through the KISS settings</string>
 
     <string name="removed_item">Removed</string>
     <string name="menu_remove">Remove from history</string>
-    <string name="menu_exclude">Exclude app from Z-Launcher</string>
+    <string name="menu_exclude">Exclude app ..</string>
+    <string name="menu_exclude_kiss">from from Z-Launcher</string>
+    <string name="menu_exclude_history">from history</string>
     <string name="menu_app_details">App info</string>
     <string name="menu_app_uninstall">Uninstall</string>
     <string name="menu_app_hibernate">Hibernate</string>
@@ -150,9 +157,10 @@
     <string name="exclude_favorites">Exclude favorites from history</string>
     <string name="favorites_hide">Hide Favorites Bar</string>
     <string name="pref_hide_navbar">Hide navbar</string>
-    <string name="pref_hide_navbar_desc">Hide navigation bar and enable immersive mode for KitKat (4.4) and beyond</string>
+    <string name="pref_hide_navbar_desc">Hide navigation bar and turn on immersive mode</string>
     <string name="pref_hide_statusbar">Hide status bar</string>
-    <string name="pref_hide_statusbar_desc">Hide notification bar and enable immersive mode for KitKat (4.4) and beyond</string>
+    <string name="pref_hide_statusbar_desc">Hide notification bar and turn on immersive mode for KitKat (4.4) and beyond</string>
+    <string name="pref_hide_circle_desc">App list will still be accessible</string>
     <string name="shortcut_added">Shortcut added to Z-Launcher.</string>
 
     <string name="restart_desc">Fix theme issues and new contacts not displaying</string>
@@ -229,7 +237,10 @@
     <string name="wp_animate_center_desc">The desktop background will return to the center after moving the screen</string>
     <string name="wp_animate_sides">Side to which the desktop background will be drawn</string>
     <string name="wp_animate_sides_desc">The desktop background will be drawn left or right after scrolling the screen</string>
+    <string name="show_untagged">Show untagged</string>
+    <string name="pref_show_untagged">Show untagged action</string>
 
+    <string name="unable_to_initialize_shortcuts">Unable to initialize shortcuts. Is Z-Launcher your default launcher?</string>
 
     <!-- Omat -->
     <string name="share_tags">Share tags</string>

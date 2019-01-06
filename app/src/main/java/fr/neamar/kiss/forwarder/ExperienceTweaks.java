@@ -8,6 +8,7 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
@@ -17,6 +18,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +37,7 @@ import static fr.neamar.kiss.MainActivity.mDebugJson;
 
 
 // Deals with any settings in the "User Experience" setting sub-screen
-class ExperienceTweaks extends Forwarder {
+public class ExperienceTweaks extends Forwarder {
     private static final String TAG = ExperienceTweaks.class.getSimpleName();
 
     /**
@@ -69,7 +71,7 @@ class ExperienceTweaks extends Forwarder {
     private final ScaleGestureDetector sgd;
     private boolean scaling;
     int width, height;
-    private boolean mNumericInputTypeForced = false;
+    public static boolean mNumericInputTypeForced = false;
 
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);
@@ -127,6 +129,26 @@ class ExperienceTweaks extends Forwarder {
         gd = new GestureDetector(mainActivity, new GestureDetector.SimpleOnGestureListener() {
 
 
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                // if minimalistic mode is enabled,
+                // and we want to display history on touch
+                if (isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
+                    // and we're currently in minimalistic mode with no results,
+                    // and we're not looking at the app list
+                    if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
+                        if ((mainActivity.list.getAdapter() == null) || (mainActivity.list.getAdapter().isEmpty())) {
+                            mainActivity.runTask(new HistorySearcher(mainActivity));
+                        }
+                    }
+                }
+
+                if (isMinimalisticModeEnabledForFavorites()) {
+                    mainActivity.favoritesBar.setVisibility(View.VISIBLE);
+                }
+
+                return super.onSingleTapConfirmed(e);
+            }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -137,7 +159,8 @@ class ExperienceTweaks extends Forwarder {
                     if(BuildConfig.DEBUG) Log.d(TAG, "directionY:" + directionY);
                     if(BuildConfig.DEBUG) Log.d(TAG, "e1x:" + e1.getX());
                     if(BuildConfig.DEBUG) Log.d(TAG, "e2x:" + e2.getX());
-
+                    if ( Math.abs(directionX) > Math.abs(directionY) )
+                        return false;
 
                     if (!mainActivity.isViewingAllApps() && !scaling) {
                         if (Math.abs(directionX) > width / 3) {
@@ -222,6 +245,10 @@ class ExperienceTweaks extends Forwarder {
             mainActivity.list.setVerticalScrollBarEnabled(false);
             mainActivity.searchEditText.setHint("");
         }
+        if (prefs.getBoolean("pref-hide-circle", false)) {
+            ((ImageView) mainActivity.launcherButton).setImageBitmap(null);
+            ((ImageView) mainActivity.menuButton).setImageBitmap(null);
+        }
     }
     Handler handler = new Handler();
     int numberOfTaps = 0;
@@ -234,6 +261,18 @@ class ExperienceTweaks extends Forwarder {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 touchDownMs = System.currentTimeMillis();
+                if (view.getId() == R.id.searchEditText ){
+                    mainActivity.numericButton.setVisibility(View.VISIBLE);
+                }
+                if (view.getId() == R.id.numericButton ){
+                    if (mainActivity.searchEditText.getInputType() != TYPE_CLASS_PHONE) {
+                        mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
+                        mNumericInputTypeForced = true;
+                    } else {
+                        mNumericInputTypeForced = false;
+                        adjustInputType(mainActivity.searchEditText.getText().toString());
+                    }
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 handler.removeCallbacksAndMessages(null);
@@ -282,7 +321,7 @@ class ExperienceTweaks extends Forwarder {
             default:
                 return false;
         }
-        return true;
+        return false;
     }
 
     public boolean onSingleTap() {
@@ -377,7 +416,7 @@ class ExperienceTweaks extends Forwarder {
     }
 
     // Ensure the keyboard uses the right input method
-    private void adjustInputType(String currentText) {
+    public void adjustInputType(String currentText) {
         int currentInputType = mainActivity.searchEditText.getInputType();
         int requiredInputType;
 
@@ -404,10 +443,11 @@ class ExperienceTweaks extends Forwarder {
             Method showStatusBar;
             if (Build.VERSION.SDK_INT >= 17) {
                 showStatusBar = statusbarManager.getMethod("expandNotificationsPanel");
-            } else {
+            }
+            else {
                 showStatusBar = statusbarManager.getMethod("expand");
             }
-            showStatusBar.invoke(sbservice);
+            showStatusBar.invoke( sbservice );
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         } catch (NoSuchMethodException e1) {
@@ -429,10 +469,11 @@ class ExperienceTweaks extends Forwarder {
 
     /**
      * Should we force the keyboard not to display suggestions?
-     * (swiftkey)
+     * (swiftkey is broken, see https://github.com/Neamar/KISS/issues/44)
      */
     private boolean isNonCompliantKeyboard() {
-        return prefs.getBoolean("enable-keyboard-workaround", false);
+        String currentKeyboard = Settings.Secure.getString(mainActivity.getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
+        return currentKeyboard.contains("swiftkey");
     }
 
     /**

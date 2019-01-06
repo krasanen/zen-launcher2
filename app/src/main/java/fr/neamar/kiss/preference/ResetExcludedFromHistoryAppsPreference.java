@@ -12,9 +12,9 @@ import java.util.HashSet;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 
-public class ResetExcludedAppsPreference extends DialogPreference {
+public class ResetExcludedFromHistoryAppsPreference extends DialogPreference {
 
-    public ResetExcludedAppsPreference(Context context, AttributeSet attrs) {
+    public ResetExcludedFromHistoryAppsPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -23,8 +23,7 @@ public class ResetExcludedAppsPreference extends DialogPreference {
         super.onClick(dialog, which);
         if (which == DialogInterface.BUTTON_POSITIVE) {
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
-                    .putStringSet("excluded-apps", new HashSet<String>()).apply();
-            KissApplication.getApplication(getContext()).getDataHandler().getAppProvider().reload();
+                    .putStringSet("excluded-apps-from-history", new HashSet<String>()).apply();
             Toast.makeText(getContext(), R.string.excluded_app_list_erased, Toast.LENGTH_LONG).show();
         }
 

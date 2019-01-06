@@ -1,6 +1,6 @@
 package fr.neamar.kiss.normalizer;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import java.nio.CharBuffer;
@@ -15,18 +15,6 @@ import fr.neamar.kiss.BuildConfig;
 public class StringNormalizer {
     private static final String TAG = StringNormalizer.class.getSimpleName();
     private StringNormalizer() {
-    }
-
-    /**
-     * Make the given string easier to compare by performing a number of simplifications on it
-     *
-     * @param input string input, with accents and anything else you can think of
-     * @return normalized string
-     * @see StringNormalizer#normalizeWithResult(CharSequence, boolean)
-     */
-    public static String normalize(String input) {
-        Result result = StringNormalizer.normalizeWithResult(input, true);
-        return result.toString();
     }
 
     /**
@@ -164,10 +152,6 @@ public class StringNormalizer {
 
             if (this.codePoints.length != that.codePoints.length)
                 return this.codePoints.length - that.codePoints.length;
-
-            if (BuildConfig.DEBUG && !this.equals(that)){
-                if(BuildConfig.DEBUG) Log.d(TAG,"different case, this:"+this +" that:"+that);
-            }
 
             // equal
             return 0;

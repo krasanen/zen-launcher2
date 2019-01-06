@@ -41,7 +41,7 @@ public class SearchProvider extends Provider<SearchPojo> {
         ArrayList<Pojo> records = new ArrayList<>();
 
         for (SearchPojo pojo : pojos) {
-            // Set the id, otherwise the result will be boosted since Z-Launcher will assume "we've selected this search provider multiple times before"
+            // Set the id, otherwise the result will be boosted since KISS will assume "we've selected this search provider multiple times before"
             pojo.id = "search://" + query;
             pojo.query = query;
             records.add(pojo);
@@ -52,12 +52,9 @@ public class SearchProvider extends Provider<SearchPojo> {
         if (m.find()) {
             String guessedUrl = URLUtil.guessUrl(query);
             if (URLUtil.isValidUrl(guessedUrl)) {
-                SearchPojo pojo = new SearchPojo();
-                pojo.query = "";
+                SearchPojo pojo = new SearchPojo("", guessedUrl, SearchPojo.URL_QUERY);
                 pojo.relevance = 50;
                 pojo.setName(guessedUrl, false);
-                pojo.url = guessedUrl;
-                pojo.type = SearchPojo.URL_QUERY;
                 records.add(pojo);
             }
         }

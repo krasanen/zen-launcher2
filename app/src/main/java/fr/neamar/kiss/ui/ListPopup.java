@@ -4,7 +4,8 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
+
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
+
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 

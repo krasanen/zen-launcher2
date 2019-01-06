@@ -1,6 +1,6 @@
 package fi.zmengames.zlauncher;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class ZEvent {
     private final @NonNull  State       state;

@@ -1,6 +1,5 @@
 package fr.neamar.kiss.loader;
 
-import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,17 +8,24 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Locale;
 
-import fr.neamar.kiss.MainActivity;
+import androidx.annotation.DrawableRes;
+import fr.neamar.kiss.BuildConfig;
+
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;
 
+import static fr.neamar.kiss.forwarder.Favorites.DEFAULT_RESOLVER;
+
+
 public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
+    private static final String TAG = LoadSettingsPojos.class.getSimpleName();
 
     public LoadSettingsPojos(Context context) {
         super(context, "setting://");
@@ -46,88 +52,104 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
     protected ArrayList<SettingsPojo> doInBackground(Void... params) {
         ArrayList<SettingsPojo> settings = new ArrayList<>();
 
-        if(context.get() == null) {
+        if (context.get() == null) {
             return settings;
         }
 
         PackageManager pm = context.get().getPackageManager();
-        addPredefinedSettingPojos(settings,pm);
+        addPredefinedSettingPojos(settings, pm);
+
         Class<Settings> clazz = Settings.class;
         Field[] arr = clazz.getFields(); // Get all public fields of your class
         for (Field f : arr) {
             if (f.getName().contains("ACTION_") && f.getType().equals(String.class)) { // check if field is a String
+                if (BuildConfig.DEBUG) Log.d(TAG, "f: " + f);
                 String s = null; // get value of each field
                 try {
                     s = (String)f.get(null);
-                    if (s.startsWith("android.settings.")) {
-                        Intent testIntent = new Intent(s);
-                        List<ResolveInfo> infos =  pm.queryIntentActivities(testIntent, 0);
-                        if (infos.size() > 0) {
-                            SettingsPojo pojo = createPojo(s.substring(17),
-                                    s, getActivityIcon(context.get(), infos.get(0).activityInfo.packageName, infos.get(0).activityInfo.name));
-                            if(!settings.contains(pojo)) {
-                                settings.add(pojo);
+                    if (BuildConfig.DEBUG) Log.d(TAG, "s: " + s);
+                    Intent testIntent = new Intent(s);
+                    ResolveInfo resolveInfo = pm.resolveActivity(testIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                    if (resolveInfo != null) {
+                        if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
+                            String label = resolveInfo.loadLabel(pm).toString();
+                            if (!label.isEmpty()) {
+                                if (BuildConfig.DEBUG) Log.d(TAG, "loadLabel: " + resolveInfo.loadLabel(pm).toString());
+                                SettingsPojo pojo = createPojo(label, resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+                                if (!settings.contains(pojo)) {
+                                    settings.add(pojo);
+                                }
                             }
                         } else {
                             //No Application can handle your intent
                         }
-
                     }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                // add s to a List
-                System.out.println(s);
-            }
 
+                } catch (Exception e) {
+
+                }
+
+            }
         }
         return settings;
     }
+
     private void addPredefinedSettingPojos(ArrayList<SettingsPojo> settings, PackageManager pm){
         settings.add(createPojo(context.get().getString(R.string.settings_airplane),
-                Settings.ACTION_AIRPLANE_MODE_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_airplane)));
+                Settings.ACTION_AIRPLANE_MODE_SETTINGS, R.drawable.setting_airplane));
         settings.add(createPojo(context.get().getString(R.string.settings_device_info),
-                Settings.ACTION_DEVICE_INFO_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_info)));
+                Settings.ACTION_DEVICE_INFO_SETTINGS, R.drawable.setting_info));
         settings.add(createPojo(context.get().getString(R.string.settings_applications),
-                Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_apps)));
+                Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS, R.drawable.setting_apps));
         settings.add(createPojo(context.get().getString(R.string.settings_connectivity),
-                Settings.ACTION_WIRELESS_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_wifi)));
+                Settings.ACTION_WIRELESS_SETTINGS, R.drawable.setting_wifi));
         settings.add(createPojo(context.get().getString(R.string.settings_storage),
-                Settings.ACTION_INTERNAL_STORAGE_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_storage)));
+                Settings.ACTION_INTERNAL_STORAGE_SETTINGS, R.drawable.setting_storage));
         settings.add(createPojo(context.get().getString(R.string.settings_accessibility),
-                Settings.ACTION_ACCESSIBILITY_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_accessibility)));
+                Settings.ACTION_ACCESSIBILITY_SETTINGS, R.drawable.setting_accessibility));
         settings.add(createPojo(context.get().getString(R.string.settings_battery),
-                Intent.ACTION_POWER_USAGE_SUMMARY, context.get().getResources().getDrawable(R.drawable.setting_battery)));
-        int resId = context.get().getResources().getIdentifier("com.android.settings.TetherSettings",null,null);
-        if (resId!=0) {
-            settings.add(createPojo(context.get().getString(R.string.settings_tethering),
-                    "com.android.settings",
-                    context.get().getResources().getDrawable(resId)));
-        }
+                Intent.ACTION_POWER_USAGE_SUMMARY, R.drawable.setting_battery));
+        settings.add(createPojo(context.get().getString(R.string.settings_tethering), "com.android.settings",
+                "com.android.settings.TetherSettings", R.drawable.setting_tethering));
         settings.add(createPojo(context.get().getString(R.string.settings_sound),
-                Settings.ACTION_SOUND_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_dev)));
+                Settings.ACTION_SOUND_SETTINGS, R.drawable.setting_dev));
         settings.add(createPojo(context.get().getString(R.string.settings_display),
-                Settings.ACTION_DISPLAY_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_dev)));
+                Settings.ACTION_DISPLAY_SETTINGS, R.drawable.setting_dev));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             if (pm.hasSystemFeature(PackageManager.FEATURE_NFC)) {
                 settings.add(createPojo(context.get().getString(R.string.settings_nfc),
-                        Settings.ACTION_NFC_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_nfc)));
+                        Settings.ACTION_NFC_SETTINGS, R.drawable.setting_nfc));
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             settings.add(createPojo(context.get().getString(R.string.settings_dev),
-                    Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS, context.get().getResources().getDrawable(R.drawable.setting_dev)));
+                    Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS, R.drawable.setting_dev));
         }
     }
 
-
-    private SettingsPojo createPojo(String name, String settingName, Drawable resId) {
-        SettingsPojo pojo = new SettingsPojo();
-        pojo.id = pojoScheme + settingName.toLowerCase(Locale.ENGLISH);
-        pojo.setName(name, true);
-        pojo.settingName = settingName;
-        pojo.icon = resId;
-
+    private SettingsPojo createPojo(String name, String packageName, String settingName,
+                                    @DrawableRes int resId) {
+        SettingsPojo pojo = new SettingsPojo(getId(settingName), settingName, packageName, resId);
+        assingName(pojo, name);
         return pojo;
+    }
+
+    private SettingsPojo createPojo(String name, String settingName, @DrawableRes  int resId) {
+        SettingsPojo pojo = new SettingsPojo(getId(settingName), settingName, resId);
+        assingName(pojo, name);
+        return pojo;
+    }
+    private SettingsPojo createPojo(String name, String packageName, String settingName) {
+        SettingsPojo pojo = new SettingsPojo(getId(settingName), settingName, packageName, R.drawable.settings);
+        assingName(pojo, name);
+        return pojo;
+    }
+
+    private String getId(String settingName) {
+        return pojoScheme + settingName.toLowerCase(Locale.ENGLISH);
+    }
+
+    private void assingName(SettingsPojo pojo, String name) {
+        pojo.setName(name, true);
     }
 }

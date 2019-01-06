@@ -11,12 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collections;
 
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.pojo.SearchPojo;
-import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 
@@ -66,7 +67,13 @@ public class SearchResult extends Result {
 
     @Override
     public void doLaunch(Context context, View v) {
-        String urlWithQuery = searchPojo.url.replace("{q}", searchPojo.query);
+        String query;
+        try {
+            query = URLEncoder.encode(searchPojo.query, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            query = URLEncoder.encode(searchPojo.query);
+        }
+        String urlWithQuery = searchPojo.url.replaceAll("%s|\\{q\\}", query);
         Uri uri = Uri.parse(urlWithQuery);
         Intent search = new Intent(Intent.ACTION_VIEW, uri);
         search.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -85,7 +92,7 @@ public class SearchResult extends Result {
     }
 
     @Override
-    protected Boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId) {
+    protected boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId, View parentView) {
         switch (stringId) {
             case R.string.share:
                 Intent shareIntent = new Intent();
@@ -97,6 +104,6 @@ public class SearchResult extends Result {
                 return true;
         }
 
-        return super.popupMenuClickHandler(context, parent, stringId);
+        return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
 }

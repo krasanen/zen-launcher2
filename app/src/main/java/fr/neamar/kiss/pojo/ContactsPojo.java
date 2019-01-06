@@ -5,26 +5,44 @@ import android.net.Uri;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 
 public class ContactsPojo extends Pojo {
-    public String lookupKey = "";
+    public final String lookupKey;
 
-    public String phone = "";
+    public final String phone;
     //phone without special characters
-    public StringNormalizer.Result normalizedPhone = null;
-    public Uri icon = null;
+    public final StringNormalizer.Result normalizedPhone;
+    public final Uri icon;
 
     // Is this a primary phone?
-    public Boolean primary = false;
+    public Boolean primary;
 
     // How many times did we phone this contact?
-    public int timesContacted = 0;
+    public final int timesContacted;
 
     // Is this contact starred ?
-    public Boolean starred = false;
+    public final Boolean starred;
 
     // Is this number a home (local) number ?
-    public final Boolean homeNumber = false;
+    public final Boolean homeNumber;
 
-    public String nickname = "";
+    public StringNormalizer.Result normalizedNickname = null;
+
+    private String nickname = "";
+
+    public ContactsPojo(String id, String lookupKey, String phone, StringNormalizer.Result normalizedPhone,
+                        Uri icon, Boolean primary, int timesContacted, Boolean starred,
+                        Boolean homeNumber) {
+        super(id);
+        this.lookupKey = lookupKey;
+        this.phone = phone;
+        this.normalizedPhone = normalizedPhone;
+        this.icon = icon;
+        this.primary = primary;
+        this.timesContacted = timesContacted;
+        this.starred = starred;
+        this.homeNumber = homeNumber;
+    }
+
+    //ZLauncher
     public int contactId;
     public int whatsAppCalling;
     public int whatsAppMessaging;
@@ -32,8 +50,6 @@ public class ContactsPojo extends Pojo {
     public int signalMessaging;
     public int facebookCalling;
     public int facebookMessaging;
-
-    public StringNormalizer.Result normalizedNickname = null;
 
     public String getNickname() {
         return nickname;

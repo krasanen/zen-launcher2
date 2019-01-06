@@ -15,7 +15,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -127,7 +127,7 @@ public class SettingsActivity extends PreferenceActivity implements
     private void loadExcludedAppsToPreference(MultiSelectListPreference multiSelectList) {
         String excludedAppList = prefs.getString("excluded-apps-list", "").replace(this.getPackageName() + ";", "");
         String[] apps = excludedAppList.split(";");
-
+        Arrays.sort(apps);
         multiSelectList.setEntries(apps);
         multiSelectList.setEntryValues(apps);
         multiSelectList.setValues(new HashSet<>(Arrays.asList(apps)));

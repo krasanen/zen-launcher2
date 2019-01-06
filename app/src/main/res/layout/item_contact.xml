@@ -59,8 +59,13 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/item_contact_icon"
         android:layout_alignLeft="@+id/item_contact_name"
-
         android:layout_alignStart="@+id/item_contact_name"
+        android:paddingEnd="2dp"
+        android:paddingRight="2dp"
+        android:shadowColor="?attr/resultShadowColor"
+        android:shadowDx="1"
+        android:shadowDy="2"
+        android:shadowRadius="?attr/textShadowRadius"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/result_small_size"
         tools:ignore="RtlSymmetry"
@@ -76,8 +81,11 @@
         android:layout_toEndOf="@+id/item_contact_phone"
         android:layout_toRightOf="@+id/item_contact_phone"
         android:ellipsize="end"
-
-
+        android:paddingEnd="2dp"
+        android:paddingRight="2dp"
+        android:shadowColor="?attr/resultShadowColor"
+        android:shadowDx="1"
+        android:shadowDy="2"
         android:shadowRadius="?attr/textShadowRadius"
         android:singleLine="true"
         android:textColor="?android:attr/textColorSecondary"
@@ -85,22 +93,20 @@
         tools:ignore="RtlSymmetry"
         tools:text="@string/stub_contact_nickname" />
 
-
     <ImageButton
         android:id="@+id/item_contact_action_message"
-        android:layout_width="44dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_centerVertical="true"
-
         android:layout_toLeftOf="@+id/item_contact_action_phone"
         android:layout_toStartOf="@+id/item_contact_action_phone"
         android:background="?attr/appSelectableItemBackground"
         android:contentDescription="@string/ui_item_contact_hint_message"
-        android:src="@drawable/message_cs" />
+        android:src="@drawable/ic_message" />
 
     <ImageButton
         android:id="@+id/item_contact_action_phone"
-        android:layout_width="44dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -112,7 +118,7 @@
 
     <ImageButton
         android:id="@+id/item_contact_action_some_message"
-        android:layout_width="44dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
 
         android:layout_centerVertical="true"

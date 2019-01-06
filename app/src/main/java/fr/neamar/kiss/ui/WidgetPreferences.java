@@ -128,12 +128,12 @@ public class WidgetPreferences implements Serializable {
         }
     }
 
-    static class Menu extends PopupWindow {
+    static class Menu extends ListPopup {
         private final Point mWindowSize = new Point(1, 1);
         private final SharedPreferences prefs;
 
         public Menu(Context context, SharedPreferences widgetPrefs) {
-            super(context, null, android.R.attr.popupMenuStyle);
+            super(context);
             prefs = widgetPrefs;
             ScrollView scrollView = new ScrollView(context);
             LayoutInflater.from(context).inflate(R.layout.widget_customize, scrollView);

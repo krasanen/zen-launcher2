@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.Color;
 import android.preference.DialogPreference;
-import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -15,6 +14,7 @@ import com.android.colorpicker.ColorPickerDialog;
 import com.android.colorpicker.ColorPickerPalette;
 import com.android.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
 
+import androidx.annotation.ColorInt;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
 

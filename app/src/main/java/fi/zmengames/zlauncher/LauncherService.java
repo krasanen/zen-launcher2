@@ -14,8 +14,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -31,6 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import androidx.annotation.Nullable;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 

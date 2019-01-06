@@ -3,18 +3,22 @@ package fr.neamar.kiss.loader;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
+import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.ContactsPojo;
 
 import static fi.zmengames.zlauncher.ContactsProjection.FACEBOOK_CALL_MIMETYPE;
@@ -37,11 +41,12 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
 
         ArrayList<ContactsPojo> contacts = new ArrayList<>();
         Context c = context.get();
-        if (c == null) {
+        if(c == null) {
             return contacts;
         }
+
         // Skip if we don't have permission to list contacts yet:(
-        if (!Permission.checkContactPermission(c)) {
+        if(!Permission.checkContactPermission(c)) {
             Permission.askContactPermission();
             return contacts;
         }
@@ -74,27 +79,30 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 int photoIdIndex = cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID);
 
                 while (cur.moveToNext()) {
-                    ContactsPojo contact = new ContactsPojo();
-                    contact.contactId = cur.getInt(contactId);
-                    contact.lookupKey = cur.getString(lookupIndex);
-                    contact.timesContacted = cur.getInt(timesContactedIndex);
-                    contact.setName(cur.getString(displayNameIndex));
+                    String lookupKey = cur.getString(lookupIndex);
+                    Integer timesContacted = cur.getInt(timesContactedIndex);
+                    String name = cur.getString(displayNameIndex);
 
-                    contact.phone = cur.getString(numberIndex);
-                    if (contact.phone == null) {
-                        contact.phone = "";
+                    String phone = cur.getString(numberIndex);
+                    if (phone == null) {
+                        phone = "";
                     }
-                    contact.normalizedPhone = PhoneNormalizer.simplifyPhoneNumber(contact.phone);
-                    contact.starred = cur.getInt(starredIndex) != 0;
-                    contact.primary = cur.getInt(isPrimaryIndex) != 0;
+
+                    StringNormalizer.Result normalizedPhone = PhoneNormalizer.simplifyPhoneNumber(phone);
+                    boolean starred = cur.getInt(starredIndex) != 0;
+                    boolean primary = cur.getInt(isPrimaryIndex) != 0;
                     String photoId = cur.getString(photoIdIndex);
+                    Uri icon = null;
                     if (photoId != null) {
-                        contact.icon = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI,
+                        icon = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI,
                                 Long.parseLong(photoId));
-                        if(BuildConfig.DEBUG) Log.d(TAG,"icon1:"+ contact.icon);
                     }
 
-                    contact.id = pojoScheme + contact.lookupKey + contact.phone;
+                    ContactsPojo contact = new ContactsPojo(pojoScheme + lookupKey + phone,
+                            lookupKey, phone, normalizedPhone, icon, primary, timesContacted,
+                            starred, false);
+
+                    contact.setName(name);
 
                     if (contact.getName() != null) {
                         //TBog: contact should have the normalized name already

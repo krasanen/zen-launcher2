@@ -6,8 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -40,7 +40,6 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.pojo.SettingsPojo;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
-import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -92,7 +91,7 @@ public abstract class Result {
      */
     public abstract View display(Context context, int position, View convertView, FuzzyScore fuzzyScore);
 
-    public boolean displayHighlighted(String text, List<Pair<Integer, Integer>> positions, TextView view, Context context) {
+    public void displayHighlighted(String text, List<Pair<Integer, Integer>> positions, TextView view, Context context) {
         SpannableString enriched = new SpannableString(text);
         int primaryColor = UIColors.getPrimaryColor(context);
 
@@ -105,8 +104,6 @@ public abstract class Result {
             );
         }
         view.setText(enriched);
-
-        return true;
     }
 
     public boolean displayHighlighted(StringNormalizer.Result normalized, String text, FuzzyScore fuzzyScore,
@@ -147,7 +144,7 @@ public abstract class Result {
      *
      * @return a PopupMenu object
      */
-    public ListPopup getPopupMenu(final Context context, final RecordAdapter parent, View parentView) {
+    public ListPopup getPopupMenu(final Context context, final RecordAdapter parent, final View parentView) {
         ArrayAdapter<ListPopup.Item> adapter = new ArrayAdapter<>(context, R.layout.popup_list_item);
         ListPopup menu = buildPopupMenu(context, adapter, parent, parentView);
 
@@ -155,7 +152,7 @@ public abstract class Result {
             @Override
             public void onItemClick(ListAdapter adapter, View view, int position) {
                 @StringRes int stringId = ((ListPopup.Item) adapter.getItem(position)).stringId;
-                popupMenuClickHandler(view.getContext(), parent, stringId);
+                popupMenuClickHandler(view.getContext(), parent, stringId, parentView);
             }
         });
 
@@ -177,6 +174,7 @@ public abstract class Result {
     ListPopup inflatePopupMenu(ArrayAdapter<ListPopup.Item> adapter, Context context) {
         ListPopup menu = new ListPopup(context);
         menu.setAdapter(adapter);
+
         // If app already pinned, do not display the "add to favorite" option
         // otherwise don't show the "remove favorite button"
         String favApps = PreferenceManager.getDefaultSharedPreferences(context).
@@ -210,7 +208,7 @@ public abstract class Result {
      *
      * @return Works in the same way as onOptionsItemSelected, return true if the action has been handled, false otherwise
      */
-    Boolean popupMenuClickHandler(Context context, RecordAdapter parent, @StringRes int stringId) {
+    boolean popupMenuClickHandler(Context context, RecordAdapter parent, @StringRes int stringId, View parentView) {
         switch (stringId) {
             case R.string.menu_remove:
                 removeItem(context, parent);

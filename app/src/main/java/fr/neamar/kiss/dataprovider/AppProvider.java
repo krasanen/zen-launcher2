@@ -9,11 +9,11 @@ import android.content.pm.LauncherApps;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserManager;
-import android.support.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+import androidx.annotation.RequiresApi;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.broadcast.PackageAddedRemovedHandler;
 import fr.neamar.kiss.loader.LoadAppPojos;
@@ -139,7 +139,7 @@ public class AppProvider extends Provider<AppPojo> {
 
     @Override
     public void requestResults(String query, Searcher searcher) {
-        StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, true);
+        StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, false);
 
         if (queryNormalized.codePoints.length == 0) {
             return;
@@ -155,8 +155,8 @@ public class AppProvider extends Provider<AppPojo> {
             pojo.relevance = matchInfo.score;
 
             // check relevance for tags
-            if (pojo.normalizedTags != null) {
-                matchInfo = fuzzyScore.match(pojo.normalizedTags.codePoints);
+            if (pojo.getNormalizedTags() != null) {
+                matchInfo = fuzzyScore.match(pojo.getNormalizedTags().codePoints);
                 if (matchInfo.match && (!match || matchInfo.score > pojo.relevance)) {
                     match = true;
                     pojo.relevance = matchInfo.score;

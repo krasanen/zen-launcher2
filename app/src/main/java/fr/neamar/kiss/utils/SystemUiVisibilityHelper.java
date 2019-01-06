@@ -54,8 +54,10 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
         if (isVisible) {
             mHandler.removeCallbacks(autoApplySystemUiRunnable);
             applySystemUi(false, false);
+            mMainActivity.numericButton.setVisibility(View.VISIBLE);
         } else {
             autoApplySystemUiRunnable.run();
+            mMainActivity.numericButton.setVisibility(View.GONE);
         }
     }
 

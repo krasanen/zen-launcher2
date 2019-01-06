@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
@@ -54,7 +56,7 @@ public class ContactsResult extends Result {
     }
 
     @Override
-    public View display(Context context, int position, final View convertView, FuzzyScore fuzzyScore) {
+    public View display(Context context, int position, View convertView, FuzzyScore fuzzyScore) {
         View view = convertView;
         if (convertView == null)
             view = inflateFromId(context, R.layout.item_contact);
@@ -79,10 +81,16 @@ public class ContactsResult extends Result {
         ImprovedQuickContactBadge contactIcon = view
                 .findViewById(R.id.item_contact_icon);
 
-        if (contactIcon.getTag() instanceof ContactsPojo && contactPojo.equals(contactIcon.getTag())) {
-            icon = contactIcon.getDrawable();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!prefs.getBoolean("icons-hide", false)) {
+            if (contactIcon.getTag() instanceof ContactsPojo && contactPojo.equals(contactIcon.getTag())) {
+                icon = contactIcon.getDrawable();
+            }
+            this.setAsyncDrawable(contactIcon);
         }
-        this.setAsyncDrawable(contactIcon);
+        else {
+            contactIcon.setImageDrawable(null);
+        }
 
         contactIcon.assignContactUri(Uri.withAppendedPath(
                 ContactsContract.Contacts.CONTENT_LOOKUP_URI,
@@ -266,7 +274,7 @@ public class ContactsResult extends Result {
     }
 
     @Override
-    protected Boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId) {
+    protected boolean popupMenuClickHandler(Context context, RecordAdapter parent, int stringId, View parentView) {
         switch (stringId) {
             case R.string.menu_contact_copy_phone:
                 copyPhone(context, contactPojo);
@@ -291,7 +299,7 @@ public class ContactsResult extends Result {
                 return true;
         }
 
-        return super.popupMenuClickHandler(context, parent, stringId);
+        return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
 
     @SuppressWarnings("deprecation")
