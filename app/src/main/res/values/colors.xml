@@ -12,10 +12,10 @@
     <color name="kiss_background_light_transparent">#88FFFFFF</color>
     <color name="kiss_background_dark_transparent">#99222222</color>
     <color name="kiss_green_semitransparent">#884caf50</color>
+
+
     <color name="kiss_bluefacebook">#3b5998</color>
     <color name="kiss_greenwhatsapp">#25d366</color>
-
-
     <color name="gracenote_red">#ffbd0400</color>
     <color name="gray">#ff757575</color>
     <color name="off_white">#f0f0f0</color>

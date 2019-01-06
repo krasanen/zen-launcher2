@@ -574,6 +574,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 String text = s.toString();
                 updateSearchRecords(text);
                 displayClearOnInput();
+                if (searchEditText.getText().length() != 0) {
+                    list.setFastScrollAlwaysVisible(false);
+                    list.setFastScrollEnabled(false);
+                } else {
+                    list.setFastScrollAlwaysVisible(true);
+                    list.setFastScrollEnabled(true);
+                }
             }
         });
 
@@ -1733,8 +1740,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onContactsButtonClicked(View contactsButton) {
-        // Display or hide the Z-Launcher bar, according to current view tag (showMenu / hideMenu).
-        displayContacts(contactsButton.getTag().equals("hideMenu"));
+        // Display or hide the Z-Launcher contacts bar, according to current view tag (showMenu / hideMenu).
+        displayContacts(contactsButton.getTag().equals("showMenu"));
     }
 
     @Override
@@ -1882,10 +1889,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             if (clearSearchText) {
                 searchEditText.setText("");
             }
-
-            // Do not display the alphabetical scrollbar (#926)
-            // They only make sense when displaying apps alphabetically, not for searching
-            list.setFastScrollEnabled(false);
         }
 
         forwarderManager.onDisplayKissBar(display);

@@ -138,6 +138,8 @@ public class ExperienceTweaks extends Forwarder {
                     // and we're not looking at the app list
                     if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
                         if ((mainActivity.list.getAdapter() == null) || (mainActivity.list.getAdapter().isEmpty())) {
+                            mainActivity.list.setFastScrollAlwaysVisible(false);
+                            mainActivity.list.setFastScrollEnabled(false);
                             mainActivity.runTask(new HistorySearcher(mainActivity));
                         }
                     }
@@ -146,7 +148,6 @@ public class ExperienceTweaks extends Forwarder {
                 if (isMinimalisticModeEnabledForFavorites()) {
                     mainActivity.favoritesBar.setVisibility(View.VISIBLE);
                 }
-
                 return super.onSingleTapConfirmed(e);
             }
 
@@ -159,8 +160,6 @@ public class ExperienceTweaks extends Forwarder {
                     if(BuildConfig.DEBUG) Log.d(TAG, "directionY:" + directionY);
                     if(BuildConfig.DEBUG) Log.d(TAG, "e1x:" + e1.getX());
                     if(BuildConfig.DEBUG) Log.d(TAG, "e2x:" + e2.getX());
-                    if ( Math.abs(directionX) > Math.abs(directionY) )
-                        return false;
 
                     if (!mainActivity.isViewingAllApps() && !scaling) {
                         if (Math.abs(directionX) > width / 3) {

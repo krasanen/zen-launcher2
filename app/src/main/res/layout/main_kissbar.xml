@@ -5,7 +5,7 @@
     android:layout_height="@dimen/bar_height"
     android:background="@color/kiss_green"
     android:clipToPadding="false"
-
+    android:elevation="2dp"
     tools:ignore="UnusedAttribute">
 
     <ImageView
@@ -31,11 +31,12 @@
         android:layout_centerVertical="true"
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
+        android:visibility="visible"
         android:onClick="onContactsButtonClicked"
         android:paddingLeft="@dimen/launcher_button_padding"
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/ic_contact"
-        android:tag="contacts"/>
+        android:tag="showMenu"/>
 
     <LinearLayout
         android:id="@+id/embeddedFavoritesBar"
