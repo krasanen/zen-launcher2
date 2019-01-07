@@ -19,7 +19,7 @@
         android:focusable="true"
         android:onClick="onLauncherButtonClicked"
         android:paddingLeft="@dimen/launcher_button_padding"
-        android:paddingRight="@dimen/launcher_button_padding"
+        android:paddingRight="5dp"
         android:src="@drawable/ic_z"
         android:tag="hideMenu" />
     <ImageView
@@ -33,9 +33,9 @@
         android:focusable="true"
         android:visibility="visible"
         android:onClick="onContactsButtonClicked"
-        android:paddingLeft="@dimen/launcher_button_padding"
+        android:paddingLeft="5dp"
         android:paddingRight="@dimen/launcher_button_padding"
-        android:src="@drawable/ic_contact"
+        android:src="@drawable/contacts"
         android:tag="showMenu"/>
 
     <LinearLayout

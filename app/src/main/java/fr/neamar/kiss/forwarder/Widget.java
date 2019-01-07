@@ -247,10 +247,9 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 wp.load(hostView, ParcelableUtil.marshall(appWidgetInfo), ParcelableUtil.marshall(mAppWidgetManager.getAppWidgetOptions(appWidgetId)));
             } else {
                 wp.load(hostView, ParcelableUtil.marshall(appWidgetInfo), ParcelableUtil.marshall(options));
-                mAppWidgetManager.updateAppWidgetOptions(appWidgetId,options);
             }
-            wp.width = appWidgetInfo.minWidth;
-            wp.height = appWidgetInfo.minHeight;
+            Log.d(TAG,"appWidgetInfo.updatePeriodMillis:"+appWidgetInfo.updatePeriodMillis);
+
             return wp;
         }
         return null;

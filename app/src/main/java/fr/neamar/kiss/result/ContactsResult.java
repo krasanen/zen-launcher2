@@ -87,8 +87,7 @@ public class ContactsResult extends Result {
                 icon = contactIcon.getDrawable();
             }
             this.setAsyncDrawable(contactIcon);
-        }
-        else {
+        } else {
             contactIcon.setImageDrawable(null);
         }
 
@@ -106,112 +105,17 @@ public class ContactsResult extends Result {
 
         int primaryColor = UIColors.getPrimaryColor(context);
 
-/*
-        // SOME call
-        final ImageButton someCallButton = view.findViewById(R.id.item_contact_action_some_call);
-        ViewGroup.LayoutParams viewParams = someCallButton.getLayoutParams();
-        int width = viewParams.width;
-        int height = viewParams.height;
-        if (contactPojo.whatsAppCalling != 0) {
-            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
-            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("com.whatsapp", width, height, "Call", Color.WHITE));
 
-           // someCallButton.setImageResource(R.drawable.call_whatsapp);
-        } else if (contactPojo.signalCalling != 0) {
-            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
-            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("org.thoughtcrime.securesms", width, height, "Call", Color.WHITE));
-        } else if (contactPojo.facebookCalling != 0) {
-            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
-            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("com.facebook.orca", width, height, "Call", Color.BLUE));
+        //  SOME call
+        if (prefs.getBoolean("someCallButton", false)) {
+            addSomeCallButton(view);
         }
-
-
-        someCallButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (contactPojo.whatsAppCalling != 0) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "whatsAppCalling:" + contactPojo.whatsAppCalling);
-
-                    openGenericSomeApp(contactPojo.whatsAppCalling, v.getContext());
-                } else if (contactPojo.signalCalling != 0) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "signalCalling:" + contactPojo.signalCalling);
-
-                    openGenericSomeApp(contactPojo.signalCalling, v.getContext());
-                } else if (contactPojo.facebookCalling != 0) {
-
-                    if(BuildConfig.DEBUG) Log.d(TAG, "facebookCalling:" + contactPojo.facebookCalling);
-
-                    openFacebook(contactPojo.facebookCalling, v.getContext(), true);
-                }
-            }
-        }); */
-        // IM Phone action
-        if (contactPojo.whatsAppCalling != 0 ||
-                contactPojo.signalCalling != 0 ||
-                contactPojo.facebookCalling != 0) {
-            // IM Phone action
-            //someCallButton.setVisibility(View.VISIBLE);
-        } else {
-            //someCallButton.setVisibility(View.GONE);
-        }
-
-        // SOME message
-        ImageButton someMessageButton = view.findViewById(R.id.item_contact_action_some_message);
-        someMessageButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (contactPojo.whatsAppMessaging != 0) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "whatsAppMessaging:" + contactPojo.whatsAppMessaging);
-                    openGenericSomeApp(contactPojo.whatsAppMessaging, v.getContext());
-                } else if (contactPojo.signalMessaging != 0) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "signalMessaging:" + contactPojo.signalMessaging);
-                    openGenericSomeApp(contactPojo.signalMessaging, v.getContext());
-                } else if (contactPojo.facebookMessaging != 0) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "facebookMessaging:" + contactPojo.facebookMessaging);
-                    openFacebook(v.getContext(), false);
-                }
-
-            }
-        });
 
         // SOME message button
-        ViewGroup.LayoutParams viewParamsMsg = someMessageButton.getLayoutParams();
-        int widthMsg = viewParamsMsg.width;
-        int heightMsg = viewParamsMsg.height;
-        if (contactPojo.whatsAppMessaging != 0) {
-            if (ContactSearcher.whatsAppIcon == null) {
-                IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
-                someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("com.whatsapp", widthMsg, heightMsg, null, Color.WHITE));
-            } else {
-                someMessageButton.setImageBitmap(ContactSearcher.whatsAppIcon);
-            }
-
-        } else if (contactPojo.signalMessaging != 0) {
-            if (ContactSearcher.signalIcon == null) {
-                IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
-                someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("org.thoughtcrime.securesms", widthMsg, heightMsg, null, Color.WHITE));
-            } else {
-                someMessageButton.setImageBitmap(ContactSearcher.signalIcon);
-            }
-        } else if (contactPojo.facebookMessaging != 0) {
-            if (ContactSearcher.facebookIcon == null) {
-                IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
-                someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("com.facebook.orca", widthMsg, heightMsg, null, Color.BLUE));
-            } else {
-                someMessageButton.setImageBitmap(ContactSearcher.facebookIcon);
-            }
+        if (prefs.getBoolean("someMsgButton", false)) {
+            addSomeMsgButton(view);
         }
 
-
-        if (contactPojo.whatsAppMessaging != 0 ||
-                contactPojo.signalMessaging != 0 ||
-                contactPojo.facebookMessaging != 0) {
-            // IM Phone action
-            someMessageButton.setVisibility(View.VISIBLE);
-        } else {
-            someMessageButton.setVisibility(View.GONE);
-        }
-        someMessageButton.setColorFilter(null);
         // Phone action
         ImageButton phoneButton = view.findViewById(R.id.item_contact_action_phone);
         phoneButton.setColorFilter(primaryColor);
@@ -252,19 +156,135 @@ public class ContactsResult extends Result {
         return view;
     }
 
+    private void addSomeMsgButton(View view) {
+        // SOME message
+        Context context=view.getContext();
+        ImageButton someMessageButton = view.findViewById(R.id.item_contact_action_some_message);
+        someMessageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (contactPojo.whatsAppMessaging != 0) {
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "whatsAppMessaging:" + contactPojo.whatsAppMessaging);
+                    openGenericSomeApp(contactPojo.whatsAppMessaging, v.getContext());
+                } else if (contactPojo.signalMessaging != 0) {
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "signalMessaging:" + contactPojo.signalMessaging);
+                    openGenericSomeApp(contactPojo.signalMessaging, v.getContext());
+                } else if (contactPojo.facebookMessaging != 0) {
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "facebookMessaging:" + contactPojo.facebookMessaging);
+                    openFacebook(v.getContext(), false);
+                }
+
+            }
+        });
+
+        ViewGroup.LayoutParams viewParamsMsg = someMessageButton.getLayoutParams();
+        int widthMsg = viewParamsMsg.width;
+        int heightMsg = viewParamsMsg.height;
+        if (contactPojo.whatsAppMessaging != 0) {
+            if (ContactSearcher.whatsAppIcon == null) {
+                IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+                someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("com.whatsapp", widthMsg, heightMsg, null, Color.WHITE));
+            } else {
+                someMessageButton.setImageBitmap(ContactSearcher.whatsAppIcon);
+            }
+
+        } else if (contactPojo.signalMessaging != 0) {
+            if (ContactSearcher.signalIcon == null) {
+                IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+                someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("org.thoughtcrime.securesms", widthMsg, heightMsg, null, Color.WHITE));
+            } else {
+                someMessageButton.setImageBitmap(ContactSearcher.signalIcon);
+            }
+        } else if (contactPojo.facebookMessaging != 0) {
+            if (ContactSearcher.facebookIcon == null) {
+                IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+                someMessageButton.setImageBitmap(iconHelper.getCroppedBitmap("com.facebook.orca", widthMsg, heightMsg, null, Color.BLUE));
+            } else {
+                someMessageButton.setImageBitmap(ContactSearcher.facebookIcon);
+            }
+        }
+
+
+        if (contactPojo.whatsAppMessaging != 0 ||
+                contactPojo.signalMessaging != 0 ||
+                contactPojo.facebookMessaging != 0) {
+            // IM Phone action
+            someMessageButton.setVisibility(View.VISIBLE);
+        } else {
+            someMessageButton.setVisibility(View.GONE);
+        }
+        someMessageButton.setColorFilter(null);
+    } // SOME message button
+
+    private void addSomeCallButton(View view) {
+        Context context = view.getContext();
+        final ImageButton someCallButton = view.findViewById(R.id.item_contact_action_some_call);
+        ViewGroup.LayoutParams viewParams = someCallButton.getLayoutParams();
+        int width = viewParams.width;
+        int height = viewParams.height;
+        if (contactPojo.whatsAppCalling != 0) {
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("com.whatsapp", width, height, "Call", Color.WHITE));
+
+            // someCallButton.setImageResource(R.drawable.call_whatsapp);
+        } else if (contactPojo.signalCalling != 0) {
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("org.thoughtcrime.securesms", width, height, "Call", Color.WHITE));
+        } else if (contactPojo.facebookCalling != 0) {
+            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
+            someCallButton.setImageBitmap(iconHelper.getCroppedBitmap("com.facebook.orca", width, height, "Call", Color.BLUE));
+        }
+        someCallButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (contactPojo.whatsAppCalling != 0) {
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "whatsAppCalling:" + contactPojo.whatsAppCalling);
+
+                    openGenericSomeApp(contactPojo.whatsAppCalling, v.getContext());
+                } else if (contactPojo.signalCalling != 0) {
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "signalCalling:" + contactPojo.signalCalling);
+
+                    openGenericSomeApp(contactPojo.signalCalling, v.getContext());
+                } else if (contactPojo.facebookCalling != 0) {
+
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "facebookCalling:" + contactPojo.facebookCalling);
+
+                    openFacebook(v.getContext(), true);
+                }
+            }
+        });
+
+        // IM Phone action
+        if (contactPojo.whatsAppCalling != 0 ||
+                contactPojo.signalCalling != 0 ||
+                contactPojo.facebookCalling != 0) {
+            // IM Phone action
+            someCallButton.setVisibility(View.VISIBLE);
+        } else {
+            someCallButton.setVisibility(View.GONE);
+        }
+    } // SOME call
+
+
     @Override
     protected ListPopup buildPopupMenu(Context context, ArrayAdapter<ListPopup.Item> adapter, final RecordAdapter parent, View parentView) {
-        if(contactPojo.whatsAppCalling != 0){
+        if (contactPojo.whatsAppCalling != 0) {
             adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call_whatsapp));
-            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_whatsapp) );
+            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_whatsapp));
         }
-        if(contactPojo.signalCalling != 0){
-            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call_signal) );
-            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_signal) );
+        if (contactPojo.signalCalling != 0) {
+            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call_signal));
+            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_signal));
         }
-        if(contactPojo.facebookCalling != 0){
-            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call_facebook) );
-            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_facebook) );
+        if (contactPojo.facebookCalling != 0) {
+            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call_facebook));
+            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_facebook));
         }
         adapter.add(new ListPopup.Item(context, R.string.menu_remove));
         adapter.add(new ListPopup.Item(context, R.string.menu_contact_copy_phone));
@@ -286,7 +306,7 @@ public class ContactsResult extends Result {
                 launchSignalCall(context);
                 return true;
             case R.string.ui_item_contact_hint_call_facebook:
-                openFacebook(context,true);
+                openFacebook(context, true);
                 return true;
             case R.string.ui_item_contact_hint_message_whatsapp:
                 openGenericSomeApp(contactPojo.whatsAppMessaging, context);
@@ -295,7 +315,7 @@ public class ContactsResult extends Result {
                 openGenericSomeApp(contactPojo.signalMessaging, context);
                 return true;
             case R.string.ui_item_contact_hint_message_facebook:
-                openFacebook(context,false);
+                openFacebook(context, false);
                 return true;
         }
 
@@ -327,22 +347,23 @@ public class ContactsResult extends Result {
     @Override
     public Drawable getDrawable(Context context) {
         synchronized (this) {
-            if(BuildConfig.DEBUG) Log.d(TAG,"getDrawable:"+contactPojo.icon);
+            if (BuildConfig.DEBUG) Log.d(TAG, "getDrawable:" + contactPojo.icon);
             if (isDrawableCached())
                 return icon;
             if (contactPojo.icon != null) {
-                if(BuildConfig.DEBUG) Log.d(TAG,"getDrawable:"+contactPojo.icon);
+                if (BuildConfig.DEBUG) Log.d(TAG, "getDrawable:" + contactPojo.icon);
                 InputStream inputStream = null;
                 try {
                     inputStream = context.getContentResolver()
                             .openInputStream(contactPojo.icon);
                     return icon = Drawable.createFromStream(inputStream, null);
                 } catch (FileNotFoundException ignored) {
-                    if(BuildConfig.DEBUG) Log.d(TAG,"getDrawable FileNotFoundException"+contactPojo.icon);
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "getDrawable FileNotFoundException" + contactPojo.icon);
                     //inputStream = getPhotoInputStream(contactPojo.icon, context);
                     //return icon = Drawable.createFromStream(inputStream, null);
 
-                   // loadDisplayPhoto(getWhatsappPhotoUri(context), context);
+                    // loadDisplayPhoto(getWhatsappPhotoUri(context), context);
                 } finally {
                     if (inputStream != null) {
                         try {
@@ -364,10 +385,10 @@ public class ContactsResult extends Result {
 
         Cursor contactCursor = cr.query(
                 ContactsContract.RawContacts.CONTENT_URI,
-                new String[] { ContactsContract.RawContacts._ID, ContactsContract.RawContacts.CONTACT_ID } ,
+                new String[]{ContactsContract.RawContacts._ID, ContactsContract.RawContacts.CONTACT_ID},
                 ContactsContract.RawContacts.ACCOUNT_TYPE + "= ?",
-                new String[] { "com.whatsapp" }, null);
-        if (contactCursor  != null && contactCursor .moveToFirst()) {
+                new String[]{"com.whatsapp"}, null);
+        if (contactCursor != null && contactCursor.moveToFirst()) {
             Uri photoId = ContentUris.withAppendedId(ContactsContract.RawContacts.CONTENT_URI, whatsappContactId);
             Uri photoUri = Uri.withAppendedPath(photoId, ContactsContract.RawContacts.DisplayPhoto.CONTENT_DIRECTORY);
             return photoUri;
@@ -375,7 +396,6 @@ public class ContactsResult extends Result {
         return null;
 
     }
-
 
 
     @Override
@@ -418,21 +438,21 @@ public class ContactsResult extends Result {
         phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // Make sure we have permission to call someone as this is considered a dangerous permission
-       if(Permission.ensureCallPhonePermission(phoneIntent)) {
-           // Pre-android 23, or we already have permission
-           context.startActivity(phoneIntent);
+        if (Permission.ensureCallPhonePermission(phoneIntent)) {
+            // Pre-android 23, or we already have permission
+            context.startActivity(phoneIntent);
 
-           // Register launch in the future
-           // (animation delay)
-           Handler handler = new Handler();
-           handler.postDelayed(new Runnable() {
-               @Override
-               public void run() {
-                   recordLaunch(context);
-                   queryInterface.launchOccurred();
-               }
-           }, KissApplication.TOUCH_DELAY);
-       }
+            // Register launch in the future
+            // (animation delay)
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recordLaunch(context);
+                    queryInterface.launchOccurred();
+                }
+            }, KissApplication.TOUCH_DELAY);
+        }
     }
 
 
@@ -442,7 +462,7 @@ public class ContactsResult extends Result {
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         int contactId = contactPojo.contactId;
-        if(BuildConfig.DEBUG) Log.d(TAG, "launchWhatsAppCall, contactId:" + contactId);
+        if (BuildConfig.DEBUG) Log.d(TAG, "launchWhatsAppCall, contactId:" + contactId);
         // the _ids you save goes here at the end of /data/12562
         intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
                 "vnd.android.cursor.item/vnd.com.whatsapp.voip.call");
@@ -475,7 +495,7 @@ public class ContactsResult extends Result {
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         int contactId = contactPojo.contactId;
-        if(BuildConfig.DEBUG) Log.d(TAG, "launchSignalCall, contactId:" + contactId);
+        if (BuildConfig.DEBUG) Log.d(TAG, "launchSignalCall, contactId:" + contactId);
         // the _ids you save goes here at the end of /data/12562
         intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
                 SIGNAL_CONTACT_MIMETYPE);
@@ -517,7 +537,7 @@ public class ContactsResult extends Result {
     }
 
     private void openGenericSomeApp(int contactId, Context context) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "openGenericSomeApp:" + contactId);
+        if (BuildConfig.DEBUG) Log.d(TAG, "openGenericSomeApp:" + contactId);
      /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
                 new String[] { Integer.toString(signalCalling) }, null);
@@ -530,7 +550,7 @@ public class ContactsResult extends Result {
     }
 
     private void openFacebook(Context context, boolean call) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "openFacebook:" + contactPojo.facebookCalling);
+        if (BuildConfig.DEBUG) Log.d(TAG, "openFacebook:" + contactPojo.facebookCalling);
      /*   Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] { ContactsContract.Contacts.Data._ID }, ContactsContract.Data._ID + "=?",
                 new String[] { Integer.toString(whatsAppnumber) }, null);

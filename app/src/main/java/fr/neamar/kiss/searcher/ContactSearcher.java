@@ -15,7 +15,7 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.PojoComparator;
 
 /**
- * Returns the list of all applications on the system
+ * Returns the list of all contacts on the system
  */
 public class ContactSearcher extends Searcher {
     public ContactSearcher(MainActivity activity) {
