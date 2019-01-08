@@ -240,35 +240,15 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             hostView.setMinimumHeight(appWidgetInfo.minHeight);
             hostView.setMinimumWidth(appWidgetInfo.minWidth);
             hostView.setAppWidget(appWidgetId, appWidgetInfo);
-            addWidgetHostView(hostView);
-            WidgetPreferences wp = new WidgetPreferences();
+            WidgetPreferences wp= addWidgetHostView(hostView, appWidgetInfo, mAppWidgetManager.getAppWidgetOptions(appWidgetId));
 
-            if (options==null) {
-                wp.load(hostView, ParcelableUtil.marshall(appWidgetInfo), ParcelableUtil.marshall(mAppWidgetManager.getAppWidgetOptions(appWidgetId)));
-            } else {
-                wp.load(hostView, ParcelableUtil.marshall(appWidgetInfo), ParcelableUtil.marshall(options));
-            }
+            //refreshAppWidget(appWidgetId);
             Log.d(TAG,"appWidgetInfo.updatePeriodMillis:"+appWidgetInfo.updatePeriodMillis);
-
             return wp;
         }
         return null;
     }
-    public static void updateWidget(Context context, int appWidgetId, Bundle options) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "updateWidget: "+appWidgetId);
-        Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
-        // since it seems the onUpdate() is only fired on that:
-        AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
-        int[] ids = {appWidgetId};
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            widgetManager.notifyAppWidgetViewDataChanged(ids, android.R.id.list);
 
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        intent.putExtra(EXTRA_APPWIDGET_OPTIONS, options);
-        context.sendBroadcast(intent);
-    }
     public void updateWidgets(Context context) {
         if(BuildConfig.DEBUG) Log.d(TAG, "updateWidgets");
         Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
@@ -284,25 +264,34 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         context.sendBroadcast(intent);
     }
 
-    private void addWidgetHostView(final AppWidgetHostView hostView) {
+    private WidgetPreferences addWidgetHostView(final AppWidgetHostView hostView, AppWidgetProviderInfo appWidgetInfo, Bundle appWidgetOptions) {
         if(BuildConfig.DEBUG) Log.d(TAG, "addWidgetHostView");
         String data = widgetPrefs.getString(String.valueOf(hostView.getAppWidgetId()), null);
         WidgetPreferences wp = WidgetPreferences.unserialize(data);
-
         int w = ViewGroup.LayoutParams.WRAP_CONTENT;
         int h = ViewGroup.LayoutParams.WRAP_CONTENT;
+        if(BuildConfig.DEBUG) Log.d(TAG, "1w:"+w+ " h:"+h);
         if (wp != null) {
             w = wp.width;
             h = wp.height;
+            if(BuildConfig.DEBUG) Log.d(TAG, "2w:"+w+ " h:"+h);
         }
+        if(BuildConfig.DEBUG) Log.d(TAG, "3w:"+w+ " h:"+h);
 
         WidgetLayout.LayoutParams layoutParams = new WidgetLayout.LayoutParams(w, h);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
-        if (wp != null)
-            wp.apply(layoutParams, wp.appWidgetProviderInfo,wp.appWidgetOptions);
-
+        if (wp != null) {
+            wp.apply(layoutParams);
+            hostView.setLayoutParams(layoutParams);
+            wp.load(wp, ParcelableUtil.marshall(appWidgetInfo),ParcelableUtil.marshall(appWidgetOptions));
+         }
+        else {
+            wp = new WidgetPreferences();
+            wp.load(layoutParams,ParcelableUtil.marshall(appWidgetInfo),ParcelableUtil.marshall(appWidgetOptions));
+            hostView.setLayoutParams(layoutParams);
+        }
         //hostView.setBackgroundColor(0x3F7f0000);
-        hostView.setLayoutParams(layoutParams);
+
 
         widgetArea.post(new Runnable() {
             @Override
@@ -310,6 +299,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 widgetArea.addView(hostView);
             }
         });
+        return wp;
     }
 
     private void removeWidgetHostView(AppWidgetHostView hostView) {
@@ -388,7 +378,8 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         if(BuildConfig.DEBUG) Log.d(TAG, "addAppWidget: appWidgetId"+appWidgetId);
         //add widget
         WidgetPreferences wp = addWidgetToLauncher(appWidgetId);
-
+        Log.d(TAG, "addAppWidget: w"+wp.width);
+        Log.d(TAG, "addAppWidget: h"+wp.height);
         // Save widget in preferences
         SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
         widgetPrefsEditor.putString(String.valueOf(appWidgetId), WidgetPreferences.serialize(wp));
@@ -431,7 +422,25 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             AppWidgetHostView hostView = getWidgetHostView(i);
             if (hostView.getAppWidgetId() == appWidgetId) {
                 WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
-                wp.apply(layoutParams, wp.appWidgetProviderInfo, wp.appWidgetOptions);
+                wp.apply(layoutParams);
+                hostView.setLayoutParams(layoutParams);
+                break;
+            }
+        }
+        //updateWidgets(mainActivity.getApplicationContext());
+    }
+
+    private void refreshAppWidget(int appWidgetId) {
+        if(BuildConfig.DEBUG) Log.d(TAG, "refreshAppWidget2: appWidgetId"+appWidgetId);
+        String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
+        WidgetPreferences wp = WidgetPreferences.unserialize(data);
+        if (wp == null)
+            return;
+        for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
+            AppWidgetHostView hostView = getWidgetHostView(i);
+            if (hostView.getAppWidgetId() == appWidgetId) {
+                WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
+                wp.apply(layoutParams);
                 hostView.setLayoutParams(layoutParams);
                 break;
             }
