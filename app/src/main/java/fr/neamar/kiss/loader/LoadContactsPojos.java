@@ -205,12 +205,10 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                                 contact.whatsAppCalling = contactId;
+                                if(BuildConfig.DEBUG) Log.d(TAG, "whatsAppCalling:" + contact.getName());
                                 if (!contact.primary) {
                                     contact.primary = true;
                                 }
-
-
-
                             }
 
                         }
@@ -235,7 +233,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                                 contact.facebookCalling = contactId;
-
+                                if(BuildConfig.DEBUG) Log.d(TAG, "facebookCalling:" + contact.getName());
                             }
 
                         }

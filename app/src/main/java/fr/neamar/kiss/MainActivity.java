@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
@@ -457,7 +458,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(BuildConfig.DEBUG) Log.d(TAG, "onCreate()");
-        //setNightMode(this,true);
+        KissApplication.getApplication(this).setMainActivity(this);
         HermesEventBus.getDefault().init(this);
         HermesEventBus.getDefault().register(this);
 //        KissApplication.getApplication(this).initDataHandler();

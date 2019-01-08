@@ -17,20 +17,26 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import androidx.annotation.StringRes;
 import fi.zmengames.zlauncher.IconHelper;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -53,8 +59,106 @@ public class ContactsResult extends Result {
         super(contactPojo);
         this.contactPojo = contactPojo;
         this.queryInterface = queryInterface;
+
     }
 
+    private void buildCallPopupMenu(final View view) {
+        Context context = view.getContext();
+        final int CELL = 0;
+        final int WHATSAPP = 1;
+        final int SIGNAL = 2;
+        final int FACEBOOK = 3;
+        final int COPY_NUMBER = 4;
+
+        PopupMenu popupExcludeMenu = new PopupMenu(context, view);
+        //Adding menu items
+        popupExcludeMenu.getMenu().add(CELL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_cell);
+        if (contactPojo.whatsAppCalling != 0) {
+            popupExcludeMenu.getMenu().add(WHATSAPP,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_whatsapp);
+        }
+        if (contactPojo.signalCalling != 0) {
+            popupExcludeMenu.getMenu().add(SIGNAL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_signal);
+        }
+        if (contactPojo.facebookCalling != 0) {
+            popupExcludeMenu.getMenu().add(FACEBOOK,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_facebook);
+        }
+
+        popupExcludeMenu.getMenu().add(COPY_NUMBER,Menu.NONE, Menu.NONE,R.string.menu_contact_copy_phone);
+        //registering popup with OnMenuItemClickListener
+        popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Context context = view.getContext();
+                switch (item.getGroupId()) {
+                        case CELL:
+                            launchCall(context);
+                            break;
+                        case WHATSAPP:
+                            launchWhatsAppCall(context);
+                            break;
+                        case SIGNAL:
+                            launchSignalCall(context);
+                            break;
+                        case FACEBOOK:
+                            openFacebook(context, true);
+                            break;
+                        case COPY_NUMBER:
+                            copyPhone(context, contactPojo);
+                            break;
+                }
+                return true;
+            }
+        });
+
+        popupExcludeMenu.show();
+
+
+    }
+    private void buildMsgPopupMenu(final View view) {
+        Context context = view.getContext();
+        final int CELL = 0;
+        final int WHATSAPP = 1;
+        final int SIGNAL = 2;
+        final int FACEBOOK = 3;
+
+
+        PopupMenu popupExcludeMenu = new PopupMenu(context, view);
+        //Adding menu items
+        popupExcludeMenu.getMenu().add(CELL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_sms);
+        if (contactPojo.whatsAppMessaging != 0) {
+            popupExcludeMenu.getMenu().add(WHATSAPP,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_whatsapp);
+        }
+        if (contactPojo.signalMessaging != 0) {
+            popupExcludeMenu.getMenu().add(SIGNAL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_signal);
+        }
+        if (contactPojo.facebookMessaging != 0) {
+            popupExcludeMenu.getMenu().add(FACEBOOK,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_facebook);
+        }
+
+        //registering popup with OnMenuItemClickListener
+        popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Context context = view.getContext();
+                switch (item.getGroupId()) {
+                    case CELL:
+                        launchMessaging(context);
+                        break;
+                    case WHATSAPP:
+                        openGenericSomeApp(contactPojo.whatsAppMessaging, context);
+                        break;
+                    case SIGNAL:
+                        openGenericSomeApp(contactPojo.signalMessaging, context);
+                        break;
+                    case FACEBOOK:
+                        openFacebook(context, false);
+                        break;
+                }
+                return true;
+            }
+        });
+
+        popupExcludeMenu.show();
+
+    }
     @Override
     public View display(Context context, int position, View convertView, FuzzyScore fuzzyScore) {
         View view = convertView;
@@ -134,12 +238,30 @@ public class ContactsResult extends Result {
                     launchCall(v.getContext());
                 }
             });
+            phoneButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Log.d(TAG,"onLongClick");
+                    buildCallPopupMenu(view);
+
+                    return true;
+                }
+            });
+
 
             messageButton.setOnClickListener(new OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
                     launchMessaging(v.getContext());
+                }
+            });
+            messageButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Log.d(TAG,"onLongClick");
+                    buildMsgPopupMenu(view);
+                    return true;
                 }
             });
 
@@ -270,6 +392,8 @@ public class ContactsResult extends Result {
             someCallButton.setVisibility(View.GONE);
         }
     } // SOME call
+
+
 
 
     @Override
@@ -461,7 +585,7 @@ public class ContactsResult extends Result {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-        int contactId = contactPojo.contactId;
+        int contactId = contactPojo.whatsAppCalling;
         if (BuildConfig.DEBUG) Log.d(TAG, "launchWhatsAppCall, contactId:" + contactId);
         // the _ids you save goes here at the end of /data/12562
         intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
@@ -470,8 +594,7 @@ public class ContactsResult extends Result {
 
         intent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.accountsync.ProfileActivity"));
 
-        if (Permission.ensureCallPhonePermission(intent)) {
-            // Pre-android 23, or we already have permission
+
             context.startActivity(intent);
 
             // Register launch in the future
@@ -484,7 +607,6 @@ public class ContactsResult extends Result {
                     queryInterface.launchOccurred();
                 }
             }, KissApplication.TOUCH_DELAY);
-        }
 
     }
 
@@ -494,7 +616,7 @@ public class ContactsResult extends Result {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-        int contactId = contactPojo.contactId;
+        int contactId = contactPojo.signalCalling;
         if (BuildConfig.DEBUG) Log.d(TAG, "launchSignalCall, contactId:" + contactId);
         // the _ids you save goes here at the end of /data/12562
         intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactId),
@@ -556,18 +678,19 @@ public class ContactsResult extends Result {
                 new String[] { Integer.toString(whatsAppnumber) }, null);
         c.moveToFirst();
         //c.moveToNext(); //gets the call intent */
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + contactPojo.facebookCalling));
+        Intent i;
         if (!call) {
-            i.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactPojo.facebookCalling),
+            i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + contactPojo.facebookMessaging));
+            i.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactPojo.facebookMessaging),
                     "vnd.android.cursor.item/com.facebook.messenger.chat");
         } else {
+            i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://com.android.contacts/data/" + contactPojo.facebookCalling));
             i.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactPojo.facebookCalling),
                     "vnd.android.cursor.item/com.facebook.messenger.audiocall");
         }
 
-
         i.setComponent(new ComponentName("com.facebook.orca", "com.facebook.messenger.intents.IntentHandlerActivity"));
-        ;
+
         context.startActivity(i);
         //  c.close();
     }

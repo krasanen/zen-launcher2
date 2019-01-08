@@ -16,9 +16,14 @@ public class KissApplication extends Application {
     private DataHandler dataHandler;
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;
+    private MainActivity mainActivity;
 
     public static KissApplication getApplication(Context context) {
         return (KissApplication) context.getApplicationContext();
+    }
+
+    public MainActivity getMainActivity() {
+        return mainActivity;
     }
 
     public DataHandler getDataHandler() {
@@ -31,6 +36,9 @@ public class KissApplication extends Application {
     public void setDataHandler(DataHandler newDataHandler) {
         dataHandler = newDataHandler;
     }
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
 
     public RootHandler getRootHandler() {
         if (rootHandler == null) {
@@ -41,20 +49,6 @@ public class KissApplication extends Application {
 
     public void resetRootHandler(Context ctx) {
         rootHandler.resetRootHandler(ctx);
-    }
-    public void nullDataHandler() {
-            dataHandler = null;
-        }
-    public void initDataHandler() {
-        if (dataHandler == null) {
-            dataHandler = new DataHandler(this);
-        }
-        else if(dataHandler.allProvidersHaveLoaded) {
-            // Already loaded! We still need to fire the FULL_LOAD event
-            Intent intent = new Intent(this, LauncherService.class);
-            intent.setAction(LauncherService.FULL_LOAD_OVER);
-            startLaucherService(intent,this);
-        }
     }
 
     public IconsHandler getIconsHandler() {
