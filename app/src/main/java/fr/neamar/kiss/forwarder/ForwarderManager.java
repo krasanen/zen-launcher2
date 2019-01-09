@@ -123,6 +123,10 @@ public class ForwarderManager extends Forwarder {
         widgetForwarder.removeAllWidgets();
     }
 
+    public void addWidget() {
+        widgetForwarder.onWidgetAdd();
+    }
+
     public void updateWidgets(Context context) {
         widgetForwarder.updateWidgets(context);
     }

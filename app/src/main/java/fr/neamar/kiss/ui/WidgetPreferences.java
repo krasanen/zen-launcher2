@@ -1,6 +1,6 @@
 package fr.neamar.kiss.ui;
 
-import android.appwidget.AppWidgetHostView;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import fi.zmengames.zlauncher.LauncherAppWidgetHostView;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -90,7 +91,7 @@ public class WidgetPreferences implements Serializable {
     }
 
 
-    public void load(AppWidgetHostView hostView) {
+    public void load(LauncherAppWidgetHostView hostView) {
         WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
         this.position = layoutParams.position;
         this.width = hostView.getMeasuredWidth();
@@ -100,7 +101,7 @@ public class WidgetPreferences implements Serializable {
     }
 
 
-    public void showEditMenu(MainActivity mainActivity, SharedPreferences widgetPrefs, AppWidgetHostView hostView) {
+    public void showEditMenu(MainActivity mainActivity, SharedPreferences widgetPrefs, LauncherAppWidgetHostView hostView) {
         if (!isValid())
             load(hostView);
         Menu menu = new Menu(mainActivity, widgetPrefs);
@@ -165,7 +166,7 @@ public class WidgetPreferences implements Serializable {
             setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         }
 
-        public void show(final MainActivity mainActivity, final WidgetPreferences widgetPreferences, final AppWidgetHostView hostView) {
+        public void show(final MainActivity mainActivity, final WidgetPreferences widgetPreferences, final LauncherAppWidgetHostView hostView) {
             final View contentView = getContentView();
             final AppWidgetProviderInfo info = hostView.getAppWidgetInfo();
 

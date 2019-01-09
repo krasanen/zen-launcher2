@@ -7,11 +7,10 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
-import android.appwidget.AppWidgetHostView;
+
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,8 +22,8 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,6 +41,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,9 +49,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -106,6 +108,7 @@ import java.util.Set;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import fi.zmengames.zlauncher.HistoryDetails;
+import fi.zmengames.zlauncher.LauncherAppWidgetHostView;
 import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -234,6 +237,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int RC_LOAD_SNAPSHOT = 52;
     private static final int RC_LIST_SAVED_GAMES = 53;
     private static final int RC_SIGN_IN = 54;
+    private int widgetAddY;
 
     public void signIn() {
         if(BuildConfig.DEBUG) Log.d(TAG, "signIn");
@@ -499,7 +503,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.launcherButton = findViewById(R.id.launcherButton);
         this.clearButton = findViewById(R.id.clearButton);
         this.numericButton = findViewById(R.id.numericButton);
-
         /*
          * Initialize components behavior
          * Note that a lot of behaviors are also initialized through the forwarderManager.onCreate() call.
@@ -637,9 +640,68 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.onCreate();
         initializeKeyboardListener();
         //if(BuildConfig.DEBUG) Log.d(TAG,">setOnDragListener");
-        //findViewById(R.id.letters).setOnTouchListener(new MyDragListener());
+        findViewById(R.id.widgetLayout).setOnLongClickListener(new MyOnClickListener());
+        //findViewById(R.id.main).setOnLongClickListener(new MyOnClickListener());
         //if(BuildConfig.DEBUG) Log.d(TAG,"<setOnDragListener");
 
+    }
+
+    private void buildWidgetPopupMenu(final View view) {
+        widgetAddY=y;
+        show(this,x,y);
+    }
+
+    public void show(Activity activity, final float x, final float y)
+    {
+
+        final int ADD_WIDGET = 0;
+        final int UPDATE_WALLPAPER = 1;
+        final ViewGroup root = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+
+        final View view = new View(activity.getApplicationContext());
+        view.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
+
+
+        root.addView(view);
+
+        view.setX(x);
+        view.setY(y);
+
+        PopupMenu popupExcludeMenu = new PopupMenu(activity.getApplicationContext(), view);
+        //Adding menu items
+        popupExcludeMenu.getMenu().add(ADD_WIDGET, Menu.NONE, Menu.NONE, R.string.menu_widget_add);
+        popupExcludeMenu.getMenu().add(UPDATE_WALLPAPER, Menu.NONE, Menu.NONE, R.string.menu_wallpaper);
+
+        //registering popup with OnMenuItemClickListener
+        popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getGroupId()) {
+                    case ADD_WIDGET:
+                        hideKeyboard();
+                        forwarderManager.addWidget();
+                        break;
+                    case UPDATE_WALLPAPER:
+                        hideKeyboard();
+                        Intent intent2 = new Intent(Intent.ACTION_SET_WALLPAPER);
+                        startActivity(Intent.createChooser(intent2, getString(R.string.menu_wallpaper)));
+                        break;
+                }
+                return true;
+            }
+        });
+
+
+
+        popupExcludeMenu.setOnDismissListener(new PopupMenu.OnDismissListener()
+        {
+            @Override
+            public void onDismiss(PopupMenu menu)
+            {
+                root.removeView(view);
+            }
+        });
+
+        popupExcludeMenu.show();
     }
 
     public void onNumericKeypadClicked(View view) {
@@ -647,17 +709,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         ExperienceTweaks.mNumericInputTypeForced = true;
     }
 
-    class MyDragListener implements View.OnTouchListener {
+    // place to put widget when long clicking on widgetlayout
+    public int getWidgetAddY() {
+        return widgetAddY;
+    }
+
+    public void resetWidgetAddY() {
+        widgetAddY = 0;
+    }
+
+    class MyOnClickListener implements View.OnLongClickListener {
+        @Override
+        public boolean onLongClick(View view) {
+            Log.d(TAG,"onLongClick");
+            buildWidgetPopupMenu(view);
+            return true;
+        }
 /*        Drawable enterShape = getResources().getDrawable(
                 R.drawable.box_on);
         Drawable normalShape = getResources().getDrawable(R.drawable.box_off);*/
 
 
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if(BuildConfig.DEBUG) Log.d(TAG,"onTouch:"+ v);
-            return false;
-        }
     }
     Rect r = new Rect();
 
@@ -1567,7 +1639,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     addWidget(appWidgetId);
                 }
             /*    appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(newWidgetId);
-                AppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, newWidgetId, appWidgetInfo);
+                LauncherAppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, newWidgetId, appWidgetInfo);
                 hostView.setMinimumHeight(appWidgetInfo.minHeight);
                 hostView.setAppWidget(newWidgetId, appWidgetInfo);
                 addWidgetHostView(hostView);
@@ -1737,12 +1809,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Display or hide the Z-Launcher contacts bar, according to current view tag (showMenu / hideMenu).
         displayContacts(contactsButton.getTag().equals("showMenu"));
     }
-
+    public int x,y;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if(BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
-        final float x = ev.getX();
-        final float y = ev.getY();
+        x = (int) ev.getX();
+        y = (int) ev.getY();
         int location[] = new int[2];
         searchEditText.getLocationOnScreen(location);
         int viewX = location[0];
