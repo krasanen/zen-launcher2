@@ -138,7 +138,7 @@ import static android.text.InputType.TYPE_CLASS_PHONE;
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
-public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver {
+public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
@@ -511,6 +511,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         // Add touch listener for history popup to root view
         findViewById(android.R.id.content).setOnTouchListener(this);
+        findViewById(android.R.id.content).setOnLongClickListener(this);
 
         // add history popup touch listener to empty view (prevents on not working there)
         this.emptyListView.setOnTouchListener(this);
@@ -640,7 +641,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.onCreate();
         initializeKeyboardListener();
         //if(BuildConfig.DEBUG) Log.d(TAG,">setOnDragListener");
-        findViewById(R.id.widgetLayout).setOnLongClickListener(new MyOnClickListener());
+
         //findViewById(R.id.main).setOnLongClickListener(new MyOnClickListener());
         //if(BuildConfig.DEBUG) Log.d(TAG,"<setOnDragListener");
 
@@ -718,19 +719,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         widgetAddY = 0;
     }
 
-    class MyOnClickListener implements View.OnLongClickListener {
-        @Override
-        public boolean onLongClick(View view) {
-            Log.d(TAG,"onLongClick");
-            buildWidgetPopupMenu(view);
-            return true;
-        }
-/*        Drawable enterShape = getResources().getDrawable(
-                R.drawable.box_on);
-        Drawable normalShape = getResources().getDrawable(R.drawable.box_off);*/
-
-
-    }
     Rect r = new Rect();
 
     private void initializeKeyboardListener() {
@@ -838,6 +826,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     if (cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.FLASH_INFO_AVAILABLE)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             cameraManager.setTorchMode(id, flashToggle);
+                            if (flashToggle) {
+                                Toast.makeText(this, R.string.flashlight_on, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this, R.string.flashlight_off, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
@@ -1785,7 +1778,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 searchEditText.performClick();
             }
+            return true;
         }
+        return false;
+    }
+    @Override
+    public boolean onLongClick(View view) {
+        Log.d(TAG,"onLongClick");
+        buildWidgetPopupMenu(view);
         return true;
     }
 
