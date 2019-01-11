@@ -126,6 +126,7 @@
             android:label="@string/activity_setting"
             android:theme="@style/SettingTheme" />
         <activity android:name="android.support.v7.app.ActionBarActivity" />
+        <activity android:name="fi.zmengames.zlauncher.AppGridActivity" />
 
         <receiver
             android:name=".broadcast.LocaleChangedReceiver"

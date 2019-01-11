@@ -107,6 +107,7 @@ import java.util.Set;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import fi.zmengames.zlauncher.AppGridActivity;
 import fi.zmengames.zlauncher.HistoryDetails;
 import fi.zmengames.zlauncher.LauncherAppWidgetHostView;
 import fi.zmengames.zlauncher.LauncherService;
@@ -848,11 +849,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
 
         if (state) {
+            startActivity(new Intent(this, AppGridActivity.class));
             if (checkPermissionOverlay(this)){
                 uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
                 Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
                 //setTheme(R.style.AppThemeDark);
                 //setContentView(R.layout.main);
+
             }
             else
             {
@@ -862,6 +865,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         } else {
             // uiManager.disableCarMode(0);
+            setContentView(R.layout.main);
             uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
             Toast.makeText(this, "Night mode off", Toast.LENGTH_SHORT).show();
         }
