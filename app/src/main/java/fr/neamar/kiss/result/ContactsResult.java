@@ -41,6 +41,7 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.forwarder.Permission;
+import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.ContactsPojo;
 import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
@@ -179,6 +180,21 @@ public class ContactsResult extends Result {
             contactNickname.setVisibility(View.GONE);
         } else {
             displayHighlighted(contactPojo.normalizedNickname, contactPojo.getNickname(), fuzzyScore, contactNickname, context);
+        }
+
+        String line = null;
+        if (!contactPojo.getCompany().isEmpty()) {
+            line = contactPojo.getCompany();
+            if (!contactPojo.getTitle().isEmpty()) {
+                line += " / "+contactPojo.getTitle();
+            }
+        }
+        // Contact title
+        TextView title = view.findViewById(R.id.item_contact_title);
+        if (line==null) {
+            title.setVisibility(View.GONE);
+        } else {
+            displayHighlighted(StringNormalizer.normalizeWithResult(line,false), line, fuzzyScore, title, context);
         }
 
         // Contact photo

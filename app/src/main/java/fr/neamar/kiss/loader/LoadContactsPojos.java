@@ -34,6 +34,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
     public LoadContactsPojos(Context context) {
         super(context, "contact://");
     }
+    // Get specific details from organization
 
     @Override
     protected ArrayList<ContactsPojo> doInBackground(Void... params) {
@@ -82,7 +83,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     String lookupKey = cur.getString(lookupIndex);
                     Integer timesContacted = cur.getInt(timesContactedIndex);
                     String name = cur.getString(displayNameIndex);
-
+                    //getContactCompanyJob(cur.getString(contactId));
                     String phone = cur.getString(numberIndex);
                     if (phone == null) {
                         phone = "";
@@ -147,6 +148,42 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 }
             }
             nickCursor.close();
+        }
+
+        // Retrieve contacts' Organization
+        Cursor workCursor = context.get().getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI,
+                new String[]{
+                        ContactsContract.CommonDataKinds.Organization.TITLE,
+                        ContactsContract.CommonDataKinds.Organization.COMPANY,
+                        ContactsContract.Data.LOOKUP_KEY},
+                ContactsContract.Data.MIMETYPE + "= ?",
+                new String[]{ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE},
+                null);
+
+        if (workCursor != null) {
+            if (workCursor.getCount() > 0) {
+                int lookupKeyIndex = workCursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
+                int companyIndex = workCursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.COMPANY);
+                int titleIndex = workCursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE);
+                while (workCursor.moveToNext()) {
+                    String lookupKey = workCursor.getString(lookupKeyIndex);
+                    String title = workCursor.getString(titleIndex);
+                    String company = workCursor.getString(companyIndex);
+                    if (title != null && lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                        for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                            //contact.setNickname(nick);
+                            if (company!=null) {
+                                contact.setCompany(company);
+                                Log.d(TAG,"company:"+company);
+                            }
+                            contact.setTitle(title);
+                            Log.d(TAG,"title:"+title);
+                        }
+                    }
+                }
+            }
+            workCursor.close();
         }
 
         // SOME stuff

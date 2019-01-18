@@ -28,6 +28,14 @@ public class ContactsPojo extends Pojo {
 
     private String nickname = "";
 
+    public StringNormalizer.Result normalizedTitle;
+
+    public StringNormalizer.Result normalizedCompany;
+
+    public String title = "";
+
+    public String company ="";
+
     public ContactsPojo(String id, String lookupKey, String phone, StringNormalizer.Result normalizedPhone,
                         Uri icon, Boolean primary, int timesContacted, Boolean starred,
                         Boolean homeNumber) {
@@ -55,6 +63,13 @@ public class ContactsPojo extends Pojo {
         return nickname;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getCompany() {
+        return company;
+    }
     public void setNickname(String nickname) {
         if (nickname != null) {
             // Set the actual user-friendly name
@@ -65,4 +80,15 @@ public class ContactsPojo extends Pojo {
             this.normalizedNickname = null;
         }
     }
+
+    public void setCompany(String company) {
+        this.company = company;
+        this.normalizedCompany = StringNormalizer.normalizeWithResult(company, false);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        this.normalizedTitle = StringNormalizer.normalizeWithResult(title, false);
+    }
+
 }

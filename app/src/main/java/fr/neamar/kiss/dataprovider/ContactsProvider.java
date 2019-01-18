@@ -50,12 +50,10 @@ public class ContactsProvider extends Provider<ContactsPojo> {
         getContentResolver().unregisterContentObserver(cObserver);
     }
 
+    ArrayList<Pojo> records = new ArrayList<>(pojos.size());
     public ArrayList<Pojo> getAllContacts() {
-        ArrayList<Pojo> records = new ArrayList<>(pojos.size());
-
-        for (ContactsPojo pojo : pojos) {
-            records.add(pojo);
-        }
+        records.clear();
+        records.addAll(pojos);
         return records;
     }
 
@@ -87,6 +85,20 @@ public class ContactsProvider extends Provider<ContactsPojo> {
             if (!match && queryNormalized.length() > 2) {
                 // search for the phone number
                 matchInfo = fuzzyScore.match(pojo.normalizedPhone.codePoints);
+                match = matchInfo.match;
+                pojo.relevance = matchInfo.score;
+            }
+
+            if (!match && pojo.normalizedCompany!=null) {
+                // search for the company
+                matchInfo = fuzzyScore.match(pojo.normalizedCompany.codePoints);
+                match = matchInfo.match;
+                pojo.relevance = matchInfo.score;
+            }
+
+            if (!match && pojo.normalizedTitle!=null) {
+                // search for the title
+                matchInfo = fuzzyScore.match(pojo.normalizedTitle.codePoints);
                 match = matchInfo.match;
                 pojo.relevance = matchInfo.score;
             }

@@ -17,15 +17,15 @@
         android:id="@+id/item_contact_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="@dimen/icon_margin_bottom"
-        android:layout_marginEnd="@dimen/icon_margin_right"
-        android:layout_marginLeft="@dimen/icon_margin_left"
-        android:layout_marginRight="@dimen/icon_margin_right"
         android:layout_marginStart="@dimen/icon_margin_left"
+        android:layout_marginLeft="@dimen/icon_margin_left"
         android:layout_marginTop="@dimen/icon_margin_top"
+        android:layout_marginEnd="@dimen/icon_margin_right"
+        android:layout_marginRight="@dimen/icon_margin_right"
+        android:layout_marginBottom="@dimen/icon_margin_bottom"
         android:src="@drawable/ic_contact"
         tools:ignore="ContentDescription" />
 
@@ -34,14 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/item_contact_icon"
-        android:layout_marginEnd="88dp"
-        android:layout_marginRight="88dp"
+
         android:layout_toEndOf="@+id/item_contact_icon"
         android:layout_toRightOf="@+id/item_contact_icon"
         android:ellipsize="end"
         android:gravity="fill_horizontal"
         android:maxLines="1"
-
+        android:layout_marginTop="-2dp"
         android:scrollHorizontally="true"
         android:shadowColor="?attr/resultShadowColor"
         android:shadowDx="1"
@@ -49,7 +48,7 @@
         android:shadowRadius="?attr/textShadowRadius"
         android:singleLine="true"
         android:textColor="?attr/resultColor"
-        android:textSize="@dimen/result_title_size"
+        android:textSize="18sp"
         tools:ignore="RtlSymmetry"
         tools:text="@string/stub_contact" />
 
@@ -57,11 +56,12 @@
         android:id="@+id/item_contact_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/item_contact_icon"
-        android:layout_alignLeft="@+id/item_contact_name"
         android:layout_alignStart="@+id/item_contact_name"
-        android:paddingEnd="2dp"
-        android:paddingRight="2dp"
+        android:layout_alignLeft="@+id/item_contact_name"
+        android:layout_alignBottom="@+id/item_contact_icon"
+
+        android:layout_marginBottom="-2dp"
+
         android:shadowColor="?attr/resultShadowColor"
         android:shadowDx="1"
         android:shadowDy="2"
@@ -70,6 +70,26 @@
         android:textSize="@dimen/result_small_size"
         tools:ignore="RtlSymmetry"
         tools:text="@string/stub_contact_phone" />
+
+    <TextView
+        android:id="@+id/item_contact_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/item_contact_name"
+        android:layout_alignStart="@id/item_contact_name"
+
+        android:layout_marginTop="20dp"
+
+        android:ellipsize="end"
+        android:shadowColor="?attr/resultShadowColor"
+
+        android:shadowRadius="?attr/textShadowRadius"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="12sp"
+        tools:ignore="RtlSymmetry"
+        tools:text="@string/stub_contact_nickname"
+        android:layout_alignLeft="@id/item_contact_name" />
+
 
     <TextView
         android:id="@+id/item_contact_nickname"
