@@ -8,7 +8,7 @@
     <string name="menu_settings">Laitteen asetukset</string>
 
     <string name="ui_empty_1_sub">Sovellukset, yhteystiedot, asetukset, …</string>
-    <string name="ui_empty_3_sub">KISS-käynnistin oppii tavoillesi</string>
+    <string name="ui_empty_3_sub">Z-käynnistin oppii tavoillesi</string>
 
     <string name="contacts_name">Yhteystiedot</string>
 
@@ -66,8 +66,8 @@
     <string name="menu_phone_create">Luo yhteystieto</string>
 
     <string name="toast_favorites_added">%s lisättiin suosikeihin</string>
-    <string name="app_name">KISS-käynnistin</string>
-    <string name="activity_setting">KISS-käynnistimen asetukset</string>
+    <string name="app_name">Z-Launcher</string>
+    <string name="activity_setting">Z-käynnistimen asetukset</string>
     <string name="ui_item_search">Hae %1$s hakukoneella “%2$s”</string>
     <string name="ui_item_visit">Siirry “%1$s”</string>
     <string name="ui_item_phone">Soita “%s”</string>
@@ -77,12 +77,12 @@
     <string name="ui_empty_2">Näe aina historiasi</string>
     <string name="ui_empty_2_sub">Nopeaa käyttöä varten</string>
     <string name="ui_empty_3">Nopea pääsy useimmiten käyttämille sovelluksillesi</string>
-    <string name="reset_excluded_apps_name">Resetoi KISS-sovelluslistasta poissuljetut sovellukset</string>
+    <string name="reset_excluded_apps_name">Resetoi sovelluslistasta poissuljetut sovellukset</string>
     <string name="reset_excluded_apps_warn">Tahdotko varmasti nollata poissuljetun sovelluslistasi\?</string>
     <string name="reset_excluded_from_history_apps_name">Resetoi sovellushistorialistasta poissuljetut</string>
     <string name="reset_excluded_from_history_apps_warn">Tahdotko varmasti resetoida sovellushistorialistastasi poissuljetut\?</string>
     <string name="settings_excluded_apps">Poissuljetut sovellukset</string>
-    <string name="ui_excluded_apps">Tarkastele tai muokkaa KISSistä poissulkemiasi sovelluksia</string>
+    <string name="ui_excluded_apps">Tarkastele tai muokkaa Z:sta poissulkemiasi sovelluksia</string>
     <string name="ui_excluded_from_history_apps">Tarkastele tai muokkaa historiasta poissulkemiasi sovelluksia</string>
     <string name="ui_excluded_apps_dialog_title">Poista valinta sovelluksista, jotka tahtoisit sisällyttää</string>
     <string name="ui_excluded_apps_not_found">Yhtäkään sovellusta ei ole suljettu pois</string>
@@ -124,10 +124,10 @@
     <string name="tags_confirmation_added">Tagit asetettu</string>
     <string name="tags_visible">Näytä sovellusten tagit</string>
     <string name="excluded_app_list_erased">Poissuljettujen sovellusten lista pyyhitty.</string>
-    <string name="excluded_app_list_added">Sovellus poissuljettu KISS-käynnnistimestä. Resetoi KISS-käynnistimen asetuksista</string>
-    <string name="excluded_app_history_added">Sovellus poissuljettu historiasta. Resetoi KISS-käynnistimen asetuksista</string>
+    <string name="excluded_app_list_added">Sovellus poissuljettu Z-käynnnistimestä. Resetoi Z-käynnistimen asetuksista</string>
+    <string name="excluded_app_history_added">Sovellus poissuljettu historiasta. Resetoi Z-käynnistimen asetuksista</string>
     <string name="menu_exclude">Poissulje sovellus ...</string>
-    <string name="menu_exclude_kiss">KISS-käynnistimestä</string>
+    <string name="menu_exclude_kiss">Z-käynnistimestä</string>
     <string name="menu_exclude_history">historiasta</string>
     <string name="menu_app_details">Sovelluksen tiedot</string>
     <string name="toast_hibernate_completed">%s horrostettu, käynnistä se uudelleen herättääksesi.</string>
@@ -142,12 +142,12 @@
     <string name="pref_hide_navbar_desc">Piilota navigointipalkki ja ota käyttöön immersive-tila</string>
     <string name="pref_hide_statusbar">Piilota tilapalkki</string>
     <string name="pref_hide_statusbar_desc">Piilota ilmoituspalkki ja ota käyttöön immersive-tila</string>
-    <string name="pref_hide_circle">Piilota KISS-ympyrä</string>
+    <string name="pref_hide_circle">Piilota Z-kuvio</string>
     <string name="pref_hide_circle_desc">Sovelluslista tulee yhä olemaan saavutettavissa</string>
-    <string name="shortcut_added">Pikakuvake lisätty KISS-käynnistimeen.</string>
+    <string name="shortcut_added">Pikakuvake lisätty Z-käynnistimeen.</string>
     <string name="restart_desc">Korjaa teemaongelmat ja uusien yhteystietojen näkymättömyyden</string>
-    <string name="restart_name">Uudelleenkäynnistä KISS</string>
-    <string name="restart_warn">Tahdotko varmasti uudelleenkäynnistää KISS-käynnistimen\? Jos KISS ei ole oletus käynnistimesi, sovellus yksinkertaisesti sulkeutuu.</string>
+    <string name="restart_name">Uudelleenkäynnistä Z-käynnistin</string>
+    <string name="restart_warn">Tahdotko varmasti uudelleenkäynnistää Z-käynnistimen\? Jos Z ei ole oletus käynnistimesi, sovellus yksinkertaisesti sulkeutuu.</string>
     <string name="default_launcher_title">Vaihda oletuskäynnistintä</string>
     <string name="title_ux">Käyttökokemuksen asetukset</string>
     <string name="order_apps_name">Sovellusten järjestys</string>

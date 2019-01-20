@@ -188,12 +188,17 @@ public class ContactsResult extends Result {
             if (!contactPojo.getTitle().isEmpty()) {
                 line += " / "+contactPojo.getTitle();
             }
+        } else {
+            if (!contactPojo.getTitle().isEmpty()) {
+                line = contactPojo.getTitle();
+            }
         }
         // Contact title
         TextView title = view.findViewById(R.id.item_contact_title);
         if (line==null) {
             title.setVisibility(View.GONE);
         } else {
+            title.setVisibility(View.VISIBLE);
             displayHighlighted(StringNormalizer.normalizeWithResult(line,false), line, fuzzyScore, title, context);
         }
 

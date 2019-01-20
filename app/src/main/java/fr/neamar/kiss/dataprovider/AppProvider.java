@@ -185,10 +185,13 @@ public class AppProvider extends Provider<AppPojo> {
 
         return null;
     }
-
+    ArrayList<Pojo> records = new ArrayList<>();
     public ArrayList<Pojo> getAllApps() {
-        ArrayList<Pojo> records = new ArrayList<>(pojos.size());
-        records.addAll(pojos);
+        records.clear();
+        for (AppPojo pojo : pojos) {
+            pojo.relevance = 0;
+            records.add(pojo);
+        }
         return records;
     }
 
