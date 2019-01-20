@@ -22,7 +22,6 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -41,7 +40,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -108,8 +106,6 @@ import java.util.Set;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import fi.zmengames.zlauncher.AppGridActivity;
-import fi.zmengames.zlauncher.HistoryDetails;
-import fi.zmengames.zlauncher.LauncherAppWidgetHostView;
 import fi.zmengames.zlauncher.LauncherService;
 import fi.zmengames.zlauncher.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -448,13 +444,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
-
-    public void idNow() {
-        Intent aboutScreen = new Intent(MainActivity.this, HistoryDetails.class);
-        this.startActivity(aboutScreen);
-
-    }
-
 
     /**
      * Called when the activity is first created.

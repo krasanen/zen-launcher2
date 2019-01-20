@@ -51,8 +51,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     api 'com.google.android.gms:play-services-drive:16.0.0'
     implementation 'xiaofei.library:hermes-eventbus:0.3.0'
-    implementation files('libs/gnsdk.jar')
-    implementation files('libs/gnsdk_helpers.jar')
 }
 
 buildscript {
