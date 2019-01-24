@@ -109,7 +109,7 @@ public class ContactsResult extends Result {
                 return true;
             }
         });
-
+        
         popupExcludeMenu.show();
 
 

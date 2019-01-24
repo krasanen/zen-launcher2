@@ -123,7 +123,7 @@
             android:theme="@style/SettingTheme" />
         <activity android:name="android.support.v7.app.ActionBarActivity" />
         <activity android:name="fi.zmengames.zlauncher.AppGridActivity" />
-
+        <activity android:name="fr.neamar.kiss.SelectSnapshotActivity" />
         <receiver
             android:name=".broadcast.LocaleChangedReceiver"
             android:enabled="true"
