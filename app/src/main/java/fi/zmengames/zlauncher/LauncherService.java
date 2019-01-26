@@ -73,7 +73,7 @@ public class LauncherService extends Service {
     // Options
     private int mBrightness = 100;
     private int mAdvancedMode = Constants.AdvancedMode.NONE;
-    private int mYellowFilterAlpha = 60;
+    private int mYellowFilterAlpha = 100;
 
     // Constants
     private static final int ANIMATE_DURATION_MILES = 250;

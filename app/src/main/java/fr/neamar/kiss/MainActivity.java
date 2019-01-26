@@ -1645,10 +1645,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 refreshWidget(newWidgetId);*/
                 break;
             case MY_PERMISSIONS_OVERLAY:
-                if (resultCode== Activity.RESULT_OK) {
+                if(BuildConfig.DEBUG) Log.d(TAG, "MY_PERMISSIONS_OVERLAY:" + resultCode);
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(this)) {
+                        setBlueLightFilter(true);
+                    } else {
+                        Toast.makeText(this, "Need overlay permission for this feature", Toast.LENGTH_LONG).show();
+                    }
+                }else {
                     setBlueLightFilter(true);
-                } else {
-                    setBlueLightFilter(false);
                 }
                 break;
             case RC_SIGN_IN:
