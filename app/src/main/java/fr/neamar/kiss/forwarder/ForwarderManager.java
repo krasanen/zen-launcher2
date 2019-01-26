@@ -119,6 +119,10 @@ public class ForwarderManager extends Forwarder {
         experienceTweaks.hideKeyboard();
     }
 
+    public void switchInputType() {
+        experienceTweaks.switchInputType();
+    }
+
     public void removeWidgets() {
         widgetForwarder.removeAllWidgets();
     }

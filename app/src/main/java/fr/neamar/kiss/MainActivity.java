@@ -104,6 +104,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -701,8 +702,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onNumericKeypadClicked(View view) {
-        searchEditText.setInputType(TYPE_CLASS_PHONE);
-        ExperienceTweaks.mNumericInputTypeForced = true;
+            forwarderManager.switchInputType();
     }
 
     // place to put widget when long clicking on widgetlayout
@@ -843,7 +843,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
 
         if (state) {
-            startActivity(new Intent(this, AppGridActivity.class));
             if (checkPermissionOverlay(this)){
                 uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
                 Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
@@ -864,6 +863,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Toast.makeText(this, "Night mode off", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private void startAppGridActivity() {
+        startActivity(new Intent(this, AppGridActivity.class));
     }
 
     /**
@@ -1096,17 +1099,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
             case R.id.nightModeOn:
                 if(BuildConfig.DEBUG) Log.d(TAG, "nightModeOn");
-                setNightMode(this, true);/*
-                Intent nighton = new Intent(this, LauncherService.class);
-                nighton.setAction(LauncherService.NIGHTMODE_ON);
-                KissApplication.startLaucherService(nighton, this); */
+                if (checkPermissionOverlay(this)){
+                    setBlueLightFilter(true);
+                }
                 return true;
             case R.id.nightModeOff:
                 if(BuildConfig.DEBUG) Log.d(TAG, "nightModeOff");
-                setNightMode(this, false); /*
-                Intent nightoff = new Intent(this, LauncherService.class);
-                nightoff.setAction(LauncherService.NIGHTMODE_OFF);
-                KissApplication.startLaucherService(nightoff, this); */
+                if (checkPermissionOverlay(this)){
+                    setBlueLightFilter(false);
+                }
+                return true;
+            case R.id.appGrid:
+                startAppGridActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1641,7 +1645,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 refreshWidget(newWidgetId);*/
                 break;
             case MY_PERMISSIONS_OVERLAY:
-                setNightMode(this, true);
+                if (resultCode== Activity.RESULT_OK) {
+                    setBlueLightFilter(true);
+                } else {
+                    setBlueLightFilter(false);
+                }
                 break;
             case RC_SIGN_IN:
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -1742,6 +1750,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         }
         forwarderManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setBlueLightFilter(boolean b) {
+        if (b) {
+            Intent nighton = new Intent(this, LauncherService.class);
+            nighton.setAction(LauncherService.NIGHTMODE_ON);
+            KissApplication.startLaucherService(nighton, this);
+        } else {
+            Intent nighton = new Intent(this, LauncherService.class);
+            nighton.setAction(LauncherService.NIGHTMODE_OFF);
+            KissApplication.startLaucherService(nighton, this);
+        }
+
     }
 
 
@@ -2067,17 +2088,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void hideKeyboard() {
-
-        // Check if no view has focus:
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            //noinspection ConstantConditions
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        if (isKeyboardVisible()) {
+            // Check if no view has focus:
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                //noinspection ConstantConditions
+                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+            systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
+            dismissPopup();
         }
-
-        systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
-        dismissPopup();
     }
 
     @Override

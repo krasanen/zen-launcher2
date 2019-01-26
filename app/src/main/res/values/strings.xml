@@ -288,4 +288,7 @@
     <string name="pref_hide_circle">Hide Z-icon</string>
     <string name="keep_icons_in_memory_title">Keep icons in memory</string>
     <string name="keep_icons_in_memory_desc">Keep all app icons in memory, saves battery</string>
+    <string name="nightmodeOn">Night Mode On</string>
+    <string name="nightmodeOff">Night Mode Off</string>
+    <string name="showAppGrid">All Apps</string>
 </resources>

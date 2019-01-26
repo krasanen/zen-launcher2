@@ -54,10 +54,14 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/nightModeOn"
-        android:title="NightMode On"
-        app:showAsAction="always" />
+        android:title="@string/nightmodeOn"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/nightModeOff"
-        android:title="NightMode Off"
+        android:title="@string/nightmodeOff"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/appGrid"
+        android:title="@string/showAppGrid"
         app:showAsAction="always" />
 </menu>

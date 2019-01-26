@@ -71,9 +71,9 @@ public class LauncherService extends Service {
     private boolean isShowing = true;
 
     // Options
-    private int mBrightness = 80;
+    private int mBrightness = 100;
     private int mAdvancedMode = Constants.AdvancedMode.NONE;
-    private int mYellowFilterAlpha = 10;
+    private int mYellowFilterAlpha = 60;
 
     // Constants
     private static final int ANIMATE_DURATION_MILES = 250;
@@ -225,7 +225,7 @@ public class LauncherService extends Service {
                             )
                     );
                     mLayout.setBackgroundColor(Color.BLACK);
-                    mLayout.setAlpha(0.9f);
+                    mLayout.setAlpha(0.1f);
                 }
                 updateLayoutParams(-1);
                 try {
@@ -313,21 +313,7 @@ public class LauncherService extends Service {
                     | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
             mLayoutParams.format = PixelFormat.TRANSPARENT;
 
-            // Set mask alpha to adjust screen brightness
-            float targetAlpha = (100 - mBrightness) * 0.01f;
-            if (paramInt != -1) {
-                if (isShowing) {
-                    // Start animation when value changes a lot.
-                    if (Math.abs(targetAlpha - mLayout.getAlpha()) < 0.1f) {
-                        mLayout.setAlpha(targetAlpha);
-                    } else {
-                        mLayout.animate().alpha(targetAlpha).setDuration(100).start();
-                    }
-                } else {
-                    mLayout.animate().alpha(targetAlpha)
-                            .setDuration(ANIMATE_DURATION_MILES).start();
-                }
-            }
+
         }
 
         if (mLayout != null) {
@@ -335,11 +321,11 @@ public class LauncherService extends Service {
             if (mYellowFilterAlpha > 0) {
                 Log.i(TAG, "Alpha: " + mYellowFilterAlpha);
                 float ratio = ((float) mYellowFilterAlpha) / 100F;
-                int blend = ColorUtil.blendColors(Color.YELLOW, Color.BLUE, ratio);
-                //blend = ColorUtil.blendColors(Color.RED, blend, ratio / 3F);
-                color = ColorUtil.blendColors(blend, color, ratio / 3F);
+                color = ColorUtil.blendColors(Color.YELLOW, Color.TRANSPARENT, ratio);
+
             }
             mLayout.setBackgroundColor(color);
+
 
         }
     }

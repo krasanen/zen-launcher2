@@ -261,17 +261,11 @@ public class ExperienceTweaks extends Forwarder {
             case MotionEvent.ACTION_DOWN:
                 touchDownMs = System.currentTimeMillis();
                 if (view.getId() == R.id.searchEditText ){
-                    mainActivity.numericButton.setVisibility(View.VISIBLE);
-                }
-                if (view.getId() == R.id.numericButton ){
-                    if (mainActivity.searchEditText.getInputType() != TYPE_CLASS_PHONE) {
-                        mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
-                        mNumericInputTypeForced = true;
-                    } else {
-                        mNumericInputTypeForced = false;
-                        adjustInputType(mainActivity.searchEditText.getText().toString());
+                    if (mainActivity.numericButton.getVisibility()==View.GONE) {
+                        mainActivity.numericButton.setVisibility(View.VISIBLE);
                     }
                 }
+
                 break;
             case MotionEvent.ACTION_UP:
                 handler.removeCallbacksAndMessages(null);
@@ -430,7 +424,24 @@ public class ExperienceTweaks extends Forwarder {
             mainActivity.searchEditText.setInputType(requiredInputType);
         }
     }
+    // Ensure the keyboard uses the right input method
+    public void switchInputType() {
+        int currentInputType = mainActivity.searchEditText.getInputType();
+        if (currentInputType!=  TYPE_CLASS_PHONE) {
+            mNumericInputTypeForced = true;
+            mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
+        } else {
+            int requiredInputType;
+            if (isNonCompliantKeyboard()) {
+                requiredInputType = INPUT_TYPE_WORKAROUND;
+            } else {
+                requiredInputType = INPUT_TYPE_STANDARD;
+            }
+            mNumericInputTypeForced = false;
+            mainActivity.searchEditText.setInputType(requiredInputType);
 
+        }
+    }
     // Super hacky code to display notification drawer
     // Can (and will) break in any Android release.
     @SuppressLint("PrivateApi")

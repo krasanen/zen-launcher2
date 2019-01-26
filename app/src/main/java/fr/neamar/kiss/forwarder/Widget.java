@@ -474,15 +474,17 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         AppWidgetProviderInfo appWidget =
                 mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
-        if (appWidget.configure != null) {
-            // Launch over to configure widget, if needed.
-            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-            intent.setComponent(appWidget.configure);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            mainActivity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
-        } else {
-            // Otherwise, finish adding the widget.
-            addAppWidget(data);
+        if (appWidget!=null) {
+            if (appWidget.configure != null) {
+                // Launch over to configure widget, if needed.
+                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+                intent.setComponent(appWidget.configure);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                mainActivity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
+            } else {
+                // Otherwise, finish adding the widget.
+                addAppWidget(data);
+            }
         }
 
 
