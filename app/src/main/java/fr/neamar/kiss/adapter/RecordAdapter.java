@@ -133,18 +133,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         } catch (ArrayIndexOutOfBoundsException ignored) {
             return;
         }
-
-        // Record the launch after some period,
-        // * to ensure the animation runs smoothly
-        // * to avoid a flickering -- launchOccurred will refresh the list
-        // Thus TOUCH_DELAY * 3
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                parent.launchOccurred();
-            }
-        }, KissApplication.TOUCH_DELAY * 3);
+        parent.launchOccurred();
 
     }
 

@@ -1,6 +1,8 @@
 package fi.zmengames.zlauncher;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,11 +47,17 @@ public class AppsGridFragment extends GridFragment {
     public void onGridItemClick(GridView g, View v, int position, long id) {
         AppPojo app = (AppPojo) getGridAdapter().getItem(position);
         if (app != null) {
-            Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(app.packageName);
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            intent.setComponent(ComponentName.unflattenFromString(app.getComponentName()));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
-            if (intent != null) {
-                startActivity(intent);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                intent.setSourceBounds(v.getClipBounds());
             }
+
+            this.startActivity(intent);
         }
+
     }
 }

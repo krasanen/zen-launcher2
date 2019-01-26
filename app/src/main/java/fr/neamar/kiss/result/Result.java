@@ -390,7 +390,11 @@ public abstract class Result {
             Result result = appResultWeakReference.get();
             if (result == null)
                 return null;
-            return result.getDrawable(image.getContext());
+            Drawable drawable = result.getDrawable(image.getContext());
+            if (!result.isDrawableCached()){
+                result.setDrawableCache(drawable);
+            }
+            return drawable;
         }
 
         @Override

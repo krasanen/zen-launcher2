@@ -13,6 +13,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -75,11 +76,6 @@ public class AppResult extends Result {
 
         final ImageView appIcon = view.findViewById(R.id.item_app_icon);
         if (!prefs.getBoolean("icons-hide", false)) {
-            if (appIcon.getTag() instanceof ComponentName && className.equals(appIcon.getTag())) {
-                setDrawableCache(appIcon.getDrawable());
-            }
-            if (!isDrawableCached())
-                setDrawableCache(MemoryCacheHelper.getCachedAppIconDrawable(className, this.appPojo.userHandle));
             this.setAsyncDrawable(appIcon);
         } else {
             appIcon.setImageDrawable(null);
