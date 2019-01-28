@@ -123,10 +123,6 @@
     <string name="tags_add_title">Lisää välilyönnein eroteltuja tageja</string>
     <string name="tags_confirmation_added">Tagit asetettu</string>
     <string name="tags_visible">Näytä sovellusten tagit</string>
-    <string name="excluded_app_list_erased">Poissuljettujen sovellusten lista pyyhitty.</string>
-    <string name="excluded_app_list_added">Sovellus poissuljettu Z-käynnnistimestä. Resetoi Z-käynnistimen asetuksista</string>
-    <string name="excluded_app_history_added">Sovellus poissuljettu historiasta. Resetoi Z-käynnistimen asetuksista</string>
-    <string name="menu_exclude">Poissulje sovellus ...</string>
     <string name="menu_exclude_kiss">Z-käynnistimestä</string>
     <string name="menu_exclude_history">historiasta</string>
     <string name="menu_app_details">Sovelluksen tiedot</string>
@@ -182,6 +178,11 @@
     <string name="show_matching">Näytä löydetyt</string>
     <string name="popup_tags_title">Käytettävissä olevat tunnisteet</string>
     <string name="popup_tags_actions">Käytettävissä olevat toiminnot</string>
+    <string name="excluded_app_list_erased">Kätkettyjen sovellusten lista pyyhitty.</string>
+    <string name="excluded_app_list_added">Sovellus kätketty Z-käynnnistimestä. Resetoi Z-käynnistimen asetuksista</string>
+    <string name="excluded_app_history_added">Sovellus kätketty historiasta. Resetoi Z-käynnistimen asetuksista</string>
+    <string name="menu_exclude">Kätke sovellus ...</string>
+
 
     <!-- Omat -->
     <string name="menu_widget_settings">Widget asetukset</string>
@@ -230,5 +231,8 @@
     <string name="menu_widget_configure">Konfiguroi widget</string>
     <string name="flashlight_on">Taskulamppu päällä</string>
     <string name="flashlight_off">Taskulamppu pois</string>
+    <string name="nightmodeOn">Sinisen valon suodatin päälle</string>
+    <string name="nightmodeOff">Sinisen valon suodatin pois</string>
+    <string name="showAppGrid">Näytä kaikki sovellukset</string>
 
 </resources>

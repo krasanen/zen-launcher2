@@ -893,6 +893,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             this.recreate();
             return;
         }
+        if (prefs.getBoolean("bluelightfilter", false)){
+            setBlueLightFilter(true);
+        }
 
         dismissPopup();
 
@@ -1759,10 +1762,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private void setBlueLightFilter(boolean b) {
         if (b) {
+            prefs.edit().putBoolean("bluelightfilter", true).apply();
             Intent nighton = new Intent(this, LauncherService.class);
             nighton.setAction(LauncherService.NIGHTMODE_ON);
             KissApplication.startLaucherService(nighton, this);
         } else {
+            prefs.edit().putBoolean("bluelightfilter", false).apply();
             Intent nighton = new Intent(this, LauncherService.class);
             nighton.setAction(LauncherService.NIGHTMODE_OFF);
             KissApplication.startLaucherService(nighton, this);
