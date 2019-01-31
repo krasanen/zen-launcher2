@@ -170,15 +170,17 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                     String lookupKey = workCursor.getString(lookupKeyIndex);
                     String title = workCursor.getString(titleIndex);
                     String company = workCursor.getString(companyIndex);
-                    if (title != null && lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                    if ( (company !=null||title != null) && lookupKey != null && mapContacts.containsKey(lookupKey)) {
                         for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                             //contact.setNickname(nick);
                             if (company!=null) {
                                 contact.setCompany(company);
                                 Log.d(TAG,"company:"+company);
                             }
-                            contact.setTitle(title);
-                            Log.d(TAG,"title:"+title);
+                            if (title!=null) {
+                                contact.setTitle(title);
+                                Log.d(TAG, "title:" + title);
+                            }
                         }
                     }
                 }

@@ -183,16 +183,19 @@ public class ContactsResult extends Result {
         }
 
         String line = null;
-        if (!contactPojo.getCompany().isEmpty()) {
+
+        // Company / Title
+        if (!contactPojo.getCompany().isEmpty() || !contactPojo.getTitle().isEmpty() ) {
             line = contactPojo.getCompany();
-            if (!contactPojo.getTitle().isEmpty()) {
-                line += " / "+contactPojo.getTitle();
-            }
-        } else {
-            if (!contactPojo.getTitle().isEmpty()) {
+            if (line.isEmpty()){
                 line = contactPojo.getTitle();
+            } else {
+                if (!contactPojo.getTitle().isEmpty()) {
+                    line += " / " + contactPojo.getTitle();
+                }
             }
         }
+
         // Contact title
         TextView title = view.findViewById(R.id.item_contact_title);
         if (line==null) {
