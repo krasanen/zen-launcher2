@@ -780,7 +780,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Check for existing Google Sign In account, if the user is already signed in
 // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
+        if (GoogleSignIn.hasPermissions(account, Games.SCOPE_GAMES_LITE)) {
+            updateUI(account);
+        } else {
+            /*GoogleSignIn.requestPermissions(
+                    MainActivity.this,
+                    RC_GAMES_PERM,
+                    account,
+                    Games.SCOPE_GAMES_LITE);*/
+            updateUI(null);
+        }
         forwarderManager.onStart();
 
         Intent intent = new Intent(this, LauncherService.class);
@@ -1609,10 +1618,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            if (GoogleSignIn.hasPermissions(account, Games.SCOPE_GAMES_LITE)) {
 
-            // Signed in successfully
-            updateUI(account);
-            Toast.makeText(this, "Ready to store&load launcher views!", Toast.LENGTH_LONG).show();
+
+                // Signed in successfully
+                updateUI(account);
+                Toast.makeText(this, "Ready to store&load launcher views!", Toast.LENGTH_LONG).show();
+            }
 
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
