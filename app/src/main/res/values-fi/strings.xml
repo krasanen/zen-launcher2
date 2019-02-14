@@ -8,7 +8,7 @@
     <string name="menu_settings">Laitteen asetukset</string>
 
     <string name="ui_empty_1_sub">Sovellukset, yhteystiedot, asetukset, …</string>
-    <string name="ui_empty_3_sub">Z-käynnistin oppii tavoillesi</string>
+    <string name="ui_empty_3_sub">Zen käynnistin oppii tavoillesi</string>
 
     <string name="contacts_name">Yhteystiedot</string>
 
@@ -66,8 +66,8 @@
     <string name="menu_phone_create">Luo yhteystieto</string>
 
     <string name="toast_favorites_added">%s lisättiin suosikeihin</string>
-    <string name="app_name">Z-Launcher</string>
-    <string name="activity_setting">Z-käynnistimen asetukset</string>
+    <string name="app_name">Zen Launcher</string>
+    <string name="activity_setting">Zen käynnistimen asetukset</string>
     <string name="ui_item_search">Hae %1$s hakukoneella “%2$s”</string>
     <string name="ui_item_visit">Siirry “%1$s”</string>
     <string name="ui_item_phone">Soita “%s”</string>
@@ -123,7 +123,7 @@
     <string name="tags_add_title">Lisää välilyönnein eroteltuja tageja</string>
     <string name="tags_confirmation_added">Tagit asetettu</string>
     <string name="tags_visible">Näytä sovellusten tagit</string>
-    <string name="menu_exclude_kiss">Z-käynnistimestä</string>
+    <string name="menu_exclude_kiss">Zen käynnistimestä</string>
     <string name="menu_exclude_history">historiasta</string>
     <string name="menu_app_details">Sovelluksen tiedot</string>
     <string name="toast_hibernate_completed">%s horrostettu, käynnistä se uudelleen herättääksesi.</string>
@@ -138,12 +138,12 @@
     <string name="pref_hide_navbar_desc">Piilota navigointipalkki ja ota käyttöön immersive-tila</string>
     <string name="pref_hide_statusbar">Piilota tilapalkki</string>
     <string name="pref_hide_statusbar_desc">Piilota ilmoituspalkki ja ota käyttöön immersive-tila</string>
-    <string name="pref_hide_circle">Piilota Z-kuvio</string>
+    <string name="pref_hide_circle">Piilota Zen kuvio</string>
     <string name="pref_hide_circle_desc">Sovelluslista tulee yhä olemaan saavutettavissa</string>
-    <string name="shortcut_added">Pikakuvake lisätty Z-käynnistimeen.</string>
+    <string name="shortcut_added">Pikakuvake lisätty Zen käynnistimeen.</string>
     <string name="restart_desc">Korjaa teemaongelmat ja uusien yhteystietojen näkymättömyyden</string>
-    <string name="restart_name">Uudelleenkäynnistä Z-käynnistin</string>
-    <string name="restart_warn">Tahdotko varmasti uudelleenkäynnistää Z-käynnistimen\? Jos Z ei ole oletus käynnistimesi, sovellus yksinkertaisesti sulkeutuu.</string>
+    <string name="restart_name">Uudelleenkäynnistä Zen käynnistin</string>
+    <string name="restart_warn">Tahdotko varmasti uudelleenkäynnistää Zen käynnistimen\? Jos Z ei ole oletus käynnistimesi, sovellus yksinkertaisesti sulkeutuu.</string>
     <string name="default_launcher_title">Vaihda oletuskäynnistintä</string>
     <string name="title_ux">Käyttökokemuksen asetukset</string>
     <string name="order_apps_name">Sovellusten järjestys</string>
@@ -173,14 +173,14 @@
     <string name="pref_toggle_tags">Näytä tunnisteet valikko</string>
     <string name="screen_toggle_tags">Kustomoi tunnistevalikkoa</string>
     <string name="pref_toggle_tags_select">Näytettävät tunnisteet</string>
-    <string name="ctx_menu">Z-Launcer valikko</string>
+    <string name="ctx_menu">Zen Launcer valikko</string>
     <string name="pref_tags_menu">Tunnisteet valikko</string>
     <string name="show_matching">Näytä löydetyt</string>
     <string name="popup_tags_title">Käytettävissä olevat tunnisteet</string>
     <string name="popup_tags_actions">Käytettävissä olevat toiminnot</string>
     <string name="excluded_app_list_erased">Kätkettyjen sovellusten lista pyyhitty.</string>
-    <string name="excluded_app_list_added">Sovellus kätketty Z-käynnnistimestä. Resetoi Z-käynnistimen asetuksista</string>
-    <string name="excluded_app_history_added">Sovellus kätketty historiasta. Resetoi Z-käynnistimen asetuksista</string>
+    <string name="excluded_app_list_added">Sovellus kätketty Zen käynnnistimestä. Resetoi Zen käynnistimen asetuksista</string>
+    <string name="excluded_app_history_added">Sovellus kätketty historiasta. Resetoi Zen käynnistimen asetuksista</string>
     <string name="menu_exclude">Kätke sovellus ...</string>
 
 
@@ -205,7 +205,7 @@
     <string name="error_opening_metadata">Error opening metadata</string>
     <string name="error_opening_filename">Error opening filename</string>
     <string name="select_conflicted_game">Select conflicted game</string>
-    <string name="snapshotimage_description">Z-Launcher asetukset</string>
+    <string name="snapshotimage_description">Zen Launcher asetukset</string>
     <string name="format_days_ago">%d päivää sitten</string>
     <string name="format_hours_ago">%d tuntia sitten</string>
     <string name="format_minutes_ago">%d minuuttia sitten</string>

@@ -1,9 +1,8 @@
-package fi.zmengames.zlauncher;
+package fi.zmengames.zen;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.*;
 import android.util.Log;
 
 import java.util.ArrayList;

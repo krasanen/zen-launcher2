@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId 'fi.zmengames.zlauncher'
+        applicationId 'com.zmengames.zenlauncher'
         minSdkVersion 15
         targetSdkVersion 28
         versionName = buildTimeStamp() + "@" + gitLastCommit()

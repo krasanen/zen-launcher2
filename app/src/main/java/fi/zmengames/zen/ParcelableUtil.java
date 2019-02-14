@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher;
+package fi.zmengames.zen;
 
 import android.os.Parcel;
 import android.os.Parcelable;

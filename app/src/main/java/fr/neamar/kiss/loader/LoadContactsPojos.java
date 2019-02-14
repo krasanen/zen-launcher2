@@ -8,10 +8,8 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,12 +19,12 @@ import fr.neamar.kiss.normalizer.PhoneNormalizer;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.ContactsPojo;
 
-import static fi.zmengames.zlauncher.ContactsProjection.FACEBOOK_CALL_MIMETYPE;
-import static fi.zmengames.zlauncher.ContactsProjection.FECEBOOK_CONTACT_MIMETYPE;
-import static fi.zmengames.zlauncher.ContactsProjection.SIGNAL_CALL_MIMETYPE;
-import static fi.zmengames.zlauncher.ContactsProjection.SIGNAL_CONTACT_MIMETYPE;
-import static fi.zmengames.zlauncher.ContactsProjection.WHATSAPP_CALL_MIMETYPE;
-import static fi.zmengames.zlauncher.ContactsProjection.WHATSAPP_CONTACT_MIMETYPE;
+import static fi.zmengames.zen.ContactsProjection.FACEBOOK_CALL_MIMETYPE;
+import static fi.zmengames.zen.ContactsProjection.FECEBOOK_CONTACT_MIMETYPE;
+import static fi.zmengames.zen.ContactsProjection.SIGNAL_CALL_MIMETYPE;
+import static fi.zmengames.zen.ContactsProjection.SIGNAL_CONTACT_MIMETYPE;
+import static fi.zmengames.zen.ContactsProjection.WHATSAPP_CALL_MIMETYPE;
+import static fi.zmengames.zen.ContactsProjection.WHATSAPP_CONTACT_MIMETYPE;
 
 public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
     private static final String TAG = LoadPojos.class.getSimpleName();

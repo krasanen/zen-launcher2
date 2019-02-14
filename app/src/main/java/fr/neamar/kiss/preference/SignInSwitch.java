@@ -7,11 +7,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 
-import fi.zmengames.zlauncher.LauncherService;
-import fi.zmengames.zlauncher.ZEvent;
+import fi.zmengames.zen.LauncherService;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.SwitchPreference;
 
 public class SignInSwitch extends SwitchPreference {

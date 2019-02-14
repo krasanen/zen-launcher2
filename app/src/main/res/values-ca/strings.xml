@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Llançador Z-Launcher</string>
-    <string name="activity_setting">Ajustaments de Z-Launcher</string>
+    <string name="app_name">Llançador Zen Launcher</string>
+    <string name="activity_setting">Ajustaments de Zen Launcher</string>
     <string name="ui_search_hint">Buscar apps, contactes, …</string>
     <string name="ui_item_search">%1$s Cercar “%2$s”</string>
     <string name="ui_item_phone">Trucar “%s”</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">Sempre veurà el vostre historial.</string>
     <string name="ui_empty_2_sub">Per a accedir més ràpidament</string>
     <string name="ui_empty_3">Accés ràpid a les aplicacions més emprades</string>
-    <string name="ui_empty_3_sub">Z-Launcher aprèn dels vostres hàbits</string>
+    <string name="ui_empty_3_sub">Zen Launcher aprèn dels vostres hàbits</string>
 
     <string name="contacts_name">Contactes</string>
 

@@ -15,9 +15,9 @@ import android.util.Log;
 import android.view.*;
 import android.widget.PopupMenu;
 
-import fi.zmengames.zlauncher.LauncherAppWidgetHost;
-import fi.zmengames.zlauncher.LauncherAppWidgetHostView;
-import fi.zmengames.zlauncher.ParcelableUtil;
+import fi.zmengames.zen.LauncherAppWidgetHost;
+import fi.zmengames.zen.LauncherAppWidgetHostView;
+import fi.zmengames.zen.ParcelableUtil;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;

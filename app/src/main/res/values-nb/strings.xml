@@ -10,7 +10,7 @@
     <string name="ui_empty_1">Søk etter hva som helst</string>
     <string name="ui_empty_1_sub">Apper, kontakter, innstillinger, …</string>
     <string name="ui_empty_3">Rask tilgang til ofte brukte programmer</string>
-    <string name="ui_empty_3_sub">Z-Launcher lærer seg vanene dine</string>
+    <string name="ui_empty_3_sub">Zen Launcher lærer seg vanene dine</string>
 
     <string name="contacts_name">Kontakter</string>
 
@@ -20,8 +20,8 @@
 
     <string name="phone_name">Telefonnummer</string>
 
-    <string name="app_name">Z-Launcher</string>
-    <string name="activity_setting">Z-Launcher-innstillinger</string>
+    <string name="app_name">Zen Launcher</string>
+    <string name="activity_setting">Zen Launcher-innstillinger</string>
     <string name="title_history">Historikkinnstillinger</string>
 
     <string name="ui_empty_2">Historikken er alltid tilgjengelig</string>
@@ -101,19 +101,19 @@
     <string name="favorites_erased">Favoritter slettet.</string>
     <string name="menu_favorites_add">Legg til i favoritter</string>
     <string name="excluded_app_list_erased">Liste over utelukkede programmer slettet.</string>
-    <string name="excluded_app_list_added">Program utelukket fra Z-Launcher. Gjenopprett i Z-Launcher-innstillinger</string>
+    <string name="excluded_app_list_added">Program utelukket fra Zen Launcher. Gjenopprett i Zen Launcher-innstillinger</string>
 
-    <string name="menu_exclude">Utelukk program fra Z-Launcher</string>
+    <string name="menu_exclude">Utelukk program fra Zen Launcher</string>
     <string name="toast_favorites_added">%s ble lagt til i favoritter</string>
 
     <string name="enable_sms">Vis innkommende SMS-er i historikk</string>
     <string name="enable_phone">Vis innkommende samtaler i historikk</string>
     <string name="enable_app">Vis nylig installerte programmer i historikk</string>
-    <string name="shortcut_added">Snarvei lagt til i Z-Launcher.</string>
+    <string name="shortcut_added">Snarvei lagt til i Zen Launcher.</string>
 
     <string name="restart_desc">Fiks draktproblemer og manglende visning av nye kontakter</string>
-    <string name="restart_name">Omstart av Z-Launcher</string>
-    <string name="restart_warn">Ønsker du virkelig å starte Z-Launcher på ny? Hvis Z-Launcher ikke er ditt forvalgte oppstartsprogram vil det ganske enkelt lukkes.</string>
+    <string name="restart_name">Omstart av Zen Launcher</string>
+    <string name="restart_warn">Ønsker du virkelig å starte Zen Launcher på ny? Hvis Zen Launcher ikke er ditt forvalgte oppstartsprogram vil det ganske enkelt lukkes.</string>
 
     <string name="items_title">%d elementer</string>
 
@@ -204,7 +204,7 @@
     <string name="freeze_history_summary">Behold historikk som den er til den velges bort</string>
 
 <string name="title_wallpaper">Interaksjon med sanntidsbakgrunner</string>
-    <string name="enable_favorites_bar_summary_off">Kun vis favoritter når Z-Launcher-ikonet trykkes</string>
+    <string name="enable_favorites_bar_summary_off">Kun vis favoritter når Zen Launcher-ikonet trykkes</string>
     <string name="enable_favorites_bar_summary_on">Vis favoritter ovenfor søkefeltet</string>
     <string name="get_help">Søk hjelp.</string>
 

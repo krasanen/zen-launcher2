@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="activity_setting">Nastavení Z-Launcher</string>
+    <string name="activity_setting">Nastavení Zen Launcher</string>
     <string name="ui_search_hint">Vyhledávat aplikace, kontanty…</string>
     <string name="ui_item_search">%1$s Vyhledávat “%2$s”</string>
     <string name="ui_item_phone">Hovor “%s”</string>
@@ -15,7 +15,7 @@
     <string name="ui_empty_2">Vždy zobrazovat historii.</string>
     <string name="ui_empty_2_sub">Pro rychlý přístup</string>
     <string name="ui_empty_3">Rychlý přístup k nejvíce používaným aplikacím</string>
-    <string name="app_name">Z-Launcher</string>
+    <string name="app_name">Zen Launcher</string>
 
     <string name="contacts_name">Kontakty</string>
 

@@ -10,9 +10,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.zmengames.zlauncher.LauncherService;
+import fi.zmengames.zen.LauncherService;
 import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.loader.LoadPojos;
 import fr.neamar.kiss.pojo.Pojo;
 

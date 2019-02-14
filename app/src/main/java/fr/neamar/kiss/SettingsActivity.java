@@ -378,7 +378,7 @@ public class SettingsActivity extends PreferenceActivity implements
             findPreference("reset").setSummary(String.format(getString(R.string.items_title), historyLength));
         }
 
-        // Only display "rate the app" preference if the user has been using Z-Launcher long enough to enjoy it ;)
+        // Only display "rate the app" preference if the user has been using Zen Launcher long enough to enjoy it ;)
         Preference rateApp = findPreference("rate-app");
         if (historyLength < 300) {
             getPreferenceScreen().removePreference(rateApp);

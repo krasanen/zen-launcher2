@@ -1,12 +1,10 @@
-package fi.zmengames.zlauncher;
+package fi.zmengames.zen;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;

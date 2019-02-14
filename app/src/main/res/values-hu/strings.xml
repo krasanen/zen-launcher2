@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Z-Launcher indító</string>
-    <string name="activity_setting">Z-Launcher beállításai</string>
+    <string name="app_name">Zen Launcher indító</string>
+    <string name="activity_setting">Zen Launcher beállításai</string>
     <string name="ui_search_hint">App-ok, névjegyek, beállítások keresése, …</string>
     <string name="ui_item_search">%1$s “%2$s” keresése</string>
     <string name="ui_item_phone">“%s” hívása</string>
@@ -18,7 +18,7 @@
     <string name="ui_empty_2">Mindig láthatod az előzményeidet</string>
     <string name="ui_empty_2_sub">Gyorsan elérhető</string>
     <string name="ui_empty_3">Gyors hozzáférés a gyakran használt app-okhoz</string>
-    <string name="ui_empty_3_sub">A Z-Launcher indító tanul a szokásaidból</string>
+    <string name="ui_empty_3_sub">A Zen Launcher indító tanul a szokásaidból</string>
 
     <string name="contacts_name">Névjegyek</string>
 
@@ -32,7 +32,7 @@
     <string name="main_clear">Kereső szöveg törlése</string>
     <string name="main_kiss">Kedvencek és app lista megjelenítése</string>
     <string name="main_kiss_back">Előzmények megjelenítése</string>
-    <string name="reset_name">Z-Launcher előzmények törlése</string>
+    <string name="reset_name">Zen Launcher előzmények törlése</string>
     <string name="keyboard_name">Billentyűzet mutatása induláskor</string>
 
     <string name="alias_phone">tárcsázás,hívás,telefon</string>
@@ -92,7 +92,7 @@
     <string name="excluded_app_list_erased">Az elrejtett alkalmazások listája törölve.</string>
     <string name="excluded_app_list_added">App elrejtve. Ismét megjeleníthető a beállításokon keresztül</string>
 
-    <string name="menu_exclude">App kizárása a Z-Launcherből</string>
+    <string name="menu_exclude">App kizárása a Zen Launcherből</string>
     <string name="menu_phone_create">Névjegy létrehozása</string>
 
     <string name="toast_favorites_added">a(z) %s hozzáadva a kedvencekhez</string>
@@ -108,8 +108,8 @@
     <string name="freeze_history_name">Előzmények megállítása</string>
     <string name="freeze_history_warn">Biztosan meg szeretnéd állítani az előzményeket? Az előzményeid mostantól változatlanok maradnak.</string>
 
-    <string name="restart_name">Z-Launcher újraindítása</string>
-    <string name="restart_warn">Biztosan újraindítod a Z-Launcher indítót? Ha a Z-Launcher nem az alapértelmezett indító, akkor a Z-Launcher egyszerűen leáll.</string>
+    <string name="restart_name">Zen Launcher újraindítása</string>
+    <string name="restart_warn">Biztosan újraindítod a Zen Launcher indítót? Ha a Zen Launcher nem az alapértelmezett indító, akkor a Zen Launcher egyszerűen leáll.</string>
 
     <string name="items_title">%d elem</string>
 

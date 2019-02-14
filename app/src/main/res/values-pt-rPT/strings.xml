@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Z-Launcher</string>
-    <string name="activity_setting">Definições do Z-Launcher</string>
+    <string name="app_name">Zen Launcher</string>
+    <string name="activity_setting">Definições do Zen Launcher</string>
     <string name="ui_search_hint">Procurar aplicações, contactos, …</string>
     <string name="ui_item_search">Procurar %1$s por “%2$s”</string>
     <string name="ui_item_visit">Visitar “%1$s”</string>
@@ -20,7 +20,7 @@
     <string name="ui_empty_2">Mostrar sempre o seu histórico</string>
     <string name="ui_empty_2_sub">Para acesso rápido</string>
     <string name="ui_empty_3">Acesso rápido as aplicações mais usadas</string>
-    <string name="ui_empty_3_sub">O iniciador de aplicações Z-Launcher aprende com os seus hábitos</string>
+    <string name="ui_empty_3_sub">O iniciador de aplicações Zen Launcher aprende com os seus hábitos</string>
 
     <string name="contacts_name">Contactos</string>
 
@@ -36,7 +36,7 @@
     <string name="main_clear">Limpar barra de pesquisa</string>
     <string name="main_kiss">Exibir lista de aplicações e favoritos</string>
     <string name="main_kiss_back">Exibir histórico</string>
-    <string name="reset_name">Limpar o seu histórico no Z-Launcher</string>
+    <string name="reset_name">Limpar o seu histórico no Zen Launcher</string>
     <string name="reset_excluded_apps_name">Limpar lista de aplicações excluídas</string>
     <string name="reset_excluded_apps_warn">Deseja realmente limpar sua lista de aplicações excluídas?</string>
     <string name="ui_excluded_apps">Ver / editar as suas aplicações excluídas</string>
@@ -96,11 +96,11 @@
     <string name="tags_confirmation_added">Tag foi definida</string>
     <string name="tags_visible">Mostrar tags de aplicação</string>
     <string name="excluded_app_list_erased">Lista de aplicações excluídas foi apagada.</string>
-    <string name="excluded_app_list_added">Aplicação excluída do Z-Launcher. Limpe através das Definições do Z-Launcher</string>
+    <string name="excluded_app_list_added">Aplicação excluída do Zen Launcher. Limpe através das Definições do Zen Launcher</string>
 
     <string name="removed_item">Removido</string>
     <string name="menu_remove">Remover do histórico</string>
-    <string name="menu_exclude">Excluir aplicação do Z-Launcher</string>
+    <string name="menu_exclude">Excluir aplicação do Zen Launcher</string>
     <string name="menu_app_details">Informações da aplicação</string>
     <string name="menu_app_uninstall">Desinstalar</string>
     <string name="menu_app_hibernate">Hibernar</string>
@@ -121,11 +121,11 @@
     <string name="enable_favorites_bar">Exibir favoritos acima da barra de pesquisa</string>
     <string name="exclude_favorites">Excluir favoritos do histórico</string>
     <string name="favorites_hide">Esconder Barra de Favoritos</string>
-    <string name="shortcut_added">Atalho adicionado ao Z-Launcher.</string>
+    <string name="shortcut_added">Atalho adicionado ao Zen Launcher.</string>
 
     <string name="restart_desc">Corrigir problemas no tema / novos contactos não sendo exibidos</string>
-    <string name="restart_name">Reiniciar Z-Launcher</string>
-    <string name="restart_warn">Deseja realmente reiniciar o Z-Launcher? Caso não seja sua aplicação da página inicial irá simplesmente terminar.</string>
+    <string name="restart_name">Reiniciar Zen Launcher</string>
+    <string name="restart_warn">Deseja realmente reiniciar o Zen Launcher? Caso não seja sua aplicação da página inicial irá simplesmente terminar.</string>
 
     <string name="default_launcher_title">Alterar Aplicação da Página Inicial</string>
     <string name="default_launcher_warn">Após selecionar Aplicação Inicial padrão, será levado para o Ecrã Principal do mesmo. Tem a certeza que quer continuar?

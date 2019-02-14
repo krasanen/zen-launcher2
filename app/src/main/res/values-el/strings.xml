@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Z-Launcher</string>
-    <string name="activity_setting">Ρυθμίσεις Z-Launcher</string>
+    <string name="app_name">Zen Launcher</string>
+    <string name="activity_setting">Ρυθμίσεις Zen Launcher</string>
     <string name="ui_search_hint">Αναζήτηση εφαρμογών, επαφών…</string>
     <string name="ui_item_search">%1$s Αναζήτηση “%2$s”</string>
     <string name="ui_item_phone">Κλήση “%s”</string>
@@ -18,7 +18,7 @@
     <string name="contacts_name">Επαφές</string>
 
     <string name="ui_empty_3">Γρήγορη πρόσβαση στις αγαπημένες σας εφαρμογές</string>
-    <string name="ui_empty_3_sub">το Z-Launcher μαθαίνει από τις συνήθειές σου</string>
+    <string name="ui_empty_3_sub">το Zen Launcher μαθαίνει από τις συνήθειές σου</string>
 
     <string name="search_name">Αναζήτηση στο Web</string>
 
@@ -87,7 +87,7 @@
     <string name="toast_favorites_added">%s προστέθηκε στα αγαπημένα</string>
 
     <string name="order_apps_name">Ταξινόμηση λίστας εφαρμογών</string>
-    <string name="shortcut_added">Η συντόμευση προστέθηκε στο Z-Launcher.</string>
+    <string name="shortcut_added">Η συντόμευση προστέθηκε στο Zen Launcher.</string>
 
     <string name="root_mode_error">Αποτυχία απόκτησης δικαιωμάτων διαχειριστή.</string>
 
@@ -99,8 +99,8 @@
     <string name="enable_sms">Εμφάνιση εισερχόμενων SMS στο ιστορικό</string>
     <string name="enable_phone">Εμφάνιση εισερχόμενων κλήσεων στο ιστορικό</string>
     <string name="enable_app">Εμφάνιση πρόσφατα εγκατεστημένων εφαρμογών στο ιστορικό</string>
-    <string name="restart_name">Επανεκκίνηση Z-Launcher</string>
-    <string name="restart_warn">Επιθυμείτε να επανεκκινήσετε την εφαρμογή; Αν το Z-Launcher δεν είναι ο προεπιλεγμένος launcher, η εφαρμογή απλώς θα τερματίσει.</string>
+    <string name="restart_name">Επανεκκίνηση Zen Launcher</string>
+    <string name="restart_warn">Επιθυμείτε να επανεκκινήσετε την εφαρμογή; Αν το Zen Launcher δεν είναι ο προεπιλεγμένος launcher, η εφαρμογή απλώς θα τερματίσει.</string>
 
     <string name="exclude_favorites">Απόκρυψη αγαπημένων από το ιστορικό</string>
     <string name="favorites_hide">Απόκρυψη Γραμμής Αγαπημένων</string>
@@ -197,7 +197,7 @@
     <string name="title_favorites">Ρυθμίσεις αγαπημένων</string>
     <string name="history_favorites_summary">Αρχικοποιείστε τα αγαπημένα, αφαιρέστε την μπάρα αγαπημένων, …</string>
     <string name="freeze_history_summary">Κρατήστε το ιστορικό ως έχει</string>
-    <string name="enable_favorites_bar_summary_off">Εμφάνιση αγαπημένων μόνο όταν πατήσετε το εικονίδιο Z-Launcher</string>
+    <string name="enable_favorites_bar_summary_off">Εμφάνιση αγαπημένων μόνο όταν πατήσετε το εικονίδιο Zen Launcher</string>
     <string name="enable_favorites_bar_summary_on">Εμφάνιση αγαπημένων πάνω από την μπάρα αναζήτησης</string>
     <string name="get_help">Βοήθεια!</string>
     <string name="permission_denied">Η άδεια απορρίφθηκε</string>

@@ -57,13 +57,11 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClientStatusCodes;
 import com.google.android.gms.games.SnapshotsClient;
@@ -104,17 +102,15 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import fi.zmengames.zlauncher.AppGridActivity;
-import fi.zmengames.zlauncher.LauncherService;
-import fi.zmengames.zlauncher.ZEvent;
+import fi.zmengames.zen.AppGridActivity;
+import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
 import fr.neamar.kiss.db.DBHelper;
-import fr.neamar.kiss.forwarder.ExperienceTweaks;
 
 import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
@@ -136,7 +132,7 @@ import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import xiaofei.library.hermeseventbus.HermesEventBus;
-import static android.text.InputType.TYPE_CLASS_PHONE;
+
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
@@ -190,11 +186,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     public View menuButton;
     /**
-     * Z-Launcher bar
+     * Zen Launcher bar
      */
     public View kissBar;
     /**
-     * Favorites bar. Can be either the favorites within the Z-Launcher bar,
+     * Favorites bar. Can be either the favorites within the Zen Launcher bar,
      * or the external favorites bar (default)
      */
     public View favoritesBar;
@@ -224,7 +220,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private SystemUiVisibilityHelper systemUiVisibilityHelper;
 
     /**
-     * Is the Z-Launcher bar currently displayed?
+     * Is the Zen Launcher bar currently displayed?
      * (flag updated before animation is over)
      */
     private boolean isDisplayingKissBar = false;
@@ -310,7 +306,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Save the snapshot.
         SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
                 .setCoverImage(getScreenShot())
-                .setDescription("Z-Launcher at: " + Calendar.getInstance().getTime())
+                .setDescription("Zen Launcher at: " + Calendar.getInstance().getTime())
                 .build();
         return SnapshotCoordinator.getInstance().commitAndClose(mSnapshotsClient, snapshot, metadataChange);
     }
@@ -1042,7 +1038,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     serializedTags = e.toString();
                 }
                 intent.putExtra(Intent.EXTRA_TEXT, serializedTags);
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Z-Launcher__tags_" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Zen Launcher__tags_" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
                 intent.setType("application/json");
                 startActivity(Intent.createChooser(intent, getString(R.string.share_tags_chooser)));
                 return true;
@@ -1075,7 +1071,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     serializedWidgetSettings = e.toString();
                 }
                 intent.putExtra(Intent.EXTRA_TEXT, serializedSettings + serializedWidgetSettings);
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Z-Launcher_settings" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Zen Launcher_settings" + new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date()) + ".json");
                 intent.setType("application/json");
                 startActivity(Intent.createChooser(intent, getString(R.string.share_settings)));
                 return true;
@@ -1604,7 +1600,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      * @param menuButton "kebab" menu (3 dots)
      */
     public void onMenuButtonClicked(View menuButton) {
-        // When the Z-Launcher bar is displayed, the button can still be clicked in a few areas (due to favorite margin)
+        // When the Zen Launcher bar is displayed, the button can still be clicked in a few areas (due to favorite margin)
         // To fix this, we discard any click event occurring when the kissbar is displayed
         if (!isViewingSearchResults()) {
             return;
@@ -1839,15 +1835,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     /**
-     * Display Z-Launcher menu
+     * Display Zen Launcher menu
      */
     public void onLauncherButtonClicked(View launcherButton) {
-        // Display or hide the Z-Launcher bar, according to current view tag (showMenu / hideMenu).
+        // Display or hide the Zen Launcher bar, according to current view tag (showMenu / hideMenu).
         displayKissBar(launcherButton.getTag().equals("showMenu"));
     }
 
     public void onContactsButtonClicked(View contactsButton) {
-        // Display or hide the Z-Launcher contacts bar, according to current view tag (showMenu / hideMenu).
+        // Display or hide the Zen Launcher contacts bar, according to current view tag (showMenu / hideMenu).
         displayContacts(contactsButton.getTag().equals("showMenu"));
     }
     public int x,y;
@@ -2212,7 +2208,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     //
     //
     // TODO: https://acoustid.org/api-key ZlN4KdPFMn
-    /*Z-Launcher 1.0 FkPa1JhL2a
+    /*Zen Launcher 1.0 FkPa1JhL2a
     private boolean saveSharedPreferencesToFile(File dst) {
         boolean res = false;
         ObjectOutputStream output = null;

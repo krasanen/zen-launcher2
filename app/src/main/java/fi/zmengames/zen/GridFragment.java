@@ -1,4 +1,4 @@
-package fi.zmengames.zlauncher;
+package fi.zmengames.zen;
 
 /*
  * Created by Thomas Barrasso on 9/11/12.

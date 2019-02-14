@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Z-Launcher ランチャー</string>
-    <string name="activity_setting">Z-Launcher 設定</string>
+    <string name="app_name">Zen Launcher ランチャー</string>
+    <string name="activity_setting">Zen Launcher 設定</string>
     <string name="ui_search_hint">アプリ、連絡先、などを検索…</string>
     <string name="ui_item_search">%1$s “%2$s” の検索</string>
     <string name="ui_item_phone">“%s” の通話</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">常に履歴を表示する</string>
     <string name="ui_empty_2_sub">高速アクセス用</string>
     <string name="ui_empty_3">最も使用するアプリに素早くアクセス</string>
-    <string name="ui_empty_3_sub">Z-Launcher ランチャーはあなたの習慣から学習します</string>
+    <string name="ui_empty_3_sub">Zen Launcher ランチャーはあなたの習慣から学習します</string>
 
     <string name="contacts_name">連絡先</string>
 
@@ -87,9 +87,9 @@
     <string name="reset_excluded_apps_name">除外アプリの一覧をリセット</string>
     <string name="reset_excluded_apps_warn">除外アプリ一覧をリセットしてもよろしいですか?</string>
     <string name="excluded_app_list_erased">除外アプリの一覧が消去されました。</string>
-    <string name="excluded_app_list_added">アプリを Z-Launcher から除外しました。Z-Launcher の設定でリセットします</string>
+    <string name="excluded_app_list_added">アプリを Zen Launcher から除外しました。Zen Launcher の設定でリセットします</string>
 
-    <string name="menu_exclude">Z-Launcher からアプリを除外</string>
+    <string name="menu_exclude">Zen Launcher からアプリを除外</string>
 
     <string name="reset_favorites_name">お気に入りのリストをリセット</string>
     <string name="reset_favorites_warn">お気に入りをリセットしてもよろしいですか?</string>
@@ -97,7 +97,7 @@
     <string name="menu_favorites_add">お気に入りに追加</string>
     <string name="toast_favorites_added">%s がお気に入りに追加されました</string>
 
-    <string name="shortcut_added">Z-Launcher にショートカットを追加しました。</string>
+    <string name="shortcut_added">Zen Launcher にショートカットを追加しました。</string>
 
     <string name="settings_nfc">NFC</string>
     <string name="settings_tethering">テザリング</string>
@@ -107,8 +107,8 @@
     <string name="items_title">%dアイテム</string>
 
     <string name="restart_desc">テーマの問題と新しい連絡先が表示されないのを修正します</string>
-    <string name="restart_name">Z-Launcher を再起動</string>
-    <string name="restart_warn">Z-Launcher を再起動してもよろしいですか? Z-Launcher がデフォルトのランチャーではない場合、アプリは終了します。</string>
+    <string name="restart_name">Zen Launcher を再起動</string>
+    <string name="restart_warn">Zen Launcher を再起動してもよろしいですか? Zen Launcher がデフォルトのランチャーではない場合、アプリは終了します。</string>
 
     <string name="freeze_history_name">履歴を凍結</string>
     <string name="freeze_history_warn">履歴を凍結して、すべての更新を無効にしてよろしいですか? 履歴はもう変更されません。</string>
@@ -205,7 +205,7 @@
     <string name="freeze_history_summary">チェックを外すまでそのまま履歴を保存します</string>
 
 <string name="title_wallpaper">ライブ壁紙インタラクション</string>
-    <string name="enable_favorites_bar_summary_off">Z-Launcherのアイコンを押したときだけお気に入りを表示します</string>
+    <string name="enable_favorites_bar_summary_off">Zen Launcherのアイコンを押したときだけお気に入りを表示します</string>
     <string name="enable_favorites_bar_summary_on">検索バーの上にお気に入りを表示します</string>
     <string name="get_help">ヘルプを表示!</string>
 

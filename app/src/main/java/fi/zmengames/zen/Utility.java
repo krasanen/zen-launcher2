@@ -1,10 +1,9 @@
-package fi.zmengames.zlauncher;
+package fi.zmengames.zen;
 
         import android.annotation.SuppressLint;
         import android.annotation.TargetApi;
         import android.app.Activity;
         import android.app.AppOpsManager;
-        import android.app.PendingIntent;
         import android.content.ActivityNotFoundException;
         import android.content.Context;
         import android.content.Intent;
@@ -13,7 +12,6 @@ package fi.zmengames.zlauncher;
         import android.net.Uri;
         import android.os.Build;
         import android.util.DisplayMetrics;
-        import android.util.Log;
         import android.util.TypedValue;
         import android.view.Display;
         import android.view.View;

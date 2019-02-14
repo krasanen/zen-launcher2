@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Z-Launcher</string>
-    <string name="activity_setting">Ustawienia Z-Launcher</string>
+    <string name="app_name">Zen Launcher</string>
+    <string name="activity_setting">Ustawienia Zen Launcher</string>
     <string name="ui_search_hint">Wyszukaj aplikacje, kontakty, …</string>
     <string name="ui_item_search">%1$s Wyszukaj “%2$s”</string>
     <string name="ui_item_phone">Połącz z “%s”</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">Zawsze wyświetlaj historię</string>
     <string name="ui_empty_2_sub">Dla szybkiego dostępu</string>
     <string name="ui_empty_3">Szybki dostęp do najczęściej używanych aplikacji</string>
-    <string name="ui_empty_3_sub">Launcher Z-Launcher poznaje twoje zwyczaje</string>
+    <string name="ui_empty_3_sub">Launcher Zen Launcher poznaje twoje zwyczaje</string>
 
     <string name="contacts_name">Kontakty</string>
 
@@ -81,10 +81,10 @@
     <string name="icons_hide_desc">Włącz na wolnych urządzeniach</string>
     <string name="favorites_erased">Ulubione wyczyszczone.</string>
     <string name="menu_favorites_add">Dodaj do ulubionych</string>
-    <string name="excluded_app_list_added">Aplikacja wykluczona z Z-Launcher. Zresetuj poprzez ustawienia Z-Launcher</string>
+    <string name="excluded_app_list_added">Aplikacja wykluczona z Zen Launcher. Zresetuj poprzez ustawienia Zen Launcher</string>
 
     <string name="excluded_app_list_erased">Wyczyszczono listę wykluczonych aplikacji.</string>
-    <string name="menu_exclude">Wyklucz aplikację z Z-Launcher</string>
+    <string name="menu_exclude">Wyklucz aplikację z Zen Launcher</string>
     <string name="toast_favorites_added">%s został dodany do ulubionych</string>
 
     <string name="order_apps_name">Kolejność listy aplikacji</string>

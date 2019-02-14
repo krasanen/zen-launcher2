@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Z-Launcher</string>
-    <string name="activity_setting">Z-Launcher-Einstellungen</string>
+    <string name="app_name">Zen Launcher</string>
+    <string name="activity_setting">Zen Launcher-Einstellungen</string>
     <string name="ui_search_hint">Nach Apps, Kontakten, … suchen</string>
     <string name="ui_item_phone">„%s‟ anrufen</string>
     <string name="ui_item_search">Auf %1$s nach „%2$s‟ suchen</string>
@@ -18,7 +18,7 @@
     <string name="ui_empty_2">Immer Ihren Verlauf sehen</string>
     <string name="ui_empty_2_sub">Für schnellen Zugriff</string>
     <string name="ui_empty_3">Schneller Zugriff auf die meistgenutzten Anwendungen</string>
-    <string name="ui_empty_3_sub">Z-Launcher lernt von Ihren Gewohnheiten</string>
+    <string name="ui_empty_3_sub">Zen Launcher lernt von Ihren Gewohnheiten</string>
 
     <string name="contacts_name">Kontakte</string>
 
@@ -106,7 +106,7 @@
     <string name="menu_favorites_add">Zur Favoritenleiste hinzufügen</string>
     <string name="toast_favorites_added">„%s“ zu den Favoriten hinzugefügt</string>
 
-    <string name="shortcut_added">Verknüpfung zu Z-Launcher hinzugefügt.</string>
+    <string name="shortcut_added">Verknüpfung zu Zen Launcher hinzugefügt.</string>
 
     <string name="settings_nfc">NFC</string>
     <string name="settings_tethering">Tethering</string>
@@ -115,12 +115,12 @@
 
     <string name="items_title">%d Einträge</string>
 
-    <string name="restart_name">Z-Launcher neu starten</string>
+    <string name="restart_name">Zen Launcher neu starten</string>
     <string name="freeze_history_name">Verlauf einfrieren</string>
     <string name="ui_excluded_apps_not_found">Keine Apps derzeit ausgeblendet</string>
     <string name="restart_desc">Probleme mit Thema oder neuen, nicht angezeigten, Kontakten umgehen</string>
     <string name="ui_excluded_apps">Ausgeblendete Apps anzeigen oder bearbeiten</string>
-    <string name="restart_warn">Wollen Sie Z-Launcher wirklich neu starten? Wenn Z-Launcher nicht Ihr Standard-Launcher ist, wird er einfach beendet.</string>
+    <string name="restart_warn">Wollen Sie Zen Launcher wirklich neu starten? Wenn Zen Launcher nicht Ihr Standard-Launcher ist, wird er einfach beendet.</string>
 
     <string name="ui_excluded_apps_dialog_title">Apps abwählen, um sie nicht mehr auszublenden</string>
     <string name="freeze_history_warn">Sind Sich sicher, dass Sie den Verlauf einfrieren und keine zukünftigen Änderungen zulassen wollen? Der Verlauf wird sich nicht mehr ändern.</string>
@@ -204,7 +204,7 @@
     <string name="history_favorites_summary">Favoriten zurücksetzen, Favoritenleiste ausblenden, …</string>
     <string name="title_wallpaper">Live-Hintergrund Interaktion</string>
     <string name="freeze_history_summary">Verlauf unverändert beibehalten</string>
-    <string name="enable_favorites_bar_summary_off">Favoriten nur nach Tippen auf das Z-Launcher-Icon anzeigen</string>
+    <string name="enable_favorites_bar_summary_off">Favoriten nur nach Tippen auf das Zen Launcher-Icon anzeigen</string>
     <string name="enable_favorites_bar_summary_on">Favoriten oberhalb der Suchleiste anzeigen</string>
     <string name="get_help">Hilfe bekommen</string>
     <string name="permission_denied">Berechtigung wurde verweigert</string>

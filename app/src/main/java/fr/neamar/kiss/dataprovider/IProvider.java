@@ -4,7 +4,7 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.searcher.Searcher;
 
 /**
- * Public interface exposed by every Z-Launcher data provider
+ * Public interface exposed by every Zen Launcher data provider
  */
 public interface IProvider {
 

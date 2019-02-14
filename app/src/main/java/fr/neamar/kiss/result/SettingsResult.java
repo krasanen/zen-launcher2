@@ -1,6 +1,5 @@
 package fr.neamar.kiss.result;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff.Mode;
@@ -11,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import fi.zmengames.zlauncher.LauncherService;
+import fi.zmengames.zen.LauncherService;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;

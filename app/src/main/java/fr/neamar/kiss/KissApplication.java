@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import fi.zmengames.zlauncher.LauncherService;
-
 public class KissApplication extends Application {
     /**
      * Number of ms to wait, after a click occurred, to record a launch

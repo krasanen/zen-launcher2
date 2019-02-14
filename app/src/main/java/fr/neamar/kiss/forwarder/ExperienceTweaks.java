@@ -232,7 +232,7 @@ public class ExperienceTweaks extends Forwarder {
             new Handler().postDelayed(displayKeyboardRunnable, 500);
         } else {
             // Not used (thanks windowSoftInputMode)
-            // unless coming back from Z-Launcher settings
+            // unless coming back from Zen Launcher settings
             if(MainActivity.isKeyboardVisible()) {
                 mainActivity.hideKeyboard();
             }

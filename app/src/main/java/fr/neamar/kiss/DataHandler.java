@@ -1,14 +1,11 @@
 package fr.neamar.kiss;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap.CompressFormat;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -46,8 +43,8 @@ import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.UserHandle;
 import xiaofei.library.hermeseventbus.HermesEventBus;
-import fi.zmengames.zlauncher.LauncherService;
-import fi.zmengames.zlauncher.ZEvent;
+import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.ZEvent;
 
 public class DataHandler
         implements SharedPreferences.OnSharedPreferenceChangeListener {

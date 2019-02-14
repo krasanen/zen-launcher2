@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Z-Launcher-launcherdas</string>
-    <string name="activity_setting">Z-Launcher-instellingen</string>
+    <string name="app_name">Zen Launcher-launcherdas</string>
+    <string name="activity_setting">Zen Launcher-instellingen</string>
     <string name="ui_search_hint">Zoek apps, contacten, …</string>
     <string name="ui_item_search">%1$s Zoek naar “%2$s”</string>
     <string name="ui_item_phone">Bel “%s”</string>
@@ -19,7 +19,7 @@
     <string name="ui_empty_2">Laat altijd geschiedenis zien</string>
     <string name="ui_empty_2_sub">Voor snelle toegang</string>
     <string name="ui_empty_3">Snelle toegang tot uw meest gebruikte apps</string>
-    <string name="ui_empty_3_sub">Z-Launcher-launcher leert van jouw gebruik</string>
+    <string name="ui_empty_3_sub">Zen Launcher-launcher leert van jouw gebruik</string>
 
     <string name="contacts_name">Contacten</string>
 
@@ -113,9 +113,9 @@
     <string name="tags_add_title">Voeg spatiegescheiden tags toe</string>
     <string name="tags_confirmation_added">Tag is ingesteld</string>
     <string name="excluded_app_list_erased">Lijst van verborgen apps leeggemaakt.</string>
-    <string name="excluded_app_list_added">App verborgen in Z-Launcher. Reset in de instellingen</string>
+    <string name="excluded_app_list_added">App verborgen in Zen Launcher. Reset in de instellingen</string>
 
-    <string name="menu_exclude">Laat app niet zien in Z-Launcher</string>
+    <string name="menu_exclude">Laat app niet zien in Zen Launcher</string>
     <string name="menu_shortcut_remove">Verwijder shortcut</string>
 
     <string name="menu_phone_create">Contactpersoon creëren</string>
@@ -129,11 +129,11 @@
     <string name="enable_favorites_bar">Favoriete boven zoekbalk weergeven</string>
     <string name="exclude_favorites">Toon favorieten niet in geschiedenis</string>
     <string name="favorites_hide">Verberg favorietenbalk</string>
-    <string name="shortcut_added">Snelkoppeling toegevoegd aan Z-Launcher.</string>
+    <string name="shortcut_added">Snelkoppeling toegevoegd aan Zen Launcher.</string>
 
     <string name="restart_desc">Themaproblemen en contacten die niet worden weergegeven herstellen</string>
-    <string name="restart_name">Herstart Z-Launcher</string>
-    <string name="restart_warn">Weet u zeker dat u Z-Launcher wilt herstarten? Als Z-Launcher niet uw standaard-beginscherm is, zal het programma simpelweg afsluiten.</string>
+    <string name="restart_name">Herstart Zen Launcher</string>
+    <string name="restart_warn">Weet u zeker dat u Zen Launcher wilt herstarten? Als Zen Launcher niet uw standaard-beginscherm is, zal het programma simpelweg afsluiten.</string>
 
     <string name="default_launcher_title">Standaard-beginscherm wijzigen</string>
     <string name="items_title">%d items</string>

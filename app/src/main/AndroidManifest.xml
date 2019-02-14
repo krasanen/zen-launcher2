@@ -74,7 +74,7 @@
             android:value="3.0" />
 
         <!--
-        clearTaskOnLaunch: when viewing Z-Launcher settings, display the main activity when pressing home https://github.com/Neamar/KISS/issues/117
+        clearTaskOnLaunch: when viewing Zen Launcher settings, display the main activity when pressing home https://github.com/Neamar/KISS/issues/117
         launchMode=singleTop: call onNewIntent() when pressing home again while already viewing main activity, also redisplay main activity when viewing full-screen contact from picture
         windowSoftInputMode: hide keyboard by default
         stateNotNeeded: rebuild the whole UI each time onResume() is called
@@ -122,7 +122,7 @@
             android:label="@string/activity_setting"
             android:theme="@style/SettingTheme" />
         <activity android:name="android.support.v7.app.ActionBarActivity" />
-        <activity android:name="fi.zmengames.zlauncher.AppGridActivity" />
+        <activity android:name="fi.zmengames.zen.AppGridActivity" />
         <activity android:name="fr.neamar.kiss.SelectSnapshotActivity" />
         <receiver
             android:name=".broadcast.LocaleChangedReceiver"
@@ -165,7 +165,7 @@
         <service android:name=".dataprovider.SettingsProvider" />
         <service android:name=".dataprovider.ShortcutsProvider" />
         <service android:enabled="true"
-            android:name="fi.zmengames.zlauncher.LauncherService"
+            android:name="fi.zmengames.zen.LauncherService"
             android:process=":LauncherService"></service>
         <service android:name="xiaofei.library.hermes.HermesService$HermesService0"/>
     </application>

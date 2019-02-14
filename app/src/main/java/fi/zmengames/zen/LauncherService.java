@@ -1,10 +1,9 @@
-package fi.zmengames.zlauncher;
+package fi.zmengames.zen;
 
 import android.animation.Animator;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,7 +13,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -40,7 +38,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
-import static fi.zmengames.zlauncher.ZEvent.State.SHOW_TOAST;
+import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
     public static final String LAUNCH_INTENT = "LAUNCH_INTENT";
