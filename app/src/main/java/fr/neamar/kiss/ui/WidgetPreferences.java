@@ -112,8 +112,7 @@ public class WidgetPreferences implements Serializable {
 
     public static String serialize(WidgetPreferences o) {
         Log.d(TAG, "serialize");
-        Log.d(TAG,"w:"+o.width);
-        Log.d(TAG,"h:"+o.height);
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream;
         try {
@@ -138,8 +137,6 @@ public class WidgetPreferences implements Serializable {
         try {
             objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data.getBytes("ISO-8859-1")));
             WidgetPreferences wp = (WidgetPreferences) objectInputStream.readObject();
-            Log.d(TAG,"w:"+wp.width);
-            Log.d(TAG,"h:"+wp.height);
             return wp;
         } catch (Exception e) {
             Log.e(TAG, "UnSerialize WidgetPreferences", e);

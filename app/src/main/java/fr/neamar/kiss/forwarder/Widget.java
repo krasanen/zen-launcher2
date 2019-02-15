@@ -215,10 +215,12 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                     int newId = mAppWidgetHost.allocateAppWidgetId();
                     boolean hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
                     if (!hasPermission) {
+                        if (BuildConfig.DEBUG) Log.d("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
                         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
-                        configureAppWidget(intent);
+                        mainActivity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
+                        //configureAppWidget(intent);
                         return null;
                     }
                     removeAppWidget(appWidgetId);
@@ -249,7 +251,11 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             WidgetPreferences wp = addWidgetHostView(hostView, appWidgetInfo, mAppWidgetManager.getAppWidgetOptions(appWidgetId));
             //refreshAppWidget(appWidgetId);
             if (Build.VERSION.SDK_INT > 15) {
-                hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
+                if (options!=null) {
+                    hostView.updateAppWidgetSize(options, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
+                }else {
+                    hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
+                }
             }
             Log.d(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
             Log.d(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);

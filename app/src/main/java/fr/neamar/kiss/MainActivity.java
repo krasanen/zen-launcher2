@@ -1,12 +1,12 @@
 package fr.neamar.kiss;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
@@ -45,12 +45,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -61,19 +63,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesClientStatusCodes;
-import com.google.android.gms.games.SnapshotsClient;
-import com.google.android.gms.games.snapshot.Snapshot;
-import com.google.android.gms.games.snapshot.SnapshotMetadata;
-import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
+
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.drive.Drive;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 
 
 import org.greenrobot.eventbus.Subscribe;
@@ -95,7 +97,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -106,6 +108,7 @@ import java.util.Set;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import fi.zmengames.zen.AppGridActivity;
+import fi.zmengames.zen.DriveServiceHelper;
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -138,6 +141,16 @@ import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int REQUEST_CODE_SIGN_IN = 1;
+    private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
+
+    private DriveServiceHelper mDriveServiceHelper;
+    private String mOpenFileId;
+
+    private EditText mFileTitleEditText;
+    private EditText mDocContentEditText;
+
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME = 13;
@@ -254,22 +267,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private static final int RC_SAVED_GAMES = 9009;
+    private void openFilePicker() {
+        if (mDriveServiceHelper != null) {
+            Log.d(TAG, "Opening file picker.");
 
-    private void showSavedGamesUI() {
-        SnapshotsClient snapshotsClient =
-                Games.getSnapshotsClient(this, GoogleSignIn.getLastSignedInAccount(this));
-        int maxNumberOfSavedGamesToShow = 5;
+            Intent pickerIntent = mDriveServiceHelper.createFilePickerIntent();
 
-        Task<Intent> intentTask = snapshotsClient.getSelectSnapshotIntent(
-                "See My Saves", true, true, maxNumberOfSavedGamesToShow);
-
-        intentTask.addOnSuccessListener(new OnSuccessListener<Intent>() {
-            @Override
-            public void onSuccess(Intent intent) {
-                startActivityForResult(intent, RC_SAVED_GAMES);
-            }
-        });
+            // The result of the SAF Intent is handled in onActivityResult.
+            startActivityForResult(pickerIntent, REQUEST_CODE_OPEN_DOCUMENT);
+        }
     }
+
 
     public static byte[] objToByte(SaveGame tcpPacket) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -288,28 +296,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     // current save game - serializable to and from the saved game
     private SaveGame mSaveGame;
 
-    private Task<SnapshotMetadata> writeSnapshot(Snapshot snapshot) {
-        // Set the data payload for the snapshot.
-        if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot");
-        try {
-            mSaveGame = new SaveGame(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
-        } catch (JSONException e) {
-            if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot exception:" + e);
-        }
-        try {
-            if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot, len:" + objToByte(mSaveGame).length);
-            snapshot.getSnapshotContents().writeBytes(objToByte(mSaveGame));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(BuildConfig.DEBUG) Log.d(TAG, "writeSnapshot: string:" + mSaveGame.toString());
-        // Save the snapshot.
-        SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
-                .setCoverImage(getScreenShot())
-                .setDescription("Zen Launcher at: " + Calendar.getInstance().getTime())
-                .build();
-        return SnapshotCoordinator.getInstance().commitAndClose(mSnapshotsClient, snapshot, metadataChange);
-    }
 
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -469,7 +455,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // profile.
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Drive.SCOPE_APPFOLDER)
+                .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
                 .build();
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -776,15 +762,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Check for existing Google Sign In account, if the user is already signed in
 // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (GoogleSignIn.hasPermissions(account, Games.SCOPE_GAMES_LITE)) {
-            updateUI(account);
+        if (account!=null){
+            signIn();
+            updateUI(true);
         } else {
-            /*GoogleSignIn.requestPermissions(
-                    MainActivity.this,
-                    RC_GAMES_PERM,
-                    account,
-                    Games.SCOPE_GAMES_LITE);*/
-            updateUI(null);
+            updateUI(false);
         }
         forwarderManager.onStart();
 
@@ -804,9 +786,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-    private void updateUI(GoogleSignInAccount account) {
-        if (account != null) {
-            onAccountChanged(account);
+    private void updateUI(boolean signedIn) {
+        if (signedIn) {
+            // Sign-in OK!
+            mSignedIn = true;
+            prefs.edit().putBoolean("wasSigned", true).apply();
+            if(BuildConfig.DEBUG) Log.d(TAG, "Sign-in successful!");
         } else {
             mSignedIn = false;
             if(BuildConfig.DEBUG) Log.d(TAG, "Not signed to Google!");
@@ -1010,6 +995,76 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return super.onKeyDown(keycode, e);
     }
 
+    private void query() {
+        if (mDriveServiceHelper != null) {
+            Log.d(TAG, "Querying for files.");
+
+            mDriveServiceHelper.queryFiles()
+                    .addOnSuccessListener(fileList -> {
+
+                        final ViewGroup root = (ViewGroup) this.getWindow().getDecorView().findViewById(android.R.id.content);
+
+                        final View view = new View(this.getApplicationContext());
+                        view.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
+
+
+                        root.addView(view);
+
+
+                        StringBuilder builder = new StringBuilder();
+                        PopupMenu popupExcludeMenu = new PopupMenu(this.getApplicationContext(), view);
+                        int i=0;
+                        for (File file : fileList.getFiles()) {
+                            mDriveServiceHelper.deleteFile(file);
+                            builder.append(file.getName()).append("\n");
+                            int finalI = i;
+                            //Adding menu items
+                           // popupExcludeMenu.getMenu().add(i, Menu.NONE, Menu.NONE, file.getId());
+                            final SubMenu listSubMenu = popupExcludeMenu.getMenu().addSubMenu(i, Menu.NONE, Menu.NONE, file.getName());
+                            MenuItem readMenu = listSubMenu.add(i, Menu.NONE, Menu.NONE, "Load");
+                            readMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                final File fileLocal = file;
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem) {
+                                    readFile(fileLocal.getId());
+                                    return true;
+                                }
+                            });
+                            MenuItem deleteMenu =  listSubMenu.add(i+1, Menu.NONE, Menu.NONE, "Delete");
+                            //registering popup with OnMenuItemClickListener
+
+                            deleteMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                final File fileLocal = file;
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem) {
+                                    mDriveServiceHelper.deleteFile(fileLocal);
+                                    return true;
+                                }
+                            });
+
+                            i++;
+                        }
+                        popupExcludeMenu.setOnDismissListener(menu -> root.removeView(view));
+
+                        popupExcludeMenu.show();
+                    /*    popupExcludeMenu.getMenu().getItem(0).getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View view) {
+                                deleteFile((String) popupExcludeMenu.getMenu().getItem(0).getTitle());
+                                return true;
+                            }
+                        }); */
+                        String fileNames = builder.toString();
+
+                        Log.d(TAG,"files:"+fileNames);
+
+
+                        setReadOnlyMode();
+                    })
+                    .addOnFailureListener(exception -> Log.e(TAG, "Unable to query files.", exception));
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (forwarderManager.onOptionsItemSelected(item)) {
@@ -1079,10 +1134,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             case R.id.saveToGoogle:
                 if (mSignedIn) {
                     String unique = Long.toString(System.currentTimeMillis());
-                    currentSaveName = "snapshotTemp-" + unique;
-                    saveSnapshot(null);
-                    Toast.makeText(getBaseContext(), "Saved",
-                            Toast.LENGTH_SHORT).show();
+                    createFile(unique);
                 } else {
                     Toast.makeText(getBaseContext(), "Not signed in to Google",
                             Toast.LENGTH_SHORT).show();
@@ -1091,7 +1143,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             case R.id.loadFromGoogle:
                 if (mSignedIn) {
-                    showSnapshots(getString(R.string.load_settings), false, true);
+                    query();
+                   // openFilePicker();
                 } else {
                     Toast.makeText(getBaseContext(), "Not signed in to Google",
                             Toast.LENGTH_SHORT).show();
@@ -1125,26 +1178,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    void showSnapshots(String title, boolean allowAdd, boolean allowDelete) {
-        int maxNumberOfSavedGamesToShow = 5;
-        SnapshotCoordinator.getInstance().getSelectSnapshotIntent(
-                mSnapshotsClient, title, allowAdd, allowDelete, maxNumberOfSavedGamesToShow)
-                .addOnCompleteListener(new OnCompleteListener<Intent>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Intent> task) {
-                        if (task.isSuccessful()) {
-                            startActivityForResult(task.getResult(), RC_LIST_SAVED_GAMES);
-                        } else {
-                            handleException(task.getException(), getString(R.string.error_opening_filename));
-                        }
-                    }
-                });
-    }
 
     // progress dialog we display while we're loading state from the cloud
     ProgressDialog mLoadingDialog = null;
 
-    void loadFromSnapshot(final SnapshotMetadata snapshotMetadata) {
+    void loadFromSnapshot() {
         if (mLoadingDialog == null) {
             mLoadingDialog = new ProgressDialog(this);
             mLoadingDialog.setMessage(getString(R.string.loading_from_cloud));
@@ -1152,48 +1190,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         mLoadingDialog.show();
 
-        waitForClosedAndOpen(snapshotMetadata)
-                .addOnSuccessListener(new OnSuccessListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
-                    @Override
-                    public void onSuccess(SnapshotsClient.DataOrConflict<Snapshot> result) {
 
-                        // if there is a conflict  - then resolve it.
-                        Snapshot snapshot = processOpenDataOrConflict(RC_LOAD_SNAPSHOT, result, 0);
+        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
+            mLoadingDialog.dismiss();
+            mLoadingDialog = null;
+        }
 
-                        if (snapshot == null) {
-                            Log.w(TAG, "Conflict was not resolved automatically, waiting for user to resolve.");
-                        } else {
-                            try {
-                                /*ImageManager imageManager = ImageManager.create(MainActivity.this);
-                                imageManager.loadImage(new ImageManager.OnImageLoadedListener() {
-                                    @Override
-                                    public void onImageLoaded(Uri uri, Drawable drawable, boolean b) {
-                                        Log.i(TAG, "onImageLoaded");
-                                        getWindow().setBackgroundDrawable(drawable);
-                                    }
-                                }, snapshot.getMetadata().getCoverImageUri());*/
-                                loadSavedGame(snapshot);
-                                Log.i(TAG, "Snapshot loaded.");
-                            } catch (IOException e) {
-                                Log.e(TAG, "Error while reading snapshot contents: " + e.getMessage());
-                            }
-                        }
-
-                        SnapshotCoordinator.getInstance().discardAndClose(mSnapshotsClient, snapshot)
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        handleException(e, "There was a problem discarding the snapshot!");
-                                    }
-                                });
-
-                        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-                            mLoadingDialog.dismiss();
-                            mLoadingDialog = null;
-                        }
-
-                    }
-                });
     }
 
 
@@ -1236,43 +1238,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return jsonWidget.toString(1);
     }
 
-    private void loadSavedGame(Snapshot snapshot) throws IOException {
-        try {
-            forwarderManager.removeWidgets();
-            mSaveGame = (SaveGame) byteToObj(snapshot.getSnapshotContents().readFully());
-            DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
-            int count = 0;
-            try {
-                count = loadJson(mSaveGame.getSavedSettings());
-            } catch (Exception e) {
-                Log.e(TAG, "can't load tags", e);
-                Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
-            }
-            Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_SHORT).show();
-            try {
-                count = loadWidgetJson(mSaveGame.getSavedWidgets());
-            } catch (Exception e) {
-                Log.e(TAG, "can't load widgets", e);
-                Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
-            }
-            Toast.makeText(this, "loaded widgets for " + count + " app(s)", Toast.LENGTH_LONG).show();
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(), 0, mSaveGame.getData().length);
-                try {
-                    getApplicationContext().setWallpaper(bMap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.exit(0);
-            }
-        }).start();
-    }
 
     private int loadJson(String jsonText) throws JSONException {
         int count = 0;
@@ -1318,9 +1283,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     }
                 }
             }
-            editor.commit();
+            editor.apply();
             count += 1;
         }
+        editor.commit();
         //forwarderManager.onDataSetChanged();
         //KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
 
@@ -1334,8 +1300,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         JSONObject json = new JSONObject(jsonText);
         Iterator<String> iter = json.keys();
         SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
-
         SharedPreferences.Editor editor = prefsWidget.edit();
+        editor.clear().commit();
         String booleanClassname = "Boolean";
         String stringClassname = "String";
         String hashsetClassname = "HashSet";
@@ -1373,9 +1339,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     }
                 }
             }
-            editor.commit();
+            editor.apply();
             count += 1;
         }
+        editor.commit();
         //forwarderManager.onDataSetChanged();
         //KissApplication.getApplication(this).getDataHandler().getAppProvider().reload();
 
@@ -1385,178 +1352,160 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private boolean mSignedIn = false;
 
-    private void onAccountChanged(GoogleSignInAccount googleSignInAccount) {
-        mSnapshotsClient = Games.getSnapshotsClient(this, googleSignInAccount);
-
-        // Sign-in worked!
-        mSignedIn = true;
-        prefs.edit().putBoolean("wasSigned", true).apply();
-        if(BuildConfig.DEBUG) Log.d(TAG, "Sign-in successful!");
 
 
-    }
 
-    // Client used to interact with Google Snapshots.
-    private SnapshotsClient mSnapshotsClient = null;
 
-    private void handleException(Exception exception, String details) {
-        int status = 0;
+    /**
+     * Opens a file from its {@code uri} returned from the Storage Access Framework file picker
+     * initiated by
+     */
+    private void openFileFromFilePicker(Uri uri) {
+        if (mDriveServiceHelper != null) {
+            Log.d(TAG, "Opening " + uri.getPath());
 
-        if (exception instanceof ApiException) {
-            ApiException apiException = (ApiException) exception;
-            status = apiException.getStatusCode();
+            mDriveServiceHelper.openFileUsingStorageAccessFramework(getContentResolver(), uri)
+                    .addOnSuccessListener(nameAndContent -> {
+                        String name = nameAndContent.first;
+
+
+                        Log.d(TAG, "name " + name);
+                        getDataFromOpenedFile(nameAndContent.second);
+
+                        // Files opened through SAF cannot be modified, except by retrieving the
+                        // fileId from its metadata and updating it via the REST API. To modify
+                        // files not created by your app, you will need to request the Drive
+                        // Full Scope and submit your app to Google for review.
+                        setReadOnlyMode();
+                    })
+                    .addOnFailureListener(exception ->
+                            Log.e(TAG, "Unable to open file from picker.", exception));
         }
-
-        String message = getString(R.string.common_google_play_services_unknown_issue, details, status, exception);
-
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage(message)
-                .setNeutralButton(android.R.string.ok, null)
-                .show();
-
-        // Note that showing a toast is done here for debugging. Your application should
-        // resolve the error appropriately to your app.
-        if (status == GamesClientStatusCodes.SNAPSHOT_NOT_FOUND) {
-            Log.i(TAG, "Error: Snapshot not found");
-            Toast.makeText(getBaseContext(), "Error: Snapshot not found",
-                    Toast.LENGTH_SHORT).show();
-        } else if (status == GamesClientStatusCodes.SNAPSHOT_CONTENTS_UNAVAILABLE) {
-            Log.i(TAG, "Error: Snapshot contents unavailable");
-            Toast.makeText(getBaseContext(), "Error: Snapshot contents unavailable",
-                    Toast.LENGTH_SHORT).show();
-        } else if (status == GamesClientStatusCodes.SNAPSHOT_FOLDER_UNAVAILABLE) {
-            Log.i(TAG, "Error: Snapshot folder unavailable");
-            Toast.makeText(getBaseContext(), "Error: Snapshot folder unavailable.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private String currentSaveName = "snapshotTemp";
-
-
-    private Task<SnapshotsClient.DataOrConflict<Snapshot>> waitForClosedAndOpen(final SnapshotMetadata snapshotMetadata) {
-
-        final boolean useMetadata = snapshotMetadata != null && snapshotMetadata.getUniqueName() != null;
-        if (useMetadata) {
-            Log.i(TAG, "Opening snapshot using metadata: " + snapshotMetadata);
-        } else {
-            Log.i(TAG, "Opening snapshot using currentSaveName: " + currentSaveName);
-        }
-
-        final String filename = useMetadata ? snapshotMetadata.getUniqueName() : currentSaveName;
-
-        return SnapshotCoordinator.getInstance()
-                .waitForClosed(filename)
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        handleException(e, "There was a problem waiting for the file to close!");
-                    }
-                })
-                .continueWithTask(new Continuation<com.google.android.gms.common.api.Result, Task<SnapshotsClient.DataOrConflict<Snapshot>>>() {
-                    @Override
-                    public Task<SnapshotsClient.DataOrConflict<Snapshot>> then(@NonNull Task<com.google.android.gms.common.api.Result> task) throws Exception {
-                        Task<SnapshotsClient.DataOrConflict<Snapshot>> openTask = useMetadata
-                                ? SnapshotCoordinator.getInstance().open(mSnapshotsClient, snapshotMetadata)
-                                : SnapshotCoordinator.getInstance().open(mSnapshotsClient, filename, true);
-                        return openTask.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                handleException(e,
-                                        useMetadata
-                                                ? getString(R.string.error_opening_metadata)
-                                                : getString(R.string.error_opening_filename)
-                                );
-                            }
-                        });
-                    }
-                });
     }
 
     /**
-     * Conflict resolution for when Snapshots are opened.
-     *
-     * @param requestCode - the request currently being processed.  This is used to forward on the
-     *                    information to another activity, or to send the result intent.
-     * @param result      The open snapshot result to resolve on open.
-     * @param retryCount  - the current iteration of the retry.  The first retry should be 0.
-     * @return The opened Snapshot on success; otherwise, returns null.
+     * Updates the UI to read-only mode.
      */
-    Snapshot processOpenDataOrConflict(int requestCode,
-                                       SnapshotsClient.DataOrConflict<Snapshot> result,
-                                       int retryCount) {
+    private void setReadOnlyMode() {
 
-        retryCount++;
+        mOpenFileId = null;
+    }
+    /**
+     * Updates the UI to read/write mode on the document identified by {@code fileId}.
+     */
+    private void setReadWriteMode(String fileId) {
 
-        if (!result.isConflict()) {
-            return result.getData();
+        mOpenFileId = fileId;
+    }
+     /* Creates a new file via the Drive REST API.
+            */
+    private void createFile(String name) {
+        if (mDriveServiceHelper != null) {
+            Log.d(TAG, "Creating a file.");
+
+            mDriveServiceHelper.createFile(name)
+                    .addOnSuccessListener(fileId -> saveFile(fileId, name))
+                    .addOnFailureListener(exception ->
+                            Log.e(TAG, "Couldn't create file.", exception));
         }
+    }
+    /**
+     * Retrieves the title and content of a file identified by {@code fileId} and populates the UI.
+     */
+    private void readFile(String fileId) {
+        if (mDriveServiceHelper != null) {
+            Log.d(TAG, "Reading file " + fileId);
 
-        Log.i(TAG, "Open resulted in a conflict!");
+            mDriveServiceHelper.readFile(fileId)
+                    .addOnSuccessListener(nameAndContent -> {
+                        String name = nameAndContent.first;
+                        byte[] content = nameAndContent.second;
 
-        SnapshotsClient.SnapshotConflict conflict = result.getConflict();
-        final Snapshot snapshot = conflict.getSnapshot();
-        final Snapshot conflictSnapshot = conflict.getConflictingSnapshot();
 
-        ArrayList<Snapshot> snapshotList = new ArrayList<Snapshot>(2);
-        snapshotList.add(snapshot);
-        snapshotList.add(conflictSnapshot);
+                        Log.d(TAG, "name " + name);
 
-        // Display both snapshots to the user and allow them to select the one to resolve.
-        selectSnapshotItem(requestCode, snapshotList, conflict.getConflictId(), retryCount);
 
-        // Since we are waiting on the user for input, there is no snapshot available; return null.
-        return null;
+                        setReadWriteMode(fileId);
+
+                        getDataFromOpenedFile(content);
+
+                    })
+                    .addOnFailureListener(exception ->
+                            Log.e(TAG, "Couldn't read file.", exception));
+        }
     }
 
-    private void selectSnapshotItem(int requestCode,
-                                    ArrayList<Snapshot> items,
-                                    String conflictId,
-                                    int retryCount) {
+    private void getDataFromOpenedFile(byte[] content) {
+        try {
+            forwarderManager.removeWidgets();
+            mSaveGame = (SaveGame) byteToObj(content);
+            DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
+            int count = 0;
+            try {
+                count = loadJson(mSaveGame.getSavedSettings());
+            } catch (Exception e) {
+                Log.e(TAG, "can't load tags", e);
+                Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
+            }
+            Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_SHORT).show();
+            try {
+                count = loadWidgetJson(mSaveGame.getSavedWidgets());
+            } catch (Exception e) {
+                Log.e(TAG, "can't load widgets", e);
+                Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
+            }
+            Toast.makeText(this, "loaded widgets for " + count + " app(s)", Toast.LENGTH_LONG).show();
 
-        ArrayList<SnapshotMetadata> snapshotList = new ArrayList<SnapshotMetadata>(items.size());
-        for (Snapshot m : items) {
-            snapshotList.add(m.getMetadata().freeze());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        Intent intent = new Intent(this, SelectSnapshotActivity.class);
-        intent.putParcelableArrayListExtra(SelectSnapshotActivity.SNAPSHOT_METADATA_LIST,
-                snapshotList);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(), 0, mSaveGame.getData().length);
+                try {
+                    getApplicationContext().setWallpaper(bMap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+        }).start();
 
-        intent.putExtra(MainActivity.CONFLICT_ID, conflictId);
-        intent.putExtra(MainActivity.RETRY_COUNT, retryCount);
-
-        if(BuildConfig.DEBUG) Log.d(TAG, "Starting activity to select snapshot");
-        startActivityForResult(intent, requestCode);
     }
 
+    /**
+     * Saves the currently opened file created via {@link #createFile()} if one exists.
+     * @param fileId
+     * @param unique
+     */
+    private void saveFile(String fileId, String unique) {
+        if (mDriveServiceHelper != null) {
+            Log.d(TAG, "Saving " + fileId);
+            String fileName = unique;
+            byte[] fileContent = null;
+            try {
+                 mSaveGame = new SaveGame(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
+                fileContent = objToByte(mSaveGame);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-    void saveSnapshot(final SnapshotMetadata snapshotMetadata) {
-
-        waitForClosedAndOpen(snapshotMetadata)
-                .addOnCompleteListener(new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
-                    @Override
-                    public void onComplete(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>> task) {
-                        SnapshotsClient.DataOrConflict<Snapshot> result = task.getResult();
-                        Snapshot snapshotToWrite = processOpenDataOrConflict(RC_SAVE_SNAPSHOT, result, 0);
-                        if (snapshotToWrite == null) {
-                            // No snapshot available yet; waiting on the user to choose one.
-                            return;
+            mDriveServiceHelper.saveFile(fileId, fileName, fileContent)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getBaseContext(), "Saved",
+                                    Toast.LENGTH_SHORT).show();
                         }
-
-                        if(BuildConfig.DEBUG) Log.d(TAG, "Writing data to snapshot: " + snapshotToWrite.getMetadata().getUniqueName());
-                        writeSnapshot(snapshotToWrite)
-                                .addOnCompleteListener(new OnCompleteListener<SnapshotMetadata>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<SnapshotMetadata> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.i(TAG, "Snapshot saved!");
-                                        } else {
-                                            handleException(task.getException(), getString(R.string.write_snapshot_error));
-                                        }
-                                    }
-                                });
-                    }
-                });
+                    })
+                    .addOnFailureListener(exception ->
+                            Log.e(TAG, "Unable to save file via REST.", exception));
+        }
     }
 
     String getSerializedTags() throws JSONException {
@@ -1610,26 +1559,48 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             this.menuButton.performHapticFeedback(LONG_PRESS);
         }
     }
+    private void handleSignInResult(Intent result) {
+        GoogleSignIn.getSignedInAccountFromIntent(result)
+                .addOnSuccessListener(googleAccount -> {
+                    Log.d(TAG, "Signed in as " + googleAccount.getEmail());
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            if (GoogleSignIn.hasPermissions(account, Games.SCOPE_GAMES_LITE)) {
+                    // Use the authenticated account to sign in to the Drive service.
+                    GoogleAccountCredential credential =
+                            GoogleAccountCredential.usingOAuth2(
+                                    this, Collections.singleton(DriveScopes.DRIVE_APPDATA));
+                    credential.setSelectedAccount(googleAccount.getAccount());
+                    Drive googleDriveService =
+                            new Drive.Builder(
+                                    AndroidHttp.newCompatibleTransport(),
+                                    new GsonFactory(),
+                                    credential)
+                                    .setApplicationName("Zen Launcher")
+                                    .build();
+                    updateUI(true);
+
+                    // The DriveServiceHelper encapsulates all REST API and SAF functionality.
+                    mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
+                    /*mDriveServiceHelper.createFolder("Zen Launcher")
+                            .addOnSuccessListener(fileId -> {
+                                updateUI(true);
+
+                            })
+                            .addOnFailureListener(exception -> {
+                                Log.e(TAG, "Couldn't create file.", exception);
+                                updateUI(false);
+                            }); */
 
 
-                // Signed in successfully
-                updateUI(account);
-                Toast.makeText(this, "Ready to store&load launcher views!", Toast.LENGTH_LONG).show();
-            }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Unable to sign in.", e);
+                    updateUI(false);
+                });
 
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(this, "Error: "+e.getStatusCode(), Toast.LENGTH_LONG).show();
-            updateUI(null);
-        }
+
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1668,28 +1639,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 break;
             case RC_SIGN_IN:
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                handleSignInResult(task);
-                break;
-            case RC_LIST_SAVED_GAMES:
-                if(BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES");
-                if (data != null) {
-                    if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
-                        // Load a snapshot.
-                        SnapshotMetadata snapshotMetadata =
-                                data.getParcelableExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA);
-                        currentSaveName = snapshotMetadata.getUniqueName();
-                        loadFromSnapshot(snapshotMetadata);
-                    } else if (data.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
-                        if(BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES EXTRA_SNAPSHOT_NEW");
-                        // Create a new snapshot named with a unique string
-                        String unique = Long.toString(System.currentTimeMillis());
-                        currentSaveName = "snapshotTemp-" + unique;
 
-                        saveSnapshot(null);
+                handleSignInResult(data);
+                break;
+            case REQUEST_CODE_OPEN_DOCUMENT:
+                if(BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES");
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    Uri uri = data.getData();
+                    if (uri != null) {
+                        openFileFromFilePicker(uri);
                     }
                 }
                 break;
+
             case REQUEST_LOAD_REPLACE_TAGS:
                 if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_TAGS");
                 if (resultCode == RESULT_OK) {
