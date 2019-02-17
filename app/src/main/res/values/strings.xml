@@ -39,7 +39,7 @@
     <string name="stub_contact_phone" translatable="false">+1 330 1234 5678</string>
     <string name="stub_setting" translatable="false">Setting name</string>
     <string name="stub_phone" translatable="false">Call +1 330 1234 5678</string>
-    <string name="stub_app_tag" >Tag example</string>
+    <string name="stub_app_tag">Tag example</string>
     <string name="main_menu">Menu</string>
     <string name="main_clear">Clear search bar</string>
     <string name="main_kiss">Display favorites and app list</string>
@@ -267,6 +267,7 @@
     <string name="moments_ago">moments ago</string>
     <string name="write_snapshot_error">There was a problem writing the snapshot!</string>
     <string name="loading_from_cloud">Loading from cloud</string>
+    <string name="saving_to_cloud">Saving to cloud</string>
     <string name="load_from_google">Load layout from Google</string>
     <string name="proximity_switch">Turn on/off screen with proximity sensor</string>
     <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
@@ -291,4 +292,6 @@
     <string name="nightmodeOn">Night Mode On</string>
     <string name="nightmodeOff">Night Mode Off</string>
     <string name="showAppGrid">All Apps</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

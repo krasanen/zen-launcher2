@@ -28,6 +28,7 @@ import fr.neamar.kiss.ui.WidgetPreferences;
 import java.util.Map;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_OPTIONS;
+import static fr.neamar.kiss.MainActivity.REQUEST_BIND_APPWIDGET;
 
 public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     public static final int REQUEST_REFRESH_APPWIDGET = 10;
@@ -219,7 +220,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
-                        mainActivity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
+                        mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
                         //configureAppWidget(intent);
                         return null;
                     }

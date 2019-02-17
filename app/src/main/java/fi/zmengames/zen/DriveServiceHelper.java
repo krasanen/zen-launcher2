@@ -1,12 +1,12 @@
 /**
  * Copyright 2018 Google LLC
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +16,19 @@
 package fi.zmengames.zen;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.util.Log;
+
 import androidx.core.util.Pair;
+import fr.neamar.kiss.MainActivity;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
@@ -40,6 +46,7 @@ import java.util.concurrent.Executors;
  * file picker UI via Storage Access Framework.
  */
 public class DriveServiceHelper {
+    private static final String TAG = DriveServiceHelper.class.getSimpleName();
     private final Executor mExecutor = Executors.newSingleThreadExecutor();
     private final Drive mDriveService;
 
@@ -99,8 +106,8 @@ public class DriveServiceHelper {
             mDriveService.files().get(fileId).executeMediaAndDownloadTo(bos);
 
 
-                return Pair.create(name, bos.toByteArray());
-            });
+            return Pair.create(name, bos.toByteArray());
+        });
     }
 
     /**
@@ -113,7 +120,7 @@ public class DriveServiceHelper {
             File metadata = new File().setName(name);
 
             // Convert content to an AbstractInputStreamContent instance.
-            ByteArrayContent byteContent = new ByteArrayContent(null,content);
+            ByteArrayContent byteContent = new ByteArrayContent(null, content);
 
             // Update the metadata and contents.
             mDriveService.files().update(fileId, metadata, byteContent).execute();
@@ -184,8 +191,21 @@ public class DriveServiceHelper {
         return Tasks.call(mExecutor, () -> {
 
             // Update the metadata and contents.
-            mDriveService.files().delete(file.getId()).execute();
-            return null;
+            return mDriveService.files().delete(file.getId()).execute();
+        });
+    }
+
+    public Task<Object> renameFile(File file, String newName) {
+        Log.d(TAG,"rename: "+file.getName()+" to:"+newName);
+        return Tasks.call(mExecutor, () -> {
+            File metadata = new File()
+                    .setParents(Collections.singletonList("root"))
+                    .setMimeType("text/plain")
+                    .setName(newName);
+
+            // Update the metadata and contents.
+            return mDriveService.files().update(file.getId(), metadata
+            ).execute();
         });
     }
 }

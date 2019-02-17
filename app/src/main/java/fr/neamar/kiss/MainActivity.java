@@ -1,7 +1,6 @@
 package fr.neamar.kiss;
 
 import android.Manifest;
-import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
@@ -14,6 +13,7 @@ import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -34,8 +34,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+
 import androidx.annotation.NonNull;
+
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -67,7 +70,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 
@@ -75,7 +77,6 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 
 
 import org.greenrobot.eventbus.Subscribe;
@@ -97,6 +98,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -107,6 +109,7 @@ import java.util.Set;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import fi.zmengames.zen.AppGridActivity;
 import fi.zmengames.zen.DriveServiceHelper;
 import fi.zmengames.zen.LauncherService;
@@ -249,10 +252,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int RC_LIST_SAVED_GAMES = 53;
     private static final int RC_SIGN_IN = 54;
     private int widgetAddY;
+    public int action;
 
-    public void signIn() {
-        if(BuildConfig.DEBUG) Log.d(TAG, "signIn");
+    public void signIn(int action) {
+        if (BuildConfig.DEBUG) Log.d(TAG, "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        this.action = action;
         // The Task returned from this call is always completed, no need to attach
         // a listener.
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -260,13 +265,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void signOut() {
-        if(BuildConfig.DEBUG) Log.d(TAG, "signOut");
+        if (BuildConfig.DEBUG) Log.d(TAG, "signOut");
         mGoogleSignInClient.signOut();
 
         mSignedIn = false;
     }
 
     private static final int RC_SAVED_GAMES = 9009;
+
     private void openFilePicker() {
         if (mDriveServiceHelper != null) {
             Log.d(TAG, "Opening file picker.");
@@ -295,7 +301,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     // current save game - serializable to and from the saved game
     private SaveGame mSaveGame;
-
 
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -340,10 +345,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         View root = getWindow().getDecorView().getRootView();
         Bitmap screenshot = Bitmap.createBitmap(root.getWidth(), root.getHeight(), Bitmap.Config.ARGB_8888);
         Bitmap coverImage = ((BitmapDrawable) wallpaperDrawable).getBitmap();
-        Bitmap combo = overlay(screenshot,coverImage);
+        Bitmap combo = overlay(screenshot, coverImage);
         Canvas canvas = new Canvas(combo);
         root.draw(canvas);
-        return RotateBitmap(combo,270f);
+        return RotateBitmap(combo, 270f);
 
 
     }
@@ -357,14 +362,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         return bytes;
     }
-    public static Bitmap RotateBitmap(Bitmap source, float angle)
-    {
+
+    public static Bitmap RotateBitmap(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
-    public void checkPermissionReadStorage(Activity activity) {
+    public boolean checkPermissionReadStorage(Activity activity) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
@@ -387,7 +392,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
+        }else {
+            return true;
         }
+        return false;
     }
 
     public boolean checkPermissionOverlay(Activity activity) {
@@ -398,10 +406,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 startActivityForResult(intent, MY_PERMISSIONS_OVERLAY);
                 return false;
             }
-            if(BuildConfig.DEBUG) Log.d(TAG, "overlay permission ok");
+            if (BuildConfig.DEBUG) Log.d(TAG, "overlay permission ok");
             return true;
         } else {
-            if(BuildConfig.DEBUG) Log.d(TAG, "overlay permission ok, sdk:"+Build.VERSION.SDK_INT);
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "overlay permission ok, sdk:" + Build.VERSION.SDK_INT);
             return true;
         }
     }
@@ -438,7 +447,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(BuildConfig.DEBUG) Log.d(TAG, "onCreate()");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onCreate()");
         KissApplication.getApplication(this).setMainActivity(this);
         HermesEventBus.getDefault().init(this);
         HermesEventBus.getDefault().register(this);
@@ -449,13 +458,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        MemoryCacheHelper.updatePreferences( prefs );
+        MemoryCacheHelper.updatePreferences(prefs);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile.
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
+                .requestEmail()
                 .build();
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -565,9 +575,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Fixes bug when dropping onto a textEdit widget which can cause a NPE
         // This fix should be on ALL TextEdit Widgets !!!
         // See : https://stackoverflow.com/a/23483957
-        searchEditText.setOnDragListener( new View.OnDragListener() {
+        searchEditText.setOnDragListener(new View.OnDragListener() {
             @Override
-            public boolean onDrag( View v, DragEvent event) {
+            public boolean onDrag(View v, DragEvent event) {
                 return true;
             }
         });
@@ -626,12 +636,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void buildWidgetPopupMenu(final View view) {
-        widgetAddY=y;
-        show(this,x,y);
+        widgetAddY = y;
+        show(this, x, y);
     }
 
-    public void show(Activity activity, final float x, final float y)
-    {
+    public void show(Activity activity, final float x, final float y) {
 
         final int ADD_WIDGET = 0;
         final int UPDATE_WALLPAPER = 1;
@@ -670,12 +679,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         });
 
 
-
-        popupExcludeMenu.setOnDismissListener(new PopupMenu.OnDismissListener()
-        {
+        popupExcludeMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
-            public void onDismiss(PopupMenu menu)
-            {
+            public void onDismiss(PopupMenu menu) {
                 root.removeView(view);
             }
         });
@@ -684,7 +690,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onNumericKeypadClicked(View view) {
-            forwarderManager.switchInputType();
+        forwarderManager.switchInputType();
     }
 
     // place to put widget when long clicking on widgetlayout
@@ -724,7 +730,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if(BuildConfig.DEBUG) Log.d(TAG, "onCreateContextMenu");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onCreateContextMenu");
 
         /*ImageView image;
 
@@ -732,22 +738,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         image.setImageResource(R.drawable.call);*/
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
-        if (!mSignedIn) {
-            MenuItem item = menu.findItem(R.id.saveToGoogle);
-            item.setVisible(false);
-            MenuItem item2 = menu.findItem(R.id.loadFromGoogle);
-            item2.setVisible(false);
-            MenuItem item3 = menu.findItem(R.id.signIn);
-            item3.setVisible(true);
 
-        } else {
-            MenuItem item = menu.findItem(R.id.saveToGoogle);
-            item.setVisible(true);
-            MenuItem item2 = menu.findItem(R.id.loadFromGoogle);
-            item2.setVisible(true);
-            MenuItem item3 = menu.findItem(R.id.signIn);
-            item3.setVisible(false);
-        }
         forwarderManager.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -761,13 +752,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onStart();
         // Check for existing Google Sign In account, if the user is already signed in
 // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account!=null){
-            signIn();
-            updateUI(true);
-        } else {
-            updateUI(false);
-        }
+
         forwarderManager.onStart();
 
         Intent intent = new Intent(this, LauncherService.class);
@@ -791,10 +776,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // Sign-in OK!
             mSignedIn = true;
             prefs.edit().putBoolean("wasSigned", true).apply();
-            if(BuildConfig.DEBUG) Log.d(TAG, "Sign-in successful!");
+            if (BuildConfig.DEBUG) Log.d(TAG, "Sign-in successful!");
         } else {
             mSignedIn = false;
-            if(BuildConfig.DEBUG) Log.d(TAG, "Not signed to Google!");
+            if (BuildConfig.DEBUG) Log.d(TAG, "Not signed to Google!");
         }
     }
 
@@ -833,15 +818,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
 
         if (state) {
-            if (checkPermissionOverlay(this)){
+            if (checkPermissionOverlay(this)) {
                 uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
                 Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
                 //setTheme(R.style.AppThemeDark);
                 //setContentView(R.layout.main);
 
-            }
-            else
-            {
+            } else {
                 Toast.makeText(getBaseContext(), "Retry after accepting permission",
                         Toast.LENGTH_SHORT).show();
             }
@@ -865,13 +848,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
-        if(BuildConfig.DEBUG) Log.d(TAG, "onResume()");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onResume()");
         if (mDebugJson) {
             try {
                 String settings = this.getSerializedSettings2();
-                if(BuildConfig.DEBUG) Log.d(TAG, "settings:" + settings);
+                if (BuildConfig.DEBUG) Log.d(TAG, "settings:" + settings);
             } catch (JSONException e) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "JSONException");
+                if (BuildConfig.DEBUG) Log.d(TAG, "JSONException");
             }
         }
         if (prefs.getBoolean("require-layout-update", false)) {
@@ -883,7 +866,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             this.recreate();
             return;
         }
-        if (prefs.getBoolean("bluelightfilter", false)){
+        if (prefs.getBoolean("bluelightfilter", false)) {
             setBlueLightFilter(true);
         }
 
@@ -920,7 +903,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         switch (event.getState()) {
             case GOOGLE_SIGNIN:
-                signIn();
+                signIn(0);
                 break;
             case GOOGLE_SIGNOUT:
                 signOut();
@@ -968,7 +951,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void onBackPressed() {
-        if(BuildConfig.DEBUG) Log.d(TAG, "onBackPressed");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onBackPressed");
         if (mPopup != null) {
             mPopup.dismiss();
         } else if (isViewingAllApps()) {
@@ -998,10 +981,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void query() {
         if (mDriveServiceHelper != null) {
             Log.d(TAG, "Querying for files.");
-
+            showSpinner(R.string.loading_from_cloud);
             mDriveServiceHelper.queryFiles()
                     .addOnSuccessListener(fileList -> {
-
+                        dismissSpinner();
                         final ViewGroup root = (ViewGroup) this.getWindow().getDecorView().findViewById(android.R.id.content);
 
                         final View view = new View(this.getApplicationContext());
@@ -1013,34 +996,49 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                         StringBuilder builder = new StringBuilder();
                         PopupMenu popupExcludeMenu = new PopupMenu(this.getApplicationContext(), view);
-                        int i=0;
+                        int i = 0;
                         for (File file : fileList.getFiles()) {
                             mDriveServiceHelper.deleteFile(file);
-                            builder.append(file.getName()).append("\n");
-                            int finalI = i;
+                            //builder.append(file.getName()).append("\n");
                             //Adding menu items
-                           // popupExcludeMenu.getMenu().add(i, Menu.NONE, Menu.NONE, file.getId());
+                            // popupExcludeMenu.getMenu().add(i, Menu.NONE, Menu.NONE, file.getId());
                             final SubMenu listSubMenu = popupExcludeMenu.getMenu().addSubMenu(i, Menu.NONE, Menu.NONE, file.getName());
                             MenuItem readMenu = listSubMenu.add(i, Menu.NONE, Menu.NONE, "Load");
                             readMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                 final File fileLocal = file;
+
                                 @Override
                                 public boolean onMenuItemClick(MenuItem menuItem) {
                                     readFile(fileLocal.getId());
                                     return true;
                                 }
                             });
-                            MenuItem deleteMenu =  listSubMenu.add(i+1, Menu.NONE, Menu.NONE, "Delete");
+                            MenuItem deleteMenu = listSubMenu.add(i + 1, Menu.NONE, Menu.NONE, "Delete");
                             //registering popup with OnMenuItemClickListener
 
                             deleteMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                 final File fileLocal = file;
+
                                 @Override
                                 public boolean onMenuItemClick(MenuItem menuItem) {
                                     mDriveServiceHelper.deleteFile(fileLocal);
                                     return true;
                                 }
                             });
+
+                            MenuItem renameMenu = listSubMenu.add(i + 1, Menu.NONE, Menu.NONE, "Rename");
+                            //registering popup with OnMenuItemClickListener
+
+                            renameMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                final File fileLocal = file;
+
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem) {
+                                    queryNewName(fileLocal.getName(), fileLocal);
+                                    return true;
+                                }
+                            });
+
 
                             i++;
                         }
@@ -1056,15 +1054,59 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }); */
                         String fileNames = builder.toString();
 
-                        Log.d(TAG,"files:"+fileNames);
+                        Log.d(TAG, "files:" + fileNames);
 
 
                         setReadOnlyMode();
                     })
-                    .addOnFailureListener(exception -> Log.e(TAG, "Unable to query files.", exception));
+                    .addOnFailureListener(exception -> {
+                        Toast.makeText(getBaseContext(), "Unable to query files.",
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Unable to query files.", exception);
+                        dismissSpinner();
+                    });
         }
     }
 
+
+
+    private void queryNewName(String name, File fileLocal) {
+
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Rename File");
+
+// Set up the input
+        final EditText input = new EditText(this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        builder.setView(input);
+        input.setText(name);
+        input.selectAll();
+
+// Set up the buttons
+        builder.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mDriveServiceHelper.renameFile(fileLocal, String.valueOf(input.getText())).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG,"Rename Failed");
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (forwarderManager.onOptionsItemSelected(item)) {
@@ -1132,41 +1174,29 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
 */
             case R.id.saveToGoogle:
-                if (mSignedIn) {
-                    String unique = Long.toString(System.currentTimeMillis());
-                    createFile(unique);
-                } else {
-                    Toast.makeText(getBaseContext(), "Not signed in to Google",
-                            Toast.LENGTH_SHORT).show();
-                }
+                checkSignIn(R.id.saveToGoogle);
                 return true;
 
             case R.id.loadFromGoogle:
-                if (mSignedIn) {
-                    query();
-                   // openFilePicker();
-                } else {
-                    Toast.makeText(getBaseContext(), "Not signed in to Google",
-                            Toast.LENGTH_SHORT).show();
-                }
+                checkSignIn(R.id.loadFromGoogle);
                 return true;
             case R.id.signIn:
                 if (!mSignedIn) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "signIn");
+                    if (BuildConfig.DEBUG) Log.d(TAG, "signIn");
                     Intent signInIntent = new Intent(this, LauncherService.class);
                     signInIntent.setAction(LauncherService.GOOGLE_SIGN_IN);
                     KissApplication.startLaucherService(signInIntent, this);
                 }
                 return true;
             case R.id.nightModeOn:
-                if(BuildConfig.DEBUG) Log.d(TAG, "nightModeOn");
-                if (checkPermissionOverlay(this)){
+                if (BuildConfig.DEBUG) Log.d(TAG, "nightModeOn");
+                if (checkPermissionOverlay(this)) {
                     setBlueLightFilter(true);
                 }
                 return true;
             case R.id.nightModeOff:
-                if(BuildConfig.DEBUG) Log.d(TAG, "nightModeOff");
-                if (checkPermissionOverlay(this)){
+                if (BuildConfig.DEBUG) Log.d(TAG, "nightModeOff");
+                if (checkPermissionOverlay(this)) {
                     setBlueLightFilter(false);
                 }
                 return true;
@@ -1178,24 +1208,56 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
+    private void loadFromGoogle() {
+        if (mSignedIn) {
+            query();
+            // openFilePicker();
+        } else {
+            Toast.makeText(getBaseContext(), "Not signed in to Google",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveToGoogle() {
+        if (checkPermissionReadStorage(this)) {
+            if (mSignedIn) {
+                createFile("" + String.valueOf(Calendar.getInstance().getTime()));
+            } else {
+                Toast.makeText(getBaseContext(), "Not signed in to Google",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void checkSignIn(int action) {
+
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null) {
+            signIn(action);
+        } else {
+            updateUI(false);
+        }
+    }
+
 
     // progress dialog we display while we're loading state from the cloud
-    ProgressDialog mLoadingDialog = null;
+    ProgressDialog mSpinner = null;
 
-    void loadFromSnapshot() {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new ProgressDialog(this);
-            mLoadingDialog.setMessage(getString(R.string.loading_from_cloud));
+    void showSpinner(int resId) {
+        if (mSpinner == null) {
+            mSpinner = new ProgressDialog(this);
+            mSpinner.setMessage(getString(resId));
         }
 
-        mLoadingDialog.show();
+        mSpinner.show();
 
+    }
 
-        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
-            mLoadingDialog = null;
+    void dismissSpinner() {
+        if (mSpinner != null && mSpinner.isShowing()) {
+            mSpinner.dismiss();
+            mSpinner = null;
         }
-
     }
 
 
@@ -1234,7 +1296,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             //}
         }
 
-        if(BuildConfig.DEBUG) Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
+        if (BuildConfig.DEBUG) Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
         return jsonWidget.toString(1);
     }
 
@@ -1242,7 +1304,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private int loadJson(String jsonText) throws JSONException {
         int count = 0;
         TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
-        if(BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
+        if (BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
         JSONObject json = new JSONObject(jsonText);
         Iterator<String> iter = json.keys();
         SharedPreferences.Editor editor = prefs.edit();
@@ -1256,29 +1318,30 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             String value = values[0];
             String classValue = values[1];
 
-            if(BuildConfig.DEBUG) Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
             if (classValue.equals(booleanClassname)) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
+                if (BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
                 editor.putBoolean(key, Boolean.parseBoolean(value));
             } else if (classValue.equals(stringClassname)) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "putString");
+                if (BuildConfig.DEBUG) Log.d(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
+                if (BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
+                if (BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
                 String toparse = value.substring(1, value.length() - 1);
-                if(BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
+                if (BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
                     for (int i = 0; i < values2.length; i++) {
-                        if(BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
                         String[] app = values2[i].split("=");
-                        if(BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
-                        if(BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
                     }
                 }
@@ -1296,7 +1359,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private int loadWidgetJson(String jsonText) throws JSONException {
         int count = 0;
         TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
-        if(BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
+        if (BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
         JSONObject json = new JSONObject(jsonText);
         Iterator<String> iter = json.keys();
         SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
@@ -1312,29 +1375,30 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             String value = values[0];
             String classValue = values[1];
 
-            if(BuildConfig.DEBUG) Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
             if (classValue.equals(booleanClassname)) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
+                if (BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
                 editor.putBoolean(key, Boolean.parseBoolean(value));
             } else if (classValue.equals(stringClassname)) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "putString");
+                if (BuildConfig.DEBUG) Log.d(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
+                if (BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
+                if (BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
                 String toparse = value.substring(1, value.length() - 1);
-                if(BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
+                if (BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
                     for (int i = 0; i < values2.length; i++) {
-                        if(BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
                         String[] app = values2[i].split("=");
-                        if(BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
-                        if(BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
                     }
                 }
@@ -1351,9 +1415,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     private boolean mSignedIn = false;
-
-
-
 
 
     /**
@@ -1390,6 +1451,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         mOpenFileId = null;
     }
+
     /**
      * Updates the UI to read/write mode on the document identified by {@code fileId}.
      */
@@ -1397,25 +1459,30 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         mOpenFileId = fileId;
     }
-     /* Creates a new file via the Drive REST API.
-            */
+
+    /* Creates a new file via the Drive REST API.
+     */
     private void createFile(String name) {
         if (mDriveServiceHelper != null) {
             Log.d(TAG, "Creating a file.");
-
+            showSpinner(R.string.saving_to_cloud);
             mDriveServiceHelper.createFile(name)
                     .addOnSuccessListener(fileId -> saveFile(fileId, name))
-                    .addOnFailureListener(exception ->
-                            Log.e(TAG, "Couldn't create file.", exception));
+                    .addOnFailureListener(exception -> {
+                        Log.e(TAG, "Couldn't create file.", exception);
+                        Toast.makeText(this, "Couldn't create file", Toast.LENGTH_LONG).show();
+                        dismissSpinner();
+                    });
         }
     }
+
     /**
      * Retrieves the title and content of a file identified by {@code fileId} and populates the UI.
      */
     private void readFile(String fileId) {
         if (mDriveServiceHelper != null) {
             Log.d(TAG, "Reading file " + fileId);
-
+            showSpinner(R.string.loading_from_cloud);
             mDriveServiceHelper.readFile(fileId)
                     .addOnSuccessListener(nameAndContent -> {
                         String name = nameAndContent.first;
@@ -1430,8 +1497,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         getDataFromOpenedFile(content);
 
                     })
+                    .addOnSuccessListener(new OnSuccessListener<Pair<String, byte[]>>() {
+                        @Override
+                        public void onSuccess(Pair<String, byte[]> stringPair) {
+                            dismissSpinner();
+                        }
+                    })
                     .addOnFailureListener(exception ->
                             Log.e(TAG, "Couldn't read file.", exception));
+
         }
     }
 
@@ -1478,6 +1552,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     /**
      * Saves the currently opened file created via {@link #createFile()} if one exists.
+     *
      * @param fileId
      * @param unique
      */
@@ -1487,7 +1562,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             String fileName = unique;
             byte[] fileContent = null;
             try {
-                 mSaveGame = new SaveGame(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
+                mSaveGame = new SaveGame(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
                 fileContent = objToByte(mSaveGame);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -1499,12 +1574,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            dismissSpinner();
                             Toast.makeText(getBaseContext(), "Saved",
                                     Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .addOnFailureListener(exception ->
-                            Log.e(TAG, "Unable to save file via REST.", exception));
+                    .addOnFailureListener(exception -> {
+                        dismissSpinner();
+                        Toast.makeText(getBaseContext(), "Unable to save",
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Unable to save file via REST.", exception);
+                    });
         }
     }
 
@@ -1559,6 +1639,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             this.menuButton.performHapticFeedback(LONG_PRESS);
         }
     }
+
     private void handleSignInResult(Intent result) {
         GoogleSignIn.getSignedInAccountFromIntent(result)
                 .addOnSuccessListener(googleAccount -> {
@@ -1578,6 +1659,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                     .build();
                     updateUI(true);
 
+
                     // The DriveServiceHelper encapsulates all REST API and SAF functionality.
                     mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
                     /*mDriveServiceHelper.createFolder("Zen Launcher")
@@ -1590,13 +1672,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                 updateUI(false);
                             }); */
 
+                    if (action>0){
+                        switch (action){
+                            case R.id.saveToGoogle:
+                                saveToGoogle();
+                                break;
+                            case R.id.loadFromGoogle:
+                                loadFromGoogle();
+                                break;
+                        }
+
+
+                    }
 
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Unable to sign in.", e);
+                    String error = String.format("Unable to sign in, error: %1$s", e.getMessage());
+
+                    Toast.makeText(this, error, Toast.LENGTH_LONG).show();
                     updateUI(false);
                 });
-
 
 
     }
@@ -1609,7 +1705,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         switch (requestCode) {
 
             case REQUEST_BIND_APPWIDGET:
-                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_BIND_APPWIDGET");
+                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_BIND_APPWIDGET");
                 if (resultCode == Activity.RESULT_OK) {
                     int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -1627,23 +1723,22 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 refreshWidget(newWidgetId);*/
                 break;
             case MY_PERMISSIONS_OVERLAY:
-                if(BuildConfig.DEBUG) Log.d(TAG, "MY_PERMISSIONS_OVERLAY:" + resultCode);
+                if (BuildConfig.DEBUG) Log.d(TAG, "MY_PERMISSIONS_OVERLAY:" + resultCode);
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (Settings.canDrawOverlays(this)) {
                         setBlueLightFilter(true);
                     } else {
                         Toast.makeText(this, "Need overlay permission for this feature", Toast.LENGTH_LONG).show();
                     }
-                }else {
+                } else {
                     setBlueLightFilter(true);
                 }
                 break;
             case RC_SIGN_IN:
-
                 handleSignInResult(data);
                 break;
             case REQUEST_CODE_OPEN_DOCUMENT:
-                if(BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES");
+                if (BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES");
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Uri uri = data.getData();
                     if (uri != null) {
@@ -1653,7 +1748,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
 
             case REQUEST_LOAD_REPLACE_TAGS:
-                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_TAGS");
+                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_TAGS");
                 if (resultCode == RESULT_OK) {
                     TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
                     Uri selectedFile = data.getData();
@@ -1687,7 +1782,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 break;
             case REQUEST_LOAD_REPLACE_SETTINGS:
-                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS");
+                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS");
                 if (resultCode == RESULT_OK) {
                     Uri selectedFile = data.getData();
                     if (selectedFile != null) {
@@ -1714,7 +1809,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
 
             case REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME:
-                if(BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
+                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
                 int count = 0;
                 try {
                     count = loadJson(data.getStringExtra("json"));
@@ -1781,9 +1876,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
         return false;
     }
+
     @Override
     public boolean onLongClick(View view) {
-        Log.d(TAG,"onLongClick");
+        Log.d(TAG, "onLongClick");
         buildWidgetPopupMenu(view);
         return true;
     }
@@ -1808,10 +1904,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Display or hide the Zen Launcher contacts bar, according to current view tag (showMenu / hideMenu).
         displayContacts(contactsButton.getTag().equals("showMenu"));
     }
-    public int x,y;
+
+    public int x, y;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
+        if (BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
         x = (int) ev.getX();
         y = (int) ev.getY();
         int location[] = new int[2];
@@ -1821,7 +1919,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         if (((x > viewX && x < (viewX + searchEditText.getWidth())) &&
                 (y > viewY && y < (viewY + searchEditText.getHeight())))) {
-            if(BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
             systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
             forwarderManager.onTouch(searchEditText, ev);
         }
@@ -1924,7 +2023,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             // Display the alphabet on the scrollbar (#926)
             list.setFastScrollEnabled(true);
-            if (contacts){
+            if (contacts) {
                 list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
                 list.setFastScrollAlwaysVisible(false);
             } else {
@@ -1950,7 +2049,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     });
                     anim.setDuration(animationDuration);
                     anim.start();
-                } catch(IllegalStateException e) {
+                } catch (IllegalStateException e) {
                     // If the view hasn't been laid out yet, we can't animate it
                     kissBar.setVisibility(View.GONE);
                 }
@@ -2114,15 +2213,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             mPopup.dismiss();
     }
 
-    public void showMatchingTags( String tag ) {
+    public void showMatchingTags(String tag) {
         runTask(new TagsSearcher(this, tag));
 
         clearButton.setVisibility(View.VISIBLE);
         menuButton.setVisibility(View.INVISIBLE);
     }
 
-    public void showUntagged()
-    {
+    public void showUntagged() {
         runTask(new UntaggedSearcher(this));
 
         clearButton.setVisibility(View.VISIBLE);
@@ -2161,7 +2259,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     };
 
     public void onClick(View view) {
-        if(BuildConfig.DEBUG) Log.d(TAG,"onClick:"+view.getTag());
+        if (BuildConfig.DEBUG) Log.d(TAG, "onClick:" + view.getTag());
         searchEditText.setText((CharSequence) view.getTag());
         //displayKissBar(false,false,false);
     }
