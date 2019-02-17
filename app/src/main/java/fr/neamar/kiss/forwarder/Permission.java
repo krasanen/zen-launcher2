@@ -100,9 +100,7 @@ public class Permission extends Forwarder {
             //premission to read storage
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //mainActivity.checkAudio();
-                // permission was granted, yay! Do the
-                // contacts-related task you need to do.
+                mainActivity.signIn(mainActivity.action);
 
             } else {
 

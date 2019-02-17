@@ -220,6 +220,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
+                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
                         mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
                         //configureAppWidget(intent);
                         return null;
@@ -459,8 +460,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         if (BuildConfig.DEBUG) Log.d(TAG, "addAppWidget: appWidgetId" + appWidgetId);
         //add widget
         WidgetPreferences wp = addWidgetToLauncher(appWidgetId);
-        Log.d(TAG, "addAppWidget: w" + wp.width);
-        Log.d(TAG, "addAppWidget: h" + wp.height);
+
         // Save widget in preferences
 
         SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();

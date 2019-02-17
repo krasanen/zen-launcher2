@@ -998,7 +998,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         PopupMenu popupExcludeMenu = new PopupMenu(this.getApplicationContext(), view);
                         int i = 0;
                         for (File file : fileList.getFiles()) {
-                            mDriveServiceHelper.deleteFile(file);
+                            //mDriveServiceHelper.deleteFile(file);
                             //builder.append(file.getName()).append("\n");
                             //Adding menu items
                             // popupExcludeMenu.getMenu().add(i, Menu.NONE, Menu.NONE, file.getId());
@@ -1174,11 +1174,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
 */
             case R.id.saveToGoogle:
-                checkSignIn(R.id.saveToGoogle);
+                signIn(R.id.saveToGoogle);
                 return true;
 
             case R.id.loadFromGoogle:
-                checkSignIn(R.id.loadFromGoogle);
+                signIn(R.id.loadFromGoogle);
                 return true;
             case R.id.signIn:
                 if (!mSignedIn) {
@@ -1228,17 +1228,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
-
-    private void checkSignIn(int action) {
-
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
-            signIn(action);
-        } else {
-            updateUI(false);
-        }
-    }
-
 
     // progress dialog we display while we're loading state from the cloud
     ProgressDialog mSpinner = null;
@@ -1503,8 +1492,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                             dismissSpinner();
                         }
                     })
-                    .addOnFailureListener(exception ->
-                            Log.e(TAG, "Couldn't read file.", exception));
+                    .addOnFailureListener(exception -> {
+                        Toast.makeText(this, "Couldn't read file.", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Couldn't read file.", exception);
+                            dismissSpinner();
+                    });
 
         }
     }
