@@ -26,4 +26,6 @@
     <color name="red">#C2000E</color>
     <color name="black">#000000</color>
     <color name="bright_red">#FF0000</color>
+    <color name="bright_yellow">#FFFF00</color>
+    <color name="dark_yellow">#505000</color>
 </resources>

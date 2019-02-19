@@ -8,12 +8,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import fi.zmengames.zen.LauncherAppWidgetHost;
 import fi.zmengames.zen.LauncherAppWidgetHostView;
@@ -185,7 +189,15 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             addWidgetToLauncher(Integer.parseInt(appWidgetId));
         }
     }
-
+    public boolean isPackageExisted(String targetPackage){
+        PackageManager pm=mainActivity.getPackageManager();
+        try {
+            PackageInfo info=pm.getPackageInfo(targetPackage,PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
     /**
      * Adds a widget to the widget area on the MainActivity
      *
@@ -213,6 +225,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         options = ParcelableUtil.unmarshall(wp.appWidgetOptions, Bundle.CREATOR);
                     }
                     AppWidgetProviderInfo a = ParcelableUtil.unmarshall(wp.appWidgetProviderInfo, AppWidgetProviderInfo.CREATOR);
+
                     int newId = mAppWidgetHost.allocateAppWidgetId();
                     boolean hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
                     if (!hasPermission) {
@@ -223,6 +236,8 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
                         mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
                         //configureAppWidget(intent);
+
+
                         return null;
                     }
                     removeAppWidget(appWidgetId);

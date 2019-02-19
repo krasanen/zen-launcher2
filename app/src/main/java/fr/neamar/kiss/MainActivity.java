@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
@@ -22,6 +23,7 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -58,6 +60,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -783,9 +786,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    boolean flashToggle;
+    public static boolean flashToggle;
 
     public void toggleFlashLight() {
+        if (BuildConfig.DEBUG) Log.d(TAG, "toggleFlashLight");
         flashToggle = !flashToggle;
         try {
             CameraManager cameraManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);

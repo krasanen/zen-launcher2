@@ -61,13 +61,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppThemeLight"
         tools:ignore="GoogleAppIndexingWarning">
-        <receiver android:name=".ZenWidget">
+        <receiver android:name=".ZenWidget"
+            android:label="Zen Flashlight">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
+
                 android:resource="@xml/zen_widget_info" />
         </receiver>
 
