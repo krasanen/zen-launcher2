@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,7 +42,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     private static final String TAG = Widget.class.getSimpleName();
     private static final int APPWIDGET_HOST_ID = 442;
     public static final String WIDGET_PREFERENCE_ID = "widgetprefs";
-    private static final int REQUEST_CONFIGURE_APPWIDGET = 11;
+    private static final int REQUEST_CONFIGURE_APPWIDGET = 8;
 
     private SharedPreferences widgetPrefs;
 
@@ -112,10 +113,18 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             }
         } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
             //if widget was not selected, delete id
-            int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            if (appWidgetId != -1) {
-                mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+            switch (requestCode) {
+                case REQUEST_PICK_APPWIDGET:
+                    int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+                    if (appWidgetId != -1) {
+                        mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    }
+                    break;
+                case REQUEST_CONFIGURE_APPWIDGET:
+                    //refreshAppWidget(data);
+                    break;
             }
+
         }
     }
 
@@ -137,8 +146,9 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             }
         } else {
             WidgetMenu menu = new WidgetMenu(this);
-            if (canAddWidget())
+            if (canAddWidget()) {
                 menu.add(mainActivity, R.string.menu_widget_add);
+            }
             for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
                 LauncherAppWidgetHostView hostView = getWidgetHostView(i);
                 if (hostView == null)
@@ -517,7 +527,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         AppWidgetProviderInfo appWidget =
                 mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
-        if (appWidget.configure != null) {
+        if (appWidget!=null && appWidget.configure != null) {
             // Launch over to configure widget, if needed.
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
             intent.setComponent(appWidget.configure);
@@ -616,5 +626,214 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         pickIntent.putExtra("X",x);
         pickIntent.putExtra("Y",y);
         mainActivity.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
+    }
+
+    public void onShowWidgetSettings() {
+        onOptionsItemSelected(new MenuItem() {
+            @Override
+            public int getItemId() {
+                return R.id.widget;
+            }
+
+            @Override
+            public int getGroupId() {
+                return 0;
+            }
+
+            @Override
+            public int getOrder() {
+                return 0;
+            }
+
+            @Override
+            public MenuItem setTitle(CharSequence charSequence) {
+                return null;
+            }
+
+            @Override
+            public MenuItem setTitle(int i) {
+                return null;
+            }
+
+            @Override
+            public CharSequence getTitle() {
+                return null;
+            }
+
+            @Override
+            public MenuItem setTitleCondensed(CharSequence charSequence) {
+                return null;
+            }
+
+            @Override
+            public CharSequence getTitleCondensed() {
+                return null;
+            }
+
+            @Override
+            public MenuItem setIcon(Drawable drawable) {
+                return null;
+            }
+
+            @Override
+            public MenuItem setIcon(int i) {
+                return null;
+            }
+
+            @Override
+            public Drawable getIcon() {
+                return null;
+            }
+
+            @Override
+            public MenuItem setIntent(Intent intent) {
+                return null;
+            }
+
+            @Override
+            public Intent getIntent() {
+                return null;
+            }
+
+            @Override
+            public MenuItem setShortcut(char c, char c1) {
+                return null;
+            }
+
+            @Override
+            public MenuItem setNumericShortcut(char c) {
+                return null;
+            }
+
+            @Override
+            public char getNumericShortcut() {
+                return 0;
+            }
+
+            @Override
+            public MenuItem setAlphabeticShortcut(char c) {
+                return null;
+            }
+
+            @Override
+            public char getAlphabeticShortcut() {
+                return 0;
+            }
+
+            @Override
+            public MenuItem setCheckable(boolean b) {
+                return null;
+            }
+
+            @Override
+            public boolean isCheckable() {
+                return false;
+            }
+
+            @Override
+            public MenuItem setChecked(boolean b) {
+                return null;
+            }
+
+            @Override
+            public boolean isChecked() {
+                return false;
+            }
+
+            @Override
+            public MenuItem setVisible(boolean b) {
+                return null;
+            }
+
+            @Override
+            public boolean isVisible() {
+                return false;
+            }
+
+            @Override
+            public MenuItem setEnabled(boolean b) {
+                return null;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return false;
+            }
+
+            @Override
+            public boolean hasSubMenu() {
+                return false;
+            }
+
+            @Override
+            public SubMenu getSubMenu() {
+                return null;
+            }
+
+            @Override
+            public MenuItem setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
+                return null;
+            }
+
+            @Override
+            public ContextMenu.ContextMenuInfo getMenuInfo() {
+                return null;
+            }
+
+            @Override
+            public void setShowAsAction(int i) {
+
+            }
+
+            @Override
+            public MenuItem setShowAsActionFlags(int i) {
+                return null;
+            }
+
+            @Override
+            public MenuItem setActionView(View view) {
+                return null;
+            }
+
+            @Override
+            public MenuItem setActionView(int i) {
+                return null;
+            }
+
+            @Override
+            public View getActionView() {
+                return null;
+            }
+
+            @Override
+            public MenuItem setActionProvider(ActionProvider actionProvider) {
+                return null;
+            }
+
+            @Override
+            public ActionProvider getActionProvider() {
+                return null;
+            }
+
+            @Override
+            public boolean expandActionView() {
+                return false;
+            }
+
+            @Override
+            public boolean collapseActionView() {
+                return false;
+            }
+
+            @Override
+            public boolean isActionViewExpanded() {
+                return false;
+            }
+
+            @Override
+            public MenuItem setOnActionExpandListener(OnActionExpandListener onActionExpandListener) {
+                return null;
+            }
+        });
     }
 }

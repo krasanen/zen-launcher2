@@ -115,6 +115,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import fi.zmengames.zen.AppGridActivity;
 import fi.zmengames.zen.DriveServiceHelper;
+import fi.zmengames.zen.LauncherAppWidgetHostView;
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -138,6 +139,7 @@ import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
+import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import xiaofei.library.hermeseventbus.HermesEventBus;
@@ -646,7 +648,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void show(Activity activity, final float x, final float y) {
 
         final int ADD_WIDGET = 0;
-        final int UPDATE_WALLPAPER = 1;
+        final int WIDGET_SETTINGS = 1;
+        final int UPDATE_WALLPAPER = 2;
+
         final ViewGroup root = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
 
         final View view = new View(activity.getApplicationContext());
@@ -661,6 +665,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         PopupMenu popupExcludeMenu = new PopupMenu(activity.getApplicationContext(), view);
         //Adding menu items
         popupExcludeMenu.getMenu().add(ADD_WIDGET, Menu.NONE, Menu.NONE, R.string.menu_widget_add);
+        popupExcludeMenu.getMenu().add(WIDGET_SETTINGS, Menu.NONE, Menu.NONE, R.string.menu_widget_settings);
         popupExcludeMenu.getMenu().add(UPDATE_WALLPAPER, Menu.NONE, Menu.NONE, R.string.menu_wallpaper);
 
         //registering popup with OnMenuItemClickListener
@@ -670,6 +675,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     case ADD_WIDGET:
                         hideKeyboard();
                         forwarderManager.addWidget();
+                        break;
+                    case WIDGET_SETTINGS:
+                        hideKeyboard();
+                        forwarderManager.showWidgetSettings();
                         break;
                     case UPDATE_WALLPAPER:
                         hideKeyboard();

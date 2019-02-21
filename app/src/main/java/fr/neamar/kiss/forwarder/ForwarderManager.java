@@ -134,4 +134,8 @@ public class ForwarderManager extends Forwarder {
     public void updateWidgets(Context context) {
         widgetForwarder.updateWidgets(context);
     }
+
+    public void showWidgetSettings() {
+        widgetForwarder.onShowWidgetSettings();
+    }
 }

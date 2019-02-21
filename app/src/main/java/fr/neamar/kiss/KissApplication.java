@@ -1,8 +1,11 @@
 package fr.neamar.kiss;
 
 import android.app.Application;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.util.Log;
 
 public class KissApplication extends Application {
@@ -15,6 +18,24 @@ public class KissApplication extends Application {
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;
     private MainActivity mainActivity;
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // create intent to update all instances of the widget
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, ZenWidget.class);
+
+        // retrieve all appWidgetIds for the widget & put it into the Intent
+        AppWidgetManager appWidgetMgr = AppWidgetManager.getInstance(this);
+        ComponentName cm = new ComponentName(this, ZenWidget.class);
+        int[] appWidgetIds = appWidgetMgr.getAppWidgetIds(cm);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+
+        // update the widget
+        sendBroadcast(intent);
+    }
 
     public static KissApplication getApplication(Context context) {
         return (KissApplication) context.getApplicationContext();

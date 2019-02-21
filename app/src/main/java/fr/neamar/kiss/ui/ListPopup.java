@@ -184,11 +184,8 @@ public class ListPopup extends PopupWindow {
 
             Point size = new Point(0, 0);
             windowManager.getDefaultDisplay().getSize(size);
-            if (size.x > 0 && ((size.x - linearLayout.getMeasuredWidth()) < marginHorizontal * 2)) {
-                setWidth(size.x - marginHorizontal * 2);
-            } else {
-                setWidth(Math.max(linearLayout.getMeasuredWidth(), size.x / 2));
-            }
+            setWidth(size.x - marginHorizontal * 2);
+
         }
 
         showAtLocation(view, Gravity.CENTER, 0, 0);
