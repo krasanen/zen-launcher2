@@ -60,7 +60,7 @@ public class DriveServiceHelper {
     public Task<String> createFile(String name) {
         return Tasks.call(mExecutor, () -> {
             File metadata = new File()
-                    .setParents(Collections.singletonList("root"))
+                    .setParents(Collections.singletonList("appDataFolder"))
                     .setMimeType("text/plain")
                     .setName(name);
 
@@ -138,7 +138,7 @@ public class DriveServiceHelper {
      */
     public Task<FileList> queryFiles() {
         return Tasks.call(mExecutor, () ->
-                mDriveService.files().list().setSpaces("drive").execute());
+                mDriveService.files().list().setSpaces("appDataFolder").execute());
     }
 
     /**
@@ -199,7 +199,7 @@ public class DriveServiceHelper {
         Log.d(TAG,"rename: "+file.getName()+" to:"+newName);
         return Tasks.call(mExecutor, () -> {
             File metadata = new File()
-                    .setParents(Collections.singletonList("root"))
+                    .setParents(Collections.singletonList("appDataFolder"))
                     .setMimeType("text/plain")
                     .setName(newName);
 

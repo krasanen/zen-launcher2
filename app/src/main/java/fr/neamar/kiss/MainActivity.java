@@ -28,6 +28,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.net.Uri;
@@ -397,7 +398,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
-        }else {
+        } else {
             return true;
         }
         return false;
@@ -797,31 +798,49 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     public static boolean flashToggle;
 
+    Camera camera = null;
     public void toggleFlashLight() {
         if (BuildConfig.DEBUG) Log.d(TAG, "toggleFlashLight");
         flashToggle = !flashToggle;
-        try {
-            CameraManager cameraManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                CameraManager cameraManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
                 for (String id : cameraManager.getCameraIdList()) {
-
                     // Turn on the flash if camera has one
                     if (cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.FLASH_INFO_AVAILABLE)) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            cameraManager.setTorchMode(id, flashToggle);
-                            if (flashToggle) {
-                                Toast.makeText(this, R.string.flashlight_on, Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(this, R.string.flashlight_off, Toast.LENGTH_SHORT).show();
-                            }
-                        }
+                        cameraManager.setTorchMode(id, flashToggle);
                     }
                 }
+            } catch (Exception e2) {
+                Toast.makeText(getApplicationContext(), "Torch Failed: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        } catch (Exception e2) {
-            Toast.makeText(getApplicationContext(), "Torch Failed: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
+        } else {  //Lollipop and older
+            try {
+                if (flashToggle) {
+                    if (camera == null)
+                        camera = Camera.open();
+                    Camera.Parameters p = camera.getParameters();
+                    p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    camera.setParameters(p);
+                    camera.startPreview();
+                } else {
+                    if (camera == null)
+                        camera = Camera.open();
+                    Camera.Parameters p = camera.getParameters();
+                    p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    camera.setParameters(p);
+                    camera.stopPreview();
+                }
+            } catch (RuntimeException e){
+
+            }
         }
 
+        if (flashToggle) {
+            Toast.makeText(this, R.string.flashlight_on, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.flashlight_off, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -1000,7 +1019,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         dismissSpinner();
                         final ViewGroup root = (ViewGroup) this.getWindow().getDecorView().findViewById(android.R.id.content);
 
-                        final View view = new View(this.getApplicationContext());
+                        final View view = new View(MainActivity.this);
                         view.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
 
 
@@ -1008,7 +1027,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
                         StringBuilder builder = new StringBuilder();
-                        PopupMenu popupExcludeMenu = new PopupMenu(this.getApplicationContext(), view);
+                        PopupMenu popupExcludeMenu = new PopupMenu(MainActivity.this, view);
                         int i = 0;
                         for (File file : fileList.getFiles()) {
                             //mDriveServiceHelper.deleteFile(file);
@@ -1082,7 +1101,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
-
     private void queryNewName(String name, File fileLocal) {
 
 
@@ -1104,7 +1122,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 mDriveServiceHelper.renameFile(fileLocal, String.valueOf(input.getText())).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG,"Rename Failed");
+                        Log.d(TAG, "Rename Failed");
                     }
                 });
             }
@@ -1120,6 +1138,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (forwarderManager.onOptionsItemSelected(item)) {
@@ -1507,8 +1526,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     })
                     .addOnFailureListener(exception -> {
                         Toast.makeText(this, "Couldn't read file.", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Couldn't read file.", exception);
-                            dismissSpinner();
+                        Log.e(TAG, "Couldn't read file.", exception);
+                        dismissSpinner();
                     });
 
         }
@@ -1677,8 +1696,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                 updateUI(false);
                             }); */
 
-                    if (action>0){
-                        switch (action){
+                    if (action > 0) {
+                        switch (action) {
                             case R.id.saveToGoogle:
                                 saveToGoogle();
                                 break;
