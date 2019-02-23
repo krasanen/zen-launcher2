@@ -775,6 +775,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onStop() {
         super.onStop();
+        if (camera!=null) {
+            camera.release();
+        }
         forwarderManager.onStop();
         super.onStop();
         if (mServiceBound) {
@@ -815,25 +818,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 Toast.makeText(getApplicationContext(), "Torch Failed: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
             }
         } else {  //Lollipop and older
-            try {
-                if (flashToggle) {
-                    if (camera == null)
-                        camera = Camera.open();
-                    Camera.Parameters p = camera.getParameters();
-                    p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    camera.setParameters(p);
-                    camera.startPreview();
-                } else {
-                    if (camera == null)
-                        camera = Camera.open();
-                    Camera.Parameters p = camera.getParameters();
-                    p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    camera.setParameters(p);
-                    camera.stopPreview();
-                }
-            } catch (RuntimeException e){
-
-            }
+            toggleFlashLightPreM(flashToggle);
         }
 
         if (flashToggle) {
@@ -842,6 +827,25 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Toast.makeText(this, R.string.flashlight_off, Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void toggleFlashLightPreM(boolean on){
+        flashToggle = on;
+        try {
+            if (on) {
+                camera = Camera.open();
+                Camera.Parameters p = camera.getParameters();
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                camera.setParameters(p);
+                camera.startPreview();
+            } else {
+                if (camera!=null) {
+                    camera.release();
+                }
+            }
+        } catch (RuntimeException e){
+
+        }
     }
 
     public void setNightMode(Context target, boolean state) {
@@ -881,6 +885,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
         if (BuildConfig.DEBUG) Log.d(TAG, "onResume()");
+        if (flashToggle){
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                toggleFlashLightPreM(flashToggle);
+            }
+        }
         if (mDebugJson) {
             try {
                 String settings = this.getSerializedSettings2();
@@ -919,7 +928,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
 
         forwarderManager.onResume();
-
         super.onResume();
     }
 

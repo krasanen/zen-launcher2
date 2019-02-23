@@ -13,7 +13,7 @@ public class KissApplication extends Application {
      * Number of ms to wait, after a click occurred, to record a launch
      * Setting this value to 0 removes all animations
      */
-    public static final int TOUCH_DELAY = 120;
+    public static final int TOUCH_DELAY = 0;
     private DataHandler dataHandler;
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;

@@ -290,6 +290,10 @@ public class AppResult extends Result {
 
     @Override
     public void doLaunch(Context context, View v) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            // release camera to be usable in other apps
+            KissApplication.getApplication(context).getMainActivity().toggleFlashLightPreM(false);
+        }
         try {
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 LauncherApps launcher = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
