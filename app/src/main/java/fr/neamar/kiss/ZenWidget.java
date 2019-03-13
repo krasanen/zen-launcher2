@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
@@ -20,9 +21,10 @@ public class ZenWidget extends AppWidgetProvider {
     private static final String MyOnClick = "myOnClickTag";
     private RemoteViews remoteViews;
     private ComponentName watchWidget;
+    private static final String TAG = ZenWidget.class.getSimpleName();
     void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
+        Log.d(TAG,"updateAppWidget:"+appWidgetId);
 
         // Construct the RemoteViews object
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.zen_widget);
@@ -42,11 +44,12 @@ public class ZenWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);//add this line
+        super.onReceive(context, intent);
         MainActivity mainActivity = KissApplication.getApplication(context).getMainActivity();
         if (MyOnClick.equals(intent.getAction())){
             remoteViews = new RemoteViews( context.getPackageName(), R.layout.zen_widget );
@@ -62,12 +65,17 @@ public class ZenWidget extends AppWidgetProvider {
     }
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+        super.onEnabled(context);
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
+        super.onDisabled(context);
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
     }
 }
 

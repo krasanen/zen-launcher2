@@ -26,6 +26,7 @@ import fi.zmengames.zen.ParcelableUtil;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
+import fr.neamar.kiss.ZenWidget;
 import fr.neamar.kiss.ui.WidgetLayout;
 import fr.neamar.kiss.ui.WidgetMenu;
 import fr.neamar.kiss.ui.WidgetPreferences;
@@ -375,6 +376,10 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         WidgetPreferences wp = WidgetPreferences.unserialize(data);
         int w = ViewGroup.LayoutParams.WRAP_CONTENT;
         int h = ViewGroup.LayoutParams.WRAP_CONTENT;
+        if (appWidgetInfo.provider.getClassName().contains(ZenWidget.class.getSimpleName())) {
+            w = appWidgetInfo.minWidth;
+            h = appWidgetInfo.minHeight;
+        }
         if (BuildConfig.DEBUG) Log.d(TAG, "1w:" + w + " h:" + h);
         if (wp != null) {
             w = wp.width;
