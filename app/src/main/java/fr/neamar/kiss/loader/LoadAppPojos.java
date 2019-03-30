@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
+import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.TagsHandler;
 import fr.neamar.kiss.cache.MemoryCacheHelper;
@@ -27,10 +27,11 @@ import fr.neamar.kiss.utils.UserHandle;
 public class LoadAppPojos extends LoadPojos<AppPojo> {
 
     private final TagsHandler tagsHandler;
-
+    private BadgeHandler badgeHandler;
     public LoadAppPojos(Context context) {
         super(context, "app://");
         tagsHandler = KissApplication.getApplication(context).getDataHandler().getTagsHandler();
+        badgeHandler = KissApplication.getApplication(context).getDataHandler().getBadgeHandler();
     }
 
     @Override
@@ -62,6 +63,7 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
                     AppPojo app = new AppPojo(id, appInfo.packageName, activityInfo.getName(), user);
 
                     app.setName(activityInfo.getLabel().toString());
+                    app.setBadgeCount(badgeHandler.getBadgeCount(appInfo.packageName));
 
                     app.setTags(tagsHandler.getTags(app.id));
 

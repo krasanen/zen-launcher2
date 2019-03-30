@@ -34,6 +34,7 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -147,6 +148,7 @@ import xiaofei.library.hermeseventbus.HermesEventBus;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
+import android.net.Uri;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -260,6 +262,25 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private int widgetAddY;
     public int action;
 
+    /**
+     * Access instance from broadcasters
+     */
+    public static MainActivity instance;
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
+    public void reloadBadges(){
+        Log.d(TAG,"reloadBadges");
+        adapter.reloadBadges();
+        this.adapter.notifyDataSetChanged();
+        forwarderManager.onFavoriteChange();
+    }
+
+    public void reloadBadge(String packageName) {
+        adapter.reloadBadge(packageName);
+        forwarderManager.onFavoriteChange();
+    }
     public void signIn(int action) {
         if (BuildConfig.DEBUG) Log.d(TAG, "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -453,6 +474,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         if (BuildConfig.DEBUG) Log.d(TAG, "onCreate()");
         KissApplication.getApplication(this).setMainActivity(this);
         HermesEventBus.getDefault().init(this);
@@ -487,6 +509,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          * Set the view and store all useful components
          */
         setContentView(R.layout.main);
+        // Apps may notify badge updates for Samsung devices
+        // through a ContentResolver on the url: content://com.sec.badge/apps
+        if (SamsungBadgeObserver.providerExists(this)) {
+
+            //Content Resolver has content, so, register for updates and load its actual content
+            Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
+            getContentResolver()
+                    .registerContentObserver(samsungBadgeUri, true, new SamsungBadgeObserver(new Handler(), this));
+            SamsungBadgeObserver.loadBadges(this);
+        }
+
+
         this.list = this.findViewById(android.R.id.list);
         this.listContainer = (View) this.list.getParent();
         this.emptyListView = this.findViewById(android.R.id.empty);
@@ -885,6 +919,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
         if (BuildConfig.DEBUG) Log.d(TAG, "onResume()");
+        reloadBadges();
         if (flashToggle){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 toggleFlashLightPreM(flashToggle);
@@ -2134,7 +2169,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             searchTask = null;
         }
     }
-
+    protected void onPause() {
+        super.onPause();
+        instance = null;
+    }
     /**
      * Call this function when we're leaving the activity after clicking a search result
      * to clear the search list.

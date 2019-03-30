@@ -36,6 +36,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!--for Samsung-->
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
+
+
     <meta-data
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version" />
@@ -74,6 +79,14 @@
                 android:name="android.appwidget.provider"
 
                 android:resource="@xml/zen_widget_info" />
+        </receiver>
+
+        <receiver android:name=".broadcast.BadgeCountHandler">
+            <intent-filter>
+                <action android:name="android.intent.action.BADGE_COUNT_UPDATE" />
+                <action android:name="com.htc.launcher.action.UPDATE_SHORTCUT" />
+                <action android:name="com.sonyericsson.home.action.UPDATE_BADGE" />
+            </intent-filter>
         </receiver>
 
         <meta-data

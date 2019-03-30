@@ -13,7 +13,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
+import fr.neamar.kiss.BadgeHandler;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -79,6 +79,13 @@ public class AppResult extends Result {
             this.setAsyncDrawable(appIcon);
         } else {
             appIcon.setImageDrawable(null);
+        }
+        TextView badgeView = (TextView) view.findViewById(R.id.item_badge_count);
+        if (pojo.getBadgeCount() > 0) {
+            badgeView.setText(String.valueOf(pojo.getBadgeText()));
+            badgeView.setVisibility(View.VISIBLE);
+        } else {
+            badgeView.setVisibility(View.GONE);
         }
         return view;
     }
@@ -316,5 +323,8 @@ public class AppResult extends Result {
             // (null pointer exception can be thrown on Lollipop+ when app is missing)
             Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
         }
+    }
+    public String getPackageName() {
+        return appPojo.packageName;
     }
 }

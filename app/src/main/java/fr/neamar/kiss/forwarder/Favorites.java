@@ -143,6 +143,13 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 image.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 textView = layout.findViewById(R.id.favorite_item_text);
                 textView.setText(pojo.getName());
+                TextView badgeView = (layout.findViewById(R.id.fav_item_badge_count));
+                if (pojo.getBadgeCount() > 0) {
+                    badgeView.setText(String.valueOf(pojo.getBadgeText()));
+                    badgeView.setVisibility(View.VISIBLE);
+                } else {
+                    badgeView.setVisibility(View.GONE);
+                }
                 ((ViewGroup) mainActivity.favoritesBar).addView(layout);
                 favoritesViews.add(layout);
             } else {

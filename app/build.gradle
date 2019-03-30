@@ -68,6 +68,7 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'xiaofei.library:hermes-eventbus:0.3.0'
+    implementation "me.leolin:ShortcutBadger:1.1.22@aar"
 }
 
 buildscript {

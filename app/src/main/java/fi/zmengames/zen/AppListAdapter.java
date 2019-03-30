@@ -72,6 +72,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
             holder.text = (TextView) view.findViewById(R.id.text);
             holder.text.setVisibility(View.GONE);
             holder.context = getContext();
+            holder.badge = (TextView) view.findViewById(R.id.zen_badge_count);
             // initialize views
             view.setTag(holder);  // set tag on view
         } else {
@@ -89,6 +90,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
     static class ViewHolder {
         TextView text;
         ImageView icon;
+        TextView badge;
         Context context;
     }
 
@@ -96,6 +98,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
         private final int mPosition;
         private ViewHolder v;
         private String text;
+        private String badgeText;
         private ImageLoadTask(int position) {
             this.mPosition = position;
 
@@ -107,6 +110,10 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
             Pojo item = getItem(mPosition);
             final Result result = Result.fromPojo(null, item);
             this.text = item.getName();
+
+            if (item.getBadgeCount()>0){
+                this.badgeText = item.getBadgeText();
+            }
             return result.getDrawable(v.context);
         }
 
@@ -119,6 +126,10 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
             v.text.setVisibility(View.VISIBLE);
             v.icon.setVisibility(View.VISIBLE);
             v.icon.setImageDrawable(result);
+            if (badgeText !=null) {
+                v.badge.setText(badgeText);
+                v.badge.setVisibility(View.VISIBLE);
+            }
 
         }
     }

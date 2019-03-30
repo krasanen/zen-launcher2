@@ -48,7 +48,7 @@ import fi.zmengames.zen.ZEvent;
 
 public class DataHandler
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    final static private String TAG = "DataHandler";
+    private static final String TAG = DataHandler.class.getSimpleName();
 
     /**
      * Package the providers reside in
@@ -61,11 +61,20 @@ public class DataHandler
             "app", "contacts", "search", "settings", "shortcuts"
     );
     private TagsHandler tagsHandler;
+    private static BadgeHandler badgeHandler;
     final private Context context;
     private String currentQuery;
     private final Map<String, ProviderEntry> providers = new HashMap<>();
     public boolean allProvidersHaveLoaded = false;
     private long start;
+
+
+    public BadgeHandler getBadgeHandler() {
+        if (badgeHandler == null) {
+            badgeHandler = new BadgeHandler(context);
+        }
+        return badgeHandler;
+    }
 
     /**
      * Initialize all providers

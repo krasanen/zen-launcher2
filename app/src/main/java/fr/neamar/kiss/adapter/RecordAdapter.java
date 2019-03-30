@@ -2,9 +2,10 @@ package fr.neamar.kiss.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
@@ -33,7 +34,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     private final Context context;
     private final QueryInterface parent;
     private FuzzyScore fuzzyScore;
-
+    private static final String TAG = RecordAdapter.class.getSimpleName();
     /**
      * Array list containing all the results currently displayed
      */
@@ -50,7 +51,51 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         this.results = results;
         this.fuzzyScore = null;
     }
+    public void reloadBadges() {
+        Log.d(TAG,"reloadBadges");
+        for (Result result : results) {
+            if (result instanceof AppResult) {
+                AppResult appResult = (AppResult) result;
+                appResult.reloadBadgeCount(context, appResult);
+            }
+        }
 
+        ((MainActivity) context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(MainActivity.getInstance() != null){
+                    Log.d(TAG,"notifyDataSetChanged");
+                     RecordAdapter.this.notifyDataSetChanged();
+                }
+
+            }
+        });
+    }
+
+    public void reloadBadge(String packageName) {
+        Log.d(TAG,"reloadBadge: "+packageName);
+        boolean found = false;
+        for (Result result : results) {
+            if (result instanceof AppResult) {
+                AppResult appResult = (AppResult) result;
+                if (appResult.getPackageName().equals(packageName)) {
+                    appResult.reloadBadgeCount(context, appResult);
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (found) {
+            ((MainActivity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    RecordAdapter.this.notifyDataSetChanged();
+                }
+            });
+        }
+
+    }
     @Override
     public int getViewTypeCount() {
         return 6;

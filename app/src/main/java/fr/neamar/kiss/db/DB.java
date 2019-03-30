@@ -10,7 +10,7 @@ import fr.neamar.kiss.BuildConfig;
 class DB extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "kiss.s3db";
-    private final static int DB_VERSION = 5;
+    private final static int DB_VERSION = 6;
 
     DB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -22,13 +22,16 @@ class DB extends SQLiteOpenHelper {
         database.execSQL("CREATE TABLE shortcuts ( _id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, package TEXT,"
                 + "icon TEXT, intent_uri TEXT NOT NULL, icon_blob BLOB)");
         createTags(database);
+        createBadges(database);
     }
 
     private void createTags(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE tags ( _id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT NOT NULL, record TEXT NOT NULL)");
         database.execSQL("CREATE INDEX idx_tags_record ON tags(record);");
     }
-
+    private void createBadges(SQLiteDatabase database) {
+        database.execSQL("CREATE TABLE badges ( _id INTEGER PRIMARY KEY AUTOINCREMENT, package INT NOT NULL, badge_count INT NOT NULL)");
+    }
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         if(BuildConfig.DEBUG) Log.d("onUpgrade", "Updating database from version " + oldVersion + " to version " + newVersion);
@@ -44,6 +47,9 @@ class DB extends SQLiteOpenHelper {
                     // fall through
                 case 4:
                     createTags(database);
+                    // fall through
+                case 5:
+                    createBadges(database);
                     // fall through
                 default:
                     break;

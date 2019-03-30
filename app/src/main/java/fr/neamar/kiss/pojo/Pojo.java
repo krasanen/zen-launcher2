@@ -21,6 +21,8 @@ public abstract class Pojo {
     // How relevant is this record ? The higher, the most probable it will be
     // displayed
     public int relevance = 0;
+    private int badgeCount = 0;
+    private String displayBadge;
     // Name for this pojo, e.g. app name
     String name = "";
 
@@ -32,6 +34,9 @@ public abstract class Pojo {
         return name;
     }
 
+    public int getBadgeCount(){
+        return badgeCount;
+    }
     /**
      * Set the user-displayable name of this container
      * <p/>
@@ -58,6 +63,18 @@ public abstract class Pojo {
         } else {
             this.name = name;
             this.normalizedName = null;
+        }
+    }
+
+    public String getBadgeText(){
+        return displayBadge;
+    }
+    public void setBadgeCount(int badgeCount){
+        this.badgeCount = badgeCount;
+        if (badgeCount > 99){
+            displayBadge = "99";
+        }else{
+            displayBadge = String.valueOf(badgeCount);
         }
     }
 }

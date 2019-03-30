@@ -7,19 +7,35 @@ android:layout_width="0px"
 android:layout_weight="1"
 android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-<ImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/favorite_item_image"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/appSelectableItemBackground"
-    android:contentDescription="@null"
-    android:padding="@dimen/favorite_padding"
-    android:layout_marginBottom="20dp"
-    tools:src="@drawable/ic_contact" />
+        <ImageView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/favorite_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/appSelectableItemBackground"
+            android:contentDescription="@null"
+            android:padding="@dimen/favorite_padding"
+            android:layout_marginBottom="20dp"
+            tools:src="@drawable/ic_contact" />
+        <TextView
+            android:id="@+id/fav_item_badge_count"
+            android:layout_alignBottom="@id/favorite_item_image"
+            android:layout_alignEnd="@id/favorite_item_image"
+            android:layout_alignRight="@id/favorite_item_image"
+            android:background="@drawable/badge_background"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:visibility="gone"
+            android:textSize="10sp" />
 
+    </RelativeLayout>
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/favorite_item_text"

@@ -24,6 +24,7 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
@@ -105,7 +106,11 @@ public abstract class Result {
         }
         view.setText(enriched);
     }
-
+    public void reloadBadgeCount(Context context, AppResult appResult) {
+        BadgeHandler badgeHandler = KissApplication.getApplication(context).getDataHandler().getBadgeHandler();
+        int count = badgeHandler.getBadgeCount(appResult.getPackageName());
+        appResult.pojo.setBadgeCount(count);
+    }
     public boolean displayHighlighted(StringNormalizer.Result normalized, String text, FuzzyScore fuzzyScore,
             TextView view, Context context) {
         FuzzyScore.MatchInfo matchInfo = fuzzyScore.match(normalized.codePoints);

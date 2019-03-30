@@ -7,6 +7,7 @@ public class AppPojo extends PojoWithTags {
     public String activityName;
     public UserHandle userHandle;
 
+    public String displayBadge = "";
     public AppPojo(String id, String packageName, String activityName, UserHandle userHandle) {
         super(id);
 
@@ -14,7 +15,6 @@ public class AppPojo extends PojoWithTags {
         this.activityName = activityName;
         this.userHandle = userHandle;
     }
-
     public String getComponentName() {
         return userHandle.addUserSuffixToString(packageName + "/" + activityName, '#');
     }
