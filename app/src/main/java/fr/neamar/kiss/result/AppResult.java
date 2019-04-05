@@ -369,7 +369,7 @@ public class AppResult extends Result {
                     View potentialIcon = v.findViewById(R.id.item_app_icon);
                     if(potentialIcon == null) {
                         // If favorite, find the icon
-                        potentialIcon = v.findViewById(R.id.favorite);
+                        potentialIcon = v.findViewById(R.id.favorite_item_image);
                     }
 
                     if (potentialIcon != null) {

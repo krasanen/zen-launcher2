@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
-
     <string name="app_name">Zen Launcher</string>
     <string name="activity_setting">Zen Launcher settings</string>
     <string name="ui_search_hint">Search apps, contacts, …</string>
@@ -204,9 +203,12 @@
     <string name="large_search_bar">Large search bar</string>
     <string name="rounded_list">Rounded list corners</string>
     <string name="rounded_bars">Rounded bar corners</string>
+    <string name="swap_kiss_button_with_menu">Zen button on the right</string>
+
     <!-- Widget strings, preference id should not be translated -->
     <string name="menu_widget_settings">Widget settings</string>
     <string name="menu_widget_add">Add widget</string>
+
     <string name="menu_widget_remove">Remove widget</string>
     <string name="rate_the_app">Rate the app</string>
     <string name="history_settings_summary">Reset your history, exclude apps, …</string>

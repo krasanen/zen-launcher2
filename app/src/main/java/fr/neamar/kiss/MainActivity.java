@@ -36,8 +36,10 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import android.os.Handler;
 import android.os.IBinder;
+
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 
@@ -58,12 +60,15 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+
 import android.view.ViewTreeObserver;
+
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -222,6 +227,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      * Utility for automatically hiding the keyboard when scrolling down
      */
     private KeyboardScrollHider hider;
+
+    /**
+     * The ViewGroup that wraps the buttons at the right hand side of the searchEditText
+     */
+    public ViewGroup rightHandSideButtonsWrapper;
     /**
      * Menu button
      */
@@ -239,10 +249,20 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      * Progress bar displayed when loading
      */
     private View loaderSpinner;
+
+    /**
+     * The ViewGroup that wraps the buttons at the left hand side of the searchEditText
+     */
+    public ViewGroup leftHandSideButtonsWrapper;
     /**
      * Launcher button, can be clicked to display all apps
      */
     public View launcherButton;
+
+    /**
+     * Launcher button's white counterpart, which appears when launcher button is clicked
+     */
+    public View whiteLauncherButton;
     /**
      * "X" button to empty the search field
      */
@@ -534,10 +554,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.listContainer = (View) this.list.getParent();
         this.emptyListView = this.findViewById(android.R.id.empty);
         this.kissBar = findViewById(R.id.mainKissbar);
+        this.rightHandSideButtonsWrapper = findViewById(R.id.rightHandSideButtonsWrapper);
         this.menuButton = findViewById(R.id.menuButton);
         this.searchEditText = findViewById(R.id.searchEditText);
         this.loaderSpinner = findViewById(R.id.loaderBar);
+        this.leftHandSideButtonsWrapper = findViewById(R.id.leftHandSideButtonsWrapper);
         this.launcherButton = findViewById(R.id.launcherButton);
+        this.whiteLauncherButton = findViewById(R.id.whiteLauncherButton);
         this.clearButton = findViewById(R.id.clearButton);
         this.numericButton = findViewById(R.id.numericButton);
         this.numericButton.setClickable(false);
@@ -788,7 +811,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (isKeyboardVisible()) {
             forwarderManager.switchInputType();
         } else {
-            //emptyListView.setPressed(true);
+            if (isShowingPopup()){
+                dismissPopup();
+            }
+            showHistory();
         }
     }
 
@@ -2193,8 +2219,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void displayKissBar(boolean display, boolean clearSearchText, Searcher searchTask) {
         dismissPopup();
         // get the center for the clipping circle
-        int cx = (launcherButton.getLeft() + launcherButton.getRight()) / 2;
-        int cy = (launcherButton.getTop() + launcherButton.getBottom()) / 2;
+        ViewGroup launcherButtonWrapper = (ViewGroup) launcherButton.getParent();
+        int cx = (launcherButtonWrapper.getLeft() + launcherButtonWrapper.getRight()) / 2;
+        int cy = (launcherButtonWrapper.getTop() + launcherButtonWrapper.getBottom()) / 2;
 
         // get the final radius for the clipping circle
         int finalRadius = Math.max(kissBar.getWidth(), kissBar.getHeight());
