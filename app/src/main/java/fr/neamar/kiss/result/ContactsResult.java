@@ -613,7 +613,7 @@ public class ContactsResult extends Result {
                 "vnd.android.cursor.item/vnd.com.whatsapp.voip.call");
         // intent.setPackage("com.whatsapp");
 
-        intent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.accountsync.ProfileActivity"));
+        intent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.accountsync.CallContactLandingActivity"));
 
 
             context.startActivity(intent);

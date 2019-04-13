@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -108,6 +109,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -144,10 +146,19 @@ import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
+import me.leolin.shortcutbadger.ShortcutBadgeException;
+import me.leolin.shortcutbadger.impl.IntentConstants;
+import me.leolin.shortcutbadger.util.BroadcastHelper;
 import xiaofei.library.hermeseventbus.HermesEventBus;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
+import static android.view.View.SCROLLBARS_INSIDE_INSET;
+import static android.view.View.SCROLLBARS_INSIDE_OVERLAY;
+import static android.view.View.SCROLLBARS_OUTSIDE_INSET;
+import static android.view.View.SCROLLBARS_OUTSIDE_OVERLAY;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
+import static me.leolin.shortcutbadger.impl.XiaomiHomeBadger.INTENT_ACTION;
+
 import android.net.Uri;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
@@ -266,19 +277,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      * Access instance from broadcasters
      */
     public static MainActivity instance;
+    private SamsungBadgeObserver samsungBadgeObserver;
 
     public static MainActivity getInstance() {
         return instance;
     }
-    public void reloadBadges(){
-        Log.d(TAG,"reloadBadges");
-        adapter.reloadBadges();
-        this.adapter.notifyDataSetChanged();
-        forwarderManager.onFavoriteChange();
-    }
 
-    public void reloadBadge(String packageName) {
-        adapter.reloadBadge(packageName);
+    public void reloadBadge(String packageName, Integer badge_count) {
+        Log.d(TAG,"reloadBadge");
+        adapter.reloadBadge(packageName, badge_count);
+        this.adapter.notifyDataSetChanged();
         forwarderManager.onFavoriteChange();
     }
     public void signIn(int action) {
@@ -467,7 +475,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
-
+    Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
     /**
      * Called when the activity is first created.
      */
@@ -514,7 +522,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (SamsungBadgeObserver.providerExists(this)) {
 
             //Content Resolver has content, so, register for updates and load its actual content
-            Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
+            samsungBadgeObserver = new SamsungBadgeObserver(new Handler(), this);
+
             getContentResolver()
                     .registerContentObserver(samsungBadgeUri, true, new SamsungBadgeObserver(new Handler(), this));
             SamsungBadgeObserver.loadBadges(this);
@@ -672,7 +681,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         //findViewById(R.id.main).setOnLongClickListener(new MyOnClickListener());
         //if(BuildConfig.DEBUG) Log.d(TAG,"<setOnDragListener");
-
+        if (prefs.getBoolean("bluelightfilter", false)) {
+            // setBlueLightFilter(true);
+        }
     }
 
     private void buildWidgetPopupMenu(final View view) {
@@ -919,7 +930,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
         if (BuildConfig.DEBUG) Log.d(TAG, "onResume()");
-        reloadBadges();
+        if (SamsungBadgeObserver.providerExists(this)) {
+            getContentResolver()
+                    .registerContentObserver(samsungBadgeUri, true, new SamsungBadgeObserver(new Handler(), this));
+        }
         if (flashToggle){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 toggleFlashLightPreM(flashToggle);
@@ -942,9 +956,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             this.recreate();
             return;
         }
-        if (prefs.getBoolean("bluelightfilter", false)) {
-            setBlueLightFilter(true);
-        }
+
 
         dismissPopup();
 
@@ -969,6 +981,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (SamsungBadgeObserver.providerExists(this)) {
+            getContentResolver()
+                    .unregisterContentObserver(samsungBadgeObserver);
+        }
         HermesEventBus.getDefault().destroy();
     }
 
@@ -1000,6 +1016,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         Toast.LENGTH_LONG).show();
 
                 break;
+            case BADGE_COUNT:
+                Log.v(TAG, "BADGE_COUNT");
+                reloadBadge(event.getText(), event.getIntExtra());
         }
     }
 
@@ -2094,7 +2113,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
                 list.setFastScrollAlwaysVisible(false);
             } else {
-                list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_RIGHT);
+                list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
                 list.setFastScrollAlwaysVisible(true);
             }
 

@@ -2,9 +2,12 @@ package fr.neamar.kiss.cache;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -18,7 +21,7 @@ public class MemoryCacheHelper {
 
     private static final HashMap<AppIconHandle, Drawable> sAppIconCache = new HashMap<>();
     private static boolean sPrefNoCache = false;
-
+    private static final String TAG = MemoryCacheHelper.class.getSimpleName();
     /**
      * If the app icon is not found in the cache we load it. Else return cache value. Synchronous function.
      *

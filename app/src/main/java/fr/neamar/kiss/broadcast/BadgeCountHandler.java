@@ -13,6 +13,8 @@ import fr.neamar.kiss.MainActivity;
 
 public class BadgeCountHandler extends BroadcastReceiver {
 
+    public static final String BADGECOUNT = "BADGE_COUNT";
+    public static final String PACKAGENAME = "PACKAGE_NAME";
     @Override
     public void onReceive(Context context, Intent intent) {
         DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
@@ -43,9 +45,8 @@ public class BadgeCountHandler extends BroadcastReceiver {
         }
 
         if (packageName != null) {
-            dataHandler.getBadgeHandler().setBadgeCount(packageName, badgeCount);
-            if(MainActivity.getInstance() != null){
-                MainActivity.getInstance().reloadBadge(packageName);
+            if (dataHandler.getBadgeHandler().getBadgeCount(packageName)!=badgeCount) {
+                dataHandler.getBadgeHandler().setBadgeCount(packageName, badgeCount);
             }
         }
 

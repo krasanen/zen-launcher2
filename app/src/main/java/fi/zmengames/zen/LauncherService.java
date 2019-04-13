@@ -32,16 +32,19 @@ import androidx.annotation.Nullable;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 
+import fr.neamar.kiss.broadcast.BadgeCountHandler;
 import xiaofei.library.hermeseventbus.HermesEventBus;
 
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
+import static fi.zmengames.zen.ZEvent.State.BADGE_COUNT;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
     public static final String LAUNCH_INTENT = "LAUNCH_INTENT";
+    public static final String SET_BADGE_COUNT = "SET_BADGE_COUNT";
     private static final String TAG = LauncherService.class.getSimpleName();
     public static final String GOOGLE_SIGN_IN = "GOOGLE_SIGN_IN";
     public static final String GOOGLE_SIGN_OUT = "GOOGLE_SIGN_OUT";
@@ -155,10 +158,16 @@ public class LauncherService extends Service {
                 else if (intent.getAction().equals(NIGHTMODE_ON)) createMaskView();
                 else if (intent.getAction().equals(NIGHTMODE_OFF)) destroyMaskView();
                 else if (intent.getAction().equals(LAUNCH_INTENT)) launchIntent(intent);
+                else if (intent.getAction().equals(SET_BADGE_COUNT)) setBadgeCount(intent);
             }
         });
 
         return START_NOT_STICKY;
+    }
+
+    private void setBadgeCount(Intent intent) {
+        if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignIn");
+        sendMessageNotSticky(new ZEvent(ZEvent.State.BADGE_COUNT, intent.getStringExtra(BadgeCountHandler.PACKAGENAME), intent.getIntExtra(BadgeCountHandler.BADGECOUNT,0)));
     }
 
     private void launchIntent(Intent intent) {

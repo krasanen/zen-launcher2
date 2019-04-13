@@ -36,14 +36,16 @@ import java.util.Map;
 import java.util.Random;
 
 import fr.neamar.kiss.utils.UserHandle;
+import me.leolin.shortcutbadger.ShortcutBadgeException;
+import me.leolin.shortcutbadger.impl.IntentConstants;
+import me.leolin.shortcutbadger.util.BroadcastHelper;
 
 /**
  * Inspired from http://stackoverflow.com/questions/31490630/how-to-load-icon-from-icon-pack
  */
 
 public class IconsHandler {
-
-    private static final String TAG = "IconsHandler";
+    private static final String TAG = IconsHandler.class.getSimpleName();
     // map with available icons packs
     private final HashMap<String, String> iconsPacks = new HashMap<>();
     // map with available drawable for an icons pack

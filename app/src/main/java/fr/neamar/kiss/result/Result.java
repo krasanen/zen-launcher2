@@ -50,7 +50,7 @@ public abstract class Result {
      * Current information pojo
      */
     @NonNull
-    final Pojo pojo;
+    public final Pojo pojo;
 
     Result(@NonNull Pojo pojo) {
         this.pojo = pojo;
@@ -106,11 +106,7 @@ public abstract class Result {
         }
         view.setText(enriched);
     }
-    public void reloadBadgeCount(Context context, AppResult appResult) {
-        BadgeHandler badgeHandler = KissApplication.getApplication(context).getDataHandler().getBadgeHandler();
-        int count = badgeHandler.getBadgeCount(appResult.getPackageName());
-        appResult.pojo.setBadgeCount(count);
-    }
+
     public boolean displayHighlighted(StringNormalizer.Result normalized, String text, FuzzyScore fuzzyScore,
             TextView view, Context context) {
         FuzzyScore.MatchInfo matchInfo = fuzzyScore.match(normalized.codePoints);

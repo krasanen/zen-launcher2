@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -143,16 +144,9 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 image.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 textView = layout.findViewById(R.id.favorite_item_text);
                 textView.setText(pojo.getName());
-                TextView badgeView = (layout.findViewById(R.id.fav_item_badge_count));
-                if (pojo.getBadgeCount() > 0) {
-                    badgeView.setText(String.valueOf(pojo.getBadgeText()));
-                    badgeView.setVisibility(View.VISIBLE);
-                } else {
-                    badgeView.setVisibility(View.GONE);
-                }
                 ((ViewGroup) mainActivity.favoritesBar).addView(layout);
                 favoritesViews.add(layout);
-            } else {
+             } else {
                 image =  favoritesViews.get(i).findViewById(R.id.favorite_item_image);
                 textView = favoritesViews.get(i).findViewById(R.id.favorite_item_text);
             }
@@ -172,6 +166,16 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             textView.setText(pojo.getName());
             image.setVisibility(View.VISIBLE);
             image.setContentDescription(pojo.getName());
+            favoritesViews.get(i).setVisibility(View.VISIBLE);
+            TextView badgeView = (favoritesViews.get(i).findViewById(R.id.fav_item_badge_count));
+            if (pojo.getBadgeCount() > 0) {
+                badgeView.setText(String.valueOf(pojo.getBadgeText()));
+                badgeView.setVisibility(View.VISIBLE);
+                badgeView.setX(getBitmapOffset(image)[2]-badgeView.getMeasuredWidth()/2);
+                badgeView.setY(getBitmapOffset(image)[3]);
+            } else {
+                badgeView.setVisibility(View.GONE);
+            }
         }
 
         // Hide empty favorites (not enough favorites yet)
@@ -181,7 +185,20 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
         mDragEnabled = favCount > 1;
     }
+    public static int[] getBitmapOffset(ImageView img) {
+        int[] offset = new int[4];
+        float[] values = new float[9];
+        Matrix m = img.getImageMatrix();
+        m.getValues(values);
+        offset[0] = (int) values[Matrix.MTRANS_Y];
+        offset[1] = (int) values[Matrix.MTRANS_X];
 
+        offset[2] = offset[1] + (int) (values[Matrix.MSCALE_X]*img.getDrawable().getIntrinsicWidth());
+        offset[3] = offset[0] + (int) (values[Matrix.MSCALE_Y]*img.getDrawable().getIntrinsicHeight());
+
+
+        return offset;
+    }
     void updateSearchRecords(String query) {
         if (query.isEmpty()) {
             mainActivity.favoritesBar.setVisibility(View.VISIBLE);

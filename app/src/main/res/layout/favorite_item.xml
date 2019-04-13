@@ -15,8 +15,8 @@ android:layout_height="match_parent">
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/favorite_item_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="?attr/appSelectableItemBackground"
             android:contentDescription="@null"
             android:layout_centerInParent="true"
@@ -25,14 +25,14 @@ android:layout_height="match_parent">
             tools:src="@drawable/ic_contact" />
         <TextView
             android:id="@+id/fav_item_badge_count"
-            android:layout_alignBottom="@id/favorite_item_image"
-            android:layout_alignEnd="@id/favorite_item_image"
-            android:layout_alignRight="@id/favorite_item_image"
+
             android:background="@drawable/badge_background"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            tools:src="@drawable/ic_contact"
+
             android:visibility="gone"
             android:textSize="10sp" />
     </RelativeLayout>

@@ -17,8 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import fr.neamar.kiss.BadgeHandler;
+import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.normalizer.StringNormalizer;
+import fr.neamar.kiss.pojo.AppPojo;
+import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.PhoneResult;
@@ -51,48 +55,25 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         this.results = results;
         this.fuzzyScore = null;
     }
-    public void reloadBadges() {
-        Log.d(TAG,"reloadBadges");
-        for (Result result : results) {
-            if (result instanceof AppResult) {
-                AppResult appResult = (AppResult) result;
-                appResult.reloadBadgeCount(context, appResult);
-            }
-        }
 
-        ((MainActivity) context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(MainActivity.getInstance() != null){
-                    Log.d(TAG,"notifyDataSetChanged");
-                     RecordAdapter.this.notifyDataSetChanged();
-                }
 
-            }
-        });
-    }
-
-    public void reloadBadge(String packageName) {
+    public void reloadBadge(String packageName, Integer badge_count) {
         Log.d(TAG,"reloadBadge: "+packageName);
+        List<Pojo> apps = KissApplication.getApplication(context).getDataHandler().getApplications();
+
         boolean found = false;
-        for (Result result : results) {
-            if (result instanceof AppResult) {
-                AppResult appResult = (AppResult) result;
-                if (appResult.getPackageName().equals(packageName)) {
-                    appResult.reloadBadgeCount(context, appResult);
+        if (apps!=null) {
+            for (Pojo result : apps) {
+
+                AppPojo pojo = (AppPojo) result;
+                if (pojo.packageName.equals(packageName)) {
+                    pojo.setBadgeCount(badge_count);
+                    Log.d(TAG, "reloadBadge: count" + pojo.getBadgeCount());
                     found = true;
                     break;
                 }
-            }
-        }
 
-        if (found) {
-            ((MainActivity) context).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    RecordAdapter.this.notifyDataSetChanged();
-                }
-            });
+            }
         }
 
     }

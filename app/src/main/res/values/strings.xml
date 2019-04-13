@@ -294,4 +294,6 @@
     <string name="showAppGrid">All Apps</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="badge">Add badge</string>
+    <string name="removeBadge">Remove badge</string>
 </resources>

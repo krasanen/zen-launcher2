@@ -13,10 +13,13 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
 import fr.neamar.kiss.BadgeHandler;
+
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +40,11 @@ import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 import fr.neamar.kiss.utils.SpaceTokenizer;
+import me.leolin.shortcutbadger.ShortcutBadgeException;
+import me.leolin.shortcutbadger.impl.IntentConstants;
+import me.leolin.shortcutbadger.util.BroadcastHelper;
+
+import static org.greenrobot.eventbus.EventBus.TAG;
 
 public class AppResult extends Result {
     private final AppPojo appPojo;
@@ -90,6 +98,23 @@ public class AppResult extends Result {
         return view;
     }
 
+    private static final String INTENT_ACTION = IntentConstants.DEFAULT_INTENT_ACTION;
+    private static final String INTENT_EXTRA_BADGE_COUNT = "badge_count";
+    private static final String INTENT_EXTRA_PACKAGENAME = "badge_count_package_name";
+    private static final String INTENT_EXTRA_ACTIVITY_NAME = "badge_count_class_name";
+
+    public static void executeBadge(Context context, String packageName, String className, int badgeCount) throws ShortcutBadgeException {
+        Log.d(TAG, "executeBadge " + packageName + ":" + className + "badgeCount:"+badgeCount);
+        Intent intent = new Intent(INTENT_ACTION);
+        intent.putExtra(INTENT_EXTRA_BADGE_COUNT, badgeCount);
+        intent.putExtra(INTENT_EXTRA_PACKAGENAME, packageName);
+        intent.putExtra(INTENT_EXTRA_ACTIVITY_NAME, className);
+
+        BroadcastHelper.sendDefaultIntentExplicitly(context, intent);
+        KissApplication.getApplication(context).getDataHandler().getBadgeHandler().setBadgeCount(packageName, badgeCount);;
+
+    }
+
     @Override
     protected ListPopup buildPopupMenu(Context context, ArrayAdapter<ListPopup.Item> adapter, final RecordAdapter parent, View parentView) {
         if ((!(context instanceof MainActivity)) || (((MainActivity) context).isViewingSearchResults())) {
@@ -100,6 +125,8 @@ public class AppResult extends Result {
         adapter.add(new ListPopup.Item(context, R.string.menu_tags_edit));
         adapter.add(new ListPopup.Item(context, R.string.menu_favorites_remove));
         adapter.add(new ListPopup.Item(context, R.string.menu_app_details));
+        adapter.add(new ListPopup.Item(context, R.string.badge));
+        adapter.add(new ListPopup.Item(context, R.string.removeBadge));
 
         try {
             // app installed under /system can't be uninstalled
@@ -149,8 +176,8 @@ public class AppResult extends Result {
                 final int EXCLUDE_KISS_ID = 1;
                 PopupMenu popupExcludeMenu = new PopupMenu(context, parentView);
                 //Adding menu items
-                popupExcludeMenu.getMenu().add(EXCLUDE_HISTORY_ID,Menu.NONE, Menu.NONE,R.string.menu_exclude_history);
-                popupExcludeMenu.getMenu().add(EXCLUDE_KISS_ID,Menu.NONE, Menu.NONE,R.string.menu_exclude_kiss);
+                popupExcludeMenu.getMenu().add(EXCLUDE_HISTORY_ID, Menu.NONE, Menu.NONE, R.string.menu_exclude_history);
+                popupExcludeMenu.getMenu().add(EXCLUDE_KISS_ID, Menu.NONE, Menu.NONE, R.string.menu_exclude_kiss);
                 //registering popup with OnMenuItemClickListener
                 popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -174,10 +201,30 @@ public class AppResult extends Result {
             case R.string.menu_tags_edit:
                 launchEditTagsDialog(context, appPojo);
                 return true;
+            case R.string.badge:
+
+                try {
+                    executeBadge(context, appPojo.packageName, appPojo.activityName, appPojo.getBadgeCount()+1);
+                } catch (ShortcutBadgeException e) {
+                    e.printStackTrace();
+                }
+
+                return true;
+            case R.string.removeBadge:
+
+                try {
+                    executeBadge(context, appPojo.packageName, appPojo.activityName, 0);
+                } catch (ShortcutBadgeException e) {
+                    e.printStackTrace();
+                }
+
+                return true;
         }
 
         return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
+
+    static int badgecount = 0;
 
     private void excludeFromHistory(Context context, AppPojo appPojo, final RecordAdapter parent) {
         //add to excluded from history app list
