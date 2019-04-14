@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
@@ -42,7 +43,7 @@ public class SaveShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 	@Override
 	protected Boolean doInBackground(Void... voids) {
 		String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-		Log.d(TAG, "Received shortcut " + name);
+        if (BuildConfig.DEBUG) Log.d(TAG, "Received shortcut " + name);
 
 		Intent target = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
 		if (target.getAction() == null) {
@@ -57,19 +58,17 @@ public class SaveShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 		// get embedded icon
 		Bitmap icon = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
 		if (icon != null) {
-			Log.d(TAG, "Shortcut " + name + " has embedded icon");
+        if (BuildConfig.DEBUG) Log.d(TAG, "Shortcut " + name + " has embedded icon");
 		} else {
 			Intent.ShortcutIconResource sir = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-
 			if (sir != null) {
-				Log.d(TAG, "Received icon package name " + sir.packageName);
-				Log.d(TAG, "Received icon resource name " + sir.resourceName);
-
+                if (BuildConfig.DEBUG) Log.d(TAG, "Received icon package name " + sir.packageName);
+                if (BuildConfig.DEBUG) Log.d(TAG, "Received icon resource name " + sir.resourceName);
 				packageName = sir.packageName;
 				resourceName = sir.resourceName;
 			} else {
 				//invalid shortcut
-				Log.d(TAG, "Invalid shortcut " + name + ", ignoring");
+                if (BuildConfig.DEBUG) Log.d(TAG, "Invalid shortcut " + name + ", ignoring");
 				cancel(true);
 				return null;
 			}
@@ -80,7 +79,7 @@ public class SaveShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 			if (intent.getCategories() != null && intent.getCategories().contains(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(intent.getAction())) {
 				// The Play Store has an option to create shortcut for new apps,
 				// However, KISS already displays all apps, so we discard the shortcut to avoid duplicates.
-				Log.d(TAG, "Shortcut for launcher app, discarded.");
+                if (BuildConfig.DEBUG) Log.d(TAG, "Shortcut for launcher app, discarded.");
 				cancel(true);
 				return null;
 			}

@@ -28,4 +28,5 @@
     <color name="bright_red">#FF0000</color>
     <color name="bright_yellow">#FFFF00</color>
     <color name="dark_yellow">#505000</color>
+    <color name="zenlauncher">#00ffff</color>
 </resources>

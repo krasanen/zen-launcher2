@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 
 import androidx.annotation.NonNull;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
@@ -55,7 +56,7 @@ public class SaveOreoShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 		final ShortcutInfo shortcutInfo = pinItemRequest.getShortcutInfo();
 		assert shortcutInfo != null;
 
-		Log.d(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
+		if (BuildConfig.DEBUG) Log.d(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
 
 		final LauncherApps launcherApps = this.launcherApps.get();
 		if(launcherApps == null) {
@@ -76,7 +77,7 @@ public class SaveOreoShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 		} else if (shortcutInfo.getLongLabel() != null) {
 			pojo.setName(shortcutInfo.getLongLabel().toString());
 		} else {
-			Log.d(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
+ 		if (BuildConfig.DEBUG) Log.d(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
 			cancel(true);
 			return null;
 		}

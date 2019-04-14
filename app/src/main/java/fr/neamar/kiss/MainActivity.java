@@ -1274,14 +1274,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             case R.id.loadFromGoogle:
                 signIn(R.id.loadFromGoogle);
                 return true;
-            case R.id.signIn:
-                if (!mSignedIn) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "signIn");
-                    Intent signInIntent = new Intent(this, LauncherService.class);
-                    signInIntent.setAction(LauncherService.GOOGLE_SIGN_IN);
-                    KissApplication.startLaucherService(signInIntent, this);
-                }
-                return true;
             case R.id.nightModeOn:
                 if (BuildConfig.DEBUG) Log.d(TAG, "nightModeOn");
                 if (checkPermissionOverlay(this)) {
@@ -2353,80 +2345,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         //displayKissBar(false,false,false);
     }
 
-
-    //
-    //
-    // TODO: https://acoustid.org/api-key ZlN4KdPFMn
-    /*Zen Launcher 1.0 FkPa1JhL2a
-    private boolean saveSharedPreferencesToFile(File dst) {
-        boolean res = false;
-        ObjectOutputStream output = null;
-        try {
-            output = new ObjectOutputStream(new FileOutputStream(dst));
-            SharedPreferences pref =
-                    getSharedPreferences(prefName, MODE_PRIVATE);
-            output.writeObject(pref.getAll());
-
-            res = true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if (output != null) {
-                    output.flush();
-                    output.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return res;
+    public void onAllAppsButtonClicked(View view) {
+        startAppGridActivity();
     }
-
-    @SuppressWarnings({ "unchecked" })
-    private boolean loadSharedPreferencesFromFile(JSONObject src) {
-        boolean res = false;
-        ObjectInputStream input = null;
-        try {
-
-
-            prefEdit.clear();
-            Map<String, ?> entries = (Map<String, ?>) input.readObject();
-            for (Map.Entry<String, ?> entry : entries.entrySet()) {
-                Object v = entry.getValue();
-                String key = entry.getKey();
-
-                if (v instanceof Boolean)
-                    prefEdit.putBoolean(key, ((Boolean) v).booleanValue());
-                else if (v instanceof Float)
-                    prefEdit.putFloat(key, ((Float) v).floatValue());
-                else if (v instanceof Integer)
-                    prefEdit.putInt(key, ((Integer) v).intValue());
-                else if (v instanceof Long)
-                    prefEdit.putLong(key, ((Long) v).longValue());
-                else if (v instanceof String)
-                    prefEdit.putString(key, ((String) v));
-            }
-            prefEdit.commit();
-            res = true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return res;
-    }
-    */
 }

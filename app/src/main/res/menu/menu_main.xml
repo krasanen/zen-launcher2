@@ -49,10 +49,6 @@
         android:title="@string/load_from_google"
         app:showAsAction="never" />
     <item
-        android:id="@+id/signIn"
-        android:title="@string/common_signin_button_text_long"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/nightModeOn"
         android:title="@string/nightmodeOn"
         app:showAsAction="ifRoom" />

@@ -16,11 +16,11 @@
         android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal" /> <!-- Self explanatory -->
-    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- To call a phone number directly without displaying the dialer -->
-    <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- To read phone state -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- To display contacts when searching -->
+    <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- To call a phone number directly without displaying the dialer -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Display notification drawer -->
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" /> <!-- Ability to uninstall an app from KISS -->
-    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" /> <!-- Display notification drawer -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" /> <!-- Ability to uninstall an app from KISS -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
@@ -34,7 +34,10 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--for Zen Flashlight, needed to be able to enable camera flash -->
+    <uses-permission android:name="android.permission.CAMERA"
+        android:required="false"/>
 
     <!--for Samsung-->
     <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
@@ -66,7 +69,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:resizeableActivity="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppThemeLight"
         tools:ignore="GoogleAppIndexingWarning">
         <receiver android:name=".ZenWidget"

@@ -25,7 +25,6 @@ android:layout_height="match_parent">
             tools:src="@drawable/ic_contact" />
         <TextView
             android:id="@+id/fav_item_badge_count"
-
             android:background="@drawable/badge_background"
             android:gravity="center"
             android:textColor="@android:color/white"

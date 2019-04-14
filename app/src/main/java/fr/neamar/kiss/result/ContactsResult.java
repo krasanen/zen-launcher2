@@ -603,6 +603,9 @@ public class ContactsResult extends Result {
 
     private void launchWhatsAppCall(final Context context) {
         // Create the intent to start a phone call
+
+
+        // Pre-android 23, or we already have permission
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
@@ -615,7 +618,8 @@ public class ContactsResult extends Result {
 
         intent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.accountsync.CallContactLandingActivity"));
 
-
+        // whatsapp calling needs call permission
+        if (Permission.ensureCallPhonePermission(intent)) {
             context.startActivity(intent);
 
             // Register launch in the future
@@ -628,6 +632,11 @@ public class ContactsResult extends Result {
                     queryInterface.launchOccurred();
                 }
             }, KissApplication.TOUCH_DELAY);
+
+
+        }
+
+
 
     }
 
