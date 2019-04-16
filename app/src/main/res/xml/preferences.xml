@@ -308,11 +308,6 @@
             android:key="root-mode"
             android:summary="@string/root_mode_desc"
             android:title="@string/root_mode_name" />
-        <fr.neamar.kiss.preference.SignInSwitch
-            android:defaultValue="false"
-            android:key="google-signin"
-            android:summary="@string/common_signin_button_text"
-            android:title="@string/common_signin_button_text" />
         <fr.neamar.kiss.preference.RestartPreference
             android:dialogMessage="@string/restart_warn"
             android:key="restart"

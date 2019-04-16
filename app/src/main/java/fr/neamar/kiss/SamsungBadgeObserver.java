@@ -29,8 +29,12 @@ public class SamsungBadgeObserver extends ContentObserver {
 
     public static boolean providerExists(Context context) {
         Uri uri = Uri.parse("content://com.sec.badge/apps");
-        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(uri, null, null, null, null);
+        }catch (SecurityException e){
+            Log.d(TAG,"e:"+e);
+        }
         boolean exists = cursor != null;
 
         if(cursor != null)

@@ -21,25 +21,20 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Display notification drawer -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" /> <!-- Display notification drawer -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" /> <!-- Ability to uninstall an app from KISS -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+
+    <!--for Google Drive API. Used when saving&loading launcher layout to users own google drive -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!--for Zen Flashlight, needed to be able to enable camera flash -->
-    <uses-permission android:name="android.permission.CAMERA"
-        android:required="false"/>
-
-    <!--for Samsung-->
+    <!--for Samsung badge support-->
     <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
     <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
 
