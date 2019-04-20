@@ -616,11 +616,22 @@ public class ContactsResult extends Result {
                 "vnd.android.cursor.item/vnd.com.whatsapp.voip.call");
         // intent.setPackage("com.whatsapp");
 
+        // TODO: get this intent from contacts database instead of hardcoding?
         intent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.accountsync.CallContactLandingActivity"));
 
         // whatsapp calling needs call permission
         if (Permission.ensureCallPhonePermission(intent)) {
-            context.startActivity(intent);
+            try {
+                context.startActivity(intent);
+            } catch (Exception e){
+                Log.d(TAG,"exception in launchWhatsAppCall, try 1: " +e);
+                try {
+                    intent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.accountsync.ProfileActivity"));
+                    context.startActivity(intent);
+                } catch (Exception e2){
+                    Log.d(TAG,"exception in launchWhatsAppCall, try 2: " +e2);
+                }
+            }
 
             // Register launch in the future
             // (animation delay)

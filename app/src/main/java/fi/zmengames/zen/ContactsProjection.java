@@ -11,7 +11,6 @@ import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.pojo.ContactsPojo;
 
 public class ContactsProjection {
-    //todo: this is signal mimetype, get whatsapp mimetype also and add to contact menu a call item!
     public static final String SIGNAL_CONTACT_MIMETYPE = "vnd.android.cursor.item/vnd.org.thoughtcrime.securesms.contact";
     public static final String WHATSAPP_CONTACT_MIMETYPE ="vnd.android.cursor.item/vnd.com.whatsapp.profile";
     public static final String SIGNAL_CALL_MIMETYPE = "vnd.android.cursor.item/vnd.org.thoughtcrime.securesms.call";
