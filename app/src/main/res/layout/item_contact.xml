@@ -11,8 +11,6 @@
     android:paddingLeft="@dimen/result_margin_left"
     android:paddingRight="@dimen/result_margin_right"
     android:paddingStart="@dimen/result_margin_left"
-    android:background="@drawable/contact_bar"
-
     android:paddingTop="@dimen/result_margin_top">
 
     <fr.neamar.kiss.ui.ImprovedQuickContactBadge
