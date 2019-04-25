@@ -54,21 +54,21 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         this.parent = parent;
         this.results = results;
         this.fuzzyScore = null;
+
     }
 
 
-    public void reloadBadge(String packageName, Integer badge_count) {
+    public void reloadBadge(String packageName) {
         Log.d(TAG,"reloadBadge: "+packageName);
         List<Pojo> apps = KissApplication.getApplication(context).getDataHandler().getApplications();
 
         boolean found = false;
         if (apps!=null) {
             for (Pojo result : apps) {
-
                 AppPojo pojo = (AppPojo) result;
                 if (pojo.packageName.equals(packageName)) {
-                    pojo.setBadgeCount(badge_count);
-                    Log.d(TAG, "reloadBadge: count" + pojo.getBadgeCount());
+                    pojo.setBadgeCount(KissApplication.getApplication(context).getDataHandler().getBadgeHandler().getBadgeCount(packageName));
+                    Log.d(TAG, "reloadBadge: count: " + pojo.getBadgeCount());
                     found = true;
                     break;
                 }

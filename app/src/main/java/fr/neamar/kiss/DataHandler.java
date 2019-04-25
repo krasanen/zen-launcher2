@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -42,7 +43,6 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.UserHandle;
-import xiaofei.library.hermeseventbus.HermesEventBus;
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
 
@@ -61,7 +61,7 @@ public class DataHandler
             "app", "contacts", "search", "settings", "shortcuts"
     );
     private TagsHandler tagsHandler;
-    private static BadgeHandler badgeHandler;
+    private BadgeHandler badgeHandler;
     final private Context context;
     private String currentQuery;
     private final Map<String, ProviderEntry> providers = new HashMap<>();
@@ -87,7 +87,6 @@ public class DataHandler
         //  to bind to services)
         this.context = context.getApplicationContext();
 
-        HermesEventBus.getDefault().register(this);
 
         // Monitor changes for service preferences (to automatically start and stop services)
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -231,7 +230,7 @@ public class DataHandler
      * Called when some event occurred that makes us believe that all data providers
      * might be ready now
      */
-    private void handleProviderLoaded() {
+    public void handleProviderLoaded() {
         if (this.allProvidersHaveLoaded) {
             return;
         }
@@ -249,29 +248,11 @@ public class DataHandler
         this.allProvidersHaveLoaded = true;
 
         // Broadcast the fact that the new providers list is ready
-        try {
-            Intent intent = new Intent(this.context, LauncherService.class);
-            intent.setAction(LauncherService.FULL_LOAD_OVER);
-            KissApplication.startLaucherService(intent, this.context);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-    }
+
+        EventBus.getDefault().postSticky(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
+   }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ZEvent event) {
-        Log.w(TAG, "Got message from service: " + event.getState());
-
-        switch (event.getState()) {
-            case LOAD_OVER:
-                this.handleProviderLoaded();
-                break;
-
-                default:
-
-        }
-    }
 
 
     /**

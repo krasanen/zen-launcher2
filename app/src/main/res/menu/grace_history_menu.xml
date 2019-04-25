@@ -5,20 +5,20 @@
         android:id="@+id/listen"
         android:orderInCategory="100"
         android:title="Listen"
-        app:showAsAction="always" />
+        android:showAsAction="always" />
 
 
     <item
         android:id="@+id/grace_history_delete"
         android:orderInCategory="100"
         android:title="Delete"
-        app:showAsAction="always" />
+        android:showAsAction="always" />
 
     <item
         android:id="@+id/grace_clearall"
         android:orderInCategory="100"
         android:title="Clear all"
-        app:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom" />
 
 
 </menu>

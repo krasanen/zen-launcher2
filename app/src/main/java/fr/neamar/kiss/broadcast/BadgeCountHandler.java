@@ -12,7 +12,7 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 
 public class BadgeCountHandler extends BroadcastReceiver {
-
+    private static final String TAG = BadgeCountHandler.class.getSimpleName();
     public static final String BADGECOUNT = "BADGE_COUNT";
     public static final String PACKAGENAME = "PACKAGE_NAME";
     @Override
@@ -45,8 +45,9 @@ public class BadgeCountHandler extends BroadcastReceiver {
         }
 
         if (packageName != null) {
+            Log.d(TAG,"onReceive, package:"+packageName+ " count:"+badgeCount);
             if (dataHandler.getBadgeHandler().getBadgeCount(packageName)!=badgeCount) {
-                dataHandler.getBadgeHandler().setBadgeCount(packageName, badgeCount);
+                dataHandler.getBadgeHandler().setBadgeCount(packageName, badgeCount, true);
             }
         }
 

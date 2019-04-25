@@ -21,28 +21,25 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 
 
+import org.greenrobot.eventbus.EventBus;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import androidx.annotation.Nullable;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 
 import fr.neamar.kiss.broadcast.BadgeCountHandler;
-import xiaofei.library.hermeseventbus.HermesEventBus;
 
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
-import static fi.zmengames.zen.ZEvent.State.BADGE_COUNT;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
+    public static ArrayList<ZEvent> zEventArrayList = new ArrayList<>();
     public static final String LAUNCH_INTENT = "LAUNCH_INTENT";
     public static final String SET_BADGE_COUNT = "SET_BADGE_COUNT";
     private static final String TAG = LauncherService.class.getSimpleName();
@@ -89,7 +86,6 @@ public class LauncherService extends Service {
     @Override
     public void onCreate() {
         if(BuildConfig.DEBUG) Log.w(TAG, "onCreate...");
-        HermesEventBus.getDefault().register(this);
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mAccessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
@@ -97,18 +93,11 @@ public class LauncherService extends Service {
 
         super.onCreate();
     }
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEventMainThread(ZEvent event) {
-        if(BuildConfig.DEBUG) Log.w(TAG, "in service" +
-                ", Got message from service: " + event.getState());
 
-    }
-    @Nullable
 
     @Override
     public IBinder onBind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onBind");
-        HermesEventBus.getDefault().connectApp(this, getPackageName());
 
         return mBinder;
     }
@@ -123,23 +112,23 @@ public class LauncherService extends Service {
     public void onRebind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onRebind");
 
-        HermesEventBus.getDefault().connectApp(this, getPackageName());
+
         super.onRebind(intent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onUnbind");
-        HermesEventBus.getDefault().destroy();
+
         return true;
     }
 
     private void sendMessageSticky(ZEvent event) {
-        HermesEventBus.getDefault().postSticky(event);
+        EventBus.getDefault().postSticky(event);
     }
 
-    private void sendMessageNotSticky(ZEvent event) {
-        HermesEventBus.getDefault().post(event);
+    private void sendMessageSticky2(ZEvent event) {
+        EventBus.getDefault().postSticky(event);
     }
 
     @Override
@@ -166,8 +155,8 @@ public class LauncherService extends Service {
     }
 
     private void setBadgeCount(Intent intent) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignIn");
-        sendMessageNotSticky(new ZEvent(ZEvent.State.BADGE_COUNT, intent.getStringExtra(BadgeCountHandler.PACKAGENAME), intent.getIntExtra(BadgeCountHandler.BADGECOUNT,0)));
+        if(BuildConfig.DEBUG) Log.d(TAG, "setBadgeCount");
+        sendMessageSticky2(new ZEvent(ZEvent.State.BADGE_COUNT, intent.getStringExtra(BadgeCountHandler.PACKAGENAME), intent.getIntExtra(BadgeCountHandler.BADGECOUNT,0)));
     }
 
     private void launchIntent(Intent intent) {
@@ -189,26 +178,26 @@ public class LauncherService extends Service {
 
     private void handleProviderFullLoadOver(Intent intent) {
         if(BuildConfig.DEBUG) Log.d(TAG, "handleProviderFullLoadOver");
-        sendMessageNotSticky(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
+        sendMessageSticky2(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
     }
 
     private void handleProviderLoadOver(Intent intent) {
         if(BuildConfig.DEBUG) Log.d(TAG, "handleProviderLoadOver");
-        sendMessageNotSticky(new ZEvent(ZEvent.State.LOAD_OVER));
+        sendMessageSticky2(new ZEvent(ZEvent.State.LOAD_OVER));
     }
 
     private void handleGoogleSignIn(Intent intent) {
         if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignIn");
-        sendMessageNotSticky(new ZEvent(ZEvent.State.GOOGLE_SIGNIN));
+        sendMessageSticky2(new ZEvent(ZEvent.State.GOOGLE_SIGNIN));
     }
 
     private void handleGoogleSignOut(Intent intent) {
         if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignOut");
-        sendMessageNotSticky(new ZEvent(ZEvent.State.GOOGLE_SIGNOUT));
+        sendMessageSticky2(new ZEvent(ZEvent.State.GOOGLE_SIGNOUT));
     }
     private void handleShowToast(String text) {
         if(BuildConfig.DEBUG) Log.d(TAG, "handleShowToast");
-        sendMessageNotSticky(new ZEvent(SHOW_TOAST, text));
+        sendMessageSticky2(new ZEvent(SHOW_TOAST, text));
     }
 
     /// Helper Methods

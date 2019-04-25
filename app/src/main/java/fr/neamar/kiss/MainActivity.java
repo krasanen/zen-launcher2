@@ -85,6 +85,7 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
@@ -107,6 +108,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -118,6 +120,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import fi.zmengames.zen.AppGridActivity;
+import fi.zmengames.zen.Constants;
 import fi.zmengames.zen.DriveServiceHelper;
 import fi.zmengames.zen.LauncherAppWidgetHostView;
 import fi.zmengames.zen.LauncherService;
@@ -146,20 +149,11 @@ import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
-import me.leolin.shortcutbadger.ShortcutBadgeException;
-import me.leolin.shortcutbadger.impl.IntentConstants;
-import me.leolin.shortcutbadger.util.BroadcastHelper;
-import xiaofei.library.hermeseventbus.HermesEventBus;
+
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
-import static android.view.View.SCROLLBARS_INSIDE_INSET;
-import static android.view.View.SCROLLBARS_INSIDE_OVERLAY;
-import static android.view.View.SCROLLBARS_OUTSIDE_INSET;
-import static android.view.View.SCROLLBARS_OUTSIDE_OVERLAY;
+import static fi.zmengames.zen.LauncherService.zEventArrayList;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
-import static me.leolin.shortcutbadger.impl.XiaomiHomeBadger.INTENT_ACTION;
-
-import android.net.Uri;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -186,6 +180,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     // intent data that is the retry count for retrying the conflict resolution.
     public static final String RETRY_COUNT = "retrycount";
     public static final int REQUEST_BIND_APPWIDGET = 17;
+    public static final int REQUEST_WRITE = 17;
 
 
     /**
@@ -283,9 +278,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return instance;
     }
 
-    public void reloadBadge(String packageName, Integer badge_count) {
-        Log.d(TAG,"reloadBadge");
-        adapter.reloadBadge(packageName, badge_count);
+    public void reloadBadge(String packageName) {
+        Log.d(TAG,"reloadBadge: "+packageName);
+        adapter.reloadBadge(packageName);
         this.adapter.notifyDataSetChanged();
         forwarderManager.onFavoriteChange();
     }
@@ -485,8 +480,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         instance = this;
         if (BuildConfig.DEBUG) Log.d(TAG, "onCreate()");
         KissApplication.getApplication(this).setMainActivity(this);
-        HermesEventBus.getDefault().init(this);
-        HermesEventBus.getDefault().register(this);
 //        KissApplication.getApplication(this).initDataHandler();
 
         /*
@@ -810,7 +803,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onStart();
         // Check for existing Google Sign In account, if the user is already signed in
 // the GoogleSignInAccount will be non-null.
+        EventBus.getDefault().register(this);
 
+        ArrayList<ZEvent> missedStickyEvents = EventBus.getDefault().getStickyEvent(ArrayList.class);
+        if (missedStickyEvents!=null) {
+            for (ZEvent entry : missedStickyEvents) {
+                onEventMainThread(entry);
+            }
+            EventBus.getDefault().removeStickyEvent(ArrayList.class);
+            zEventArrayList.clear();
+        }
         forwarderManager.onStart();
 
         Intent intent = new Intent(this, LauncherService.class);
@@ -820,6 +822,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onStop() {
         super.onStop();
+        EventBus.getDefault().unregister(this);
         if (camera!=null) {
             camera.release();
         }
@@ -985,10 +988,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             getContentResolver()
                     .unregisterContentObserver(samsungBadgeObserver);
         }
-        HermesEventBus.getDefault().destroy();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ZEvent event) {
         Log.w(TAG, "Got message from service: " + event.getState());
 
@@ -1000,6 +1002,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 signOut();
                 break;
             case LOAD_OVER:
+                KissApplication.getApplication(this).getDataHandler().handleProviderLoaded();
                 updateSearchRecords();
                 onFavoriteChange();
                 break;
@@ -1017,8 +1020,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                 break;
             case BADGE_COUNT:
-                Log.v(TAG, "BADGE_COUNT");
-                reloadBadge(event.getText(), event.getIntExtra());
+                Log.v(TAG, "BADGE_COUNT, package:"+event.getText()+ "badgeCount:"+event.getIntExtra());
+                EventBus.getDefault().removeStickyEvent(ArrayList.class);
+                reloadBadge(event.getText());
         }
     }
 

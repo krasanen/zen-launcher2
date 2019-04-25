@@ -5,59 +5,59 @@
         android:id="@+id/preferences"
         android:icon="@drawable/ic_contact"
         android:title="@string/activity_setting"
-        app:showAsAction="ifRoom|withText" />
+        android:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/wallpaper"
         android:title="@string/menu_wallpaper"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/widget"
         android:title="@string/menu_widget_settings"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/settings"
         android:title="@string/menu_settings"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/shareTags"
         android:visible="false"
         android:title="@string/share_tags"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/loadReplaceTags"
         android:visible="false"
         android:title="@string/load_replace_tags"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
 
     <!--<item
         android:id="@+id/loadReplaceSettings"
         android:visible="true"
         android:title="@string/load_settings"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/shareSettings"
         android:visible="true"
         android:title="@string/share_settings"
-        app:showAsAction="never" /> -->
+        android:showAsAction="never" /> -->
     <item
         android:id="@+id/saveToGoogle"
 
         android:title="@string/save_to_google"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/loadFromGoogle"
         android:title="@string/load_from_google"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/nightModeOn"
         android:title="@string/nightmodeOn"
-        app:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom" />
     <item
         android:id="@+id/nightModeOff"
         android:title="@string/nightmodeOff"
-        app:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom" />
     <item
         android:id="@+id/appGrid"
         android:title="@string/showAppGrid"
-        app:showAsAction="always" />
+        android:showAsAction="always" />
 </menu>

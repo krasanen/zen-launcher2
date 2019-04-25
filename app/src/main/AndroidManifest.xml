@@ -34,7 +34,12 @@
     <!--for Google Drive API. Used when saving&loading launcher layout to users own google drive -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!--for Samsung badge support-->
+    <!--for Zen Flashlight, needed to be able to enable camera flash -->
+    <uses-permission android:name="android.permission.CAMERA"
+        android:maxSdkVersion="22"
+        android:required="false"/>
+
+    <!--for Samsung-->
     <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
     <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
 
@@ -185,9 +190,7 @@
         <service android:name=".dataprovider.ShortcutsProvider" />
         <service
             android:name="fi.zmengames.zen.LauncherService"
-            android:enabled="true"
-            android:process=":LauncherService" />
-        <service android:name="xiaofei.library.hermes.HermesService$HermesService0" />
+            android:enabled="true"/>
     </application>
 
 </manifest>

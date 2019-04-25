@@ -1,6 +1,8 @@
 package fr.neamar.kiss;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -67,10 +69,18 @@ public class SamsungBadgeObserver extends ContentObserver {
                     cursor.moveToPosition(-1);
                     while (cursor.moveToNext()) {
                         String packageName = cursor.getString(1);
+
+                        // java.lang.SecurityException: Permission Denial: writing com.sec.android.provider.badge.BadgeProvider uri content://com.sec.badge/apps from pid=28449, uid=10602 requires com.sec.android.provider.badge.permission.WRITE, or grantUriPermission()
+                        //resetBadgeCount(context,packageName);
+
                         int badgeCount = cursor.getInt(3);
-                        if (BuildConfig.DEBUG) Log.d(TAG, "loadBadges, packageName:"+packageName+ " Badges:"+badgeCount);
+
+
                         if (badgeHandler.getBadgeCount(packageName)!=badgeCount) {
-                            badgeHandler.setBadgeCount(packageName, badgeCount);
+                            if (BuildConfig.DEBUG)
+                                Log.d(TAG, "loadBadges, setBadgeCount, packageName:" + packageName + " Badges:" + badgeCount);
+
+                            badgeHandler.setBadgeCount(packageName, badgeCount, true);
                         }
                     }
                 } finally {
@@ -80,5 +90,12 @@ public class SamsungBadgeObserver extends ContentObserver {
 
             }
         }).start();
+    }
+    private static void resetBadgeCount(Context context, String packageName){
+        ContentValues cv = new ContentValues();
+        //context.grantUriPermission("com.sec.android.provider.badge.BadgeProvider", Uri.parse("content://com.sec.badge/apps"), Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        cv.put("badgecount", 0);
+        context.getContentResolver().update(Uri.parse("content://com.sec.badge/apps"), cv, "package=?", new String[] {packageName});
+
     }
 }
