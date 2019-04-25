@@ -50,7 +50,7 @@
     <string name="reset_excluded_from_history_apps_name">Reset excluded from history app list</string>
     <string name="reset_excluded_from_history_apps_warn">Do you really want to reset your excluded from history app list?</string>
     <string name="settings_excluded_apps">Excluded apps</string>
-    <string name="ui_excluded_apps">View or edit your excluded from KISS apps</string>
+    <string name="ui_excluded_apps">View or edit your excluded from Zen apps</string>
     <string name="ui_excluded_from_history_apps">View or edit your excluded from history apps</string>
     <string name="ui_excluded_apps_dialog_title">Deselect the apps you would like to include</string>
     <string name="ui_excluded_apps_not_found">No apps have been excluded</string>
@@ -129,7 +129,7 @@
     <string name="tags_visible">Show app tags</string>
     <string name="excluded_app_list_erased">List of excluded apps erased.</string>
     <string name="excluded_app_list_added">App excluded from Zen Launcher. Reset through the Zen Launcher settings</string>
-    <string name="excluded_app_history_added">App excluded from history. Reset through the KISS settings</string>
+    <string name="excluded_app_history_added">App excluded from history. Reset through the Zen Launcher settings</string>
 
     <string name="removed_item">Removed</string>
     <string name="menu_remove">Remove from history</string>
@@ -220,14 +220,14 @@
     <string name="permission_denied">Permission has been denied</string>
     <string name="colors">Colors</string>
     <string name="black_notification_icons">Display notification icons in black</string>
-    <string name="shortcuts_no_host_permission">KISS is not your main launcher anymore and can\'t access your shortcuts.</string>
-    <string name="unable_add_shortcut">Unable to add shortcuts (shortcut provider is disabled in KISS settings)</string>
+    <string name="shortcuts_no_host_permission">Zen is not your main launcher anymore and can\'t access your shortcuts.</string>
+    <string name="unable_add_shortcut">Unable to add shortcuts (shortcut provider is disabled in Zen settings)</string>
 
     <!-- Strings from tags menu -->
     <string name="pref_toggle_tags">Show hide-tags bar</string>
     <string name="screen_toggle_tags">Customize tags bar</string>
     <string name="pref_toggle_tags_select">Tags to show on bar</string>
-    <string name="ctx_menu">KISS Menu</string>
+    <string name="ctx_menu">Zen Menu</string>
     <string name="pref_tags_menu">Enable tags menu</string>
     <string name="show_matching">Show all matching</string>
     <string name="popup_tags_title">Available tags</string>

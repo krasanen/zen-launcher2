@@ -190,7 +190,7 @@
     <string name="history_favorites_summary">Reimposta i tuoi favoriti, rimuovi la barra dei favoriti, ...</string>
     <string name="title_wallpaper">Interazione con lo sfondo live</string>
     <string name="freeze_history_summary">Mantieni la cronologia attuale</string>
-    <string name="enable_favorites_bar_summary_off">Mostra solo i favoriti quando si preme l\'icona di KISS</string>
+    <string name="enable_favorites_bar_summary_off">Mostra solo i favoriti quando si preme l\'icona di Zen</string>
     <string name="enable_favorites_bar_summary_on">Mostra i favoriti sopra la barra di ricerca</string>
     <string name="get_help">Ottieni aiuto!</string>
     <string name="permission_denied">Il permesso e\' stato rifiutato</string>

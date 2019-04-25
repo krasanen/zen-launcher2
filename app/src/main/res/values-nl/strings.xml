@@ -202,7 +202,7 @@
     <string name="freeze_history_summary">Geschiedenis behouden totdat dit wordt afgevinkt</string>
 
     <string name="title_wallpaper">Live achtergrond-interacties</string>
-    <string name="enable_favorites_bar_summary_off">Alleen favorieten weergeven na het drukken op het KISS-pictogram</string>
+    <string name="enable_favorites_bar_summary_off">Alleen favorieten weergeven na het drukken op het Zen-pictogram</string>
     <string name="enable_favorites_bar_summary_on">Favorieten weergeven boven de zoekbalk</string>
     <string name="get_help">Hulp verkrijgen</string>
 
