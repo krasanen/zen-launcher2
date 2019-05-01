@@ -48,10 +48,13 @@ public class BadgeHandler {
         //add to cache
         badgeCache.put(packageName, badge_count);
         ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT, packageName, badge_count);
-        zEventArrayList.add(event);
+        if (!EventBus.getDefault().isRegistered(MainActivity.class)) {
+            synchronized (this) {
+                zEventArrayList.add(event);
+            }
+        }
         if (sendIntent) {
             EventBus.getDefault().post(event);
-            EventBus.getDefault().postSticky(zEventArrayList);
         }
     }
 }

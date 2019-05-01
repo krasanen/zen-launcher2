@@ -802,15 +802,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        ArrayList<ZEvent> missedStickyEvents = EventBus.getDefault().getStickyEvent(ArrayList.class);
-        if (missedStickyEvents!=null && !missedStickyEvents.isEmpty()) {
+        if (zEventArrayList!=null && !zEventArrayList.isEmpty()) {
             synchronized (this) {
-                for (ZEvent entry : missedStickyEvents) {
+                for (ZEvent entry : zEventArrayList) {
                     if (entry!=null) {
                         onEventMainThread(entry);
                     }
                 }
-                EventBus.getDefault().removeStickyEvent(ArrayList.class);
                 zEventArrayList.clear();
             }
         }
@@ -1022,7 +1020,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
             case BADGE_COUNT:
                 Log.v(TAG, "BADGE_COUNT, package:"+event.getText()+ "badgeCount:"+event.getIntExtra());
-                EventBus.getDefault().removeStickyEvent(ArrayList.class);
                 reloadBadge(event.getText());
         }
     }
