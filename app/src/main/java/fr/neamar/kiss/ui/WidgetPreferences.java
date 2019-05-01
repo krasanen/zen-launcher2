@@ -32,6 +32,9 @@ import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 
+import static fr.neamar.kiss.ui.WidgetLayout.LayoutParams.POSITION_LEFT;
+import static fr.neamar.kiss.ui.WidgetLayout.LayoutParams.POSITION_MIDDLE;
+
 
 /**
  * Created by TBog on 5/10/2018.
@@ -182,8 +185,8 @@ public class WidgetPreferences implements Serializable {
                     seek = contentView.findViewById(R.id.seek_top);
                     widgetPreferences.offsetVertical = seek.getProgress();
                     //Position
-                    dropDown = contentView.findViewById(R.id.value_pos);
-                    widgetPreferences.position = ((SpinnerItem) dropDown.getSelectedItem()).value;
+                    //dropDown = contentView.findViewById(R.id.value_pos);
+                    widgetPreferences.position = POSITION_MIDDLE; //((SpinnerItem) dropDown.getSelectedItem()).value;
                     //Gravity
                     widgetPreferences.gravity = Gravity.NO_GRAVITY;
                     dropDown = contentView.findViewById(R.id.value_gravity_ver);
@@ -253,13 +256,14 @@ public class WidgetPreferences implements Serializable {
             text.setText(String.valueOf(widgetPreferences.offsetVertical));
 
             //Position
-            dropDown = contentView.findViewById(R.id.value_pos);
+           /* dropDown = contentView.findViewById(R.id.value_pos);
             dropDownItems = new ArrayList<>(3);
             dropDownItems.add(new SpinnerItem(WidgetLayout.LayoutParams.POSITION_LEFT, "Left"));
             dropDownItems.add(new SpinnerItem(WidgetLayout.LayoutParams.POSITION_MIDDLE, "Middle"));
             dropDownItems.add(new SpinnerItem(WidgetLayout.LayoutParams.POSITION_RIGHT, "Right"));
             dropDown.setAdapter(new ArrayAdapter<>(mainActivity, android.R.layout.simple_spinner_dropdown_item, dropDownItems));
             dropDown.setSelection(dropDownItems.indexOf(new SpinnerItem(widgetPreferences.position)));
+*/
 
             //Gravity vertical
             dropDown = contentView.findViewById(R.id.value_gravity_ver);

@@ -38,6 +38,7 @@ public class SaveGame implements Serializable {
     private static final String TAG = "SaveGame";
 
     // serialization format version
+    private static final long serialVersionUID = 1L;
     private static final String SERIAL_VERSION = "1.1";
     private String json;
     private String jsonWidgets;

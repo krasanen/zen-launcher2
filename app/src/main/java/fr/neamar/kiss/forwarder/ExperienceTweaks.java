@@ -260,11 +260,6 @@ public class ExperienceTweaks extends Forwarder {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 touchDownMs = System.currentTimeMillis();
-                if (view.getId() == R.id.searchEditText ){
-                    if (mainActivity.numericButton.getVisibility()==View.GONE) {
-                        mainActivity.numericButton.setVisibility(View.VISIBLE);
-                    }
-                }
 
                 break;
             case MotionEvent.ACTION_UP:

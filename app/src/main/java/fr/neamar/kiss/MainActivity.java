@@ -801,17 +801,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onStart() {
         super.onStart();
-        // Check for existing Google Sign In account, if the user is already signed in
-// the GoogleSignInAccount will be non-null.
         EventBus.getDefault().register(this);
-
         ArrayList<ZEvent> missedStickyEvents = EventBus.getDefault().getStickyEvent(ArrayList.class);
-        if (missedStickyEvents!=null) {
-            for (ZEvent entry : missedStickyEvents) {
-                onEventMainThread(entry);
+        if (missedStickyEvents!=null && !missedStickyEvents.isEmpty()) {
+            synchronized (this) {
+                for (ZEvent entry : missedStickyEvents) {
+                    onEventMainThread(entry);
+                }
+                EventBus.getDefault().removeStickyEvent(ArrayList.class);
+                zEventArrayList.clear();
             }
-            EventBus.getDefault().removeStickyEvent(ArrayList.class);
-            zEventArrayList.clear();
         }
         forwarderManager.onStart();
 
@@ -1613,23 +1612,29 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Toast.makeText(this, "loaded widgets for " + count + " app(s)", Toast.LENGTH_LONG).show();
 
         } catch (ClassNotFoundException e) {
+            Log.e(TAG, "ClassNotFoundException", e);
             e.printStackTrace();
         } catch (IOException e) {
+            Toast.makeText(this, "can't load settings", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "IOException", e);
             e.printStackTrace();
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(), 0, mSaveGame.getData().length);
-                try {
-                    getApplicationContext().setWallpaper(bMap);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (mSaveGame!=null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(), 0, mSaveGame.getData().length);
+                    try {
+                        getApplicationContext().setWallpaper(bMap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                    System.exit(0);
                 }
-                System.exit(0);
-            }
-        }).start();
-
+            }).start();
+        }
     }
 
     /**
