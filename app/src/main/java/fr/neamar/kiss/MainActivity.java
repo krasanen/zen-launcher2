@@ -806,7 +806,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (missedStickyEvents!=null && !missedStickyEvents.isEmpty()) {
             synchronized (this) {
                 for (ZEvent entry : missedStickyEvents) {
-                    onEventMainThread(entry);
+                    if (entry!=null) {
+                        onEventMainThread(entry);
+                    }
                 }
                 EventBus.getDefault().removeStickyEvent(ArrayList.class);
                 zEventArrayList.clear();
