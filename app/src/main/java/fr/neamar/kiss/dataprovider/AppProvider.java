@@ -11,6 +11,7 @@ import android.os.Process;
 import android.os.UserManager;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.RequiresApi;
@@ -172,7 +173,7 @@ public class AppProvider extends Provider<AppPojo> {
     /**
      * Return a Pojo
      *
-     * @param id              we're looking for
+     * @param id we're looking for
      * @return an AppPojo, or null
      */
     @Override
@@ -185,7 +186,9 @@ public class AppProvider extends Provider<AppPojo> {
 
         return null;
     }
+
     ArrayList<Pojo> records = new ArrayList<>();
+
     public ArrayList<Pojo> getAllApps() {
         records.clear();
         for (AppPojo pojo : pojos) {
@@ -197,5 +200,16 @@ public class AppProvider extends Provider<AppPojo> {
 
     public void removeApp(AppPojo appPojo) {
         pojos.remove(appPojo);
+    }
+
+    public List<Pojo> getAppsWithNotif() {
+        records.clear();
+        for (AppPojo pojo : pojos) {
+            pojo.relevance = 0;
+            if (pojo.getBadgeCount()>0) {
+                records.add(pojo);
+            }
+        }
+        return records;
     }
 }

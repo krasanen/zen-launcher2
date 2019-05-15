@@ -38,13 +38,28 @@
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/contacts"
         android:tag="showMenu"/>
-
     <ImageView
-        android:id="@+id/allAppsButton"
+        android:id="@+id/appsWithNotifButton"
         android:layout_width="@dimen/launcher_button_width"
         android:layout_height="@dimen/bar_height"
         android:layout_toRightOf="@+id/whiteContactsButton"
         android:layout_toEndOf="@+id/whiteContactsButton"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/alias_contacts"
+        android:focusable="true"
+        android:visibility="visible"
+        android:onClick="onApsWithNotifButtonClicked"
+        android:tint="@color/zenlauncher"
+        android:paddingLeft="@dimen/launcher_button_padding"
+        android:paddingRight="@dimen/launcher_button_padding"
+        android:src="@drawable/ic_baseline_notification_important_24px"
+        android:tag="showMenu"/>
+    <ImageView
+        android:id="@+id/allAppsButton"
+        android:layout_width="@dimen/launcher_button_width"
+        android:layout_height="@dimen/bar_height"
+        android:layout_toRightOf="@+id/appsWithNotifButton"
+        android:layout_toEndOf="@+id/appsWithNotifButton"
         android:layout_centerInParent="true"
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
@@ -56,12 +71,13 @@
         android:src="@drawable/setting_apps"
         android:tag="showMenu"/>
 
+
     <LinearLayout
         android:id="@+id/embeddedFavoritesBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_height"
-        android:layout_toEndOf="@+id/allAppsButton"
-        android:layout_toRightOf="@+id/allAppsButton"
+        android:layout_toEndOf="@+id/appsWithNotifButton"
+        android:layout_toRightOf="@+id/appsWithNotifButton"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         tools:layout="@layout/favorite_item"/>

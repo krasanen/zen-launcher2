@@ -443,6 +443,12 @@ public class DataHandler
     }
 
     @Nullable
+    public List<Pojo> getAppsWithNotif() {
+        AppProvider appProvider = getAppProvider();
+        return appProvider != null ? appProvider.getAppsWithNotif() : null;
+    }
+
+    @Nullable
     public ContactsProvider getContactsProvider() {
         ProviderEntry entry = this.providers.get("contacts");
         return (entry != null) ? ((ContactsProvider) entry.provider) : null;

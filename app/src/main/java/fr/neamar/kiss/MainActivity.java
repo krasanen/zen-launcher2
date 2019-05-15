@@ -26,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -134,6 +135,7 @@ import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.forwarder.Widget;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
+import fr.neamar.kiss.searcher.AppsWithNotifSearcher;
 import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
@@ -598,7 +600,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isViewingAllApps()) {
-                    displayKissBar(false, false, false);
+                    displayKissBar(false, false, new ApplicationsSearcher(MainActivity.this));
                 }
                 String text = s.toString();
                 updateSearchRecords(text);
@@ -2065,14 +2067,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void displayKissBar(Boolean display) {
-        this.displayKissBar(display, true, false);
+        this.displayKissBar(display, true, new ApplicationsSearcher(MainActivity.this));
     }
 
     public void displayContacts(Boolean display) {
-        this.displayKissBar(display, true, true);
+        this.displayKissBar(display, true, new ContactSearcher(MainActivity.this));
     }
 
-    private void displayKissBar(boolean display, boolean clearSearchText, boolean contacts) {
+    public void displayAppsWithNotif(Boolean display) {
+        this.displayKissBar(display, true, new AppsWithNotifSearcher(MainActivity.this));
+    }
+
+    private void displayKissBar(boolean display, boolean clearSearchText, Searcher searchTask) {
         dismissPopup();
         // get the center for the clipping circle
         int cx = (launcherButton.getLeft() + launcherButton.getRight()) / 2;
@@ -2091,15 +2097,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // Needs to be done after setting the text content to empty
             isDisplayingKissBar = true;
 
-            if (contacts) {
-                searchTask = new ContactSearcher(MainActivity.this);
-            } else {
-                searchTask = new ApplicationsSearcher(MainActivity.this);
-            }
             searchTask.executeOnExecutor(Searcher.SEARCH_THREAD);
 
             // Reveal the bar
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !contacts) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 int animationDuration = getResources().getInteger(
                         android.R.integer.config_shortAnimTime);
 
@@ -2111,7 +2112,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             // Display the alphabet on the scrollbar (#926)
             list.setFastScrollEnabled(true);
-            if (contacts) {
+            if (searchTask.getClass().equals(ContactSearcher.class)) {
                 list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
                 list.setFastScrollAlwaysVisible(false);
             } else {
@@ -2358,4 +2359,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onAllAppsButtonClicked(View view) {
         startAppGridActivity();
     }
+
+    public void onApsWithNotifButtonClicked(View view) {
+        boolean showMenu = view.getTag().equals("showMenu");
+        displayAppsWithNotif(showMenu);
+    }
+
 }
