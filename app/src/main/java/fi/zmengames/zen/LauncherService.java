@@ -24,6 +24,7 @@ import android.view.accessibility.AccessibilityManager;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,7 +40,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
-    public static ArrayList<ZEvent> zEventArrayList = new ArrayList<>();
+    public static ConcurrentHashMap<ZEvent, Integer> zEventArrayList = new ConcurrentHashMap<>();
     public static final String LAUNCH_INTENT = "LAUNCH_INTENT";
     public static final String SET_BADGE_COUNT = "SET_BADGE_COUNT";
     private static final String TAG = LauncherService.class.getSimpleName();

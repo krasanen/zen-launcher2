@@ -49,9 +49,7 @@ public class BadgeHandler {
         badgeCache.put(packageName, badge_count);
         ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT, packageName, badge_count);
         if (!EventBus.getDefault().isRegistered(MainActivity.class)) {
-            synchronized (this) {
-                zEventArrayList.add(event);
-            }
+               zEventArrayList.put(event, 1);
         }
         if (sendIntent) {
             EventBus.getDefault().post(event);

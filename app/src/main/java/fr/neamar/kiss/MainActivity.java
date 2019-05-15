@@ -803,14 +803,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onStart();
         EventBus.getDefault().register(this);
         if (zEventArrayList!=null && !zEventArrayList.isEmpty()) {
-            synchronized (this) {
-                for (ZEvent entry : zEventArrayList) {
-                    if (entry!=null) {
-                        onEventMainThread(entry);
+            Iterator<ZEvent> iter = zEventArrayList.keySet().iterator();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    while (iter.hasNext()) {
+                        onEventMainThread(iter.next());
+                        iter.remove();
                     }
                 }
-                zEventArrayList.clear();
-            }
+            });
         }
         forwarderManager.onStart();
 
