@@ -28,10 +28,9 @@ public class SettingsPojo extends Pojo {
     public boolean equals (Object object) {
         boolean result = false;
         if (object == null || object.getClass() != getClass()) {
-            result = false;
         } else {
             SettingsPojo settingsPojo = (SettingsPojo) object;
-            if (this.id.equals(settingsPojo.id))  {
+            if (this.id.hashCode() == (settingsPojo.id.hashCode()))  {
                 result = true;
             }
         }

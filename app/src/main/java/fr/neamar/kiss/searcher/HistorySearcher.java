@@ -26,7 +26,7 @@ public class HistorySearcher extends Searcher {
         // Convert `"number-of-display-elements"` to double first before truncating to int to avoid
         // `java.lang.NumberFormatException` crashes for values larger than `Integer.MAX_VALUE`
         try {
-            return (Double.valueOf(prefs.getString("number-of-display-elements", String.valueOf(DEFAULT_MAX_RESULTS)))).intValue();
+            return Double.valueOf(prefs.getString("number-of-display-elements", String.valueOf(DEFAULT_MAX_RESULTS))).intValue();
         } catch (NumberFormatException e) {
             return DEFAULT_MAX_RESULTS;
         }
@@ -36,6 +36,7 @@ public class HistorySearcher extends Searcher {
     protected Void doInBackground(Void... voids) {
         // Ask for records
         String historyMode = prefs.getString("history-mode", "recency");
+        boolean sortHistory = prefs.getBoolean("sort-history", false);
         boolean excludeFavorites = prefs.getBoolean("exclude-favorites", false);
 
         MainActivity activity = activityWeakReference.get();
@@ -48,7 +49,7 @@ public class HistorySearcher extends Searcher {
             favoritesPojo = KissApplication.getApplication(activity).getDataHandler().getFavorites();
         }
 
-        List<Pojo> pojos = KissApplication.getApplication(activity).getDataHandler().getHistory(activity, getMaxResultCount(), historyMode, favoritesPojo);
+        List<Pojo> pojos = KissApplication.getApplication(activity).getDataHandler().getHistory(activity, getMaxResultCount(), historyMode, sortHistory, favoritesPojo);
 
         int size = pojos.size();
         for(int i = 0; i < size; i += 1) {

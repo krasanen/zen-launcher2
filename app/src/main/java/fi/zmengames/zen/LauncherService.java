@@ -1,11 +1,14 @@
 package fi.zmengames.zen;
 
 import android.animation.Animator;
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Binder;
@@ -50,6 +53,7 @@ public class LauncherService extends Service {
     public static final String FULL_LOAD_OVER = "PROVIDER_FULL_LOAD_OVER";
     public static final String NIGHTMODE_ON = "NIGHTMODE_ON";
     public static final String NIGHTMODE_OFF = "NIGHTMODE_OFF";
+    public static final String HANDLE_PENDING_EVENTS = "HANDLE_PENDING_EVENTS";
     private IBinder mBinder = new MyBinder();
     private ExecutorService serviceExecutor = Executors.newCachedThreadPool();
 
@@ -112,7 +116,7 @@ public class LauncherService extends Service {
     @Override
     public void onRebind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onRebind");
-
+        EventBus.getDefault().post(new ZEvent(ZEvent.State.HANDLE_PENDING_EVENTS));
 
         super.onRebind(intent);
     }

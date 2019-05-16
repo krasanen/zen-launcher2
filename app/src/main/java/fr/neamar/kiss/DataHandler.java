@@ -1,11 +1,15 @@
 package fr.neamar.kiss;
 
+import android.app.KeyguardManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap.CompressFormat;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -112,6 +116,9 @@ public class DataHandler
         ProviderEntry phoneEntry = new ProviderEntry();
         phoneEntry.provider = new PhoneProvider(context);
         this.providers.put("phone", phoneEntry);
+        ProviderEntry searchEntry = new ProviderEntry();
+        searchEntry.provider = new SearchProvider(context);
+        this.providers.put("search", searchEntry);
     }
 
     @Override
@@ -274,6 +281,24 @@ public class DataHandler
     }
 
     /**
+     * Get records for this query.
+     *
+     * @param searcher the searcher currently running
+     */
+    public void requestAllRecords(Searcher searcher) {
+        for (ProviderEntry entry : this.providers.values()) {
+            if (searcher.isCancelled())
+                break;
+            if (entry.provider == null)
+                continue;
+
+            List<? extends Pojo> pojos = entry.provider.getPojos();
+            if (pojos != null)
+                searcher.addResult(pojos.toArray(new Pojo[0]));
+        }
+    }
+
+    /**
      * Return previously selected items.<br />
      * May return null if no items were ever selected (app first use)<br />
      * May return an empty set if the providers are not done building records,
@@ -281,24 +306,28 @@ public class DataHandler
      *
      * @param context        android context
      * @param itemCount      max number of items to retrieve, total number may be less (search or calls are not returned for instance)
-     * @param historyMode Recency vs Frecency vs Frequency
+     * @param historyMode    Recency vs Frecency vs Frequency
+     * @param sortHistory sort history entries alphabetically
      * @param itemsToExclude Items to exclude from history
      * @return pojos in recent history
      */
-    public ArrayList<Pojo> getHistory(Context context, int itemCount, String historyMode, ArrayList<Pojo> itemsToExclude) {
+    public ArrayList<Pojo> getHistory(Context context, int itemCount, String historyMode, boolean sortHistory, ArrayList<Pojo> itemsToExclude) {
         // Pre-allocate array slots that are likely to be used based on the current maximum item
         // count
         ArrayList<Pojo> history = new ArrayList<>(Math.min(itemCount, 256));
 
+        // Max sure that we get enough items, regardless of how many may be excluded
+        int extendedItemCount = itemCount + itemsToExclude.size();
+
         // Read history
-        List<ValuedHistoryRecord> ids = DBHelper.getHistory(context, itemCount, historyMode);
+        List<ValuedHistoryRecord> ids = DBHelper.getHistory(context, extendedItemCount, historyMode, sortHistory);
 
         // Find associated items
         for (int i = 0; i < ids.size(); i++) {
             // Ask all providers if they know this id
             Pojo pojo = getPojo(ids.get(i).record);
             if (pojo != null) {
-                //Look if the pojo should get excluded
+                // Look if the pojo should get excluded
                 boolean exclude = false;
                 for (int j = 0; j < itemsToExclude.size(); j++) {
                     if (itemsToExclude.get(j).id.equals(pojo.id)) {
@@ -310,6 +339,11 @@ public class DataHandler
                 if (!exclude) {
                     history.add(pojo);
                 }
+
+                // Break if maximum number of items have been retrieved
+                if (history.size() >= itemCount) {
+                    break;
+                }
             }
         }
 
@@ -320,9 +354,20 @@ public class DataHandler
         return DBHelper.getHistoryLength(this.context);
     }
 
-    public boolean addShortcut(ShortcutsPojo shortcut) {
-        boolean success = false;//this is here to know what info is being returned
+    /**
+     * Query database for item and return its name
+     *
+     * @param id      globally unique ID, usually starts with provider scheme, e.g. "app://" or "contact://"
+     * @return name of item (i.e. app name)
+     */
+    public String getItemName(String id) {
+        // Ask all providers if they know this id
+        Pojo pojo = getPojo(id);
 
+        return (pojo != null) ? pojo.getName() : "???";
+    }
+
+    public boolean addShortcut(ShortcutsPojo shortcut) {
         ShortcutRecord record = new ShortcutRecord();
         record.name = shortcut.getName();
         record.iconResource = shortcut.resourceName;
@@ -336,14 +381,13 @@ public class DataHandler
         }
 
         DBHelper.insertShortcut(this.context, record);
-        success = true;
 
         if (this.getShortcutsProvider() != null) {
             this.getShortcutsProvider().reload();
         }
 
         Log.d(TAG, "Shortcut " + shortcut.id + " added.");
-        return success;
+        return true;
     }
 
     public void clearHistory() {
@@ -614,7 +658,7 @@ public class DataHandler
 
         Set<String> excludedFromHistory = getExcludedFromHistory();
 
-        if ((!frozen) && (!excludedFromHistory.contains(id))) {
+        if (!frozen && !excludedFromHistory.contains(id)) {
             DBHelper.insertHistory(this.context, currentQuery, id);
         }
     }

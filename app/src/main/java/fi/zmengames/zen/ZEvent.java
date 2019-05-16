@@ -16,7 +16,7 @@ public class ZEvent {
     public enum State {
         // Normal states
         GOOGLE_SIGNIN,
-        GOOGLE_SIGNOUT, LOAD_OVER, FULL_LOAD_OVER, SHOW_TOAST, BADGE_COUNT;
+        GOOGLE_SIGNOUT, LOAD_OVER, FULL_LOAD_OVER, SHOW_TOAST, BADGE_COUNT, HANDLE_PENDING_EVENTS;
     }
 
     public ZEvent(@NonNull State state)

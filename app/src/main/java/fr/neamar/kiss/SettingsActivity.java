@@ -40,17 +40,15 @@ import fr.neamar.kiss.utils.PackageManagerUtils;
 public class SettingsActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int PERMISSION_RECEIVE_SMS = 0;
     private static final int PERMISSION_READ_PHONE_STATE = 1;
 
     // Those settings require the app to restart
-    final static private String settingsRequiringRestart = "primary-color transparent-search transparent-favorites pref-rounded-list pref-rounded-bars history-hide enable-favorites-bar notification-bar-color black-notification-icons";
+    final static private String settingsRequiringRestart = "primary-color transparent-search transparent-favorites pref-rounded-list pref-rounded-bars pref-swap-kiss-button-with-menu pref-hide-circle history-hide enable-favorites-bar notification-bar-color black-notification-icons";
     final static private String settingsRequiringRestartForSettingsActivity = "theme force-portrait require-settings-update";
     private boolean requireFullRestart = false;
 
     private SharedPreferences prefs;
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -59,7 +57,7 @@ public class SettingsActivity extends PreferenceActivity implements
             setTheme(R.style.SettingThemeDark);
         }
 
-        if(prefs.contains("require-settings-update")) {
+        if (prefs.contains("require-settings-update")) {
             // This flag will be used when the settings activity needs to restart,
             // but the value will be set to true
             // and the sharedpreferencesListener only triggers on value change
@@ -87,6 +85,7 @@ public class SettingsActivity extends PreferenceActivity implements
 
         fixSummaries();
 
+        addExcludedFromHistoryAppSettings(prefs);
         addExcludedAppSettings(prefs);
 
         addCustomSearchProvidersPreferences(prefs);
@@ -94,7 +93,7 @@ public class SettingsActivity extends PreferenceActivity implements
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             removePreference("colors-section", "black-notification-icons");
         }
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             removePreference("history-hide-section", "pref-hide-navbar");
             removePreference("history-hide-section", "pref-hide-statusbar");
         }
@@ -111,9 +110,9 @@ public class SettingsActivity extends PreferenceActivity implements
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        if(item.getItemId() == R.id.help) {
+        if (item.getItemId() == R.id.help) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://zmengames.com"));
+            intent.setData(Uri.parse("http://help.kisslauncher.com"));
             startActivity(intent);
             return true;
         }
@@ -127,27 +126,42 @@ public class SettingsActivity extends PreferenceActivity implements
     }
 
     private void loadExcludedAppsToPreference(MultiSelectListPreference multiSelectList) {
-        String excludedAppList = prefs.getString("excluded-apps-list", "").replace(this.getPackageName() + ";", "");
-        String[] apps = excludedAppList.split(";");
+        Set<String> excludedAppList = KissApplication.getApplication(SettingsActivity.this).getDataHandler().getExcluded();
+        String[] apps = excludedAppList.toArray(new String[0]);
         Arrays.sort(apps);
+
         multiSelectList.setEntries(apps);
         multiSelectList.setEntryValues(apps);
         multiSelectList.setValues(new HashSet<>(Arrays.asList(apps)));
     }
 
-    private boolean hasNoExcludedApps(final SharedPreferences prefs) {
-        String excludedAppList = prefs.getString("excluded-apps-list", "").replace(this.getPackageName() + ";", "");
+    private void loadExcludedFromHistoryAppsToPreference(MultiSelectListPreference multiSelectList) {
+        Set<String> excludedAppList = KissApplication.getApplication(SettingsActivity.this).getDataHandler().getExcludedFromHistory();
+        String[] apps = excludedAppList.toArray(new String[0]);
+        Arrays.sort(apps);
+
+        multiSelectList.setEntries(apps);
+        multiSelectList.setEntryValues(apps);
+        multiSelectList.setValues(new HashSet<>(Arrays.asList(apps)));
+    }
+
+    private boolean hasNoExcludedApps() {
+        Set<String> excludedAppList = KissApplication.getApplication(SettingsActivity.this).getDataHandler().getExcluded();
         return excludedAppList.isEmpty();
     }
 
-    @SuppressWarnings("deprecation")
+    private boolean hasNoExcludedFromHistoryApps() {
+        Set<String> excludedAppList = KissApplication.getApplication(SettingsActivity.this).getDataHandler().getExcludedFromHistory();
+        return excludedAppList.isEmpty();
+    }
+
     private void addExcludedAppSettings(final SharedPreferences prefs) {
         final MultiSelectListPreference multiPreference = new MultiSelectListPreference(this);
         multiPreference.setTitle(R.string.ui_excluded_apps);
         multiPreference.setDialogTitle(R.string.ui_excluded_apps_dialog_title);
         multiPreference.setKey("excluded_apps_ui");
         multiPreference.setOrder(15);
-        PreferenceGroup category = (PreferenceGroup) findPreference("history_category");
+        PreferenceGroup category = (PreferenceGroup) findPreference("exclude_apps_category");
         category.addPreference(multiPreference);
 
         loadExcludedAppsToPreference(multiPreference);
@@ -159,14 +173,9 @@ public class SettingsActivity extends PreferenceActivity implements
                 // (can't be done with sharedpreferences)
                 Set<String> appListToBeExcluded = new HashSet<>((HashSet<String>) newValue);
 
-                StringBuilder builder = new StringBuilder();
-                for (String s : appListToBeExcluded) {
-                    builder.append(s).append(";");
-                }
-
-                prefs.edit().putString("excluded-apps-list", builder.toString() + SettingsActivity.this.getPackageName() + ";").apply();
+                prefs.edit().putStringSet("excluded-apps", appListToBeExcluded).apply();
                 loadExcludedAppsToPreference(multiPreference);
-                if (hasNoExcludedApps(prefs)) {
+                if (hasNoExcludedApps()) {
                     multiPreference.setDialogMessage(R.string.ui_excluded_apps_not_found);
                 }
 
@@ -178,13 +187,43 @@ public class SettingsActivity extends PreferenceActivity implements
                 return false;
             }
         });
-        if (hasNoExcludedApps(prefs)) {
+        if (hasNoExcludedApps()) {
+            multiPreference.setDialogMessage(R.string.ui_excluded_apps_not_found);
+        }
+    }
+
+    private void addExcludedFromHistoryAppSettings(final SharedPreferences prefs) {
+        final MultiSelectListPreference multiPreference = new MultiSelectListPreference(this);
+        multiPreference.setTitle(R.string.ui_excluded_from_history_apps);
+        multiPreference.setDialogTitle(R.string.ui_excluded_apps_dialog_title);
+        multiPreference.setKey("excluded_from_history_apps_ui");
+        multiPreference.setOrder(15);
+        PreferenceGroup category = (PreferenceGroup) findPreference("exclude_apps_category");
+        category.addPreference(multiPreference);
+
+        loadExcludedFromHistoryAppsToPreference(multiPreference);
+        multiPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Set<String> appListToBeExcluded = (HashSet<String>) newValue;
+
+                prefs.edit().putStringSet("excluded-apps-from-history", appListToBeExcluded).apply();
+                loadExcludedFromHistoryAppsToPreference(multiPreference);
+                if (hasNoExcludedFromHistoryApps()) {
+                    multiPreference.setDialogMessage(R.string.ui_excluded_apps_not_found);
+                }
+
+                return false;
+            }
+        });
+        if (hasNoExcludedFromHistoryApps()) {
             multiPreference.setDialogMessage(R.string.ui_excluded_apps_not_found);
         }
     }
 
     private void addCustomSearchProvidersPreferences(SharedPreferences prefs) {
-        if(prefs.getStringSet("selected-search-provider-names", null) == null) {
+        if (prefs.getStringSet("selected-search-provider-names", null) == null) {
             // If null, it means this setting has never been accessed before
             // In this case, null != [] ([] happens when the user manually unselected every single option)
             // So, when null, we know it's the first time opening this setting and we can write the default value.
@@ -215,10 +254,11 @@ public class SettingsActivity extends PreferenceActivity implements
         }
     }
 
+    @SuppressWarnings("StringSplitter")
     private void addCustomSearchProvidersSelect(SharedPreferences prefs) {
         MultiSelectListPreference multiPreference = new MultiSelectListPreference(this);
         //get stored search providers or default hard-coded values
-        Set<String> availableSearchProviders = prefs.getStringSet("available-search-providers", SearchProvider.getSearchProviders(this));
+        Set<String> availableSearchProviders = prefs.getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(this));
         String[] searchProvidersArray = new String[availableSearchProviders.size()];
         int pos = 0;
         //get names of search providers
@@ -231,27 +271,16 @@ public class SettingsActivity extends PreferenceActivity implements
         multiPreference.setKey("selected-search-provider-names");
         multiPreference.setEntries(searchProvidersArray);
         multiPreference.setEntryValues(searchProvidersArray);
-        multiPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            @SuppressWarnings("unchecked")
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                final SearchProvider provider = KissApplication.getApplication(SettingsActivity.this).getDataHandler().getSearchProvider();
-                if (provider != null) {
-                    provider.reload();
-                }
-                return true;
-            }
-        });
 
         PreferenceGroup category = (PreferenceGroup) findPreference("providers");
         category.addPreference(multiPreference);
     }
 
+    @SuppressWarnings("StringSplitter")
     private void addCustomSearchProvidersDelete(final SharedPreferences prefs) {
         MultiSelectListPreference multiPreference = new MultiSelectListPreference(this);
 
-        Set<String> availableSearchProviders = prefs.getStringSet("available-search-providers", SearchProvider.getSearchProviders(this));
+        Set<String> availableSearchProviders = prefs.getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(this));
         String[] searchProvidersArray = new String[availableSearchProviders.size()];
         int pos = 0;
         //get names of search providers
@@ -271,9 +300,9 @@ public class SettingsActivity extends PreferenceActivity implements
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Set<String> searchProvidersToDelete = (Set<String>) newValue;
-                Set<String> availableSearchProviders = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this).getStringSet("available-search-providers", SearchProvider.getSearchProviders(SettingsActivity.this));
+                Set<String> availableSearchProviders = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this).getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(SettingsActivity.this));
 
-                Set<String> updatedProviders = new HashSet<>(PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this).getStringSet("available-search-providers", SearchProvider.getSearchProviders(SettingsActivity.this)));
+                Set<String> updatedProviders = new HashSet<>(PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this).getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(SettingsActivity.this)));
 
                 for (String searchProvider : availableSearchProviders) {
                     for (String providerToDelete : searchProvidersToDelete) {
@@ -314,10 +343,15 @@ public class SettingsActivity extends PreferenceActivity implements
         MemoryCacheHelper.updatePreferences(sharedPreferences);
         if (key.equalsIgnoreCase("available-search-providers")) {
             addCustomSearchProvidersPreferences(prefs);
+        } else if (key.equalsIgnoreCase("selected-search-provider-names")) {
+            final SearchProvider provider = KissApplication.getApplication(SettingsActivity.this).getDataHandler().getSearchProvider();
+            if (provider != null) {
+                provider.reload();
+            }
         } else if (key.equalsIgnoreCase("icons-pack")) {
             KissApplication.getApplication(this).getIconsHandler().loadIconsPack(sharedPreferences.getString(key, "default"));
         } else if (key.equalsIgnoreCase("enable-phone-history")) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
                     != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{android.Manifest.permission.READ_PHONE_STATE},
                         SettingsActivity.PERMISSION_READ_PHONE_STATE);
@@ -326,15 +360,14 @@ public class SettingsActivity extends PreferenceActivity implements
             PackageManagerUtils.enableComponent(this, IncomingCallHandler.class, sharedPreferences.getBoolean(key, false));
         } else if (key.equalsIgnoreCase("primary-color")) {
             UIColors.clearPrimaryColorCache(this);
-        }
-        else if(key.equalsIgnoreCase("number-of-display-elements")) {
+        } else if (key.equalsIgnoreCase("number-of-display-elements")) {
             QuerySearcher.clearMaxResultCountCache();
         }
 
         if (settingsRequiringRestart.contains(key) || settingsRequiringRestartForSettingsActivity.contains(key)) {
             requireFullRestart = true;
 
-            if(settingsRequiringRestartForSettingsActivity.contains(key)) {
+            if (settingsRequiringRestartForSettingsActivity.contains(key)) {
                 // Kill this activity too, and restart
                 recreate();
             }
@@ -355,12 +388,12 @@ public class SettingsActivity extends PreferenceActivity implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(grantResults.length == 0) {
+        if (grantResults.length == 0) {
             return;
         }
 
-        if(requestCode == PERMISSION_READ_PHONE_STATE) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == PERMISSION_READ_PHONE_STATE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 PackageManagerUtils.enableComponent(this, IncomingCallHandler.class, prefs.getBoolean("enable-phone-history", false));
             } else {
                 // You don't want to give us permission, that's fine. Revert the toggle.
@@ -371,14 +404,13 @@ public class SettingsActivity extends PreferenceActivity implements
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void fixSummaries() {
         int historyLength = KissApplication.getApplication(this).getDataHandler().getHistoryLength();
         if (historyLength > 5) {
             findPreference("reset").setSummary(String.format(getString(R.string.items_title), historyLength));
         }
 
-        // Only display "rate the app" preference if the user has been using Zen Launcher long enough to enjoy it ;)
+        // Only display "rate the app" preference if the user has been using Zen long enough to enjoy it ;)
         Preference rateApp = findPreference("rate-app");
         if (historyLength < 300) {
             getPreferenceScreen().removePreference(rateApp);
@@ -415,22 +447,21 @@ public class SettingsActivity extends PreferenceActivity implements
         lp.setEntryValues(entryValues);
     }
 
-	private void addHiddenTagsTogglesInformation( SharedPreferences prefs )
-	{
-        Set<String> menuTags = TagsMenu.getPrefTags( prefs, getApplicationContext() );
-        MultiSelectListPreference selectListPreference = (MultiSelectListPreference)findPreference( "pref-toggle-tags-list" );
+    private void addHiddenTagsTogglesInformation(SharedPreferences prefs) {
+        Set<String> menuTags = TagsMenu.getPrefTags(prefs, getApplicationContext());
+        MultiSelectListPreference selectListPreference = (MultiSelectListPreference) findPreference("pref-toggle-tags-list");
         Set<String> tagsSet = KissApplication.getApplication(this)
-                                             .getDataHandler()
-                                             .getTagsHandler()
-                                             .getAllTagsAsSet();
+                .getDataHandler()
+                .getTagsHandler()
+                .getAllTagsAsSet();
 
         // append tags that are available to toggle now
-        tagsSet.addAll( menuTags );
+        tagsSet.addAll(menuTags);
 
-        String[] tagArray = tagsSet.toArray( new String[0] );
+        String[] tagArray = tagsSet.toArray(new String[0]);
         Arrays.sort(tagArray);
-        selectListPreference.setEntries( tagArray );
-        selectListPreference.setEntryValues( tagArray );
-        selectListPreference.setValues( menuTags );
-	}
+        selectListPreference.setEntries(tagArray);
+        selectListPreference.setEntryValues(tagArray);
+        selectListPreference.setValues(menuTags);
+    }
 }

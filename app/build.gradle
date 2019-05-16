@@ -1,4 +1,16 @@
-apply plugin: 'com.android.application'
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'com.android.application'
+    id 'net.ltgt.errorprone' version '0.7.1'
+}
 
 android {
     compileSdkVersion 28
@@ -69,29 +81,15 @@ dependencies {
     }
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation "me.leolin:ShortcutBadger:1.1.22@aar"
-}
 
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.11"
-    }
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+    errorprone ("com.google.errorprone:error_prone_core:2.3.3")
 }
-
-apply plugin: "net.ltgt.errorprone"
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += [
-            '-Xep:MissingOverride:OFF',
-    ]
-}
+    options.errorprone.errorproneArgs << '-Xep:MissingOverride:OFF'
+    options.errorprone.disableAllChecks = true
 
-configurations.errorprone {
-    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.21'
 }
 def gitVersion() {
     def process = "git rev-list HEAD --first-parent --count".execute()

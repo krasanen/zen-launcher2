@@ -50,8 +50,8 @@
     <string name="reset_excluded_from_history_apps_name">Reset excluded from history app list</string>
     <string name="reset_excluded_from_history_apps_warn">Do you really want to reset your excluded from history app list?</string>
     <string name="settings_excluded_apps">Excluded apps</string>
-    <string name="ui_excluded_apps">View or edit your excluded from Zen apps</string>
-    <string name="ui_excluded_from_history_apps">View or edit your excluded from history apps</string>
+    <string name="ui_excluded_apps">View or edit apps excluded from Zen</string>
+    <string name="ui_excluded_from_history_apps">View or edit apps excluded from history</string>
     <string name="ui_excluded_apps_dialog_title">Deselect the apps you would like to include</string>
     <string name="ui_excluded_apps_not_found">No apps have been excluded</string>
     <string name="reset_warn">Do you really want to reset your history?</string>
@@ -134,7 +134,7 @@
     <string name="removed_item">Removed</string>
     <string name="menu_remove">Remove from history</string>
     <string name="menu_exclude">Exclude app ..</string>
-    <string name="menu_exclude_kiss">from from Zen Launcher</string>
+    <string name="menu_exclude_kiss">from Zen</string>
     <string name="menu_exclude_history">from history</string>
     <string name="menu_app_details">App info</string>
     <string name="menu_app_uninstall">Uninstall</string>

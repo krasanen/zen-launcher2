@@ -804,18 +804,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        if (zEventArrayList!=null && !zEventArrayList.isEmpty()) {
-            Iterator<ZEvent> iter = zEventArrayList.keySet().iterator();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    while (iter.hasNext()) {
-                        onEventMainThread(iter.next());
-                        iter.remove();
-                    }
-                }
-            });
-        }
         forwarderManager.onStart();
 
         Intent intent = new Intent(this, LauncherService.class);
@@ -1025,6 +1013,22 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             case BADGE_COUNT:
                 Log.v(TAG, "BADGE_COUNT, package:"+event.getText()+ "badgeCount:"+event.getIntExtra());
                 reloadBadge(event.getText());
+                break;
+            case HANDLE_PENDING_EVENTS:
+                Log.v(TAG, "HANDLE_PENDING_EVENTS.");
+                if (zEventArrayList!=null && !zEventArrayList.isEmpty()) {
+                    Iterator<ZEvent> iter = zEventArrayList.keySet().iterator();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while (iter.hasNext()) {
+                                onEventMainThread(iter.next());
+                                iter.remove();
+                            }
+                        }
+                    });
+                }
+                break;
         }
     }
 
