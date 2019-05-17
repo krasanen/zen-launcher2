@@ -1011,22 +1011,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                 break;
             case BADGE_COUNT:
-                Log.v(TAG, "BADGE_COUNT, package:"+event.getText()+ "badgeCount:"+event.getIntExtra());
+                Log.v(TAG, "BADGE_COUNT, package:" + event.getText() + "badgeCount:" + event.getIntExtra());
                 reloadBadge(event.getText());
                 break;
             case HANDLE_PENDING_EVENTS:
                 Log.v(TAG, "HANDLE_PENDING_EVENTS.");
-                if (zEventArrayList!=null && !zEventArrayList.isEmpty()) {
+                if (zEventArrayList != null && !zEventArrayList.isEmpty()) {
                     Iterator<ZEvent> iter = zEventArrayList.keySet().iterator();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (iter.hasNext()) {
-                                onEventMainThread(iter.next());
-                                iter.remove();
-                            }
-                        }
-                    });
+                    while (iter.hasNext()) {
+                        onEventMainThread(iter.next());
+                        iter.remove();
+                    }
                 }
                 break;
         }
