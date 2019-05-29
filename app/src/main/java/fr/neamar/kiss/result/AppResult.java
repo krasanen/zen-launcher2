@@ -111,7 +111,7 @@ public class AppResult extends Result {
         intent.putExtra(INTENT_EXTRA_ACTIVITY_NAME, className);
 
         BroadcastHelper.sendDefaultIntentExplicitly(context, intent);
-        KissApplication.getApplication(context).getDataHandler().getBadgeHandler().setBadgeCount(packageName, badgeCount, true);;
+        KissApplication.getApplication(context).getDataHandler().getBadgeHandler().setBadgeCount(packageName, badgeCount);
 
     }
 

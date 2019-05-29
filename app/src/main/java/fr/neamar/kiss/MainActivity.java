@@ -154,7 +154,6 @@ import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
-import static fi.zmengames.zen.LauncherService.zEventArrayList;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
@@ -520,8 +519,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             samsungBadgeObserver = new SamsungBadgeObserver(new Handler(), this);
 
             getContentResolver()
-                    .registerContentObserver(samsungBadgeUri, true, new SamsungBadgeObserver(new Handler(), this));
-            SamsungBadgeObserver.loadBadges(this);
+                    .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
         }
 
 
@@ -926,7 +924,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (BuildConfig.DEBUG) Log.d(TAG, "onResume()");
         if (SamsungBadgeObserver.providerExists(this)) {
             getContentResolver()
-                    .registerContentObserver(samsungBadgeUri, true, new SamsungBadgeObserver(new Handler(), this));
+                    .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
         }
         if (flashToggle){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -969,7 +967,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
 
         forwarderManager.onResume();
+        onFavoriteChange();
         super.onResume();
+    }
+
+    private void resumeBadges() {
+        Iterator<Map.Entry<String, Integer>> entries = BadgeHandler.badgeCache.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, Integer> entry = entries.next();
+            adapter.reloadBadge(entry.getKey());
+            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
     }
 
     @Override
@@ -981,6 +989,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
+    private boolean fullLoadOver = false;
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ZEvent event) {
         Log.w(TAG, "Got message from service: " + event.getState());
@@ -995,7 +1004,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             case LOAD_OVER:
                 KissApplication.getApplication(this).getDataHandler().handleProviderLoaded();
                 updateSearchRecords();
-                onFavoriteChange();
                 break;
             case FULL_LOAD_OVER:
                 Log.v(TAG, "All providers are done loading.");
@@ -1003,6 +1011,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 onFavoriteChange();
                 // Run GC once to free all the garbage accumulated during provider initialization
                 System.gc();
+                SamsungBadgeObserver.loadBadges(this);
                 break;
             case SHOW_TOAST:
                 Log.v(TAG, "Show toast");
@@ -1012,17 +1021,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
             case BADGE_COUNT:
                 Log.v(TAG, "BADGE_COUNT, package:" + event.getText() + "badgeCount:" + event.getIntExtra());
-                reloadBadge(event.getText());
-                break;
-            case HANDLE_PENDING_EVENTS:
-                Log.v(TAG, "HANDLE_PENDING_EVENTS.");
-                if (zEventArrayList != null && !zEventArrayList.isEmpty()) {
-                    Iterator<ZEvent> iter = zEventArrayList.keySet().iterator();
-                    while (iter.hasNext()) {
-                        onEventMainThread(iter.next());
-                        iter.remove();
-                    }
-                }
+                adapter.notifyDataSetChanged();
+                onFavoriteChange();
                 break;
         }
     }

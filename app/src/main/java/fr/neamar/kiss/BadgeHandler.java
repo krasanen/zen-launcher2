@@ -10,23 +10,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
-import fr.neamar.kiss.broadcast.BadgeCountHandler;
-import fr.neamar.kiss.db.DBHelper;
-
-import static fi.zmengames.zen.LauncherService.zEventArrayList;
+import fr.neamar.kiss.pojo.AppPojo;
+import fr.neamar.kiss.pojo.Pojo;
 
 public class BadgeHandler {
     private static final String TAG = BadgeHandler.class.getSimpleName();
     Context context;
     //cached badges
-    private Map<String, Integer> badgeCache;
+    public static Map<String, Integer> badgeCache = new HashMap<>();
 
     BadgeHandler(Context context) {
         this.context = context;
-        badgeCache = DBHelper.loadBadges(this.context);
+        //badgeCache = DBHelper.loadBadges(this.context);
     }
 
     public Integer getBadgeCount(String packageName){
@@ -41,18 +37,31 @@ public class BadgeHandler {
     }
 
 
-    public void setBadgeCount(String packageName, Integer badge_count, boolean sendIntent) {
-        //upsert badge count on the db0
-        Log.d(TAG,"setBadgeCount, packageName:"+packageName+" badges:"+badge_count);
-        DBHelper.setBadgeCount(this.context, packageName, badge_count);
-        //add to cache
-        badgeCache.put(packageName, badge_count);
-        ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT, packageName, badge_count);
-        if (!EventBus.getDefault().isRegistered(MainActivity.class)) {
-               zEventArrayList.put(event, 1);
+    public void setBadgeCount(String packageName, Integer badge_count) {
+        Integer badgeCount = badgeCache.get(packageName);
+        if (BuildConfig.DEBUG) Log.d(TAG,"setBadgeCount, packageName:"+packageName+" badge_count:"+badge_count + " badgeCount"+badgeCount);
+        if (badgeCount!=badge_count) {
+            badgeCache.put(packageName, badge_count);
+            List<Pojo> apps = KissApplication.getApplication(context).getDataHandler().getApplications();
+            boolean found = false;
+            if (apps != null) {
+                for (Pojo result : apps) {
+                    AppPojo pojo = (AppPojo) result;
+                    if (pojo.packageName.equals(packageName)) {
+                        pojo.setBadgeCount(badge_count);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "setBadgeCount: count: " + pojo.getBadgeCount());
+                        ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT, packageName, badge_count);
+                        EventBus.getDefault().post(event);
+                        break;
+                    }
+
+                }
+            }
         }
-        if (sendIntent) {
-            EventBus.getDefault().post(event);
-        }
+    }
+
+    public void reloadBadge(String packageName) {
+
+
     }
 }

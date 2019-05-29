@@ -43,7 +43,6 @@ import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
-    public static ConcurrentHashMap<ZEvent, Integer> zEventArrayList = new ConcurrentHashMap<>();
     public static final String LAUNCH_INTENT = "LAUNCH_INTENT";
     public static final String SET_BADGE_COUNT = "SET_BADGE_COUNT";
     private static final String TAG = LauncherService.class.getSimpleName();
@@ -53,7 +52,6 @@ public class LauncherService extends Service {
     public static final String FULL_LOAD_OVER = "PROVIDER_FULL_LOAD_OVER";
     public static final String NIGHTMODE_ON = "NIGHTMODE_ON";
     public static final String NIGHTMODE_OFF = "NIGHTMODE_OFF";
-    public static final String HANDLE_PENDING_EVENTS = "HANDLE_PENDING_EVENTS";
     private IBinder mBinder = new MyBinder();
     private ExecutorService serviceExecutor = Executors.newCachedThreadPool();
 
@@ -116,8 +114,6 @@ public class LauncherService extends Service {
     @Override
     public void onRebind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onRebind");
-        EventBus.getDefault().post(new ZEvent(ZEvent.State.HANDLE_PENDING_EVENTS));
-
         super.onRebind(intent);
     }
 

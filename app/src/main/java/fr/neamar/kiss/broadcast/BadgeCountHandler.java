@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.Objects;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
@@ -20,7 +21,7 @@ public class BadgeCountHandler extends BroadcastReceiver {
         DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
         String packageName = null;
         int badgeCount = 0;
-
+        if (BuildConfig.DEBUG) Log.d(TAG,"onReceive");
         switch (intent.getAction()) {
             case "com.htc.launcher.action.UPDATE_SHORTCUT":
                 badgeCount = intent.getIntExtra("count", 0);
@@ -45,9 +46,9 @@ public class BadgeCountHandler extends BroadcastReceiver {
         }
 
         if (packageName != null) {
-            Log.d(TAG,"onReceive, package:"+packageName+ " count:"+badgeCount);
+            if (BuildConfig.DEBUG) Log.d(TAG,"onReceive, package:"+packageName+ " count:"+badgeCount);
             if (dataHandler.getBadgeHandler().getBadgeCount(packageName)!=badgeCount) {
-                dataHandler.getBadgeHandler().setBadgeCount(packageName, badgeCount, true);
+                dataHandler.getBadgeHandler().setBadgeCount(packageName, badgeCount);
             }
         }
 

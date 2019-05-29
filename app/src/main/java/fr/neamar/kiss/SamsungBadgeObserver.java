@@ -23,7 +23,7 @@ public class SamsungBadgeObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange, Uri pUri) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onChange: Uri:"+pUri);
+        if (BuildConfig.DEBUG) Log.d(TAG, "onChange: selfChange: "+selfChange + " Uri:"+pUri);
         // query badge status on content provider
         loadBadges(context);
 
@@ -49,47 +49,44 @@ public class SamsungBadgeObserver extends ContentObserver {
      * Updates the badges count on BadgeHandler
      */
     public static void loadBadges(Context context) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Uri uri = Uri.parse("content://com.sec.badge/apps");
-                Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-                // Return if cursor is null. Means provider does not exists
-                if (cursor == null) {
+        if( BuildConfig.DEBUG) Log.d(TAG,"loadBadges");
+
+            Uri uri = Uri.parse("content://com.sec.badge/apps");
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+            // Return if cursor is null. Means provider does not exists
+            if (cursor == null) {
+                return;
+            }
+
+            try {
+                if (!cursor.moveToFirst()) {
+                    // No results. Nothing to query
                     return;
                 }
+                BadgeHandler badgeHandler = KissApplication.getApplication(context).getDataHandler().getBadgeHandler();
 
-                try {
-                    if (!cursor.moveToFirst()) {
-                        // No results. Nothing to query
-                        return;
+                cursor.moveToPosition(-1);
+                while (cursor.moveToNext()) {
+                    String packageName = cursor.getString(1);
+
+                    // java.lang.SecurityException: Permission Denial: writing com.sec.android.provider.badge.BadgeProvider uri content://com.sec.badge/apps from pid=28449, uid=10602 requires com.sec.android.provider.badge.permission.WRITE, or grantUriPermission()
+                    //resetBadgeCount(context,packageName);
+
+                    int badgeCount = cursor.getInt(3);
+
+
+                    if (badgeHandler.getBadgeCount(packageName)!=badgeCount) {
+                        if (BuildConfig.DEBUG)
+                            Log.d(TAG, "loadBadges, setBadgeCount, packageName:" + packageName + " Badges:" + badgeCount);
+
+                        badgeHandler.setBadgeCount(packageName, badgeCount);
                     }
-                    BadgeHandler badgeHandler = KissApplication.getApplication(context).getDataHandler().getBadgeHandler();
-
-                    cursor.moveToPosition(-1);
-                    while (cursor.moveToNext()) {
-                        String packageName = cursor.getString(1);
-
-                        // java.lang.SecurityException: Permission Denial: writing com.sec.android.provider.badge.BadgeProvider uri content://com.sec.badge/apps from pid=28449, uid=10602 requires com.sec.android.provider.badge.permission.WRITE, or grantUriPermission()
-                        //resetBadgeCount(context,packageName);
-
-                        int badgeCount = cursor.getInt(3);
-
-
-                        if (badgeHandler.getBadgeCount(packageName)!=badgeCount) {
-                            if (BuildConfig.DEBUG)
-                                Log.d(TAG, "loadBadges, setBadgeCount, packageName:" + packageName + " Badges:" + badgeCount);
-
-                            badgeHandler.setBadgeCount(packageName, badgeCount, true);
-                        }
-                    }
-                } finally {
-                    cursor.close();
                 }
-
-
+            } finally {
+                cursor.close();
             }
-        }).start();
+
+
     }
     private static void resetBadgeCount(Context context, String packageName){
         ContentValues cv = new ContentValues();

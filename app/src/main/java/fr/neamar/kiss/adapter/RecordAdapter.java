@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.neamar.kiss.BadgeHandler;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.normalizer.StringNormalizer;
@@ -59,16 +60,15 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
 
 
     public void reloadBadge(String packageName) {
-        Log.d(TAG,"reloadBadge: "+packageName);
+        if (BuildConfig.DEBUG) Log.d(TAG,"reloadBadge: "+packageName);
         List<Pojo> apps = KissApplication.getApplication(context).getDataHandler().getApplications();
-
         boolean found = false;
         if (apps!=null) {
             for (Pojo result : apps) {
                 AppPojo pojo = (AppPojo) result;
                 if (pojo.packageName.equals(packageName)) {
                     pojo.setBadgeCount(KissApplication.getApplication(context).getDataHandler().getBadgeHandler().getBadgeCount(packageName));
-                    Log.d(TAG, "reloadBadge: count: " + pojo.getBadgeCount());
+                    if (BuildConfig.DEBUG)Log.d(TAG, "reloadBadge: count: " + pojo.getBadgeCount());
                     found = true;
                     break;
                 }
