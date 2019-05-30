@@ -59,24 +59,6 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     }
 
 
-    public void reloadBadge(String packageName) {
-        if (BuildConfig.DEBUG) Log.d(TAG,"reloadBadge: "+packageName);
-        List<Pojo> apps = KissApplication.getApplication(context).getDataHandler().getApplications();
-        boolean found = false;
-        if (apps!=null) {
-            for (Pojo result : apps) {
-                AppPojo pojo = (AppPojo) result;
-                if (pojo.packageName.equals(packageName)) {
-                    pojo.setBadgeCount(KissApplication.getApplication(context).getDataHandler().getBadgeHandler().getBadgeCount(packageName));
-                    if (BuildConfig.DEBUG)Log.d(TAG, "reloadBadge: count: " + pojo.getBadgeCount());
-                    found = true;
-                    break;
-                }
-
-            }
-        }
-
-    }
     @Override
     public int getViewTypeCount() {
         return 6;

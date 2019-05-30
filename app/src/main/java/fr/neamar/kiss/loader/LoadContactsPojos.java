@@ -173,11 +173,11 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                             //contact.setNickname(nick);
                             if (company!=null) {
                                 contact.setCompany(company);
-                                Log.d(TAG,"company:"+company);
+                                if (BuildConfig.DEBUG) Log.d(TAG,"company:"+company);
                             }
                             if (title!=null) {
                                 contact.setTitle(title);
-                                Log.d(TAG, "title:" + title);
+                                if (BuildConfig.DEBUG) Log.d(TAG, "title:" + title);
                             }
                         }
                     }

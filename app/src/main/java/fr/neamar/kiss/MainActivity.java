@@ -279,12 +279,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return instance;
     }
 
-    public void reloadBadge(String packageName) {
-        Log.d(TAG,"reloadBadge: "+packageName);
-        adapter.reloadBadge(packageName);
-        this.adapter.notifyDataSetChanged();
-        forwarderManager.onFavoriteChange();
-    }
     public void signIn(int action) {
         if (BuildConfig.DEBUG) Log.d(TAG, "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -306,7 +300,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private void openFilePicker() {
         if (mDriveServiceHelper != null) {
-            Log.d(TAG, "Opening file picker.");
+            if (BuildConfig.DEBUG) Log.d(TAG, "Opening file picker.");
 
             Intent pickerIntent = mDriveServiceHelper.createFilePickerIntent();
 
@@ -511,17 +505,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          * Set the view and store all useful components
          */
         setContentView(R.layout.main);
-        // Apps may notify badge updates for Samsung devices
-        // through a ContentResolver on the url: content://com.sec.badge/apps
-        if (SamsungBadgeObserver.providerExists(this)) {
-
-            //Content Resolver has content, so, register for updates and load its actual content
-            samsungBadgeObserver = new SamsungBadgeObserver(new Handler(), this);
-
-            getContentResolver()
-                    .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
-        }
-
 
         this.list = this.findViewById(android.R.id.list);
         this.listContainer = (View) this.list.getParent();
@@ -676,6 +659,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         //if(BuildConfig.DEBUG) Log.d(TAG,"<setOnDragListener");
         if (prefs.getBoolean("bluelightfilter", false)) {
             // setBlueLightFilter(true);
+        }
+        // Apps may notify badge updates for Samsung devices
+        // through a ContentResolver on the url: content://com.sec.badge/apps
+        if (SamsungBadgeObserver.providerExists(this)) {
+
+            //Content Resolver has content, so, register for updates and load its actual content
+            samsungBadgeObserver = new SamsungBadgeObserver(new Handler(), this);
+
+            getContentResolver()
+                    .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
+            SamsungBadgeObserver.loadBadges(this);
         }
     }
 
@@ -971,15 +965,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onResume();
     }
 
-    private void resumeBadges() {
-        Iterator<Map.Entry<String, Integer>> entries = BadgeHandler.badgeCache.entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<String, Integer> entry = entries.next();
-            adapter.reloadBadge(entry.getKey());
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -1002,8 +987,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 signOut();
                 break;
             case LOAD_OVER:
+                Log.v(TAG, "provider done loading.");
                 KissApplication.getApplication(this).getDataHandler().handleProviderLoaded();
                 updateSearchRecords();
+                onFavoriteChange();
+                EventBus.getDefault().removeAllStickyEvents();
                 break;
             case FULL_LOAD_OVER:
                 Log.v(TAG, "All providers are done loading.");
@@ -1011,7 +999,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 onFavoriteChange();
                 // Run GC once to free all the garbage accumulated during provider initialization
                 System.gc();
-                SamsungBadgeObserver.loadBadges(this);
+                EventBus.getDefault().removeAllStickyEvents();
                 break;
             case SHOW_TOAST:
                 Log.v(TAG, "Show toast");
@@ -1020,7 +1008,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                 break;
             case BADGE_COUNT:
-                Log.v(TAG, "BADGE_COUNT, package:" + event.getText() + "badgeCount:" + event.getIntExtra());
+                Log.v(TAG, "BADGE_COUNT update");
                 adapter.notifyDataSetChanged();
                 onFavoriteChange();
                 break;
@@ -1079,7 +1067,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private void query() {
         if (mDriveServiceHelper != null) {
-            Log.d(TAG, "Querying for files.");
+            if (BuildConfig.DEBUG) Log.d(TAG, "Querying for files.");
             showSpinner(R.string.loading_from_cloud);
             mDriveServiceHelper.queryFiles()
                     .addOnSuccessListener(fileList -> {
@@ -1153,7 +1141,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }); */
                         String fileNames = builder.toString();
 
-                        Log.d(TAG, "files:" + fileNames);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "files:" + fileNames);
 
 
                         setReadOnlyMode();
@@ -1189,7 +1177,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 mDriveServiceHelper.renameFile(fileLocal, String.valueOf(input.getText())).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Rename Failed");
+                        if (BuildConfig.DEBUG) Log.d(TAG, "Rename Failed exception:"+e);
                     }
                 });
             }
@@ -1503,14 +1491,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void openFileFromFilePicker(Uri uri) {
         if (mDriveServiceHelper != null) {
-            Log.d(TAG, "Opening " + uri.getPath());
+            if (BuildConfig.DEBUG) Log.d(TAG, "Opening " + uri.getPath());
 
             mDriveServiceHelper.openFileUsingStorageAccessFramework(getContentResolver(), uri)
                     .addOnSuccessListener(nameAndContent -> {
                         String name = nameAndContent.first;
 
 
-                        Log.d(TAG, "name " + name);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "name " + name);
                         getDataFromOpenedFile(nameAndContent.second);
 
                         // Files opened through SAF cannot be modified, except by retrieving the
@@ -1544,7 +1532,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void createFile(String name) {
         if (mDriveServiceHelper != null) {
-            Log.d(TAG, "Creating a file.");
+            if (BuildConfig.DEBUG) Log.d(TAG, "Creating a file.");
             showSpinner(R.string.saving_to_cloud);
             mDriveServiceHelper.createFile(name)
                     .addOnSuccessListener(fileId -> saveFile(fileId, name))
@@ -1561,7 +1549,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void readFile(String fileId) {
         if (mDriveServiceHelper != null) {
-            Log.d(TAG, "Reading file " + fileId);
+            if (BuildConfig.DEBUG) Log.d(TAG, "Reading file " + fileId);
             showSpinner(R.string.loading_from_cloud);
             mDriveServiceHelper.readFile(fileId)
                     .addOnSuccessListener(nameAndContent -> {
@@ -1569,7 +1557,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         byte[] content = nameAndContent.second;
 
 
-                        Log.d(TAG, "name " + name);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "name " + name);
 
 
                         setReadWriteMode(fileId);
@@ -1647,7 +1635,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void saveFile(String fileId, String unique) {
         if (mDriveServiceHelper != null) {
-            Log.d(TAG, "Saving " + fileId);
+            if (BuildConfig.DEBUG) Log.d(TAG, "Saving " + fileId);
             String fileName = unique;
             byte[] fileContent = null;
             try {
@@ -1732,7 +1720,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void handleSignInResult(Intent result) {
         GoogleSignIn.getSignedInAccountFromIntent(result)
                 .addOnSuccessListener(googleAccount -> {
-                    Log.d(TAG, "Signed in as " + googleAccount.getEmail());
+                    if (BuildConfig.DEBUG) Log.d(TAG, "Signed in as " + googleAccount.getEmail());
 
                     // Use the authenticated account to sign in to the Drive service.
                     GoogleAccountCredential credential =
@@ -1968,7 +1956,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean onLongClick(View view) {
-        Log.d(TAG, "onLongClick");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onLongClick");
         buildWidgetPopupMenu(view);
         return true;
     }

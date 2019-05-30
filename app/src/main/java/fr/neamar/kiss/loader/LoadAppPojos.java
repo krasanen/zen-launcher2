@@ -28,6 +28,7 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
 
     private final TagsHandler tagsHandler;
     private BadgeHandler badgeHandler;
+    private static final String TAG = LoadAppPojos.class.getSimpleName();
     public LoadAppPojos(Context context) {
         super(context, "app://");
         tagsHandler = KissApplication.getApplication(context).getDataHandler().getTagsHandler();
@@ -57,14 +58,10 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
                 for (LauncherActivityInfo activityInfo : launcher.getActivityList(null, profile)) {
                     ApplicationInfo appInfo = activityInfo.getApplicationInfo();
 
-                    String fullPackageName = user.addUserSuffixToString(appInfo.packageName, '#');
                     String id = user.addUserSuffixToString(pojoScheme + appInfo.packageName + "/" + activityInfo.getName(), '/');
 
                     AppPojo app = new AppPojo(id, appInfo.packageName, activityInfo.getName(), user);
-
                     app.setName(activityInfo.getLabel().toString());
-                    app.setBadgeCount(badgeHandler.getBadgeCount(appInfo.packageName));
-
                     app.setTags(tagsHandler.getTags(app.id));
 
                     if (!excludedAppList.contains(app.getComponentName())) {

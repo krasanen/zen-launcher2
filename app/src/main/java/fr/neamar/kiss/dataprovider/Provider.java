@@ -7,11 +7,14 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.loader.LoadPojos;
 import fr.neamar.kiss.pojo.Pojo;
@@ -71,11 +74,7 @@ public abstract class Provider<T extends Pojo> extends Service implements IProvi
         this.loaded = true;
 
         // Broadcast this event
-
-
-        Intent intent = new Intent(this, LauncherService.class);
-        intent.setAction(LauncherService.LOAD_OVER);
-        KissApplication.startLaucherService(intent,this);
+        EventBus.getDefault().postSticky(new ZEvent(ZEvent.State.LOAD_OVER));
     }
 
     /**

@@ -262,7 +262,7 @@ public class ContactsResult extends Result {
             phoneButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Log.d(TAG,"onLongClick");
+                    if (BuildConfig.DEBUG) Log.d(TAG,"onLongClick");
                     buildCallPopupMenu(view);
 
                     return true;
@@ -280,7 +280,7 @@ public class ContactsResult extends Result {
             messageButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Log.d(TAG,"onLongClick");
+                    if (BuildConfig.DEBUG)  Log.d(TAG,"onLongClick");
                     buildMsgPopupMenu(view);
                     return true;
                 }

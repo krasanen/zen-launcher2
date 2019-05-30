@@ -124,8 +124,8 @@ public class LauncherService extends Service {
         return true;
     }
 
-    private void sendMessageSticky(ZEvent event) {
-        EventBus.getDefault().postSticky(event);
+    private void sendMessage(ZEvent event) {
+        EventBus.getDefault().post(event);
     }
 
     private void sendMessageSticky2(ZEvent event) {
@@ -142,9 +142,7 @@ public class LauncherService extends Service {
             public void run() {
                 if (intent.getAction().equals(GOOGLE_SIGN_IN)) handleGoogleSignIn(intent);
                 else if (intent.getAction().equals(GOOGLE_SIGN_OUT)) handleGoogleSignOut(intent);
-                else if (intent.getAction().equals(LOAD_OVER)) handleProviderLoadOver(intent);
-                else if (intent.getAction().equals(FULL_LOAD_OVER))
-                    handleProviderFullLoadOver(intent);
+
                 else if (intent.getAction().equals(NIGHTMODE_ON)) createMaskView();
                 else if (intent.getAction().equals(NIGHTMODE_OFF)) destroyMaskView();
                 else if (intent.getAction().equals(LAUNCH_INTENT)) launchIntent(intent);
@@ -179,7 +177,7 @@ public class LauncherService extends Service {
 
     private void handleProviderFullLoadOver(Intent intent) {
         if(BuildConfig.DEBUG) Log.d(TAG, "handleProviderFullLoadOver");
-        sendMessageSticky2(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
+        sendMessage(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
     }
 
     private void handleProviderLoadOver(Intent intent) {

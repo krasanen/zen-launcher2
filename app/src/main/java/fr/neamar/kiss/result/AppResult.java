@@ -31,6 +31,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -104,7 +105,7 @@ public class AppResult extends Result {
     private static final String INTENT_EXTRA_ACTIVITY_NAME = "badge_count_class_name";
 
     public static void executeBadge(Context context, String packageName, String className, int badgeCount) throws ShortcutBadgeException {
-        Log.d(TAG, "executeBadge " + packageName + ":" + className + "badgeCount:"+badgeCount);
+        if (BuildConfig.DEBUG) Log.d(TAG, "executeBadge " + packageName + ":" + className + "badgeCount:"+badgeCount);
         Intent intent = new Intent(INTENT_ACTION);
         intent.putExtra(INTENT_EXTRA_BADGE_COUNT, badgeCount);
         intent.putExtra(INTENT_EXTRA_PACKAGENAME, packageName);

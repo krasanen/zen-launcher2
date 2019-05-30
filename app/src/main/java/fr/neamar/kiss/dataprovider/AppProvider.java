@@ -198,6 +198,18 @@ public class AppProvider extends Provider<AppPojo> {
         return records;
     }
 
+    public ArrayList<Pojo> getAllAppsCached(){
+        if (records.size()>0){
+            return records;
+        } else {
+            for (AppPojo pojo : pojos) {
+                pojo.relevance = 0;
+                records.add(pojo);
+            }
+            return records;
+        }
+    }
+
     public void removeApp(AppPojo appPojo) {
         pojos.remove(appPojo);
     }

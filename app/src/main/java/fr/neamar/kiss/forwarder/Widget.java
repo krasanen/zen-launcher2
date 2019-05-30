@@ -285,8 +285,8 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                     hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
                 }
             }
-            Log.d(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
-            Log.d(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
+            if (BuildConfig.DEBUG) Log.d(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
+            if (BuildConfig.DEBUG) Log.d(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
             return wp;
         }
         return null;

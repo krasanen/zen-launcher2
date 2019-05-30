@@ -1,15 +1,18 @@
 package fr.neamar.kiss.pojo;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.neamar.kiss.BadgeHandler;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 
 public abstract class Pojo {
     public static final String DEFAULT_ID = "(none)";
-
+    private static final String TAG = Pojo.class.getSimpleName();
     // Globally unique ID.
     // Usually starts with provider scheme, e.g. "app://" or "contact://" to
     // ensure unique constraint
@@ -35,6 +38,10 @@ public abstract class Pojo {
     }
 
     public int getBadgeCount(){
+        if (id.contains("app://")){
+            if (BuildConfig.DEBUG) Log.d(TAG,"id:"+id.substring(6,id.indexOf("/",6)));
+            badgeCount = BadgeHandler.getBadgeCount(id.substring(6,id.indexOf("/", 6)));
+        }
         return badgeCount;
     }
     /**
@@ -67,14 +74,6 @@ public abstract class Pojo {
     }
 
     public String getBadgeText(){
-        return displayBadge;
-    }
-    public void setBadgeCount(int badgeCount){
-        this.badgeCount = badgeCount;
-        if (badgeCount > 99){
-            displayBadge = "99";
-        }else{
-            displayBadge = String.valueOf(badgeCount);
-        }
+        return String.valueOf(badgeCount);
     }
 }
