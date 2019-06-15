@@ -234,5 +234,9 @@
     <string name="nightmodeOn">Sinisen valon suodatin päälle</string>
     <string name="nightmodeOff">Sinisen valon suodatin pois</string>
     <string name="showAppGrid">Näytä kaikki sovellukset</string>
+    <string name="wifi_toggle">Toggle Wifi On/Off</string>
+    <string name="wifi_off">Wifi Off</string>
+    <string name="wifi_on">Wifi On</string>
+    <string name="network_internet"><![CDATA[Network & Internet]]></string>
 
 </resources>

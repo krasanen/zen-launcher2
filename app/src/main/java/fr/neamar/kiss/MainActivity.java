@@ -34,6 +34,7 @@ import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -679,10 +680,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void show(Activity activity, final float x, final float y) {
-
+        WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final int ADD_WIDGET = 0;
         final int WIDGET_SETTINGS = 1;
         final int UPDATE_WALLPAPER = 2;
+        final int TOGGLE_WIFI = 3;
+        final int AIRPLANE_MODE = 4;
 
         final ViewGroup root = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
 
@@ -700,6 +703,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         popupExcludeMenu.getMenu().add(ADD_WIDGET, Menu.NONE, Menu.NONE, R.string.menu_widget_add);
         popupExcludeMenu.getMenu().add(WIDGET_SETTINGS, Menu.NONE, Menu.NONE, R.string.menu_widget_settings);
         popupExcludeMenu.getMenu().add(UPDATE_WALLPAPER, Menu.NONE, Menu.NONE, R.string.menu_wallpaper);
+        if (wifiManager.isWifiEnabled()) {
+            popupExcludeMenu.getMenu().add(TOGGLE_WIFI, Menu.NONE, Menu.NONE, R.string.wifi_off);
+        } else {
+            popupExcludeMenu.getMenu().add(TOGGLE_WIFI, Menu.NONE, Menu.NONE, R.string.wifi_on);
+        }
+        popupExcludeMenu.getMenu().add(AIRPLANE_MODE, Menu.NONE, Menu.NONE, R.string.settings_airplane);
+
 
         //registering popup with OnMenuItemClickListener
         popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -717,6 +727,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         hideKeyboard();
                         Intent intent2 = new Intent(Intent.ACTION_SET_WALLPAPER);
                         startActivity(Intent.createChooser(intent2, getString(R.string.menu_wallpaper)));
+                        break;
+                    case TOGGLE_WIFI:
+                        wifiManager.setWifiEnabled(!wifiManager.isWifiEnabled());
+                        break;
+                    case AIRPLANE_MODE:
+                        Intent intent3 = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+                        startActivity(intent3);
                         break;
                 }
                 return true;

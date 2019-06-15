@@ -156,4 +156,8 @@ Catatan: Jika anda tidak ingin melihat opsi \'Selalu\', tekan Tombol Rumah setel
     <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
     <string name="triple_tap_flashlight">Tripletap flashlight</string>
     <string name="order_contacts_name">Contacts list sort order</string>
+    <string name="wifi_toggle">Toggle Wifi On/Off</string>
+    <string name="wifi_off">Wifi Off</string>
+    <string name="wifi_on">Wifi On</string>
+    <string name="network_internet"><![CDATA[Network & Internet]]></string>
 </resources>

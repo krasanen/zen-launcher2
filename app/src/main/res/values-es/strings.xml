@@ -222,4 +222,8 @@
     <string name="popup_tags_title">Etiquetas disponibles</string>
     <string name="popup_tags_actions">Acciones disponibles</string>
     <string name="show_history">Mostrar historial</string>
+    <string name="wifi_toggle">Toggle Wifi On/Off</string>
+    <string name="wifi_off">Wifi Off</string>
+    <string name="wifi_on">Wifi On</string>
+    <string name="network_internet"><![CDATA[Network & Internet]]></string>
 </resources>

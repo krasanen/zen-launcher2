@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wifi_toggle">Toggle Wifi On/Off</string>
+    <string name="wifi_off">Wifi Off</string>
+    <string name="wifi_on">Wifi On</string>
+    <string name="network_internet"><![CDATA[Network & Internet]]></string>
+</resources>
