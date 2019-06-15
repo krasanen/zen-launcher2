@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import io.github.endreman0.calculator.Calculator;
@@ -30,7 +31,7 @@ public class CalculatorProvider extends SimpleProvider {
             query = query.replace("*", " * ");
             query = query.replace("/", " / ");
             query = query.replace("-", " - ");
-            Log.d(TAG,"query="+query);
+            if (BuildConfig.DEBUG) Log.d(TAG,"query="+query);
             try {
                 result = String.valueOf(Calculator.calculate(query));
             } catch (NullPointerException e){

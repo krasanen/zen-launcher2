@@ -1136,7 +1136,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                 }
                             });
 
-                            MenuItem renameMenu = listSubMenu.add(i + 1, Menu.NONE, Menu.NONE, "Rename");
+                            // TODO: now working yet
+                            /* MenuItem renameMenu = listSubMenu.add(i + 1, Menu.NONE, Menu.NONE, "Rename");
                             //registering popup with OnMenuItemClickListener
 
                             renameMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -1147,7 +1148,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                     queryNewName(fileLocal.getName(), fileLocal);
                                     return true;
                                 }
-                            });
+                            }); */
 
 
                             i++;

@@ -386,7 +386,7 @@ public class DataHandler
             this.getShortcutsProvider().reload();
         }
 
-        Log.d(TAG, "Shortcut " + shortcut.id + " added.");
+        if (BuildConfig.DEBUG) Log.d(TAG, "Shortcut " + shortcut.id + " added.");
         return true;
     }
 

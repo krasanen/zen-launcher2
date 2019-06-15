@@ -25,6 +25,8 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.util.Log;
 
+import fr.neamar.kiss.BuildConfig;
+
 /**
  * Specific {@link AppWidgetHost} that creates our {@link LauncherAppWidgetHostView}
  * which correctly captures all long-press events. This ensures that users can
@@ -50,7 +52,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     @Override
     protected void onProviderChanged(int appWidgetId, AppWidgetProviderInfo appWidget) {
         super.onProviderChanged(appWidgetId, appWidget);
-        Log.d(TAG,"onProviderChanged:"+appWidgetId);
+        if(BuildConfig.DEBUG) Log.d(TAG,"onProviderChanged:"+appWidgetId);
 
     }
 }
