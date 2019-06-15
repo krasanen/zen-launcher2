@@ -517,6 +517,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.launcherButton = findViewById(R.id.launcherButton);
         this.clearButton = findViewById(R.id.clearButton);
         this.numericButton = findViewById(R.id.numericButton);
+        this.numericButton.setClickable(false);
         /*
          * Initialize components behavior
          * Note that a lot of behaviors are also initialized through the forwarderManager.onCreate() call.
@@ -758,7 +759,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onNumericKeypadClicked(View view) {
-        forwarderManager.switchInputType();
+        if (isKeyboardVisible()) {
+            forwarderManager.switchInputType();
+        } else {
+
+        }
     }
 
     // place to put widget when long clicking on widgetlayout

@@ -177,15 +177,13 @@
             android:layout_toLeftOf="@+id/clearButton"
             android:background="?attr/appSelectableItemBackground"
             android:contentDescription="@string/main_clear"
-            android:focusable="true"
             android:onClick="onNumericKeypadClicked"
             android:paddingLeft="@dimen/launcher_button_padding"
             android:paddingRight="@dimen/launcher_button_padding"
             android:paddingTop="@dimen/launcher_button_padding"
             android:paddingBottom="@dimen/launcher_button_padding"
-            android:src="@drawable/numeric_keypad"
-            android:tint="?attr/searchColor"
-            android:visibility="gone" />
+            android:src="@drawable/touch_app"
+            android:tint="?attr/resultColor"/>
     </RelativeLayout>
 
     <ScrollView
