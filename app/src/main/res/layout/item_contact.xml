@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center_vertical"
+    android:id="@+id/test"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/result_margin_bottom"
     android:paddingEnd="@dimen/result_margin_right"
@@ -115,8 +116,8 @@
 
     <ImageButton
         android:id="@+id/item_contact_action_message"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/item_contact_action_phone"
         android:layout_toStartOf="@+id/item_contact_action_phone"
@@ -126,8 +127,8 @@
 
     <ImageButton
         android:id="@+id/item_contact_action_phone"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
