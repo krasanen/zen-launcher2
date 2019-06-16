@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -171,7 +173,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             if (pojo.getBadgeCount() > 0) {
                 badgeView.setText(String.valueOf(pojo.getBadgeText()));
                 badgeView.setVisibility(View.VISIBLE);
-                badgeView.setX(getBitmapOffset(image)[2]-badgeView.getMeasuredWidth()/2);
+                badgeView.setX(getBitmapOffset(image)[2]- (badgeView.getMeasuredWidth() >> 1));
                 badgeView.setY(getBitmapOffset(image)[3]);
             } else {
                 badgeView.setVisibility(View.GONE);

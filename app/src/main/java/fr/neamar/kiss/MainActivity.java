@@ -762,7 +762,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (isKeyboardVisible()) {
             forwarderManager.switchInputType();
         } else {
-
+            //emptyListView.setPressed(true);
         }
     }
 
@@ -976,6 +976,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         if (KissApplication.getApplication(this).getDataHandler().allProvidersHaveLoaded) {
             displayLoader(false);
+            if(BuildConfig.DEBUG) Log.d(TAG,">onFavoriteChange");
             onFavoriteChange();
         }
 
@@ -989,7 +990,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
 
         forwarderManager.onResume();
-        onFavoriteChange();
+
         super.onResume();
     }
 
@@ -1018,7 +1019,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 Log.v(TAG, "provider done loading.");
                 KissApplication.getApplication(this).getDataHandler().handleProviderLoaded();
                 updateSearchRecords();
-                onFavoriteChange();
+               // onFavoriteChange();
                 EventBus.getDefault().removeAllStickyEvents();
                 break;
             case FULL_LOAD_OVER:
@@ -2079,6 +2080,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onFavoriteChange() {
+        if (BuildConfig.DEBUG) Log.d(TAG,"onFavoriteChange");
         forwarderManager.onFavoriteChange();
     }
 

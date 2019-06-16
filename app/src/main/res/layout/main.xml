@@ -180,10 +180,10 @@
             android:onClick="onNumericKeypadClicked"
             android:paddingLeft="@dimen/launcher_button_padding"
             android:paddingRight="@dimen/launcher_button_padding"
-            android:paddingTop="@dimen/launcher_button_padding"
-            android:paddingBottom="@dimen/launcher_button_padding"
+            android:paddingTop="@dimen/icon_margin_top"
+            android:paddingBottom="@dimen/icon_margin_top"
             android:src="@drawable/touch_app"
-            android:tint="?attr/resultColor"/>
+            android:tint="?attr/searchColor"/>
     </RelativeLayout>
 
     <ScrollView
