@@ -12,9 +12,6 @@
     public static int e(...);
 }
 
--keep class com.gracenote.gnsdk.** {
-  *;
-}
 -keep class androidx.appcompat.app.**{
   *;
 }

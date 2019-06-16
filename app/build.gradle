@@ -84,7 +84,7 @@ dependencies {
 
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
     errorprone ("com.google.errorprone:error_prone_core:2.3.3")
-    implementation files('libs/calculator-lib-0.0.0.jar')
+    implementation 'com.github.stefanhaustein.expressionparser:core:v1.0.0'
 }
 
 tasks.withType(JavaCompile) {
@@ -105,4 +105,9 @@ def buildTimeStamp() {
     def date = new Date()
     def formattedDate = date.format('yyyy-MM-dd')
     return formattedDate
+}
+configurations {
+    all {
+        exclude module: 'httpclient'
+    }
 }
