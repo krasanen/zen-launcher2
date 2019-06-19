@@ -13,6 +13,7 @@ import android.util.Log;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.DrawableRes;
@@ -48,8 +49,19 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
         }
         return drawable;
     }
+
+    private String querySettingPkgName() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+        List<ResolveInfo> resolveInfos = context.get().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (resolveInfos == null || resolveInfos.size() == 0) {
+            return "";
+        }
+        return resolveInfos.get(0).loadLabel(context.get().getPackageManager()).toString();
+    }
+
     @Override
     protected ArrayList<SettingsPojo> doInBackground(Void... params) {
+        String settingsPkgName = querySettingPkgName();
         ArrayList<SettingsPojo> settings = new ArrayList<>();
 
         if (context.get() == null) {
@@ -62,6 +74,7 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
         Class<Settings> clazz = Settings.class;
         Field[] arr = clazz.getFields(); // Get all public fields of your class
         for (Field f : arr) {
+            outerloop:
             if (f.getName().contains("ACTION_") && f.getType().equals(String.class)) { // check if field is a String
                 if (BuildConfig.DEBUG) Log.d(TAG, "f: " + f);
                 String s = null; // get value of each field
@@ -69,12 +82,17 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
                     s = (String)f.get(null);
                     if (BuildConfig.DEBUG) Log.d(TAG, "s: " + s);
                     Intent testIntent = new Intent(s);
-                    ResolveInfo resolveInfo = pm.resolveActivity(testIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                    ResolveInfo resolveInfo = pm.resolveActivity(testIntent, PackageManager.MATCH_SYSTEM_ONLY);
                     if (resolveInfo != null) {
                         if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
                             String label = resolveInfo.loadLabel(pm).toString();
                             if (!label.isEmpty()) {
                                 if (BuildConfig.DEBUG) Log.d(TAG, "loadLabel: " + resolveInfo.loadLabel(pm).toString());
+                                for (SettingsPojo pojo:settings)
+                                    if (pojo.getName().equals(label)||label.equals(settingsPkgName)){
+                                        break outerloop;
+                                    }
+                                }
                                 SettingsPojo pojo = createPojo(label, resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
                                 if (!settings.contains(pojo)) {
                                     settings.add(pojo);
@@ -83,7 +101,6 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
                         } else {
                             //No Application can handle your intent
                         }
-                    }
 
                 } catch (Exception e) {
 
@@ -115,6 +132,10 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
                 Settings.ACTION_SOUND_SETTINGS, R.drawable.setting_dev));
         settings.add(createPojo(context.get().getString(R.string.settings_display),
                 Settings.ACTION_DISPLAY_SETTINGS, R.drawable.setting_dev));
+
+        settings.add(createPojo(context.get().getString(R.string.menu_settings),
+                Settings.ACTION_DISPLAY_SETTINGS, R.drawable.settings));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             if (pm.hasSystemFeature(PackageManager.FEATURE_NFC)) {
                 settings.add(createPojo(context.get().getString(R.string.settings_nfc),
