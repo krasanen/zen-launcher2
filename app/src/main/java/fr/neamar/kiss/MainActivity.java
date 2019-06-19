@@ -990,7 +990,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
 
         forwarderManager.onResume();
-
+        this.numericButton.setClickable(false);
         super.onResume();
     }
 
@@ -2028,8 +2028,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 (y > viewY && y < (viewY + searchEditText.getHeight())))) {
             if (BuildConfig.DEBUG)
                 Log.d(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
-            systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
-            forwarderManager.onTouch(searchEditText, ev);
+            if (ev.getAction()==0) {
+                systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
+                forwarderManager.onTouch(searchEditText, ev);
+            }
         }
 
         if (mPopup != null && ev.getActionMasked() == MotionEvent.ACTION_DOWN) {

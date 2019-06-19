@@ -131,23 +131,6 @@ public class ExperienceTweaks extends Forwarder {
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                // if minimalistic mode is enabled,
-                // and we want to display history on touch
-                if (isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
-                    // and we're currently in minimalistic mode with no results,
-                    // and we're not looking at the app list
-                    if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
-                        if ((mainActivity.list.getAdapter() == null) || (mainActivity.list.getAdapter().isEmpty())) {
-                            mainActivity.list.setFastScrollAlwaysVisible(false);
-                            mainActivity.list.setFastScrollEnabled(false);
-                            mainActivity.runTask(new HistorySearcher(mainActivity));
-                        }
-                    }
-                }
-
-                if (isMinimalisticModeEnabledForFavorites()) {
-                    mainActivity.favoritesBar.setVisibility(View.VISIBLE);
-                }
                 return super.onSingleTapConfirmed(e);
             }
 
@@ -265,7 +248,7 @@ public class ExperienceTweaks extends Forwarder {
             case MotionEvent.ACTION_UP:
                 handler.removeCallbacksAndMessages(null);
 
-                if ((System.currentTimeMillis() - touchDownMs) > ViewConfiguration.getTapTimeout()) {
+                if ((System.currentTimeMillis() - touchDownMs) > ViewConfiguration.getLongPressTimeout()) {
                     //it was not a tap
 
                     numberOfTaps = 0;
@@ -273,16 +256,30 @@ public class ExperienceTweaks extends Forwarder {
                     break;
                 }
 
-                if (numberOfTaps > 0
+                if (numberOfTaps >= 0
                         && (System.currentTimeMillis() - lastTapTimeMs) < ViewConfiguration.getDoubleTapTimeout()) {
                     numberOfTaps += 1;
+                    if(BuildConfig.DEBUG) Log.d(TAG,"numberOfTaps += 1");
                 } else {
                     numberOfTaps = 1;
                     if(BuildConfig.DEBUG) Log.d(TAG,"onetap");
-                    if (!onSingleTap()) {
-                        if(BuildConfig.DEBUG) Log.d(TAG,"no action for singletap");
-                    }
-
+                    Runnable onetap = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (numberOfTaps == 1 )
+                                numberOfTaps = 0;
+                                if (isMinimalisticModeEnabledForFavorites()) {
+                                    mainActivity.favoritesBar.setVisibility(View.VISIBLE);
+                                }
+                                if (!onSingleTap()) {
+                                    if(BuildConfig.DEBUG) Log.d(TAG,"no action for singletap, open keyboard");
+                                    if (mainActivity.isViewingSearchResults()){
+                                        mainActivity.displayKissBar(false);
+                                    }
+                                }
+                            }
+                        };
+                    handler.postDelayed(onetap, ViewConfiguration.getDoubleTapTimeout());
                 }
 
                 lastTapTimeMs = System.currentTimeMillis();
