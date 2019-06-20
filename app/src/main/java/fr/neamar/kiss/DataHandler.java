@@ -169,7 +169,7 @@ public class DataHandler
             return;
         }
 
-        Log.v(TAG, "Connecting to " + name);
+        if (BuildConfig.DEBUG) Log.v(TAG, "Connecting to " + name);
 
 
         // Find provider class for the given service name
@@ -250,7 +250,7 @@ public class DataHandler
         }
 
         long time = System.currentTimeMillis() - start;
-        Log.v(TAG, "Time to load all providers: " + time + "ms");
+        if (BuildConfig.DEBUG) Log.v(TAG, "Time to load all providers: " + time + "ms");
 
         this.allProvidersHaveLoaded = true;
 

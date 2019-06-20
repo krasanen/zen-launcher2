@@ -25,7 +25,7 @@ public class CalculatorProvider extends SimpleProvider {
     @Override
     public void requestResults(String query, Searcher searcher) {
         // Now create matcher object.
-        Log.d(TAG, "requestResults");
+        if (BuildConfig.DEBUG) Log.d(TAG, "requestResults");
         String result;
         Matcher m = p.matcher(query);
         if (m.find()) {

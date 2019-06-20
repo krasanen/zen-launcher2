@@ -15,6 +15,7 @@ import java.util.List;
 
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.loader.LoadPojos;
 import fr.neamar.kiss.pojo.Pojo;
@@ -58,7 +59,7 @@ public abstract class Provider<T extends Pojo> extends Service implements IProvi
 
     public void reload() {
         if(pojos!=null && pojos.size() > 0) {
-            Log.v(TAG, "Reloading provider: " + this.getClass().getSimpleName());
+            if (BuildConfig.DEBUG) Log.v(TAG, "Reloading provider: " + this.getClass().getSimpleName());
         }
     }
 

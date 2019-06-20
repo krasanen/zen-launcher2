@@ -8,6 +8,8 @@ import android.preference.SwitchPreference;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import fr.neamar.kiss.BuildConfig;
+
 public class ProximitySwitch extends SwitchPreference {
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
@@ -37,7 +39,7 @@ public class ProximitySwitch extends SwitchPreference {
 
     public void turnOnScreen(){
         // turn on screen
-        Log.v("ProximityActivity", "ON!");
+        if (BuildConfig.DEBUG) Log.v("ProximityActivity", "ON!");
         if (mWakeLock!=null) {
             mWakeLock.release();
         }
@@ -46,7 +48,7 @@ public class ProximitySwitch extends SwitchPreference {
 
     public void turnOffScreen(){
         // turn off screen
-        Log.v("ProximityActivity", "OFF!");
+        if (BuildConfig.DEBUG) Log.v("ProximityActivity", "OFF!");
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "tag");
         mWakeLock.acquire();
     }

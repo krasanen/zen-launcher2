@@ -13,6 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import androidx.annotation.CallSuper;
+
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.pojo.Pojo;
@@ -106,7 +108,7 @@ public abstract class Searcher extends AsyncTask<Void, Result, Void> {
         activity.resetTask();
 
         long time = System.currentTimeMillis() - start;
-        Log.v("Timing", "Time to run query `" + query + "` on " + getClass().getSimpleName() + " to completion: " + time + "ms");
+        if (BuildConfig.DEBUG) Log.v("Timing", "Time to run query `" + query + "` on " + getClass().getSimpleName() + " to completion: " + time + "ms");
     }
 
     public interface DataObserver {

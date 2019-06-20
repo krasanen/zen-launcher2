@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;
@@ -66,8 +67,8 @@ public class SettingsResult extends Result {
     @Override
     public void doLaunch(Context context, View v) {
         Intent intent = new Intent(settingPojo.settingName);
-        Log.d(TAG,"settingPojo.settingName:"+settingPojo.settingName);
-        Log.d(TAG,"settingPojo.packageName:"+settingPojo.packageName);
+        if (BuildConfig.DEBUG) Log.d(TAG,"settingPojo.settingName:"+settingPojo.settingName);
+        if (BuildConfig.DEBUG) Log.d(TAG,"settingPojo.packageName:"+settingPojo.packageName);
         if (!settingPojo.packageName.isEmpty()) {
             intent.setClassName(settingPojo.packageName, settingPojo.settingName);
         }

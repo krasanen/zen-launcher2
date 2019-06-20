@@ -165,6 +165,9 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
 
         settings.add(createPojo(context.get().getString(R.string.flashlight_off),
                 MainActivity.FLASHLIGHT_OFF, R.drawable.lightbulp));
+
+        settings.add(createPojo(context.get().getString(R.string.menu_wallpaper),
+                MainActivity.UPDATE_WALLPAPER, R.drawable.settings));
     }
 
     private SettingsPojo createPojo(String name, String packageName, String settingName,

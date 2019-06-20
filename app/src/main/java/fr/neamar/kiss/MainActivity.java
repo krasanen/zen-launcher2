@@ -184,7 +184,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static String WIFI_ON = "com.zmengames.zenlauncher.WIFI_ON";
     public static String WIFI_OFF = "com.zmengames.zenlauncher.WIFI_OFF";
     public static final String FLASHLIGHT_ON = "com.zmengames.zenlauncher.FLASHLIGHT_ON";
-    public static final String FLASHLIGHT_OFF = "com.zmengames.zenlauncher.FLASHLIGHT_OF";
+    public static final String FLASHLIGHT_OFF = "com.zmengames.zenlauncher.FLASHLIGHT_OFF";
+    public static final String UPDATE_WALLPAPER = "com.zmengames.zenlauncher.UPDATE_WALLPAPER";
 
     /**
      * Adapter to display records
@@ -1069,13 +1070,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     setBlueLightFilter(true);
                 } else if (NIGHTMODE_OFF.equals(event.getText())) {
                     setBlueLightFilter(false);
-
                 } else if (FLASHLIGHT_ON.equals(event.getText())) {
                     flashToggle = false;
                     toggleFlashLight();
                 } else if (FLASHLIGHT_OFF.equals(event.getText())) {
                     flashToggle = true;
                     toggleFlashLight();
+                } else if (UPDATE_WALLPAPER.equals(event.getText())) {
+                    updateWallPaper();
                 }
         }
     }
@@ -1260,6 +1262,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
+    private void updateWallPaper(){
+        hideKeyboard();
+        Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER);
+        startActivity(Intent.createChooser(intent, getString(R.string.menu_wallpaper)));
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (forwarderManager.onOptionsItemSelected(item)) {
@@ -1271,9 +1279,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                 return true;
             case R.id.wallpaper:
-                hideKeyboard();
-                intent = new Intent(Intent.ACTION_SET_WALLPAPER);
-                startActivity(Intent.createChooser(intent, getString(R.string.menu_wallpaper)));
+                updateWallPaper();
                 return true;
             case R.id.preferences:
                 startActivity(new Intent(this, SettingsActivity.class));
