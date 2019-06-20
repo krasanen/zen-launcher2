@@ -43,15 +43,13 @@ import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
-    public static final String LAUNCH_INTENT = "LAUNCH_INTENT";
-    public static final String SET_BADGE_COUNT = "SET_BADGE_COUNT";
     private static final String TAG = LauncherService.class.getSimpleName();
-    public static final String GOOGLE_SIGN_IN = "GOOGLE_SIGN_IN";
-    public static final String GOOGLE_SIGN_OUT = "GOOGLE_SIGN_OUT";
-    public static final String LOAD_OVER = "PROVIDER_LOAD_OVER";
-    public static final String FULL_LOAD_OVER = "PROVIDER_FULL_LOAD_OVER";
-    public static final String NIGHTMODE_ON = "NIGHTMODE_ON";
-    public static final String NIGHTMODE_OFF = "NIGHTMODE_OFF";
+    public static final String LAUNCH_INTENT = "com.zmengames.zenlauncher.LAUNCH_INTENT";
+    public static final String SET_BADGE_COUNT = "com.zmengames.zenlauncher.SET_BADGE_COUNT";
+    public static final String GOOGLE_SIGN_IN = "com.zmengames.zenlauncher.GOOGLE_SIGN_IN";
+    public static final String GOOGLE_SIGN_OUT = "com.zmengames.zenlauncher.GOOGLE_SIGN_OUT";
+    public static final String NIGHTMODE_ON = "com.zmengames.zenlauncher.NIGHTMODE_ON";
+    public static final String NIGHTMODE_OFF = "com.zmengames.zenlauncher.NIGHTMODE_OFF";
     private IBinder mBinder = new MyBinder();
     private ExecutorService serviceExecutor = Executors.newCachedThreadPool();
 

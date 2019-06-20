@@ -6,27 +6,25 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
 
 import android.appwidget.AppWidgetManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -48,6 +46,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionProvider;
 import android.view.ContextMenu;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -65,13 +64,11 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
@@ -110,10 +107,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -121,10 +116,9 @@ import java.util.Set;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
+
 import fi.zmengames.zen.AppGridActivity;
-import fi.zmengames.zen.Constants;
 import fi.zmengames.zen.DriveServiceHelper;
-import fi.zmengames.zen.LauncherAppWidgetHostView;
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -149,15 +143,17 @@ import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
-import fr.neamar.kiss.ui.WidgetPreferences;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
+import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
+import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_CODE_SIGN_IN = 1;
@@ -184,6 +180,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final int REQUEST_BIND_APPWIDGET = 17;
     public static final int REQUEST_WRITE = 17;
 
+    // app internal events
+    public static String WIFI_ON = "com.zmengames.zenlauncher.WIFI_ON";
+    public static String WIFI_OFF = "com.zmengames.zenlauncher.WIFI_OFF";
+    public static final String FLASHLIGHT_ON = "com.zmengames.zenlauncher.FLASHLIGHT_ON";
+    public static final String FLASHLIGHT_OFF = "com.zmengames.zenlauncher.FLASHLIGHT_OF";
 
     /**
      * Adapter to display records
@@ -466,7 +467,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
+
     Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
+
     /**
      * Called when the activity is first created.
      */
@@ -687,7 +690,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void show(Activity activity, final float x, final float y) {
-        WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final int ADD_WIDGET = 0;
         final int WIDGET_SETTINGS = 1;
         final int UPDATE_WALLPAPER = 2;
@@ -736,7 +739,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         startActivity(Intent.createChooser(intent2, getString(R.string.menu_wallpaper)));
                         break;
                     case TOGGLE_WIFI:
-                        wifiManager.setWifiEnabled(!wifiManager.isWifiEnabled());
+                        if (item.getTitle().equals(getString(R.string.wifi_off)))
+                            toggleWifiState(false);
+                        else {
+                            toggleWifiState(true);
+                        }
                         break;
                     case AIRPLANE_MODE:
                         Intent intent3 = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
@@ -756,6 +763,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         });
 
         popupExcludeMenu.show();
+    }
+
+    private void toggleWifiState(boolean state) {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (state && wifiManager.isWifiEnabled()) {
+            Toast.makeText(this, getString(R.string.wifi_on), Toast.LENGTH_LONG).show();
+        }
+        wifiManager.setWifiEnabled(state);
+
     }
 
     public void onNumericKeypadClicked(View view) {
@@ -834,7 +850,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-        if (camera!=null) {
+        if (camera != null) {
             camera.release();
         }
         forwarderManager.onStop();
@@ -861,6 +877,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static boolean flashToggle;
 
     Camera camera = null;
+
     public void toggleFlashLight() {
         if (BuildConfig.DEBUG) Log.d(TAG, "toggleFlashLight");
         flashToggle = !flashToggle;
@@ -888,7 +905,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
-    public void toggleFlashLightPreM(boolean on){
+    public void toggleFlashLightPreM(boolean on) {
         flashToggle = on;
         try {
             if (on) {
@@ -898,11 +915,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 camera.setParameters(p);
                 camera.startPreview();
             } else {
-                if (camera!=null) {
+                if (camera != null) {
                     camera.release();
                 }
             }
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
 
         }
     }
@@ -948,7 +965,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             getContentResolver()
                     .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
         }
-        if (flashToggle){
+        if (flashToggle) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 toggleFlashLightPreM(flashToggle);
             }
@@ -976,7 +993,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         if (KissApplication.getApplication(this).getDataHandler().allProvidersHaveLoaded) {
             displayLoader(false);
-            if(BuildConfig.DEBUG) Log.d(TAG,">onFavoriteChange");
+            if (BuildConfig.DEBUG) Log.d(TAG, ">onFavoriteChange");
             onFavoriteChange();
         }
 
@@ -1004,9 +1021,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private boolean fullLoadOver = false;
+
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ZEvent event) {
-        Log.w(TAG, "Got message from service: " + event.getState());
+        if (BuildConfig.DEBUG) Log.w(TAG, "Got message from service: " + event.getState());
 
         switch (event.getState()) {
             case GOOGLE_SIGNIN:
@@ -1016,14 +1034,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 signOut();
                 break;
             case LOAD_OVER:
-                Log.v(TAG, "provider done loading.");
+                if (BuildConfig.DEBUG) Log.v(TAG, "provider done loading.");
                 KissApplication.getApplication(this).getDataHandler().handleProviderLoaded();
                 updateSearchRecords();
-               // onFavoriteChange();
+                // onFavoriteChange();
                 EventBus.getDefault().removeAllStickyEvents();
                 break;
             case FULL_LOAD_OVER:
-                Log.v(TAG, "All providers are done loading.");
+                if (BuildConfig.DEBUG) Log.v(TAG, "All providers are done loading.");
                 displayLoader(false);
                 onFavoriteChange();
                 // Run GC once to free all the garbage accumulated during provider initialization
@@ -1031,16 +1049,34 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 EventBus.getDefault().removeAllStickyEvents();
                 break;
             case SHOW_TOAST:
-                Log.v(TAG, "Show toast");
+                if (BuildConfig.DEBUG) Log.v(TAG, "Show toast");
                 Toast.makeText(getBaseContext(), event.getText(),
                         Toast.LENGTH_LONG).show();
 
                 break;
             case BADGE_COUNT:
-                Log.v(TAG, "BADGE_COUNT update");
+                if (BuildConfig.DEBUG) Log.v(TAG, "BADGE_COUNT update");
                 adapter.notifyDataSetChanged();
                 onFavoriteChange();
                 break;
+            case INTERNAL_EVENT:
+                if (BuildConfig.DEBUG) Log.v(TAG, "INTERNAL_EVENT:" + event.getText());
+                if (WIFI_ON.equals(event.getText())) {
+                    toggleWifiState(true);
+                } else if (WIFI_OFF.equals(event.getText())) {
+                    toggleWifiState(false);
+                } else if (NIGHTMODE_ON.equals(event.getText())) {
+                    setBlueLightFilter(true);
+                } else if (NIGHTMODE_OFF.equals(event.getText())) {
+                    setBlueLightFilter(false);
+
+                } else if (FLASHLIGHT_ON.equals(event.getText())) {
+                    flashToggle = false;
+                    toggleFlashLight();
+                } else if (FLASHLIGHT_OFF.equals(event.getText())) {
+                    flashToggle = true;
+                    toggleFlashLight();
+                }
         }
     }
 
@@ -1207,7 +1243,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 mDriveServiceHelper.renameFile(fileLocal, String.valueOf(input.getText())).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (BuildConfig.DEBUG) Log.d(TAG, "Rename Failed exception:"+e);
+                        if (BuildConfig.DEBUG) Log.d(TAG, "Rename Failed exception:" + e);
                     }
                 });
             }
@@ -1299,15 +1335,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 return true;
             case R.id.nightModeOn:
                 if (BuildConfig.DEBUG) Log.d(TAG, "nightModeOn");
-                if (checkPermissionOverlay(this)) {
-                    setBlueLightFilter(true);
-                }
+                setBlueLightFilter(true);
                 return true;
             case R.id.nightModeOff:
                 if (BuildConfig.DEBUG) Log.d(TAG, "nightModeOff");
-                if (checkPermissionOverlay(this)) {
-                    setBlueLightFilter(false);
-                }
+                setBlueLightFilter(false);
                 return true;
             case R.id.appGrid:
                 startAppGridActivity();
@@ -1394,7 +1426,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             //}
         }
 
-        if (BuildConfig.DEBUG) Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
         return jsonWidget.toString(1);
     }
 
@@ -1639,7 +1672,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Log.e(TAG, "IOException", e);
             e.printStackTrace();
         }
-        if (mSaveGame!=null) {
+        if (mSaveGame != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -1750,7 +1783,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void handleSignInResult(Intent result) {
         GoogleSignIn.getSignedInAccountFromIntent(result)
                 .addOnSuccessListener(googleAccount -> {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "Signed in as " + googleAccount.getEmail());
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "Signed in as " + googleAccount.getEmail());
 
                     // Use the authenticated account to sign in to the Drive service.
                     GoogleAccountCredential credential =
@@ -1933,18 +1967,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void setBlueLightFilter(boolean b) {
-        if (b) {
-            prefs.edit().putBoolean("bluelightfilter", true).apply();
-            Intent nighton = new Intent(this, LauncherService.class);
-            nighton.setAction(LauncherService.NIGHTMODE_ON);
-            KissApplication.startLaucherService(nighton, this);
-        } else {
-            prefs.edit().putBoolean("bluelightfilter", false).apply();
-            Intent nighton = new Intent(this, LauncherService.class);
-            nighton.setAction(LauncherService.NIGHTMODE_OFF);
-            KissApplication.startLaucherService(nighton, this);
+        if (checkPermissionOverlay(this)) {
+            if (b) {
+                prefs.edit().putBoolean("bluelightfilter", true).apply();
+                Intent nighton = new Intent(this, LauncherService.class);
+                nighton.setAction(NIGHTMODE_ON);
+                KissApplication.startLaucherService(nighton, this);
+            } else {
+                prefs.edit().putBoolean("bluelightfilter", false).apply();
+                Intent nighton = new Intent(this, LauncherService.class);
+                nighton.setAction(NIGHTMODE_OFF);
+                KissApplication.startLaucherService(nighton, this);
+            }
         }
-
     }
 
 
@@ -1965,7 +2000,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         forwarderManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -2028,7 +2064,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 (y > viewY && y < (viewY + searchEditText.getHeight())))) {
             if (BuildConfig.DEBUG)
                 Log.d(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
-            if (ev.getAction()==0) {
+            if (ev.getAction() == 0) {
                 systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
                 forwarderManager.onTouch(searchEditText, ev);
             }
@@ -2082,7 +2118,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onFavoriteChange() {
-        if (BuildConfig.DEBUG) Log.d(TAG,"onFavoriteChange");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onFavoriteChange");
         forwarderManager.onFavoriteChange();
     }
 
@@ -2212,10 +2248,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             searchTask = null;
         }
     }
+
     protected void onPause() {
         super.onPause();
         instance = null;
     }
+
     /**
      * Call this function when we're leaving the activity after clicking a search result
      * to clear the search list.

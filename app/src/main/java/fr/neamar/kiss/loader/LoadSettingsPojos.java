@@ -17,8 +17,11 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.DrawableRes;
+
+import fi.zmengames.zen.LauncherService;
 import fr.neamar.kiss.BuildConfig;
 
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;
 
@@ -89,7 +92,7 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
                             if (!label.isEmpty()) {
                                 if (BuildConfig.DEBUG) Log.d(TAG, "loadLabel: " + resolveInfo.loadLabel(pm).toString());
                                 for (SettingsPojo pojo:settings)
-                                    if (pojo.getName().equals(label)||label.equals(settingsPkgName)){
+                                    if (pojo.getName().equals(label)||label.equals(settingsPkgName)||label.isEmpty()){
                                         break outerloop;
                                     }
                                 }
@@ -146,6 +149,22 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
             settings.add(createPojo(context.get().getString(R.string.settings_dev),
                     Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS, R.drawable.setting_dev));
         }
+        settings.add(createPojo(context.get().getString(R.string.wifi_on),
+                MainActivity.WIFI_ON, R.drawable.setting_wifi));
+        settings.add(createPojo(context.get().getString(R.string.wifi_off),
+                MainActivity.WIFI_OFF, R.drawable.setting_wifi));
+
+        settings.add(createPojo(context.get().getString(R.string.nightmodeOn),
+                LauncherService.NIGHTMODE_ON, R.drawable.settings));
+
+        settings.add(createPojo(context.get().getString(R.string.nightmodeOff),
+                LauncherService.NIGHTMODE_OFF, R.drawable.settings));
+
+        settings.add(createPojo(context.get().getString(R.string.flashlight_on),
+                MainActivity.FLASHLIGHT_ON, R.drawable.lightbulp_on));
+
+        settings.add(createPojo(context.get().getString(R.string.flashlight_off),
+                MainActivity.FLASHLIGHT_OFF, R.drawable.lightbulp));
     }
 
     private SettingsPojo createPojo(String name, String packageName, String settingName,

@@ -7,12 +7,16 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;
@@ -20,7 +24,7 @@ import fr.neamar.kiss.utils.FuzzyScore;
 
 public class SettingsResult extends Result {
     private final SettingsPojo settingPojo;
-
+    private static final String TAG = SettingsResult.class.getSimpleName();
     SettingsResult(SettingsPojo settingPojo) {
         super(settingPojo);
         this.settingPojo = settingPojo;
@@ -62,6 +66,8 @@ public class SettingsResult extends Result {
     @Override
     public void doLaunch(Context context, View v) {
         Intent intent = new Intent(settingPojo.settingName);
+        Log.d(TAG,"settingPojo.settingName:"+settingPojo.settingName);
+        Log.d(TAG,"settingPojo.packageName:"+settingPojo.packageName);
         if (!settingPojo.packageName.isEmpty()) {
             intent.setClassName(settingPojo.packageName, settingPojo.settingName);
         }
@@ -71,17 +77,27 @@ public class SettingsResult extends Result {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        try {
-            Intent launchIntent = new Intent(v.getContext(), LauncherService.class);
-            launchIntent.setAction(LauncherService.LAUNCH_INTENT);
-            launchIntent.putExtra(Intent.EXTRA_INTENT, intent);
-            KissApplication.startLaucherService(launchIntent, v.getContext());
+        if (settingPojo.settingName.contains("com.zmengames.zenlauncher")) {
+            try {
+                ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, settingPojo.settingName);
+                EventBus.getDefault().post(event);
+            } catch (Exception e) {
 
-        }
-        catch(Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
+            }
+        } else {
+            try {
+                Intent launchIntent = new Intent(v.getContext(), LauncherService.class);
+                launchIntent.setAction(LauncherService.LAUNCH_INTENT);
+                launchIntent.putExtra(Intent.EXTRA_INTENT, intent);
+                KissApplication.startLaucherService(launchIntent, v.getContext());
 
-            e.printStackTrace();
-            Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
