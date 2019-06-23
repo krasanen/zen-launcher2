@@ -62,7 +62,7 @@ public class DataHandler
      * List all known providers
      */
     final static private List<String> PROVIDER_NAMES = Arrays.asList(
-            "app", "contacts", "search", "settings", "shortcuts"
+            "app", "contacts", "settings", "shortcuts"
     );
     private TagsHandler tagsHandler;
     private BadgeHandler badgeHandler;
