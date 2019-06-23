@@ -1,4 +1,6 @@
 -dontobfuscate
+-dontoptimize
+
 -optimizations !code/allocation/variable
 -dontwarn org.apache.commons.**
 -dontwarn org.apache.http.**

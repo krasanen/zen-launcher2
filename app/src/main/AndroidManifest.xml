@@ -45,11 +45,6 @@
     <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
     <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
 
-
-    <meta-data
-        android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version" />
-
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
@@ -151,9 +146,7 @@
             android:name=".SettingsActivity"
             android:label="@string/activity_setting"
             android:theme="@style/SettingTheme" />
-        <activity android:name="android.support.v7.app.ActionBarActivity" />
         <activity android:name="fi.zmengames.zen.AppGridActivity" />
-        <activity android:name=".SelectSnapshotActivity" />
 
         <receiver
             android:name=".broadcast.LocaleChangedReceiver"
