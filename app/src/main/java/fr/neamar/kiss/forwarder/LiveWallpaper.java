@@ -177,15 +177,15 @@ class LiveWallpaper extends Forwarder {
         boolean init() {
             mVelocityTracker.computeCurrentVelocity(1000 / 30);
             mVelocity = mVelocityTracker.getXVelocity();
-            //if(BuildConfig.DEBUG) Log.d("LWP", "mVelocity=" + String.format(Locale.US, "%.2f", mVelocity));
+            //if(BuildConfig.DEBUG) Log.w("LWP", "mVelocity=" + String.format(Locale.US, "%.2f", mVelocity));
 
             mStartOffset = mWallpaperOffset;
-            //if(BuildConfig.DEBUG) Log.d("LWP", "mStartOffset=" + String.format(Locale.US, "%.2f", mStartOffset));
+            //if(BuildConfig.DEBUG) Log.w("LWP", "mStartOffset=" + String.format(Locale.US, "%.2f", mStartOffset));
 
             boolean stickToSides = isPreferenceWPStickToSides();
             boolean stickToCenter = isPreferenceWPReturnCenter();
             float expectedPos = -Math.min(Math.max(mVelocity / mWindowSize.x, -.5f), .5f) + mStartOffset;
-            //if(BuildConfig.DEBUG) Log.d("LWP", "expectedPos=" + String.format(Locale.US, "%.2f", expectedPos));
+            //if(BuildConfig.DEBUG) Log.w("LWP", "expectedPos=" + String.format(Locale.US, "%.2f", expectedPos));
 
             // if we stick only to the center
             float leftStickPercent = -1.f;

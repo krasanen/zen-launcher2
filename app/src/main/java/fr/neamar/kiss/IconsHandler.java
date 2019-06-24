@@ -377,7 +377,7 @@ public class IconsHandler {
 
         for (File item : cacheDir.listFiles()) {
             if (!item.delete()) {
-                Log.w(TAG, "Failed to delete file: " + item.getAbsolutePath());
+                Log.i(TAG, "Failed to delete file: " + item.getAbsolutePath());
             }
         }
     }

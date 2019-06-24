@@ -67,8 +67,8 @@ public class SettingsResult extends Result {
     @Override
     public void doLaunch(Context context, View v) {
         Intent intent = new Intent(settingPojo.settingName);
-        if (BuildConfig.DEBUG) Log.d(TAG,"settingPojo.settingName:"+settingPojo.settingName);
-        if (BuildConfig.DEBUG) Log.d(TAG,"settingPojo.packageName:"+settingPojo.packageName);
+        if (BuildConfig.DEBUG) Log.i(TAG,"settingPojo.settingName:"+settingPojo.settingName);
+        if (BuildConfig.DEBUG) Log.i(TAG,"settingPojo.packageName:"+settingPojo.packageName);
         if (!settingPojo.packageName.isEmpty()) {
             intent.setClassName(settingPojo.packageName, settingPojo.settingName);
         }

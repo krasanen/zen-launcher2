@@ -63,7 +63,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     void onCreate() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onCreate");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onCreate");
 
         // Initialize widget manager and host, restore widgets
         widgetPrefs = mainActivity.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
@@ -84,19 +84,23 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     void onStart() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onStart");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onStart");
         // Start listening for widget update
         mAppWidgetHost.startListening();
     }
 
     void onStop() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onStop");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onStop");
         // Stop listening for widget update
-        mAppWidgetHost.stopListening();
+        try {
+            mAppWidgetHost.stopListening();
+        } catch (Exception e){
+            if (BuildConfig.DEBUG) Log.i(TAG, "onStop, excetion:" + e);
+        }
     }
 
     void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onActivityResult, requestCode:" + requestCode);
+        if (BuildConfig.DEBUG) Log.i(TAG, "onActivityResult, requestCode:" + requestCode);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CREATE_APPWIDGET:
@@ -182,7 +186,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     void onDataSetChanged() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onDataSetChanged");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onDataSetChanged");
         if ((getWidgetHostViewCount() > 0) && mainActivity.adapter.isEmpty()) {
             // when a widget is displayed the empty list would prevent touches on the widget
             mainActivity.emptyListView.setVisibility(View.GONE);
@@ -193,10 +197,10 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * Restores all previously added widgets
      */
     private void restoreWidgets() {
-        if (BuildConfig.DEBUG) Log.d("Widget", "restoreWidgets");
+        if (BuildConfig.DEBUG) Log.w("Widget", "restoreWidgets");
         Map<String, ?> widgetIds = widgetPrefs.getAll();
         for (String appWidgetId : widgetIds.keySet()) {
-            if (BuildConfig.DEBUG) Log.d("Widget", "appWidgetId" + appWidgetId);
+            if (BuildConfig.DEBUG) Log.w("Widget", "appWidgetId" + appWidgetId);
             addWidgetToLauncher(Integer.parseInt(appWidgetId));
         }
     }
@@ -215,7 +219,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * @param appWidgetId id of widget to add
      */
     private WidgetPreferences addWidgetToLauncher(int appWidgetId) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "addWidgetToLauncher" + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "addWidgetToLauncher" + appWidgetId);
         Bundle options = null;
         // only add widgets if in minimal mode (may need launcher restart when turned on)
         if (prefs.getBoolean("history-hide", true)) {
@@ -225,14 +229,14 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             if (appWidgetInfo == null) {
                 if (BuildConfig.DEBUG)
-                    Log.d(TAG, "appWidgetInfo null, recreate widget, id:" + appWidgetId);
+                    Log.i(TAG, "appWidgetInfo null, recreate widget, id:" + appWidgetId);
                 String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
                 WidgetPreferences wp = WidgetPreferences.unserialize(data);
                 if (wp != null) {
                     if (BuildConfig.DEBUG)
-                        Log.d(TAG, "appWidgetInfo null, recreate widget wp!=null");
+                        Log.i(TAG, "appWidgetInfo null, recreate widget wp!=null");
                     if (wp.appWidgetOptions != null) {
-                        if (BuildConfig.DEBUG) Log.d("Widget", "appWidgetOptions exist");
+                        if (BuildConfig.DEBUG) Log.w("Widget", "appWidgetOptions exist");
                         options = ParcelableUtil.unmarshall(wp.appWidgetOptions, Bundle.CREATOR);
                     }
                     AppWidgetProviderInfo a = ParcelableUtil.unmarshall(wp.appWidgetProviderInfo, AppWidgetProviderInfo.CREATOR);
@@ -240,7 +244,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                     int newId = mAppWidgetHost.allocateAppWidgetId();
                     boolean hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
                     if (!hasPermission) {
-                        if (BuildConfig.DEBUG) Log.d("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
+                        if (BuildConfig.DEBUG) Log.w("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
                         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
@@ -285,8 +289,8 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                     hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
                 }
             }
-            if (BuildConfig.DEBUG) Log.d(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
-            if (BuildConfig.DEBUG) Log.d(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
+            if (BuildConfig.DEBUG) Log.i(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
+            if (BuildConfig.DEBUG) Log.i(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
             return wp;
         }
         return null;
@@ -337,7 +341,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     private void addListener(final LauncherAppWidgetHostView hostView) {
 
         int viewCount = hostView.getChildCount();
-        Log.d(TAG, "addListener,viewCount: "+viewCount);
+        if (BuildConfig.DEBUG) Log.i(TAG, "addListener,viewCount: "+viewCount);
         hostView.getRootView().setOnLongClickListener(new LauncherAppWidgetHostView.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -356,7 +360,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     public void updateWidgets(Context context) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "updateWidgets");
+        if (BuildConfig.DEBUG) Log.i(TAG, "updateWidgets");
         Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -371,7 +375,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     private WidgetPreferences addWidgetHostView(final LauncherAppWidgetHostView hostView, AppWidgetProviderInfo appWidgetInfo, Bundle appWidgetOptions) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "addWidgetHostView");
+        if (BuildConfig.DEBUG) Log.i(TAG, "addWidgetHostView");
         String data = widgetPrefs.getString(String.valueOf(hostView.getAppWidgetId()), null);
         WidgetPreferences wp = WidgetPreferences.unserialize(data);
         int w = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -380,13 +384,13 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             w = appWidgetInfo.minWidth;
             h = appWidgetInfo.minHeight;
         }
-        if (BuildConfig.DEBUG) Log.d(TAG, "1w:" + w + " h:" + h);
+        if (BuildConfig.DEBUG) Log.i(TAG, "1w:" + w + " h:" + h);
         if (wp != null) {
             w = wp.width;
             h = wp.height;
-            if (BuildConfig.DEBUG) Log.d(TAG, "2w:" + w + " h:" + h);
+            if (BuildConfig.DEBUG) Log.i(TAG, "2w:" + w + " h:" + h);
         }
-        if (BuildConfig.DEBUG) Log.d(TAG, "3w:" + w + " h:" + h);
+        if (BuildConfig.DEBUG) Log.i(TAG, "3w:" + w + " h:" + h);
 
         WidgetLayout.LayoutParams layoutParams = new WidgetLayout.LayoutParams(w, h);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
@@ -411,7 +415,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 try {
                     widgetArea.addView(hostView);
                 } catch (Exception e) {
-                    Log.i(TAG, "addWidgetHostView, exception:" + e);
+                    if (BuildConfig.DEBUG) Log.i(TAG, "addWidgetHostView, exception:" + e);
                     Toast.makeText(hostView.getContext(), hostView.getContext().getString(R.string.application_not_found) , Toast.LENGTH_SHORT).show();
                     removeAppWidget(hostView);
                 }
@@ -421,7 +425,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     private void removeWidgetHostView(LauncherAppWidgetHostView hostView) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "removeWidgetHostView");
+        if (BuildConfig.DEBUG) Log.i(TAG, "removeWidgetHostView");
         int childCount = widgetArea.getChildCount();
         for (int i = 0; i < childCount; i += 1) {
             if (widgetArea.getChildAt(i) == hostView) {
@@ -432,6 +436,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     private LauncherAppWidgetHostView getWidgetHostView(int index) {
+        if (BuildConfig.DEBUG) Log.i(TAG,"getWidgetHostView:"+index);
         return (LauncherAppWidgetHostView) widgetArea.getChildAt(index);
     }
 
@@ -440,6 +445,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     private int getWidgetHostViewCount() {
+        if (BuildConfig.DEBUG) Log.i(TAG,"getWidgetHostViewCount:"+widgetArea.getChildCount());
         return widgetArea.getChildCount();
     }
 
@@ -447,7 +453,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * Removes all widgets from the launcher
      */
     public void removeAllWidgets() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "removeAllWidgets");
+        if (BuildConfig.DEBUG) Log.i(TAG, "removeAllWidgets");
         while (getWidgetHostViewCount() > 0) {
             LauncherAppWidgetHostView widget = getWidgetHostView(0);
             removeAppWidget(widget);
@@ -460,7 +466,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * @param hostView instance of a displayed widget
      */
     private void removeAppWidget(LauncherAppWidgetHostView hostView) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "removeAppWidget");
+        if (BuildConfig.DEBUG) Log.i(TAG, "removeAppWidget");
         // remove widget from view
         int appWidgetId = hostView.getAppWidgetId();
         removeAppWidget(appWidgetId);
@@ -473,7 +479,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * @param appWidgetId id of widget that should get removed
      */
     private void removeAppWidget(int appWidgetId) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "removeAppWidget: appWidgetId" + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "removeAppWidget: appWidgetId" + appWidgetId);
         // remove widget from view
         mAppWidgetHost.deleteAppWidgetId(appWidgetId);
         // remove widget id from persistent prefs
@@ -493,7 +499,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      */
     private void addAppWidget(Intent data) {
         int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        if (BuildConfig.DEBUG) Log.d(TAG, "addAppWidget: appWidgetId" + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "addAppWidget: appWidgetId" + appWidgetId);
         //add widget
         WidgetPreferences wp = addWidgetToLauncher(appWidgetId);
 
@@ -513,7 +519,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     private void configureAppWidget(Intent data) {
 
         int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        if (BuildConfig.DEBUG) Log.d(TAG, "configureAppWidget: appWidgetId" + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "configureAppWidget: appWidgetId" + appWidgetId);
         AppWidgetProviderInfo appWidget =
                 mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
@@ -549,7 +555,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
     private void refreshAppWidget(Intent intent) {
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        if (BuildConfig.DEBUG) Log.d(TAG, "refreshAppWidget: appWidgetId" + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "refreshAppWidget: appWidgetId" + appWidgetId);
         String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
         WidgetPreferences wp = WidgetPreferences.unserialize(data);
         if (wp == null)
@@ -567,7 +573,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     private void refreshAppWidget(int appWidgetId) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "refreshAppWidget2: appWidgetId" + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "refreshAppWidget2: appWidgetId" + appWidgetId);
         String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
         WidgetPreferences wp = WidgetPreferences.unserialize(data);
         if (wp == null)
@@ -590,7 +596,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
     @Override
     public void onWidgetAdd() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onWidgetAdd");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onWidgetAdd");
         // request widget picker, a selection will lead to a call of onActivityResult
         int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
         Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
@@ -600,7 +606,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
     @Override
     public void onWidgetEdit(int appWidgetId) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onWidgetEdit: " + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "onWidgetEdit: " + appWidgetId);
         for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
             LauncherAppWidgetHostView hostView = getWidgetHostView(i);
             if (hostView.getAppWidgetId() == appWidgetId) {
@@ -618,7 +624,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
     @Override
     public void onWidgetRemove(int appWidgetId) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onWidgetRemove: " + appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG, "onWidgetRemove: " + appWidgetId);
         for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
             LauncherAppWidgetHostView hostView = getWidgetHostView(i);
             if (hostView.getAppWidgetId() == appWidgetId) {
@@ -629,7 +635,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     }
 
     public void onWidgetAdd(int x, int y) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onWidgetAdd, x:"+x+ "y:"+y);
+        if (BuildConfig.DEBUG) Log.i(TAG, "onWidgetAdd, x:"+x+ "y:"+y);
         // request widget picker, a selection will lead to a call of onActivityResult
         int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
         Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);

@@ -25,16 +25,16 @@ public class CalculatorProvider extends SimpleProvider {
     @Override
     public void requestResults(String query, Searcher searcher) {
         // Now create matcher object.
-        if (BuildConfig.DEBUG) Log.d(TAG, "requestResults");
+        if (BuildConfig.DEBUG) Log.i(TAG, "requestResults");
         String result;
         Matcher m = p.matcher(query);
         if (m.find()) {
             try {
-            if (BuildConfig.DEBUG) Log.d(TAG, "query=" + query);
+            if (BuildConfig.DEBUG) Log.i(TAG, "query=" + query);
                 ExpressionParser<Double> parser = Calculator.DoubleProcessor.createParser();
                 result = String.valueOf(parser.parse(query));
             } catch (Exception e) {
-                if (BuildConfig.DEBUG)  Log.d(TAG, "requestResults, exception:" + e);
+                if (BuildConfig.DEBUG)  Log.i(TAG, "requestResults, exception:" + e);
                 return;
             }
             SearchPojo pojo = new SearchPojo("calculator://", query + " = " + result, "", SearchPojo.CALCULATOR_QUERY);

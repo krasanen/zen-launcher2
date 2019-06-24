@@ -86,10 +86,11 @@ public class LauncherService extends Service {
 
     @Override
     public void onCreate() {
-        if(BuildConfig.DEBUG) Log.w(TAG, "onCreate...");
+        if(BuildConfig.DEBUG) Log.i(TAG, "onCreate...");
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mAccessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+
 
 
         super.onCreate();
@@ -132,7 +133,7 @@ public class LauncherService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        if(BuildConfig.DEBUG) Log.w(TAG, "onStartCommand..." + intent.getAction());
+        if(BuildConfig.DEBUG) Log.i(TAG, "onStartCommand..." + intent.getAction());
         if (intent == null || intent.getAction() == null) return START_NOT_STICKY;
 
         serviceExecutor.execute(new Runnable() {
@@ -152,12 +153,12 @@ public class LauncherService extends Service {
     }
 
     private void setBadgeCount(Intent intent) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "setBadgeCount");
+        if(BuildConfig.DEBUG) Log.i(TAG, "setBadgeCount");
         sendMessageSticky2(new ZEvent(ZEvent.State.BADGE_COUNT, intent.getStringExtra(BadgeCountHandler.PACKAGENAME), intent.getIntExtra(BadgeCountHandler.BADGECOUNT,0)));
     }
 
     private void launchIntent(Intent intent) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "launchIntent");
+        if(BuildConfig.DEBUG) Log.i(TAG, "launchIntent");
         Intent toLaunch = intent.getParcelableExtra(Intent.EXTRA_INTENT);
         try {
             startActivity(toLaunch);
@@ -174,26 +175,26 @@ public class LauncherService extends Service {
     }
 
     private void handleProviderFullLoadOver(Intent intent) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "handleProviderFullLoadOver");
+        if(BuildConfig.DEBUG) Log.i(TAG, "handleProviderFullLoadOver");
         sendMessage(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
     }
 
     private void handleProviderLoadOver(Intent intent) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "handleProviderLoadOver");
+        if(BuildConfig.DEBUG) Log.i(TAG, "handleProviderLoadOver");
         sendMessageSticky2(new ZEvent(ZEvent.State.LOAD_OVER));
     }
 
     private void handleGoogleSignIn(Intent intent) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignIn");
+        if(BuildConfig.DEBUG) Log.i(TAG, "handleGoogleSignIn");
         sendMessageSticky2(new ZEvent(ZEvent.State.GOOGLE_SIGNIN));
     }
 
     private void handleGoogleSignOut(Intent intent) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "handleGoogleSignOut");
+        if(BuildConfig.DEBUG) Log.i(TAG, "handleGoogleSignOut");
         sendMessageSticky2(new ZEvent(ZEvent.State.GOOGLE_SIGNOUT));
     }
     private void handleShowToast(String text) {
-        if(BuildConfig.DEBUG) Log.d(TAG, "handleShowToast");
+        if(BuildConfig.DEBUG) Log.i(TAG, "handleShowToast");
         sendMessageSticky2(new ZEvent(SHOW_TOAST, text));
     }
 
@@ -206,7 +207,7 @@ public class LauncherService extends Service {
 
     private void createMaskView() {
 
-        if(BuildConfig.DEBUG) Log.d(TAG, "createMaskView");
+        if(BuildConfig.DEBUG) Log.i(TAG, "createMaskView");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             public void run() {
                 if (mLayout == null) {
@@ -225,7 +226,7 @@ public class LauncherService extends Service {
                     mWindowManager.addView(mLayout, mLayoutParams);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(BuildConfig.DEBUG) Log.d(TAG, "createMaskView CANNOT_START");
+                    if(BuildConfig.DEBUG) Log.i(TAG, "createMaskView CANNOT_START");
                     Intent broadcastIntent = new Intent();
                     broadcastIntent.setAction(MainActivity.class.getCanonicalName());
                     broadcastIntent.putExtra(Constants.Extra.EVENT_ID, Constants.Event.CANNOT_START);
@@ -332,7 +333,7 @@ public class LauncherService extends Service {
     }
 
     private void destroyMaskView() {
-        if(BuildConfig.DEBUG) Log.d(TAG, "destroyMaskView");
+        if(BuildConfig.DEBUG) Log.i(TAG, "destroyMaskView");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             public void run() {
 

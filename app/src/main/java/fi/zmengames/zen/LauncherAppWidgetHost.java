@@ -52,7 +52,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     @Override
     protected void onProviderChanged(int appWidgetId, AppWidgetProviderInfo appWidget) {
         super.onProviderChanged(appWidgetId, appWidget);
-        if(BuildConfig.DEBUG) Log.d(TAG,"onProviderChanged:"+appWidgetId);
+        if(BuildConfig.DEBUG) Log.i(TAG,"onProviderChanged:"+appWidgetId);
 
     }
 }

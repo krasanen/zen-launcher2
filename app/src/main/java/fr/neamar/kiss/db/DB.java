@@ -34,7 +34,7 @@ class DB extends SQLiteOpenHelper {
     }
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        if(BuildConfig.DEBUG) Log.d("onUpgrade", "Updating database from version " + oldVersion + " to version " + newVersion);
+        if(BuildConfig.DEBUG) Log.w("onUpgrade", "Updating database from version " + oldVersion + " to version " + newVersion);
         // See
         // http://www.drdobbs.com/database/using-sqlite-on-android/232900584
         if (oldVersion < newVersion) {

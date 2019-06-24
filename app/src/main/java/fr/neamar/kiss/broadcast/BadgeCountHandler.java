@@ -21,7 +21,7 @@ public class BadgeCountHandler extends BroadcastReceiver {
         DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
         String packageName = null;
         int badgeCount = 0;
-        if (BuildConfig.DEBUG) Log.d(TAG,"onReceive");
+        if (BuildConfig.DEBUG) Log.i(TAG,"onReceive");
         switch (intent.getAction()) {
             case "com.htc.launcher.action.UPDATE_SHORTCUT":
                 badgeCount = intent.getIntExtra("count", 0);
@@ -46,7 +46,7 @@ public class BadgeCountHandler extends BroadcastReceiver {
         }
 
         if (packageName != null) {
-            if (BuildConfig.DEBUG) Log.d(TAG,"onReceive, package:"+packageName+ " count:"+badgeCount);
+            if (BuildConfig.DEBUG) Log.i(TAG,"onReceive, package:"+packageName+ " count:"+badgeCount);
             if (dataHandler.getBadgeHandler().getBadgeCount(packageName)!=badgeCount) {
                 dataHandler.getBadgeHandler().setBadgeCount(packageName, badgeCount);
             }

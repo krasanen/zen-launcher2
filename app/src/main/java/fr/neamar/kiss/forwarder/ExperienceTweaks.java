@@ -81,7 +81,7 @@ public class ExperienceTweaks extends Forwarder {
         display.getSize(size);
         width = size.x;
         height = size.y;
-        if(BuildConfig.DEBUG) Log.d(TAG, "ExperienceTweaks create");
+        if(BuildConfig.DEBUG) Log.i(TAG, "ExperienceTweaks create");
         // Lock launcher into portrait mode
         // Do it here (before initializing the view in onCreate) to make the transition as smooth as possible
         if (prefs.getBoolean("force-portrait", true)) {
@@ -99,7 +99,7 @@ public class ExperienceTweaks extends Forwarder {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
                 if (mDebugJson) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "onScale");
+                    if(BuildConfig.DEBUG) Log.i(TAG, "onScale");
                 }
                 scaling = true;
                 return true;
@@ -108,7 +108,7 @@ public class ExperienceTweaks extends Forwarder {
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 if (mDebugJson) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "onScaleBegin");
+                    if(BuildConfig.DEBUG) Log.i(TAG, "onScaleBegin");
                 }
                 scaling = true;
                 return true;
@@ -117,7 +117,7 @@ public class ExperienceTweaks extends Forwarder {
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
                 if (mDebugJson) {
-                    if(BuildConfig.DEBUG) Log.d(TAG, "onScaleEnd");
+                    if(BuildConfig.DEBUG) Log.i(TAG, "onScaleEnd");
                 }
                 if (prefs.getBoolean("pinch-open", false)) {
                     mainActivity.launcherButton.performClick();
@@ -139,20 +139,20 @@ public class ExperienceTweaks extends Forwarder {
                 if (e1!=null&&e2!=null) {
                     float directionY = e2.getY() - e1.getY();
                     float directionX = e2.getX() - e1.getX();
-                    if(BuildConfig.DEBUG) Log.d(TAG, "directionX:" + directionX);
-                    if(BuildConfig.DEBUG) Log.d(TAG, "directionY:" + directionY);
-                    if(BuildConfig.DEBUG) Log.d(TAG, "e1x:" + e1.getX());
-                    if(BuildConfig.DEBUG) Log.d(TAG, "e2x:" + e2.getX());
+                    if(BuildConfig.DEBUG) Log.i(TAG, "directionX:" + directionX);
+                    if(BuildConfig.DEBUG) Log.i(TAG, "directionY:" + directionY);
+                    if(BuildConfig.DEBUG) Log.i(TAG, "e1x:" + e1.getX());
+                    if(BuildConfig.DEBUG) Log.i(TAG, "e2x:" + e2.getX());
 
                     if (!mainActivity.isViewingAllApps() && !scaling) {
                         if (Math.abs(directionX) > width / 3) {
                             if (directionX > 0) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "swipeRight");
+                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeRight");
                                 if (prefs.getBoolean("swipe-right", false)) {
                                     mainActivity.displayKissBar(true);
                                 }
                             } else {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "swipeLeft");
+                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeLeft");
                                 if (prefs.getBoolean("swipe-left", false)) {
                                     mainActivity.displayContacts(true);
                                 } else {
@@ -164,13 +164,13 @@ public class ExperienceTweaks extends Forwarder {
                         if (Math.abs(directionY) > height / 5) {
 
                             if (directionY < 0) {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "swipeUp");
+                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeUp");
                                 // Fling up: display keyboard
                                 if (prefs.getBoolean("swipe-up-opens-keyboard", false)) {
                                     mainActivity.showKeyboard();
                                 }
                             } else {
-                                if(BuildConfig.DEBUG) Log.d(TAG, "swipeDown");
+                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeDown");
                                 // Fling down: display notifications
                                 if (mainActivity.isKeyboardVisible()) {
                                     mainActivity.hideKeyboard();
@@ -259,10 +259,10 @@ public class ExperienceTweaks extends Forwarder {
                 if (numberOfTaps >= 0
                         && (System.currentTimeMillis() - lastTapTimeMs) < ViewConfiguration.getDoubleTapTimeout()) {
                     numberOfTaps += 1;
-                    if(BuildConfig.DEBUG) Log.d(TAG,"numberOfTaps += 1");
+                    if(BuildConfig.DEBUG) Log.i(TAG,"numberOfTaps += 1");
                 } else {
                     numberOfTaps = 1;
-                    if(BuildConfig.DEBUG) Log.d(TAG,"onetap");
+                    if(BuildConfig.DEBUG) Log.i(TAG,"onetap");
                     Runnable onetap = new Runnable() {
                         @Override
                         public void run() {
@@ -272,7 +272,7 @@ public class ExperienceTweaks extends Forwarder {
                                     mainActivity.favoritesBar.setVisibility(View.VISIBLE);
                                 }
                                 if (!onSingleTap()) {
-                                    if(BuildConfig.DEBUG) Log.d(TAG,"no action for singletap, open keyboard");
+                                    if(BuildConfig.DEBUG) Log.i(TAG,"no action for singletap, open keyboard");
                                     if (mainActivity.isViewingSearchResults()){
                                         mainActivity.displayKissBar(false);
                                     }
@@ -285,7 +285,7 @@ public class ExperienceTweaks extends Forwarder {
                 lastTapTimeMs = System.currentTimeMillis();
 
                 if (numberOfTaps == 3) {
-                    if(BuildConfig.DEBUG) Log.d(TAG,"tripletap");
+                    if(BuildConfig.DEBUG) Log.i(TAG,"tripletap");
                     if (prefs.getBoolean("triple_tap_flashlight", false)) {
                         mainActivity.toggleFlashLight();
                     }
@@ -295,7 +295,7 @@ public class ExperienceTweaks extends Forwarder {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(BuildConfig.DEBUG) Log.d(TAG,"doubletap");
+                            if(BuildConfig.DEBUG) Log.i(TAG,"doubletap");
                             if (numberOfTaps==2) {
                                 onDoubleTap();
                             }
@@ -486,7 +486,7 @@ public class ExperienceTweaks extends Forwarder {
     }
 
     public void hideKeyboard() {
-        if(BuildConfig.DEBUG) Log.d(TAG,"hideKeyboard");
+        if(BuildConfig.DEBUG) Log.i(TAG,"hideKeyboard");
         if(mNumericInputTypeForced){
             mNumericInputTypeForced = false;
             adjustInputType(null);

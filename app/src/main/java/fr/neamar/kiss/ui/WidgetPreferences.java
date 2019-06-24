@@ -114,7 +114,7 @@ public class WidgetPreferences implements Serializable {
     }
 
     public static String serialize(WidgetPreferences o) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "serialize");
+        if (BuildConfig.DEBUG) Log.i(TAG, "serialize");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream;
@@ -133,7 +133,7 @@ public class WidgetPreferences implements Serializable {
     }
 
     public static WidgetPreferences unserialize(String data) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "unserialize");
+        if (BuildConfig.DEBUG) Log.i(TAG, "unserialize");
         if (data == null || data.isEmpty())
             return null;
         ObjectInputStream objectInputStream;

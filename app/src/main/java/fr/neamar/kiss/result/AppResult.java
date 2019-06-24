@@ -105,7 +105,7 @@ public class AppResult extends Result {
     private static final String INTENT_EXTRA_ACTIVITY_NAME = "badge_count_class_name";
 
     public static void executeBadge(Context context, String packageName, String className, int badgeCount) throws ShortcutBadgeException {
-        if (BuildConfig.DEBUG) Log.d(TAG, "executeBadge " + packageName + ":" + className + "badgeCount:"+badgeCount);
+        if (BuildConfig.DEBUG) Log.i(TAG, "executeBadge " + packageName + ":" + className + "badgeCount:"+badgeCount);
         Intent intent = new Intent(INTENT_ACTION);
         intent.putExtra(INTENT_EXTRA_BADGE_COUNT, badgeCount);
         intent.putExtra(INTENT_EXTRA_PACKAGENAME, packageName);

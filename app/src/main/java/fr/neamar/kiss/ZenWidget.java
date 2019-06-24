@@ -24,7 +24,7 @@ public class ZenWidget extends AppWidgetProvider {
     private static final String TAG = ZenWidget.class.getSimpleName();
     void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        if (BuildConfig.DEBUG) Log.d(TAG,"updateAppWidget:"+appWidgetId);
+        if (BuildConfig.DEBUG) Log.i(TAG,"updateAppWidget:"+appWidgetId);
 
         // Construct the RemoteViews object
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.zen_widget);

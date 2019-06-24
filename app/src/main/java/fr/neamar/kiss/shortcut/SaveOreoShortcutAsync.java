@@ -56,7 +56,7 @@ public class SaveOreoShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 		final ShortcutInfo shortcutInfo = pinItemRequest.getShortcutInfo();
 		assert shortcutInfo != null;
 
-		if (BuildConfig.DEBUG) Log.d(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
+		if (BuildConfig.DEBUG) Log.i(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
 
 		final LauncherApps launcherApps = this.launcherApps.get();
 		if(launcherApps == null) {
@@ -77,7 +77,7 @@ public class SaveOreoShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 		} else if (shortcutInfo.getLongLabel() != null) {
 			pojo.setName(shortcutInfo.getLongLabel().toString());
 		} else {
- 		if (BuildConfig.DEBUG) Log.d(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
+ 		if (BuildConfig.DEBUG) Log.i(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
 			cancel(true);
 			return null;
 		}

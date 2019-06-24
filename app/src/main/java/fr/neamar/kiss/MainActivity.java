@@ -283,7 +283,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void signIn(int action) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "signIn");
+        if (BuildConfig.DEBUG) Log.i(TAG, "signIn");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         this.action = action;
         // The Task returned from this call is always completed, no need to attach
@@ -293,7 +293,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void signOut() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "signOut");
+        if (BuildConfig.DEBUG) Log.i(TAG, "signOut");
         mGoogleSignInClient.signOut();
 
         mSignedIn = false;
@@ -303,7 +303,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private void openFilePicker() {
         if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Opening file picker.");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Opening file picker.");
 
             Intent pickerIntent = mDriveServiceHelper.createFilePickerIntent();
 
@@ -434,11 +434,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 startActivityForResult(intent, MY_PERMISSIONS_OVERLAY);
                 return false;
             }
-            if (BuildConfig.DEBUG) Log.d(TAG, "overlay permission ok");
+            if (BuildConfig.DEBUG) Log.i(TAG, "overlay permission ok");
             return true;
         } else {
             if (BuildConfig.DEBUG)
-                Log.d(TAG, "overlay permission ok, sdk:" + Build.VERSION.SDK_INT);
+                Log.i(TAG, "overlay permission ok, sdk:" + Build.VERSION.SDK_INT);
             return true;
         }
     }
@@ -477,8 +477,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
         instance = this;
-        if (BuildConfig.DEBUG) Log.d(TAG, "onCreate()");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
         KissApplication.getApplication(this).setMainActivity(this);
 //        KissApplication.getApplication(this).initDataHandler();
 
@@ -665,10 +666,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          */
         forwarderManager.onCreate();
         initializeKeyboardListener();
-        //if(BuildConfig.DEBUG) Log.d(TAG,">setOnDragListener");
+        //if(BuildConfig.DEBUG) Log.i(TAG,">setOnDragListener");
 
         //findViewById(R.id.main).setOnLongClickListener(new MyOnClickListener());
-        //if(BuildConfig.DEBUG) Log.d(TAG,"<setOnDragListener");
+        //if(BuildConfig.DEBUG) Log.i(TAG,"<setOnDragListener");
         if (prefs.getBoolean("bluelightfilter", false)) {
             // setBlueLightFilter(true);
         }
@@ -820,7 +821,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (BuildConfig.DEBUG) Log.d(TAG, "onCreateContextMenu");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onCreateContextMenu");
 
         /*ImageView image;
 
@@ -868,10 +869,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // Sign-in OK!
             mSignedIn = true;
             prefs.edit().putBoolean("wasSigned", true).apply();
-            if (BuildConfig.DEBUG) Log.d(TAG, "Sign-in successful!");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Sign-in successful!");
         } else {
             mSignedIn = false;
-            if (BuildConfig.DEBUG) Log.d(TAG, "Not signed to Google!");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Not signed to Google!");
         }
     }
 
@@ -880,7 +881,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     Camera camera = null;
 
     public void toggleFlashLight() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "toggleFlashLight");
+        if (BuildConfig.DEBUG) Log.i(TAG, "toggleFlashLight");
         flashToggle = !flashToggle;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
@@ -961,7 +962,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onResume()");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onResume()");
         if (SamsungBadgeObserver.providerExists(this)) {
             getContentResolver()
                     .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
@@ -974,9 +975,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (mDebugJson) {
             try {
                 String settings = this.getSerializedSettings2();
-                if (BuildConfig.DEBUG) Log.d(TAG, "settings:" + settings);
+                if (BuildConfig.DEBUG) Log.i(TAG, "settings:" + settings);
             } catch (JSONException e) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "JSONException");
+                if (BuildConfig.DEBUG) Log.i(TAG, "JSONException");
             }
         }
         if (prefs.getBoolean("require-layout-update", false)) {
@@ -994,7 +995,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         if (KissApplication.getApplication(this).getDataHandler().allProvidersHaveLoaded) {
             displayLoader(false);
-            if (BuildConfig.DEBUG) Log.d(TAG, ">onFavoriteChange");
+            if (BuildConfig.DEBUG) Log.i(TAG, ">onFavoriteChange");
             onFavoriteChange();
         }
 
@@ -1025,7 +1026,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ZEvent event) {
-        if (BuildConfig.DEBUG) Log.w(TAG, "Got message from service: " + event.getState());
+        if (BuildConfig.DEBUG) Log.i(TAG, "Got message from service: " + event.getState());
 
         switch (event.getState()) {
             case GOOGLE_SIGNIN:
@@ -1105,7 +1106,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void onBackPressed() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onBackPressed");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onBackPressed");
         if (mPopup != null) {
             mPopup.dismiss();
         } else if (isViewingAllApps()) {
@@ -1134,7 +1135,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private void query() {
         if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Querying for files.");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Querying for files.");
             showSpinner(R.string.loading_from_cloud);
             mDriveServiceHelper.queryFiles()
                     .addOnSuccessListener(fileList -> {
@@ -1209,7 +1210,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }); */
                         String fileNames = builder.toString();
 
-                        if (BuildConfig.DEBUG) Log.d(TAG, "files:" + fileNames);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "files:" + fileNames);
 
 
                         setReadOnlyMode();
@@ -1245,7 +1246,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 mDriveServiceHelper.renameFile(fileLocal, String.valueOf(input.getText())).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (BuildConfig.DEBUG) Log.d(TAG, "Rename Failed exception:" + e);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "Rename Failed exception:" + e);
                     }
                 });
             }
@@ -1340,11 +1341,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 signIn(R.id.loadFromGoogle);
                 return true;
             case R.id.nightModeOn:
-                if (BuildConfig.DEBUG) Log.d(TAG, "nightModeOn");
+                if (BuildConfig.DEBUG) Log.i(TAG, "nightModeOn");
                 setBlueLightFilter(true);
                 return true;
             case R.id.nightModeOff:
-                if (BuildConfig.DEBUG) Log.d(TAG, "nightModeOff");
+                if (BuildConfig.DEBUG) Log.i(TAG, "nightModeOff");
                 setBlueLightFilter(false);
                 return true;
             case R.id.appGrid:
@@ -1433,7 +1434,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
 
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
+            Log.i(TAG, "getSerializedWidgetSettings:" + jsonWidget.toString(1));
         return jsonWidget.toString(1);
     }
 
@@ -1441,7 +1442,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private int loadJson(String jsonText) throws JSONException {
         int count = 0;
         TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
-        if (BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
+        if (BuildConfig.DEBUG) Log.i(TAG, "jsonText:" + jsonText);
         JSONObject json = new JSONObject(jsonText);
         Iterator<String> iter = json.keys();
         SharedPreferences.Editor editor = prefs.edit();
@@ -1456,29 +1457,29 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             String classValue = values[1];
 
             if (BuildConfig.DEBUG)
-                Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+                Log.i(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
             if (classValue.equals(booleanClassname)) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
+                if (BuildConfig.DEBUG) Log.i(TAG, "putBoolean");
                 editor.putBoolean(key, Boolean.parseBoolean(value));
             } else if (classValue.equals(stringClassname)) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "putString");
+                if (BuildConfig.DEBUG) Log.i(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
+                if (BuildConfig.DEBUG) Log.i(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
+                if (BuildConfig.DEBUG) Log.i(TAG, "value:" + value);
                 String toparse = value.substring(1, value.length() - 1);
-                if (BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
+                if (BuildConfig.DEBUG) Log.i(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
                     for (int i = 0; i < values2.length; i++) {
-                        if (BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "values2:" + values2[i]);
                         String[] app = values2[i].split("=");
-                        if (BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
-                        if (BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "appId:" + app[0]);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
                     }
                 }
@@ -1496,7 +1497,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private int loadWidgetJson(String jsonText) throws JSONException {
         int count = 0;
         TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
-        if (BuildConfig.DEBUG) Log.d(TAG, "jsonText:" + jsonText);
+        if (BuildConfig.DEBUG) Log.i(TAG, "jsonText:" + jsonText);
         JSONObject json = new JSONObject(jsonText);
         Iterator<String> iter = json.keys();
         SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
@@ -1513,29 +1514,29 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             String classValue = values[1];
 
             if (BuildConfig.DEBUG)
-                Log.d(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
+                Log.i(TAG, "key:" + key + " value:" + value + " classValue:" + classValue);
             if (classValue.equals(booleanClassname)) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "putBoolean");
+                if (BuildConfig.DEBUG) Log.i(TAG, "putBoolean");
                 editor.putBoolean(key, Boolean.parseBoolean(value));
             } else if (classValue.equals(stringClassname)) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "putString");
+                if (BuildConfig.DEBUG) Log.i(TAG, "putString");
                 editor.putString(key, value);
             } else if (classValue.equals(hashsetClassname)) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "putStringSet:" + value);
+                if (BuildConfig.DEBUG) Log.i(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
                 Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "value:" + value);
+                if (BuildConfig.DEBUG) Log.i(TAG, "value:" + value);
                 String toparse = value.substring(1, value.length() - 1);
-                if (BuildConfig.DEBUG) Log.d(TAG, "toparse:" + toparse);
+                if (BuildConfig.DEBUG) Log.i(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
                     for (int i = 0; i < values2.length; i++) {
-                        if (BuildConfig.DEBUG) Log.d(TAG, "values2:" + values2[i]);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "values2:" + values2[i]);
                         String[] app = values2[i].split("=");
-                        if (BuildConfig.DEBUG) Log.d(TAG, "appId:" + app[0]);
-                        if (BuildConfig.DEBUG) Log.d(TAG, "tagsForApp:" + app[1]);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "appId:" + app[0]);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
                     }
                 }
@@ -1560,14 +1561,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void openFileFromFilePicker(Uri uri) {
         if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Opening " + uri.getPath());
+            if (BuildConfig.DEBUG) Log.i(TAG, "Opening " + uri.getPath());
 
             mDriveServiceHelper.openFileUsingStorageAccessFramework(getContentResolver(), uri)
                     .addOnSuccessListener(nameAndContent -> {
                         String name = nameAndContent.first;
 
 
-                        if (BuildConfig.DEBUG) Log.d(TAG, "name " + name);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "name " + name);
                         getDataFromOpenedFile(nameAndContent.second);
 
                         // Files opened through SAF cannot be modified, except by retrieving the
@@ -1601,7 +1602,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void createFile(String name) {
         if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Creating a file.");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Creating a file.");
             showSpinner(R.string.saving_to_cloud);
             mDriveServiceHelper.createFile(name)
                     .addOnSuccessListener(fileId -> saveFile(fileId, name))
@@ -1618,7 +1619,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void readFile(String fileId) {
         if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Reading file " + fileId);
+            if (BuildConfig.DEBUG) Log.i(TAG, "Reading file " + fileId);
             showSpinner(R.string.loading_from_cloud);
             mDriveServiceHelper.readFile(fileId)
                     .addOnSuccessListener(nameAndContent -> {
@@ -1626,7 +1627,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         byte[] content = nameAndContent.second;
 
 
-                        if (BuildConfig.DEBUG) Log.d(TAG, "name " + name);
+                        if (BuildConfig.DEBUG) Log.i(TAG, "name " + name);
 
 
                         setReadWriteMode(fileId);
@@ -1704,7 +1705,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private void saveFile(String fileId, String unique) {
         if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Saving " + fileId);
+            if (BuildConfig.DEBUG) Log.i(TAG, "Saving " + fileId);
             String fileName = unique;
             byte[] fileContent = null;
             try {
@@ -1790,7 +1791,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         GoogleSignIn.getSignedInAccountFromIntent(result)
                 .addOnSuccessListener(googleAccount -> {
                     if (BuildConfig.DEBUG)
-                        Log.d(TAG, "Signed in as " + googleAccount.getEmail());
+                        Log.i(TAG, "Signed in as " + googleAccount.getEmail());
 
                     // Use the authenticated account to sign in to the Drive service.
                     GoogleAccountCredential credential =
@@ -1852,7 +1853,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         switch (requestCode) {
 
             case REQUEST_BIND_APPWIDGET:
-                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_BIND_APPWIDGET");
+                if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_BIND_APPWIDGET");
                 if (resultCode == Activity.RESULT_OK) {
                     int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -1870,7 +1871,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 refreshWidget(newWidgetId);*/
                 break;
             case MY_PERMISSIONS_OVERLAY:
-                if (BuildConfig.DEBUG) Log.d(TAG, "MY_PERMISSIONS_OVERLAY:" + resultCode);
+                if (BuildConfig.DEBUG) Log.i(TAG, "MY_PERMISSIONS_OVERLAY:" + resultCode);
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (Settings.canDrawOverlays(this)) {
                         setBlueLightFilter(true);
@@ -1885,7 +1886,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 handleSignInResult(data);
                 break;
             case REQUEST_CODE_OPEN_DOCUMENT:
-                if (BuildConfig.DEBUG) Log.d(TAG, "RC_LIST_SAVED_GAMES");
+                if (BuildConfig.DEBUG) Log.i(TAG, "RC_LIST_SAVED_GAMES");
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Uri uri = data.getData();
                     if (uri != null) {
@@ -1895,7 +1896,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
 
             case REQUEST_LOAD_REPLACE_TAGS:
-                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_TAGS");
+                if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_LOAD_REPLACE_TAGS");
                 if (resultCode == RESULT_OK) {
                     TagsHandler tagsHandler = KissApplication.getApplication(this).getDataHandler().getTagsHandler();
                     Uri selectedFile = data.getData();
@@ -1929,7 +1930,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 break;
             case REQUEST_LOAD_REPLACE_SETTINGS:
-                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS");
+                if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_LOAD_REPLACE_SETTINGS");
                 if (resultCode == RESULT_OK) {
                     Uri selectedFile = data.getData();
                     if (selectedFile != null) {
@@ -1956,7 +1957,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
 
             case REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME:
-                if (BuildConfig.DEBUG) Log.d(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
+                if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
                 int count = 0;
                 try {
                     count = loadJson(data.getStringExtra("json"));
@@ -2028,7 +2029,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean onLongClick(View view) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onLongClick");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onLongClick");
         buildWidgetPopupMenu(view);
         return true;
     }
@@ -2058,7 +2059,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
+        if (BuildConfig.DEBUG) Log.i(TAG, "dispatchTouchEvent: " + ev.getAction());
         x = (int) ev.getX();
         y = (int) ev.getY();
         int location[] = new int[2];
@@ -2069,7 +2070,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (((x > viewX && x < (viewX + searchEditText.getWidth())) &&
                 (y > viewY && y < (viewY + searchEditText.getHeight())))) {
             if (BuildConfig.DEBUG)
-                Log.d(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
+                Log.i(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
             if (ev.getAction() == 0) {
                 systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
                 forwarderManager.onTouch(searchEditText, ev);
@@ -2124,7 +2125,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void onFavoriteChange() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onFavoriteChange");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onFavoriteChange");
         forwarderManager.onFavoriteChange();
     }
 
@@ -2416,7 +2417,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     };
 
     public void onClick(View view) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onClick:" + view.getTag());
+        if (BuildConfig.DEBUG) Log.i(TAG, "onClick:" + view.getTag());
         searchEditText.setText((CharSequence) view.getTag());
         //displayKissBar(false,false,false);
     }

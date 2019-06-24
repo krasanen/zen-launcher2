@@ -31,7 +31,7 @@ public class SamsungBadgeObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange, Uri pUri) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onChange: selfChange: "+selfChange + " Uri:"+pUri);
+        if (BuildConfig.DEBUG) Log.i(TAG, "onChange: selfChange: "+selfChange + " Uri:"+pUri);
         // query badge status on content provider
         loadBadges(context);
     }
@@ -42,13 +42,13 @@ public class SamsungBadgeObserver extends ContentObserver {
         try {
             cursor = context.getContentResolver().query(uri, null, null, null, null);
         }catch (SecurityException e){
-            if (BuildConfig.DEBUG) Log.d(TAG,"e:"+e);
+            if (BuildConfig.DEBUG) Log.i(TAG,"e:"+e);
         }
         boolean exists = cursor != null;
 
         if(cursor != null)
             cursor.close();
-        if (BuildConfig.DEBUG) Log.d(TAG, "providerExists: "+exists);
+        if (BuildConfig.DEBUG) Log.i(TAG, "providerExists: "+exists);
         return exists;
     }
     private final static Executor mExecutor = Executors.newSingleThreadExecutor();
@@ -59,7 +59,7 @@ public class SamsungBadgeObserver extends ContentObserver {
         mExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                if (BuildConfig.DEBUG) Log.d(TAG, "loadBadges");
+                if (BuildConfig.DEBUG) Log.i(TAG, "loadBadges");
 
                 Uri uri = Uri.parse("content://com.sec.badge/apps");
                 Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
@@ -87,7 +87,7 @@ public class SamsungBadgeObserver extends ContentObserver {
 
                         if (badgeHandler.getBadgeCount(packageName) != badgeCount) {
                             if (BuildConfig.DEBUG)
-                                Log.d(TAG, "loadBadges, setBadgeCount, packageName:" + packageName + " Badges:" + badgeCount);
+                                Log.i(TAG, "loadBadges, setBadgeCount, packageName:" + packageName + " Badges:" + badgeCount);
                                 badgeHandler.setBadgeCount(packageName, badgeCount);
                         }
                     }

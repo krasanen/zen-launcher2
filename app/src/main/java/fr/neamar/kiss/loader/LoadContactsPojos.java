@@ -173,11 +173,11 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                             //contact.setNickname(nick);
                             if (company!=null) {
                                 contact.setCompany(company);
-                                if (BuildConfig.DEBUG) Log.d(TAG,"company:"+company);
+                                if (BuildConfig.DEBUG) Log.i(TAG,"company:"+company);
                             }
                             if (title!=null) {
                                 contact.setTitle(title);
-                                if (BuildConfig.DEBUG) Log.d(TAG, "title:" + title);
+                                if (BuildConfig.DEBUG) Log.i(TAG, "title:" + title);
                             }
                         }
                     }
@@ -212,7 +212,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 null);
 
         if (cursor != null) {
-            if(BuildConfig.DEBUG) Log.d(TAG, "Some search:");
+            if(BuildConfig.DEBUG) Log.i(TAG, "Some search:");
             int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
             int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
             int lookupKeyIndex = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
@@ -242,7 +242,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                                 contact.whatsAppCalling = contactId;
-                                if(BuildConfig.DEBUG) Log.d(TAG, "whatsAppCalling:" + contact.getName());
+                                if(BuildConfig.DEBUG) Log.i(TAG, "whatsAppCalling:" + contact.getName());
                                 if (!contact.primary) {
                                     contact.primary = true;
                                 }
@@ -270,7 +270,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
                             for (ContactsPojo contact : mapContacts.get(lookupKey)) {
                                 contact.facebookCalling = contactId;
-                                if(BuildConfig.DEBUG) Log.d(TAG, "facebookCalling:" + contact.getName());
+                                if(BuildConfig.DEBUG) Log.i(TAG, "facebookCalling:" + contact.getName());
                             }
 
                         }

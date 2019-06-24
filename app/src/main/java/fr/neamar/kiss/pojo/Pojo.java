@@ -39,7 +39,7 @@ public abstract class Pojo {
 
     public int getBadgeCount(){
         if (id.contains("app://")){
-            if (BuildConfig.DEBUG) Log.d(TAG,"id:"+id.substring(6,id.indexOf("/",6)));
+            if (BuildConfig.DEBUG) Log.i(TAG,"id:"+id.substring(6,id.indexOf("/",6)));
             badgeCount = BadgeHandler.getBadgeCount(id.substring(6,id.indexOf("/", 6)));
         }
         return badgeCount;

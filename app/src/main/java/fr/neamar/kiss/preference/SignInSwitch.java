@@ -29,16 +29,16 @@ public class SignInSwitch extends SwitchPreference {
 
     @Override
     protected void onClick() {
-        if(BuildConfig.DEBUG) Log.d("SignInSwitch","isChecked:"+isChecked());
+        if(BuildConfig.DEBUG) Log.w("SignInSwitch","isChecked:"+isChecked());
 
         if (!isChecked()){
-            if(BuildConfig.DEBUG) Log.d("SignInSwitch","SIGN_IN2");
+            if(BuildConfig.DEBUG) Log.w("SignInSwitch","SIGN_IN2");
             Intent intent = new Intent(getContext(), LauncherService.class);
             intent.setAction(LauncherService.GOOGLE_SIGN_IN);
             KissApplication.startLaucherService(intent,getContext());
 
         } else {
-            if(BuildConfig.DEBUG) Log.d("SignInSwitch","SIGN_OUT2");
+            if(BuildConfig.DEBUG) Log.w("SignInSwitch","SIGN_OUT2");
             Intent intent = new Intent(getContext(), LauncherService.class);
             intent.setAction(LauncherService.GOOGLE_SIGN_OUT);
             KissApplication.startLaucherService(intent,getContext());

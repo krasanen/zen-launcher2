@@ -311,7 +311,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
     @Override
     public void onClick(View v) {
-        Log.d(TAG,"onClick");
+        Log.i(TAG,"onClick");
         int favNumber = (int) v.getTag();
         final Result result = getFavResult(favNumber);
         result.fastLaunch(mainActivity, v);
@@ -414,7 +414,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
                 // Sometimes we don't trigger onDrag over another app, in which case just drop.
                 if (overApp == null) {
-                    Log.w(TAG, "Wasn't dragged over an app, returning app to starting position");
+                    Log.i(TAG, "Wasn't dragged over an app, returning app to starting position");
                     draggedView.post(new Runnable() {
                         @Override
                         public void run() {

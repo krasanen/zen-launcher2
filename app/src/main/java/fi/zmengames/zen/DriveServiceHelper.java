@@ -196,7 +196,7 @@ public class DriveServiceHelper {
     }
 
     public Task<Object> renameFile(File file, String newName) {
-        Log.d(TAG,"rename: "+file.getName()+" to:"+newName);
+        Log.i(TAG,"rename: "+file.getName()+" to:"+newName);
         return Tasks.call(mExecutor, () -> {
             File metadata = new File()
                     .setParents(Collections.singletonList("appDataFolder"))

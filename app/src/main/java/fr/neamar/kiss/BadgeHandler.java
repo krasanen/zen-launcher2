@@ -24,7 +24,7 @@ public class BadgeHandler {
             return 0;
         }
         if (BuildConfig.DEBUG && badgeCount > 0) {
-            Log.d(TAG, "getBadgeCount, packageName:" + packageName + " badges:" + badgeCount);
+            Log.i(TAG, "getBadgeCount, packageName:" + packageName + " badges:" + badgeCount);
         }
         return badgeCount;
     }
@@ -33,7 +33,7 @@ public class BadgeHandler {
     public void setBadgeCount(String packageName, int badge_count) {
         Integer badgeCount = badgeCache.get(packageName);
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setBadgeCount, packageName:" + packageName + " badge_count:" + badge_count + " badgeCount" + badgeCount);
+            Log.i(TAG, "setBadgeCount, packageName:" + packageName + " badge_count:" + badge_count + " badgeCount" + badgeCount);
         }
         badgeCache.put(packageName, badge_count);
         DBHelper.setBadgeCount(this.context, packageName, badge_count);

@@ -23,11 +23,11 @@ public class UninstallShortcutHandler extends BroadcastReceiver {
             return;
 
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        if(BuildConfig.DEBUG) Log.d("onReceive", "Uninstall shortcut " + name);
+        if(BuildConfig.DEBUG) Log.w("onReceive", "Uninstall shortcut " + name);
 
         ShortcutsPojo pojo = (ShortcutsPojo) sp.findByName(name);
         if (pojo == null) {
-            if(BuildConfig.DEBUG) Log.d("onReceive", "Shortcut " + name + " not found");
+            if(BuildConfig.DEBUG) Log.w("onReceive", "Shortcut " + name + " not found");
             return;
         }
 

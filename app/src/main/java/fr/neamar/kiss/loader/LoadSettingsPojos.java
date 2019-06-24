@@ -79,18 +79,18 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
         for (Field f : arr) {
             outerloop:
             if (f.getName().contains("ACTION_") && f.getType().equals(String.class)) { // check if field is a String
-                if (BuildConfig.DEBUG) Log.d(TAG, "f: " + f);
+                if (BuildConfig.DEBUG) Log.i(TAG, "f: " + f);
                 String s = null; // get value of each field
                 try {
                     s = (String)f.get(null);
-                    if (BuildConfig.DEBUG) Log.d(TAG, "s: " + s);
+                    if (BuildConfig.DEBUG) Log.i(TAG, "s: " + s);
                     Intent testIntent = new Intent(s);
                     ResolveInfo resolveInfo = pm.resolveActivity(testIntent, PackageManager.MATCH_SYSTEM_ONLY);
                     if (resolveInfo != null) {
                         if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
                             String label = resolveInfo.loadLabel(pm).toString();
                             if (!label.isEmpty()) {
-                                if (BuildConfig.DEBUG) Log.d(TAG, "loadLabel: " + resolveInfo.loadLabel(pm).toString());
+                                if (BuildConfig.DEBUG) Log.i(TAG, "loadLabel: " + resolveInfo.loadLabel(pm).toString());
                                 for (SettingsPojo pojo:settings)
                                     if (pojo.getName().equals(label)||label.equals(settingsPkgName)||label.isEmpty()){
                                         break outerloop;

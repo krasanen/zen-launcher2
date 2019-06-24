@@ -18,11 +18,12 @@ public class KissApplication extends Application {
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;
     private MainActivity mainActivity;
-
+    private static final String TAG = KissApplication.class.getSimpleName();
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        Log.i(TAG, "onConfigurationChanged");
 
         // create intent to update all instances of the widget
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, ZenWidget.class);
@@ -86,7 +87,7 @@ public class KissApplication extends Application {
         try {
             context.startService(intent);
         }catch (IllegalStateException e){
-            if(BuildConfig.DEBUG) Log.d("KissApplication", "app in background?");
+            if(BuildConfig.DEBUG) Log.w("KissApplication", "app in background?");
         }
     }
 }
