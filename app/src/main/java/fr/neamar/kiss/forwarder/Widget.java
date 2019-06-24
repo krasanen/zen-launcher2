@@ -408,7 +408,13 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         widgetArea.post(new Runnable() {
             @Override
             public void run() {
-                widgetArea.addView(hostView);
+                try {
+                    widgetArea.addView(hostView);
+                } catch (Exception e) {
+                    Log.i(TAG, "addWidgetHostView, exception:" + e);
+                    Toast.makeText(hostView.getContext(), hostView.getContext().getString(R.string.application_not_found) , Toast.LENGTH_SHORT).show();
+                    removeAppWidget(hostView);
+                }
             }
         });
         return wp;
