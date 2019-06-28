@@ -710,7 +710,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         view.setX(x);
         view.setY(y);
 
-        PopupMenu popupExcludeMenu = new PopupMenu(activity.getApplicationContext(), view);
+        PopupMenu popupExcludeMenu = new PopupMenu(MainActivity.this, view);
         //Adding menu items
         popupExcludeMenu.getMenu().add(ADD_WIDGET, Menu.NONE, Menu.NONE, R.string.menu_widget_add);
         popupExcludeMenu.getMenu().add(WIDGET_SETTINGS, Menu.NONE, Menu.NONE, R.string.menu_widget_settings);
