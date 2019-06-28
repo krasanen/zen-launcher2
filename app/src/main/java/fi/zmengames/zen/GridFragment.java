@@ -63,6 +63,16 @@ public class GridFragment extends Fragment {
         }
     };
 
+    final private AdapterView.OnItemLongClickListener mOnLongClickListener
+            = new AdapterView.OnItemLongClickListener() {
+        public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+            onGridItemLongClick((GridView) parent, v, position, id);
+            return true;
+        }
+    };
+
+
+
     ListAdapter mAdapter;
     GridView mGrid;
     View mEmptyView;
@@ -196,6 +206,11 @@ public class GridFragment extends Fragment {
     public void onGridItemClick(GridView g, View v, int position, long id) {
 
     }
+
+    public boolean onGridItemLongClick(GridView g, View v, int position, long id) {
+        return true;
+    }
+
 
     /**
      * Provide the cursor for the {@link GridView}.
@@ -384,6 +399,7 @@ public class GridFragment extends Fragment {
         }
         mGridShown = true;
         mGrid.setOnItemClickListener(mOnClickListener);
+        mGrid.setOnItemLongClickListener(mOnLongClickListener);
         if (mAdapter != null) {
             ListAdapter adapter = mAdapter;
             mAdapter = null;

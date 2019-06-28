@@ -443,6 +443,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
+    public RecordAdapter getAdapter(){
+        return adapter;
+    }
+
     public static void checkPermissionRecordAudio(Activity activity) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
