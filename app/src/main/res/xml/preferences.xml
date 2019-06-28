@@ -205,6 +205,10 @@
                 android:defaultValue="true"
                 android:key="triple_tap_flashlight"
                 android:title="@string/triple_tap_flashlight" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="true"
+                android:key="enable-favbar-appnames"
+                android:title="@string/show_favbar_appnames" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/misc">
 

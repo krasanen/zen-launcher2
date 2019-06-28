@@ -201,5 +201,6 @@
     <string name="wifi_off">Wifi Off</string>
     <string name="wifi_on">Wifi On</string>
     <string name="network_internet"><![CDATA[Network & Internet]]></string>
+    <string name="show_favbar_appnames">Show app names in favbar</string>
 
 </resources>

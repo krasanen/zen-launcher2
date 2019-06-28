@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.LinkAddress;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -23,6 +24,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import java.util.ArrayList;
 
@@ -131,7 +135,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             Pojo pojo = favoritesPojo.get(i);
 
             ImageView image;
-            TextView textView;
+            TextView textView = null;
+            boolean favbarApsEnabled = prefs.getBoolean("enable-favbar-appnames", true);
             if (favoritesViews.size() <= i) {
                 if (layoutInflater == null) {
                     layoutInflater = (LayoutInflater) mainActivity.favoritesBar.getContext()
@@ -157,15 +162,30 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             Drawable drawable = result.getDrawable(mainActivity);
             if (drawable != null) {
                 if (result instanceof ContactsResult) {
+
                     Bitmap iconBitmap = drawableToBitmap(drawable);
-                    drawable = new RoundedQuickContactBadge.RoundedDrawable(iconBitmap);
+                    RoundedBitmapDrawable dr =
+                            RoundedBitmapDrawableFactory.create(mainActivity.getResources(), iconBitmap);
+                    dr.setCornerRadius(Math.max(iconBitmap.getWidth(), iconBitmap.getHeight()) / 2.0f);
+                    image.setImageDrawable(dr);
+
+
+                } else {
+                    image.setImageDrawable(drawable);
                 }
-                image.setImageDrawable(drawable);
+
             } else {
                 // Use a placeholder if no drawable found
                 image.setImageResource(R.drawable.ic_z);
             }
-            textView.setText(pojo.getName());
+            if (favbarApsEnabled) {
+                image.setPadding(15,0,15,25);
+                textView.setVisibility(View.VISIBLE);
+                textView.setText(pojo.getName());
+            } else {
+                image.setPadding(15,0,15,0);
+                textView.setVisibility(View.GONE);
+            }
             image.setVisibility(View.VISIBLE);
             image.setContentDescription(pojo.getName());
             favoritesViews.get(i).setVisibility(View.VISIBLE);
@@ -173,8 +193,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             if (pojo.getBadgeCount() > 0) {
                 badgeView.setText(String.valueOf(pojo.getBadgeText()));
                 badgeView.setVisibility(View.VISIBLE);
-                badgeView.setX(getBitmapOffset(image)[2]- (badgeView.getMeasuredWidth() >> 1));
-                badgeView.setY(getBitmapOffset(image)[3]);
+                badgeView.setX(getBitmapOffset(image)[2]- (badgeView.getMeasuredWidth()>>1 ) );
+                badgeView.setY(getBitmapOffset(image)[3] );
             } else {
                 badgeView.setVisibility(View.GONE);
             }
