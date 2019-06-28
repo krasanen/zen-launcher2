@@ -6,11 +6,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
 
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.PojoComparator;
@@ -50,8 +52,11 @@ public class AppsGridFragment extends GridFragment {
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 intent.setSourceBounds(v.getClipBounds());
             }
-
-            this.startActivity(intent);
+            try {
+                this.startActivity(intent);
+            } catch (Exception e){
+                Toast.makeText(getContext(), R.string.application_not_found, Toast.LENGTH_LONG).show();
+            }
         }
 
     }
