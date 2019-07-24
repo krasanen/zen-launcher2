@@ -173,7 +173,7 @@
     <string name="pref_toggle_tags">Näytä tunnisteet valikko</string>
     <string name="screen_toggle_tags">Kustomoi tunnistevalikkoa</string>
     <string name="pref_toggle_tags_select">Näytettävät tunnisteet</string>
-    <string name="ctx_menu">Zen Launcer valikko</string>
+    <string name="ctx_menu">Zen valikko</string>
     <string name="pref_tags_menu">Tunnisteet valikko</string>
     <string name="show_matching">Näytä löydetyt</string>
     <string name="popup_tags_title">Käytettävissä olevat tunnisteet</string>

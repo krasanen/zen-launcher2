@@ -419,6 +419,8 @@ public class ContactsResult extends Result {
 
     @Override
     protected ListPopup buildPopupMenu(Context context, ArrayAdapter<ListPopup.Item> adapter, final RecordAdapter parent, View parentView) {
+        adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call));
+        adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_sms));
         if (contactPojo.whatsAppCalling != 0) {
             adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call_whatsapp));
             adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_whatsapp));
@@ -461,6 +463,12 @@ public class ContactsResult extends Result {
                 return true;
             case R.string.ui_item_contact_hint_message_facebook:
                 openFacebook(context, false);
+                return true;
+            case R.string.ui_item_contact_hint_call:
+                launchCall(context);
+                return true;
+            case R.string.ui_item_contact_hint_sms:
+                launchMessaging(context);
                 return true;
         }
 
