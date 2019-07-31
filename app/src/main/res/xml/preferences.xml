@@ -14,14 +14,16 @@
             android:dialogMessage="@string/reset_excluded_apps_warn"
             android:key="reset-excluded-apps"
             android:order="12"
-            android:title="@string/reset_excluded_apps_name" />
+            android:title="@string/reset_excluded_apps_name"
+            android:summary="@string/show_favbar_appnames_sum" />
         <EditTextPreference
             android:defaultValue="20"
             android:inputType="number"
             android:key="number-of-display-elements"
             android:order="45"
             android:textColor="?attr/searchColor"
-            android:title="@string/number_of_display_items" />
+            android:title="@string/number_of_display_items"
+            android:summary="@string/number_of_display_items_sum" />
         <ListPreference
             android:defaultValue="recency"
             android:entries="@array/historyModeEntries"
@@ -42,7 +44,8 @@
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="enable-phone-history"
-                android:title="@string/enable_phone" />
+                android:title="@string/enable_phone"
+                android:summary="@string/enable_phone_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="enable-app-history"
@@ -61,7 +64,7 @@
                 android:dialogMessage="@string/reset_excluded_apps_warn"
                 android:key="reset-excluded-apps"
                 android:order="57"
-                android:title="@string/reset_excluded_apps_name" />
+                android:title="@string/reset_excluded_apps_name_sum" />
         </PreferenceCategory>
     </PreferenceScreen>
     <PreferenceScreen
@@ -106,7 +109,8 @@
                 android:title="@string/main_color" />
             <fr.neamar.kiss.SwitchPreference
                 android:key="black-notification-icons"
-                android:title="@string/black_notification_icons" />
+                android:title="@string/black_notification_icons"
+                android:summary="@string/black_notification_icons_sum" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/misc">
             <fr.neamar.kiss.SwitchPreference

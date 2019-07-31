@@ -45,9 +45,11 @@
     <string name="main_kiss">Display favorites and app list</string>
     <string name="main_kiss_back">Display history</string>
     <string name="reset_name">Reset history</string>
-    <string name="reset_excluded_apps_name">Reset excluded app list</string>
+    <string name="reset_excluded_apps_name">Reset excluded</string>
+    <string name="reset_excluded_apps_name_sum">Reset excluded app list</string>
     <string name="reset_excluded_apps_warn">Do you really want to reset your excluded app list?</string>
-    <string name="reset_excluded_from_history_apps_name">Reset excluded from history app list</string>
+    <string name="reset_excluded_from_history_apps_name">Reset excluded</string>
+    <string name="reset_excluded_from_history_apps_name_sum">Reset excluded from history app list</string>
     <string name="reset_excluded_from_history_apps_warn">Do you really want to reset your excluded from history app list?</string>
     <string name="settings_excluded_apps">Excluded apps</string>
     <string name="ui_excluded_apps">View or edit apps excluded from Zen</string>
@@ -151,7 +153,8 @@
 
     <string name="order_apps_name">App list sort order</string>
     <string name="enable_sms">Show incoming SMSes in history</string>
-    <string name="enable_phone">Show incoming calls in history</string>
+    <string name="enable_phone">Show incoming calls</string>
+    <string name="enable_phone_sum">Show incoming calls in history view</string>
     <string name="enable_app">Show newly installed apps in history</string>
     <string name="enable_favorites_bar">Show favorites above search bar</string>
     <string name="exclude_favorites">Exclude favorites from history</string>
@@ -177,7 +180,8 @@
     <string name="toast_favorites_removed">%s was removed from favorites</string>
     <string name="menu_favorites_remove">Remove favorite</string>
     <string name="share">Share to…</string>
-    <string name="number_of_display_items">Max number of results in search and history</string>
+    <string name="number_of_display_items">Max number of results</string>
+    <string name="number_of_display_items_sum">Max number of results in search and history</string>
 
     <string name="main_color">Primary color</string>
     <string name="notification_bar_color">Notification bar color</string>
@@ -219,7 +223,8 @@
     <string name="get_help">Get help!</string>
     <string name="permission_denied">Permission has been denied</string>
     <string name="colors">Colors</string>
-    <string name="black_notification_icons">Display notification icons in black</string>
+    <string name="black_notification_icons">Black notification icons</string>
+    <string name="black_notification_icons_sum">Display notification bar icons in black</string>
     <string name="shortcuts_no_host_permission">Zen is not your main launcher anymore and can\'t access your shortcuts.</string>
     <string name="unable_add_shortcut">Unable to add shortcuts (shortcut provider is disabled in Zen settings)</string>
 
