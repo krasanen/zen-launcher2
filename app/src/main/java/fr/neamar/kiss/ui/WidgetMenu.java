@@ -1,7 +1,9 @@
 package fr.neamar.kiss.ui;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.StringRes;
 import fr.neamar.kiss.R;
+
 
 import java.util.ArrayList;
 
@@ -37,7 +40,23 @@ public class WidgetMenu {
             public void onClick(View v) {
                 if (mPopup != null)
                     mPopup.dismiss();
-                mListener.onWidgetRemove((Integer)v.getTag());
+                //show dialog
+                new AlertDialog.Builder(v.getContext()).setMessage(R.string.remove_widget_warn)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mListener.onWidgetRemove((Integer)v.getTag());
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // does nothing
+                            }
+                        }).show();
+
             }
         });
     }

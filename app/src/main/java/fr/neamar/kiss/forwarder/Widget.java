@@ -2,10 +2,12 @@ package fr.neamar.kiss.forwarder;
 
 import android.app.Activity;
 
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -323,7 +325,24 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         resizeView(view);
                         break;
                     case REMOVE:
-                        removeAppWidget(view);
+                        //show dialog
+                        new AlertDialog.Builder(view.getContext()).setMessage(R.string.remove_widget_warn)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        removeAppWidget(view);
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // does nothing
+                                    }
+                                }).show();
+
+
                         break;
                     case SETTINGS:
                         configureAppWidget(view);
