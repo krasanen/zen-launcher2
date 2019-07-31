@@ -173,45 +173,56 @@
                 android:key="pref-hide-statusbar"
                 android:summary="@string/pref_hide_statusbar_desc"
                 android:title="@string/pref_hide_statusbar" />
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/gestures" android:key="gestures-section">
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="double-click-opens-apps"
-                android:title="@string/double_click" />
+                android:title="@string/double_click"
+                android:summary="@string/double_click_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-down-opens-notifications"
-                android:title="@string/swipe_down_notifications" />
+                android:title="@string/swipe_down_notifications"
+                android:summary="@string/swipe_down_notifications_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-up-opens-keyboard"
-                android:title="@string/swipe_up_keyboard" />
+                android:title="@string/swipe_up_keyboard"
+                android:summary="@string/swipe_up_keyboard_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-left"
-                android:title="@string/swipe_left_opens_menu" />
+                android:title="@string/swipe_left_gesture"
+                android:summary="@string/swipe_left_gesture_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="swipe-right"
-                android:title="@string/swipe_right_opens_menu" />
+                android:title="@string/swipe_right_opens_menu"
+                android:summary="@string/swipe_right_opens_menu_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="pinch-open"
-                android:title="@string/pinch_opens_menu" />
+                android:title="@string/pinch_opens_menu"
+                android:summary="@string/pinch_opens_menu_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="double-click-numeric-kb"
-                android:title="@string/double_click_numeric_kb" />
+                android:title="@string/double_click_numeric_kb"
+                android:summary="@string/double_click_numeric_kb_sum"/>
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="triple_tap_flashlight"
-                android:title="@string/triple_tap_flashlight" />
+                android:title="@string/triple_tap_flashlight"
+                android:summary="@string/triple_tap_flashlight_sum" />
+
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/misc">
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="enable-favbar-appnames"
-                android:title="@string/show_favbar_appnames" />
-        </PreferenceCategory>
-        <PreferenceCategory android:title="@string/misc">
-
+                android:title="@string/show_favbar_appnames"
+                android:summary="@string/show_favbar_appnames_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:key="force-portrait"
