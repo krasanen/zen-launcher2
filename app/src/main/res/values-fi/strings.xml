@@ -281,8 +281,8 @@
     <string name="double_click_lock">Lukitus tuplaklikkauksella</string>
     <string name="double_click_lock_sum">Näytön tuplaklikkaus lukitsee laitteen</string>
     <string name="black_notification_icons_sum">Piirrä ilmoitusikonit mustalla värillä</string>
-    <string name="device_admin_disabled">Laitteenhallinta päällä</string>
-    <string name="device_admin_enabled">Laitteenhallinta poissa</string>
+    <string name="device_admin_disabled">Laitteenhallinta poissa</string>
+    <string name="device_admin_enabled">Laitteenhallinta päällä</string>
     <string name="unable_add_shortcut">Virhe lisättäessä pikakuvakkeita</string>
     <string name="unable_to_initialize_shortcuts">Virhe alustettaessa pikakuvakkeita. Onko Zen Launcher asetettu oletus käynnistyssovellukseksi?</string>
     <string name="reset_excluded_from_history_apps_name_sum">Resetoi poissuljetut historialistasta</string>
