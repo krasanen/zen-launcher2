@@ -1,6 +1,8 @@
 package fr.neamar.kiss.forwarder;
 
 import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
@@ -31,6 +33,7 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.NullSearcher;
 
+import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.text.InputType.TYPE_CLASS_PHONE;
 import static fr.neamar.kiss.MainActivity.isKeyboardVisible;
 import static fr.neamar.kiss.MainActivity.mDebugJson;
@@ -344,8 +347,14 @@ public class ExperienceTweaks extends Forwarder {
             if (prefs.getBoolean("double-click-opens-apps", false)) {
                 mainActivity.launcherButton.performClick();
             }
+            else if (prefs.getBoolean("double-click-locks-screen", false)) {
+                    mainActivity.lockScreen();
+                }
+
         }
     }
+
+
     public void toggleScreenOnOff() {
         // turn off/on screen backlight
         WindowManager.LayoutParams params = mainActivity.getWindow().getAttributes();

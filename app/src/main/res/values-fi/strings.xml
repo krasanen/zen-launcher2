@@ -218,7 +218,7 @@
     <string name="loading_from_cloud">Ladataan asetukset Googlesta</string>
     <string name="load_from_google">Lataa asetukset Googlesta</string>
     <string name="proximity_switch">Sammuta/käynnistä näyttö etäisyystunnistimella</string>
-    <string name="double_click_numeric_kb">Ruudun tuplaklikkaus vaihtaa näppäimistön tyypin</string>
+    <string name="double_click_numeric_kb_sum">Ruudun tuplaklikkaus vaihtaa näppäimistön tyypin</string>
     <string name="triple_tap_flashlight">Kolmoisnäpäytys</string>
     <string name="order_contacts_name">Kontaktien järjestys</string>
     <string name="sign_in_gdrive">Kirjaudu Googleen</string>
@@ -246,7 +246,7 @@
     <string name="badge">Lisää merkintä</string>
     <string name="color_picker_default_title">Valitse väri</string>
     <string name="default_launcher_warn">Kun vaihdat oletuskäynnistintä, käynnistyy sen aloitusruutu. Oletko varma että haluat jatkaa.</string>
-    <string name="double_click_numeric_kb_sum">Tuplaklikkaus</string>
+    <string name="double_click_numeric_kb">Tuplaklikkaus</string>
     <string name="double_click_sum">Ruudun tuplaklikkaus avaa sovelluslistan</string>
     <string name="enable_favorites_bar_summary_off">Näytä suosikkit vain kun Zen ikonia on painettu</string>
     <string name="enable_favorites_bar_summary_on">Näytä suosikit hakupalkin päällä</string>
@@ -278,5 +278,14 @@
     <string name="toast_favorites_removed">%s poistettiin suosikeista</string>
     <string name="triple_tap_flashlight_sum">Taskulamppu käynnistyy kolmella näpäytyksellä</string>
     <string name="add_widget">Lisää pienoissovelluss</string>
+    <string name="double_click_lock">Lukitus tuplaklikkauksella</string>
+    <string name="double_click_lock_sum">Näytön tuplaklikkaus lukitsee laitteen</string>
+    <string name="black_notification_icons_sum">Piirrä ilmoitusikonit mustalla värillä</string>
+    <string name="device_admin_disabled">Laitteenhallinta päällä</string>
+    <string name="device_admin_enabled">Laitteenhallinta poissa</string>
+    <string name="unable_add_shortcut">Virhe lisättäessä pikakuvakkeita</string>
+    <string name="unable_to_initialize_shortcuts">Virhe alustettaessa pikakuvakkeita. Onko Zen Launcher asetettu oletus käynnistyssovellukseksi?</string>
+    <string name="reset_excluded_from_history_apps_name_sum">Resetoi poissuljetut historialistasta</string>
+    <string name="enable_sms">Näytä tulevat SMS viestit historiassa</string>
 
 </resources>

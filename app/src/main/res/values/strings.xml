@@ -317,4 +317,8 @@
     <string name="show_favbar_appnames_sum">Show app names in favorite bar</string>
     <string name="remove_widget_warn">Are you sure you want to remove this widget?</string>
     <string name="gestures">Gestures</string>
+    <string name="double_click_lock">Double click lock</string>
+    <string name="double_click_lock_sum">Screen double click locks screen. Requires Device Admin permission.</string>
+    <string name="device_admin_enabled">Device Admin: enabled</string>
+    <string name="device_admin_disabled">Device Admin: disabled</string>
 </resources>

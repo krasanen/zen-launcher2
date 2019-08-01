@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
 
+import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -121,6 +122,7 @@ import fi.zmengames.zen.AppGridActivity;
 import fi.zmengames.zen.DriveServiceHelper;
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
+import fi.zmengames.zen.ZenAdmin;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
 import fr.neamar.kiss.db.DBHelper;
@@ -158,6 +160,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private static final int REQUEST_CODE_SIGN_IN = 1;
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
+    public static final int REQUEST_DEVICE_ADMIN = 3;
 
     private DriveServiceHelper mDriveServiceHelper;
     private String mOpenFileId;
@@ -1856,6 +1859,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         switch (requestCode) {
 
+            case REQUEST_DEVICE_ADMIN :
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(MainActivity.this, "You have enabled the Admin Device features", Toast.LENGTH_SHORT).show();
+                    if (prefs.getBoolean("double-click-opens-apps", false)) {
+                        prefs.edit().putBoolean("double-click-opens-apps", false).apply();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Problem to enable the Admin Device features", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
             case REQUEST_BIND_APPWIDGET:
                 if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_BIND_APPWIDGET");
                 if (resultCode == Activity.RESULT_OK) {
@@ -2435,4 +2449,22 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         displayAppsWithNotif(showMenu);
     }
 
+    public void lockScreen() {
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(this, ZenAdmin.class);
+        boolean active = devicePolicyManager.isAdminActive(compName);
+
+        if (active) {
+            devicePolicyManager.lockNow();
+        } else {
+            Toast.makeText(MainActivity.this, "Problem to enable the Admin Device features", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void disableDeviceAdmin() {
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(this, ZenAdmin.class);
+        devicePolicyManager.removeActiveAdmin(compName);
+    }
 }

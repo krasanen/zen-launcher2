@@ -49,7 +49,7 @@ public class ProximitySwitch extends SwitchPreference {
     public void turnOffScreen(){
         // turn off screen
         if (BuildConfig.DEBUG) Log.v("ProximityActivity", "OFF!");
-        mWakeLock = mPowerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "tag");
+        mWakeLock = mPowerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, ProximitySwitch.class.getName());
         mWakeLock.acquire();
     }
 }

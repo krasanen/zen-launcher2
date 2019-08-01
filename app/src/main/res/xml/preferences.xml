@@ -186,6 +186,16 @@
                 android:summary="@string/double_click_sum" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
+                android:key="double-click-numeric-kb"
+                android:title="@string/double_click_numeric_kb"
+                android:summary="@string/double_click_numeric_kb_sum"/>
+            <fi.zmengames.zen.LockScreenSwitch
+                android:defaultValue="false"
+                android:key="double-click-locks-screen"
+                android:title="@string/double_click_lock"
+                android:summary="@string/double_click_lock_sum" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="true"
                 android:key="swipe-down-opens-notifications"
                 android:title="@string/swipe_down_notifications"
                 android:summary="@string/swipe_down_notifications_sum" />
@@ -209,11 +219,7 @@
                 android:key="pinch-open"
                 android:title="@string/pinch_opens_menu"
                 android:summary="@string/pinch_opens_menu_sum" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="double-click-numeric-kb"
-                android:title="@string/double_click_numeric_kb"
-                android:summary="@string/double_click_numeric_kb_sum"/>
+
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
                 android:key="triple_tap_flashlight"
@@ -319,7 +325,7 @@
         <fr.neamar.kiss.SwitchPreference
             android:defaultValue="true"
             android:key="enable-search"
-            android:title="@string/search_name" />
+            android:title="@string/search_name" />Proxi
         <PreferenceCategory android:title="@string/search_name">
             <fr.neamar.kiss.preference.AddSearchProviderPreference
                 android:key="custom-search-provider-add"
