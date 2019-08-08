@@ -234,9 +234,7 @@ public class AppResult extends Result {
         //remove from history
         deleteRecord(context);
         //refresh current history
-        if (!((MainActivity)context).isViewingAllApps()) {
-            parent.removeResult(AppResult.this);
-        }
+        parent.removeResult(AppResult.this);
         //inform user
         Toast.makeText(context, R.string.excluded_app_history_added, Toast.LENGTH_LONG).show();
     }
