@@ -25,7 +25,9 @@ import android.widget.Toast;
 import fi.zmengames.zen.LauncherAppWidgetHost;
 import fi.zmengames.zen.LauncherAppWidgetHostView;
 import fi.zmengames.zen.ParcelableUtil;
+import fi.zmengames.zen.Utility;
 import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.ZenWidget;
@@ -352,7 +354,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             }
         });
 
-        popupExcludeMenu.show();
+        Utility.showPopup(popupExcludeMenu, KissApplication.getApplication(context).getMainActivity());
 
 
     }

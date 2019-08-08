@@ -121,6 +121,7 @@ import androidx.core.util.Pair;
 import fi.zmengames.zen.AppGridActivity;
 import fi.zmengames.zen.DriveServiceHelper;
 import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.Utility;
 import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenAdmin;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -770,8 +771,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 root.removeView(view);
             }
         });
-
-        popupExcludeMenu.show();
+        Utility.showPopup(popupExcludeMenu, this);
     }
 
     private void toggleWifiState(boolean state) {
@@ -1207,7 +1207,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }
                         popupExcludeMenu.setOnDismissListener(menu -> root.removeView(view));
 
-                        popupExcludeMenu.show();
+                        Utility.showPopup(popupExcludeMenu, this);
                     /*    popupExcludeMenu.getMenu().getItem(0).getActionView().setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View view) {

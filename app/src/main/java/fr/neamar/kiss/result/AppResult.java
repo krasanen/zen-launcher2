@@ -14,6 +14,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
+import fi.zmengames.zen.Utility;
 import fr.neamar.kiss.BadgeHandler;
 
 import android.os.Build;
@@ -51,6 +52,7 @@ public class AppResult extends Result {
     private final AppPojo appPojo;
     private final ComponentName className;
     private Drawable icon = null;
+    private PopupMenu popupExcludeMenu;
 
     AppResult(AppPojo appPojo) {
         super(appPojo);
@@ -196,8 +198,7 @@ public class AppResult extends Result {
                         return true;
                     }
                 });
-
-                popupExcludeMenu.show();
+                Utility.showPopup(popupExcludeMenu, KissApplication.getApplication(context).getMainActivity());
                 return true;
             case R.string.menu_tags_edit:
                 launchEditTagsDialog(context, appPojo);

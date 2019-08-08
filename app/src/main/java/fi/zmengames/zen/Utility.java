@@ -17,6 +17,7 @@ package fi.zmengames.zen;
         import android.view.View;
         import android.view.Window;
         import android.view.WindowManager;
+        import android.widget.PopupMenu;
 
 /**
  * @author Fung Gwo (fython) fython@163.com
@@ -183,9 +184,13 @@ public final class Utility {
     /**
      * Create a tiles on the status bar through CyanogenMod SDK -- Fung Jichun
      * You can learn more from: https://cyngn.com/developer-blog/introducing-the-cyanogen-platform-sdk
-     * @param context Context
      * @param nowStatus Now
+     * @param context Context
      */
 
-
+    public static void showPopup(PopupMenu menu, Activity activity){
+        if (!activity.isFinishing()){
+            menu.show();
+        }
+    }
 }

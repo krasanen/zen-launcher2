@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import fi.zmengames.zen.IconHelper;
+import fi.zmengames.zen.Utility;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
@@ -106,8 +107,8 @@ public class ContactsResult extends Result {
                 return true;
             }
         });
-        
-        popupExcludeMenu.show();
+
+        Utility.showPopup(popupExcludeMenu, KissApplication.getApplication(context).getMainActivity());
 
 
     }
