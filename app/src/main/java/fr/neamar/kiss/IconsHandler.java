@@ -35,10 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.utils.UserHandle;
-import me.leolin.shortcutbadger.ShortcutBadgeException;
-import me.leolin.shortcutbadger.impl.IntentConstants;
-import me.leolin.shortcutbadger.util.BroadcastHelper;
 
 /**
  * Inspired from http://stackoverflow.com/questions/31490630/how-to-load-icon-from-icon-pack
@@ -197,6 +195,13 @@ public class IconsHandler {
             }
         } catch (NameNotFoundException | IndexOutOfBoundsException e) {
             Log.e(TAG, "Unable to found component " + componentName.toString() + e);
+            return null;
+        } catch (OutOfMemoryError e){
+            Log.d(TAG,"OutOfMemoryError, disabling icon cache!"+e);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+            if (prefs.getBoolean("keep-icons-in-memory", false))
+                prefs.edit().putBoolean("keep-icons-in-memory", false).commit();
+            MemoryCacheHelper.trimMemory();
             return null;
         }
     }
