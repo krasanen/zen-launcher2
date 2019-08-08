@@ -288,7 +288,9 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 }
             }
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
 
 
         for (
