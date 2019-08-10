@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import androidx.annotation.NonNull;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
@@ -258,7 +259,7 @@ public class SettingsActivity extends PreferenceActivity implements
     private void addCustomSearchProvidersSelect(SharedPreferences prefs) {
         MultiSelectListPreference multiPreference = new MultiSelectListPreference(this);
         //get stored search providers or default hard-coded values
-        Set<String> availableSearchProviders = prefs.getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(this));
+        Set<String> availableSearchProviders = new TreeSet<>(prefs.getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(this)));
         String[] searchProvidersArray = new String[availableSearchProviders.size()];
         int pos = 0;
         //get names of search providers
@@ -280,7 +281,7 @@ public class SettingsActivity extends PreferenceActivity implements
     private void addCustomSearchProvidersDelete(final SharedPreferences prefs) {
         MultiSelectListPreference multiPreference = new MultiSelectListPreference(this);
 
-        Set<String> availableSearchProviders = prefs.getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(this));
+        Set<String> availableSearchProviders = new TreeSet<>(prefs.getStringSet("available-search-providers", SearchProvider.getDefaultSearchProviders(this)));
         String[] searchProvidersArray = new String[availableSearchProviders.size()];
         int pos = 0;
         //get names of search providers
