@@ -213,7 +213,12 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     public int getPositionForSection(int sectionIndex) {
 
         if (sectionIndex > 0) {
-            return alphaIndexer.get(sections[sectionIndex]);
+            try {
+                return alphaIndexer.get(sections[sectionIndex]);
+            } catch (ArrayIndexOutOfBoundsException e){
+                e.printStackTrace();
+                return 0;
+            }
         } else {
             return 0;
         }
