@@ -280,7 +280,7 @@
     <string name="loading_from_cloud">Loading from cloud</string>
     <string name="saving_to_cloud">Saving to cloud</string>
     <string name="load_from_google">Load layout from Google</string>
-    <string name="proximity_switch">Turn on/off screen with proximity sensor</string>
+    <string name="proximity_switch">Proximity sensor</string>
     <string name="double_click_numeric_kb">Screen doubleclick</string>
     <string name="double_click_numeric_kb_sum">Screen doubleclick changes keyboard type when keyboard is visible</string>
     <string name="triple_tap_flashlight">Tripletap</string>
@@ -321,4 +321,7 @@
     <string name="double_click_lock_sum">Screen double click locks screen. Requires Device Admin permission.</string>
     <string name="device_admin_enabled">Device Admin: enabled</string>
     <string name="device_admin_disabled">Device Admin: disabled</string>
+    <string name="proximity_switch_summary">Turn on/off screen with proximity sensor</string>
+    <string name="proximity_switch_lock_summary">Lock device with proximity sensor. Like when device put to pocket.</string>
+    />
 </resources>

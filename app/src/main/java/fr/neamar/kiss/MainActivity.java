@@ -12,12 +12,10 @@ import android.app.WallpaperManager;
 
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -30,6 +28,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.net.Uri;
@@ -47,7 +49,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ActionProvider;
 import android.view.ContextMenu;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -155,7 +156,7 @@ import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
-public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener {
+public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener, SensorEventListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -476,6 +477,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
+    private SensorManager mSensorManager;
+    private Sensor mProximity;
+    private boolean proximityLockEnabled = false;
+    private static final int SENSOR_SENSITIVITY = SensorManager.SENSOR_DELAY_NORMAL;
 
     Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
 
@@ -489,6 +494,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         instance = this;
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
         KissApplication.getApplication(this).setMainActivity(this);
+
+
+
+
 //        KissApplication.getApplication(this).initDataHandler();
 
         /*
@@ -500,6 +509,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile.
+
+        if(prefs.getBoolean("proximity-switch-lock", false)) {
+            proximityLockEnabled = true;
+            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        } else {
+            proximityLockEnabled = false;
+        }
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
@@ -979,6 +997,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 toggleFlashLightPreM(flashToggle);
             }
         }
+
+        if(proximityLockEnabled) {
+            mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+
         if (mDebugJson) {
             try {
                 String settings = this.getSerializedSettings2();
@@ -2276,6 +2300,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     protected void onPause() {
         super.onPause();
+        if (proximityLockEnabled) {
+            mSensorManager.unregisterListener(this);
+        }
         instance = null;
     }
 
@@ -2457,7 +2484,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (active) {
             devicePolicyManager.lockNow();
         } else {
-            Toast.makeText(MainActivity.this, "Problem to enable the Admin Device features", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Device Admin features not enabled", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -2466,5 +2493,23 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         ComponentName compName = new ComponentName(this, ZenAdmin.class);
         devicePolicyManager.removeActiveAdmin(compName);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        if (proximityLockEnabled && sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+            if (sensorEvent.values[0] >= -SENSOR_SENSITIVITY && sensorEvent.values[0] <= SENSOR_SENSITIVITY) {
+                //near
+                lockScreen();
+            } else {
+                //far
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

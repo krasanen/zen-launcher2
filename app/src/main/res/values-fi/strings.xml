@@ -217,7 +217,7 @@
     <string name="write_snapshot_error">Ongelma asetusten tallennuksessa!</string>
     <string name="loading_from_cloud">Ladataan asetukset Googlesta</string>
     <string name="load_from_google">Lataa asetukset Googlesta</string>
-    <string name="proximity_switch">Sammuta/käynnistä näyttö etäisyystunnistimella</string>
+    <string name="proximity_switch">Etäisyystunnistin</string>
     <string name="double_click_numeric_kb_sum">Ruudun tuplaklikkaus vaihtaa näppäimistön tyypin</string>
     <string name="triple_tap_flashlight">Kolmoisnäpäytys</string>
     <string name="order_contacts_name">Kontaktien järjestys</string>
@@ -287,5 +287,7 @@
     <string name="unable_to_initialize_shortcuts">Virhe alustettaessa pikakuvakkeita. Onko Zen Launcher asetettu oletus käynnistyssovellukseksi?</string>
     <string name="reset_excluded_from_history_apps_name_sum">Resetoi poissuljetut historialistasta</string>
     <string name="enable_sms">Näytä tulevat SMS viestit historiassa</string>
+    <string name="proximity_switch_summary">Sammuta/käynnistä näyttö etäisyystunnistimella</string>
+    <string name="proximity_switch_lock_summary">Lukitse laite etäisyystunnistimella, esim kun laite laitetaan taskuun</string>
 
 </resources>

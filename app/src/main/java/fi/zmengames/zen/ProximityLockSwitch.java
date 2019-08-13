@@ -1,6 +1,5 @@
 package fi.zmengames.zen;
 
-import android.app.Application;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,15 +15,15 @@ import fr.neamar.kiss.SwitchPreference;
 
 import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN;
 
-public class LockScreenSwitch extends SwitchPreference {
-    public LockScreenSwitch(Context context) {
+public class ProximityLockSwitch extends SwitchPreference {
+    public ProximityLockSwitch(Context context) {
         super(context);
     }
-    public LockScreenSwitch(Context context, AttributeSet attrs) {
+    public ProximityLockSwitch(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.switchPreferenceStyle);
 
     }
-    public LockScreenSwitch(Context context, AttributeSet attrs, int defStyle) {
+    public ProximityLockSwitch(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -40,15 +39,15 @@ public class LockScreenSwitch extends SwitchPreference {
     }
 
     private void removeDeviceAdmin() {
-        if (BuildConfig.DEBUG) Log.v("LockScreenSwitch", "removeDeviceAdmin");
+        if (BuildConfig.DEBUG) Log.v("ProximityLockSwitch", "removeDeviceAdmin");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (!prefs.getBoolean("proximity-switch-lock", false)) {
+        if (!prefs.getBoolean("double-click-locks-screen", false)) {
             KissApplication.getApplication(getContext()).getMainActivity().disableDeviceAdmin();
         }
     }
 
     private void askDeviceAdmin() {
-        if (BuildConfig.DEBUG) Log.v("LockScreenSwitch", "askDeviceAdmin");
+        if (BuildConfig.DEBUG) Log.v("ProximityLockSwitch", "askDeviceAdmin");
         ComponentName compName = new ComponentName(getContext(), ZenAdmin.class);
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
