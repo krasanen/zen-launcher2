@@ -226,6 +226,9 @@ public class IconsHandler {
                 } catch(Resources.NotFoundException e) {
                     // Unable to load icon, keep going.
                     e.printStackTrace();
+                } catch(IndexOutOfBoundsException e) {
+                    // Unable to load icon, keep going.
+                    e.printStackTrace();
                 }
             }
         }
