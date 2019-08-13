@@ -2493,6 +2493,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         ComponentName compName = new ComponentName(this, ZenAdmin.class);
         devicePolicyManager.removeActiveAdmin(compName);
+        proximityLockEnabled = false;
     }
 
     @Override
