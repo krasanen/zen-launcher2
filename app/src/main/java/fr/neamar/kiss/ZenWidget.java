@@ -51,7 +51,7 @@ public class ZenWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         MainActivity mainActivity = KissApplication.getApplication(context).getMainActivity();
-        if (MyOnClick.equals(intent.getAction())){
+        if (mainActivity!=null && MyOnClick.equals(intent.getAction())){
             remoteViews = new RemoteViews( context.getPackageName(), R.layout.zen_widget );
             mainActivity.toggleFlashLight();
             if (MainActivity.flashToggle) {
