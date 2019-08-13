@@ -162,7 +162,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private static final int REQUEST_CODE_SIGN_IN = 1;
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
-    public static final int REQUEST_DEVICE_ADMIN = 3;
+    public static final int REQUEST_DEVICE_ADMIN_LOCK = 3;
+    public static final int REQUEST_DEVICE_ADMIN_PROXIMITY_LOCK = 4;
 
     private DriveServiceHelper mDriveServiceHelper;
     private String mOpenFileId;
@@ -512,8 +513,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         if(prefs.getBoolean("proximity-switch-lock", false)) {
             proximityLockEnabled = true;
-            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-            mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            listenSensors();
         } else {
             proximityLockEnabled = false;
         }
@@ -710,6 +710,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
             SamsungBadgeObserver.loadBadges(this);
         }
+    }
+
+    private void listenSensors() {
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
     }
 
     private void buildWidgetPopupMenu(final View view) {
@@ -1883,14 +1888,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         switch (requestCode) {
 
-            case REQUEST_DEVICE_ADMIN :
+            case REQUEST_DEVICE_ADMIN_LOCK:
                 if (resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(MainActivity.this, "You have enabled the Admin Device features", Toast.LENGTH_SHORT).show();
                     if (prefs.getBoolean("double-click-opens-apps", false)) {
                         prefs.edit().putBoolean("double-click-opens-apps", false).apply();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Problem to enable the Admin Device features", Toast.LENGTH_SHORT).show();
+
+                }
+                break;
+            case REQUEST_DEVICE_ADMIN_PROXIMITY_LOCK:
+                if (resultCode == Activity.RESULT_OK) {
+                    proximityLockEnabled = true;
+                    listenSensors();
+                } else {
+
                 }
                 break;
 
