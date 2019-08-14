@@ -1902,7 +1902,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     proximityLockEnabled = true;
                     listenSensors();
                 } else {
-
+                    proximityLockEnabled = false;
                 }
                 break;
 
@@ -2316,6 +2316,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             mSensorManager.unregisterListener(this);
         }
         instance = null;
+    }
+
+    public void stopListeningProximitySensor(){
+        if (mSensorManager!=null){
+            proximityLockEnabled = false;
+            mSensorManager.unregisterListener(this);
+        }
     }
 
     /**

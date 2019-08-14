@@ -45,6 +45,7 @@ public class ProximityLockSwitch extends SwitchPreference {
         if (!prefs.getBoolean("double-click-locks-screen", false)) {
             KissApplication.getApplication(getContext()).getMainActivity().disableDeviceAdmin();
         }
+        KissApplication.getApplication(getContext()).getMainActivity().stopListeningProximitySensor();
     }
 
     private void askDeviceAdmin() {
