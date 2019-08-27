@@ -1802,8 +1802,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             return;
         }
         if (!forwarderManager.onMenuButtonClicked(this.menuButton)) {
-            this.menuButton.showContextMenu();
-            this.menuButton.performHapticFeedback(LONG_PRESS);
+            try {
+                this.menuButton.showContextMenu();
+                this.menuButton.performHapticFeedback(LONG_PRESS);
+            } catch (Exception e){
+                Log.e(TAG, "onMenuButtonClicked exception:"+ e);
+            }
         }
     }
 

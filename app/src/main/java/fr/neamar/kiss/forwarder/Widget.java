@@ -90,7 +90,11 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     void onStart() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onStart");
         // Start listening for widget update
-        mAppWidgetHost.startListening();
+        try {
+            mAppWidgetHost.startListening();
+        } catch (Exception e){
+            if (BuildConfig.DEBUG) Log.i(TAG, "onStart, startListening exception:" + e);
+        }
     }
 
     void onStop() {
@@ -99,7 +103,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         try {
             mAppWidgetHost.stopListening();
         } catch (Exception e){
-            if (BuildConfig.DEBUG) Log.i(TAG, "onStop, excetion:" + e);
+            if (BuildConfig.DEBUG) Log.i(TAG, "onStop, exception:" + e);
         }
     }
 
@@ -224,80 +228,88 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      */
     private WidgetPreferences addWidgetToLauncher(int appWidgetId) {
         if (BuildConfig.DEBUG) Log.i(TAG, "addWidgetToLauncher" + appWidgetId);
-        Bundle options = null;
-        // only add widgets if in minimal mode (may need launcher restart when turned on)
-        if (prefs.getBoolean("history-hide", true)) {
-            // remove empty list view when using widgets, this would block touches on the widget
-            mainActivity.emptyListView.setVisibility(View.GONE);
-            //add widget to view
-            AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-            if (appWidgetInfo == null) {
-                if (BuildConfig.DEBUG)
-                    Log.i(TAG, "appWidgetInfo null, recreate widget, id:" + appWidgetId);
-                String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
-                WidgetPreferences wp = WidgetPreferences.unserialize(data);
-                if (wp != null) {
+        try {
+            Bundle options = null;
+            // only add widgets if in minimal mode (may need launcher restart when turned on)
+            if (prefs.getBoolean("history-hide", true)) {
+                // remove empty list view when using widgets, this would block touches on the widget
+                mainActivity.emptyListView.setVisibility(View.GONE);
+                //add widget to view
+                AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+                if (appWidgetInfo == null) {
                     if (BuildConfig.DEBUG)
-                        Log.i(TAG, "appWidgetInfo null, recreate widget wp!=null");
-                    if (wp.appWidgetOptions != null) {
-                        if (BuildConfig.DEBUG) Log.w("Widget", "appWidgetOptions exist");
-                        options = ParcelableUtil.unmarshall(wp.appWidgetOptions, Bundle.CREATOR);
-                    }
-                    AppWidgetProviderInfo a = ParcelableUtil.unmarshall(wp.appWidgetProviderInfo, AppWidgetProviderInfo.CREATOR);
+                        Log.i(TAG, "appWidgetInfo null, recreate widget, id:" + appWidgetId);
+                    String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
+                    WidgetPreferences wp = WidgetPreferences.unserialize(data);
+                    if (wp != null) {
+                        if (BuildConfig.DEBUG)
+                            Log.i(TAG, "appWidgetInfo null, recreate widget wp!=null");
+                        if (wp.appWidgetOptions != null) {
+                            if (BuildConfig.DEBUG) Log.w("Widget", "appWidgetOptions exist");
+                            options = ParcelableUtil.unmarshall(wp.appWidgetOptions, Bundle.CREATOR);
+                        }
+                        AppWidgetProviderInfo a = ParcelableUtil.unmarshall(wp.appWidgetProviderInfo, AppWidgetProviderInfo.CREATOR);
 
-                    int newId = mAppWidgetHost.allocateAppWidgetId();
-                    boolean hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
-                    if (!hasPermission) {
-                        if (BuildConfig.DEBUG) Log.w("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
-                        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
-                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
-                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
-                        mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
-                        //configureAppWidget(intent);
+                        int newId = mAppWidgetHost.allocateAppWidgetId();
+                        boolean hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
+                        if (!hasPermission) {
+                            if (BuildConfig.DEBUG)
+                                Log.w("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
+                            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+                            mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+                            //configureAppWidget(intent);
 
 
+                            return null;
+                        }
+                        removeAppWidget(appWidgetId);
+                        SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
+                        widgetPrefsEditor.putString(String.valueOf(newId), WidgetPreferences.serialize(wp));
+                        widgetPrefsEditor.apply();
+
+                        if (a.configure != null) {
+                            Intent configIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+                            configIntent.putExtra(EXTRA_APPWIDGET_OPTIONS, options);
+                            configIntent.setComponent(a.configure);
+                            configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
+                            mainActivity.startActivityForResult(configIntent, REQUEST_CREATE_APPWIDGET);
+                            return wp;
+                        }
+
+                        appWidgetId = newId;
+                        appWidgetInfo = a;
+                    } else {
                         return null;
                     }
-                    removeAppWidget(appWidgetId);
-                    SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
-                    widgetPrefsEditor.putString(String.valueOf(newId), WidgetPreferences.serialize(wp));
-                    widgetPrefsEditor.apply();
-
-                    if (a.configure != null) {
-                        Intent configIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-                        configIntent.putExtra(EXTRA_APPWIDGET_OPTIONS, options);
-                        configIntent.setComponent(a.configure);
-                        configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
-                        mainActivity.startActivityForResult(configIntent, REQUEST_CREATE_APPWIDGET);
-                        return wp;
+                }
+                LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) mAppWidgetHost.createView(mainActivity, appWidgetId, appWidgetInfo);
+                hostView.setMinimumHeight(appWidgetInfo.minHeight);
+                hostView.setMinimumWidth(appWidgetInfo.minWidth);
+                hostView.setAppWidget(appWidgetId, appWidgetInfo);
+                addListener(hostView);
+                WidgetPreferences wp = addWidgetHostView(hostView, appWidgetInfo, mAppWidgetManager.getAppWidgetOptions(appWidgetId));
+                //refreshAppWidget(appWidgetId);
+                if (Build.VERSION.SDK_INT > 15) {
+                    if (options != null) {
+                        hostView.updateAppWidgetSize(options, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
+                    } else {
+                        hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
                     }
-
-                    appWidgetId = newId;
-                    appWidgetInfo = a;
-                } else {
-                    return null;
                 }
+                if (BuildConfig.DEBUG)
+                    Log.i(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
+                if (BuildConfig.DEBUG)
+                    Log.i(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
+                return wp;
             }
-            LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) mAppWidgetHost.createView(mainActivity, appWidgetId, appWidgetInfo);
-            hostView.setMinimumHeight(appWidgetInfo.minHeight);
-            hostView.setMinimumWidth(appWidgetInfo.minWidth);
-            hostView.setAppWidget(appWidgetId, appWidgetInfo);
-            addListener(hostView);
-            WidgetPreferences wp = addWidgetHostView(hostView, appWidgetInfo, mAppWidgetManager.getAppWidgetOptions(appWidgetId));
-            //refreshAppWidget(appWidgetId);
-            if (Build.VERSION.SDK_INT > 15) {
-                if (options!=null) {
-                    hostView.updateAppWidgetSize(options, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
-                }else {
-                    hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
-                }
-            }
-            if (BuildConfig.DEBUG) Log.i(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
-            if (BuildConfig.DEBUG) Log.i(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
-            return wp;
+            return null;
+        }catch (Exception e){
+            Log.e(TAG, "addAppWidget: exception" + e);
+            return null;
         }
-        return null;
     }
 
     private void buildWidgetPopupMenu(final LauncherAppWidgetHostView view) {
@@ -502,11 +514,15 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     private void removeAppWidget(int appWidgetId) {
         if (BuildConfig.DEBUG) Log.i(TAG, "removeAppWidget: appWidgetId" + appWidgetId);
         // remove widget from view
-        mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-        // remove widget id from persistent prefs
-        SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
-        widgetPrefsEditor.remove(String.valueOf(appWidgetId));
-        widgetPrefsEditor.apply();
+        try {
+            mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+            // remove widget id from persistent prefs
+            SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
+            widgetPrefsEditor.remove(String.valueOf(appWidgetId));
+            widgetPrefsEditor.apply();
+        } catch (Exception e){
+            if (BuildConfig.DEBUG) Log.i(TAG, "removeAppWidget: exception:" + e);
+        }
     }
 
     private boolean canAddWidget() {

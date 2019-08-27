@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -25,7 +26,7 @@ import fr.neamar.kiss.ui.ListPopup;
 public class AppsGridFragment extends GridFragment {
 
     AppListAdapter mAdapter;
-
+    private static final String TAG = AppsGridFragment.class.getSimpleName();
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -36,7 +37,11 @@ public class AppsGridFragment extends GridFragment {
         setGridAdapter(mAdapter);
 
         List<Pojo> apps = KissApplication.getApplication(getContext()).getDataHandler().getApplications();
-        Collections.sort(apps, new PojoComparator());
+        try {
+            Collections.sort(apps, new PojoComparator());
+        } catch (Exception e){
+            Log.d(TAG, "AppsGridFragment, sort exception:" +e);
+        }
 
         mAdapter.setData(apps);
         // till the data is loaded display a spinner

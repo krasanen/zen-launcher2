@@ -53,55 +53,60 @@ public class SaveOreoShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... voids) {
-        final LauncherApps.PinItemRequest pinItemRequest = data.getParcelableExtra(LauncherApps.EXTRA_PIN_ITEM_REQUEST);
-        final ShortcutInfo shortcutInfo = pinItemRequest.getShortcutInfo();
-        assert shortcutInfo != null;
+        try {
+            final LauncherApps.PinItemRequest pinItemRequest = data.getParcelableExtra(LauncherApps.EXTRA_PIN_ITEM_REQUEST);
+            final ShortcutInfo shortcutInfo = pinItemRequest.getShortcutInfo();
+            assert shortcutInfo != null;
 
-        if (BuildConfig.DEBUG)
-            Log.i(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
+            if (BuildConfig.DEBUG)
+                Log.i(TAG, "Shortcut: " + shortcutInfo.getPackage() + " " + shortcutInfo.getId());
 
-        final LauncherApps launcherApps = this.launcherApps.get();
-        if (launcherApps == null) {
-            cancel(true);
+            final LauncherApps launcherApps = this.launcherApps.get();
+            if (launcherApps == null) {
+                cancel(true);
+                return null;
+            }
+
+            // id isn't used after being saved in the DB.
+            String id = ShortcutsPojo.SCHEME + ShortcutsPojo.OREO_PREFIX + shortcutInfo.getId();
+
+            final Drawable iconDrawable = launcherApps.getShortcutIconDrawable(shortcutInfo, 0);
+            if (iconDrawable == null) {
+                if (BuildConfig.DEBUG) Log.i(TAG, "Invalid shortcut " + id + ", no icon, ignoring");
+                return null;
+            }
+            ShortcutsPojo pojo = new ShortcutsPojo(id, shortcutInfo.getPackage(), shortcutInfo.getId(),
+                    drawableToBitmap(iconDrawable));
+
+            // Name can be either in shortLabel or longLabel
+            if (shortcutInfo.getShortLabel() != null) {
+                pojo.setName(shortcutInfo.getShortLabel().toString());
+            } else if (shortcutInfo.getLongLabel() != null) {
+                pojo.setName(shortcutInfo.getLongLabel().toString());
+            } else {
+                if (BuildConfig.DEBUG) Log.i(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
+                cancel(true);
+                return null;
+            }
+
+            final DataHandler dataHandler = this.dataHandler.get();
+            if (dataHandler == null) {
+                cancel(true);
+                return null;
+            }
+
+            // Add shortcut to the DataHandler
+            boolean success = dataHandler.addShortcut(pojo);
+
+            if (success) {
+                pinItemRequest.accept();
+            }
+
+            return true;
+        } catch (Exception e){
+            if (BuildConfig.DEBUG) Log.i(TAG, "SaveOreoShortcutAsync.doInBackground exception:" + e);
             return null;
         }
-
-        // id isn't used after being saved in the DB.
-        String id = ShortcutsPojo.SCHEME + ShortcutsPojo.OREO_PREFIX + shortcutInfo.getId();
-
-        final Drawable iconDrawable = launcherApps.getShortcutIconDrawable(shortcutInfo, 0);
-        if (iconDrawable == null){
-            if (BuildConfig.DEBUG) Log.i(TAG, "Invalid shortcut " + id + ", no icon, ignoring");
-            return null;
-        }
-        ShortcutsPojo pojo = new ShortcutsPojo(id, shortcutInfo.getPackage(), shortcutInfo.getId(),
-                drawableToBitmap(iconDrawable));
-
-        // Name can be either in shortLabel or longLabel
-        if (shortcutInfo.getShortLabel() != null) {
-            pojo.setName(shortcutInfo.getShortLabel().toString());
-        } else if (shortcutInfo.getLongLabel() != null) {
-            pojo.setName(shortcutInfo.getLongLabel().toString());
-        } else {
-            if (BuildConfig.DEBUG) Log.i(TAG, "Invalid shortcut " + pojo.id + ", ignoring");
-            cancel(true);
-            return null;
-        }
-
-        final DataHandler dataHandler = this.dataHandler.get();
-        if (dataHandler == null) {
-            cancel(true);
-            return null;
-        }
-
-        // Add shortcut to the DataHandler
-        boolean success = dataHandler.addShortcut(pojo);
-
-        if (success) {
-            pinItemRequest.accept();
-        }
-
-        return true;
     }
 
     @Override
