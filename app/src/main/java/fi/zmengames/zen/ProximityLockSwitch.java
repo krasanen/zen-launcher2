@@ -13,7 +13,7 @@ import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.SwitchPreference;
 
-import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_LOCK;
+import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
 import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_PROXIMITY_LOCK;
 
 public class ProximityLockSwitch extends SwitchPreference {
@@ -31,25 +31,28 @@ public class ProximityLockSwitch extends SwitchPreference {
     @Override
     protected void onClick() {
         if (isChecked()) {
-            removeDeviceAdmin();
+            disableProximityLock();
         } else {
-            askDeviceAdmin();
+            enableProximityLock();
         }
         super.onClick
                 ();
     }
 
-    private void removeDeviceAdmin() {
-        if (BuildConfig.DEBUG) Log.v("ProximityLockSwitch", "removeDeviceAdmin");
+    private void disableProximityLock() {
+        if (BuildConfig.DEBUG) Log.v("ProximityLockSwitch", "disableProximityLock");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (!prefs.getBoolean("double-click-locks-screen", false)) {
             KissApplication.getApplication(getContext()).getMainActivity().disableDeviceAdmin();
         }
-        KissApplication.getApplication(getContext()).getMainActivity().stopListeningProximitySensor();
+        Intent proximity = new Intent(getContext(), LauncherService.class);
+        proximity.setAction(DISABLE_PROXIMITY);
+        prefs.edit().putBoolean("proximity-switch-lock", false).commit();
+        KissApplication.startLaucherService(proximity, getContext());
     }
 
-    private void askDeviceAdmin() {
-        if (BuildConfig.DEBUG) Log.v("ProximityLockSwitch", "askDeviceAdmin");
+    private void enableProximityLock() {
+        if (BuildConfig.DEBUG) Log.v("ProximityLockSwitch", "enableProximityLock");
         ComponentName compName = new ComponentName(getContext(), ZenAdmin.class);
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);

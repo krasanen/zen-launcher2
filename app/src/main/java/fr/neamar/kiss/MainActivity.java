@@ -12,10 +12,12 @@ import android.app.WallpaperManager;
 
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -28,10 +30,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.net.Uri;
@@ -122,6 +120,7 @@ import androidx.core.util.Pair;
 import fi.zmengames.zen.AppGridActivity;
 import fi.zmengames.zen.DriveServiceHelper;
 import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.ScreenReceiver;
 import fi.zmengames.zen.Utility;
 import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenAdmin;
@@ -152,11 +151,13 @@ import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
+import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
+import static fi.zmengames.zen.LauncherService.ENABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
-public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener, SensorEventListener {
+public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -478,13 +479,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         }
     }
-    private SensorManager mSensorManager;
-    private Sensor mProximity;
-    private boolean proximityLockEnabled = false;
-    private static final int SENSOR_SENSITIVITY = SensorManager.SENSOR_DELAY_NORMAL;
+
+
 
     Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
-
+    static IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+    static BroadcastReceiver mReceiver;
     /**
      * Called when the activity is first created.
      */
@@ -494,12 +494,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Log.i(TAG, "onCreate");
         instance = this;
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
+        mReceiver = new ScreenReceiver(this);
         KissApplication.getApplication(this).setMainActivity(this);
 
 
-
-
-//        KissApplication.getApplication(this).initDataHandler();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mReceiver, filter);
 
         /*
          * Initialize preferences
@@ -510,14 +510,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile.
-
-        if(prefs.getBoolean("proximity-switch-lock", false)) {
-            proximityLockEnabled = true;
-            listenSensors();
-        } else {
-            proximityLockEnabled = false;
-        }
-
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
@@ -699,23 +691,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (prefs.getBoolean("bluelightfilter", false)) {
             // setBlueLightFilter(true);
         }
-        // Apps may notify badge updates for Samsung devices
-        // through a ContentResolver on the url: content://com.sec.badge/apps
-        if (SamsungBadgeObserver.providerExists(this)) {
 
-            //Content Resolver has content, so, register for updates and load its actual content
-            samsungBadgeObserver = new SamsungBadgeObserver(new Handler(), this);
-
-            getContentResolver()
-                    .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
-            SamsungBadgeObserver.loadBadges(this);
-        }
     }
 
-    private void listenSensors() {
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-    }
 
     private void buildWidgetPopupMenu(final View view) {
         widgetAddY = y;
@@ -871,6 +849,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onStart() {
         super.onStart();
+        if (BuildConfig.DEBUG) Log.d(TAG,"onStart");
         EventBus.getDefault().register(this);
         forwarderManager.onStart();
 
@@ -881,6 +860,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onStop() {
         super.onStop();
+        if (BuildConfig.DEBUG) Log.d(TAG,"onStop");
         EventBus.getDefault().unregister(this);
         if (camera != null) {
             camera.release();
@@ -993,18 +973,22 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @SuppressLint("CommitPrefEdits")
     protected void onResume() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onResume()");
+        // Apps may notify badge updates for Samsung devices
+        // through a ContentResolver on the url: content://com.sec.badge/apps
         if (SamsungBadgeObserver.providerExists(this)) {
+
+            //Content Resolver has content, so, register for updates and load its actual content
+            samsungBadgeObserver = new SamsungBadgeObserver(new Handler(), this);
+
             getContentResolver()
                     .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
+            SamsungBadgeObserver.loadBadges(this);
         }
+
         if (flashToggle) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 toggleFlashLightPreM(flashToggle);
             }
-        }
-
-        if(proximityLockEnabled) {
-            mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
 
@@ -1052,10 +1036,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (SamsungBadgeObserver.providerExists(this)) {
-            getContentResolver()
-                    .unregisterContentObserver(samsungBadgeObserver);
-        }
+        if (BuildConfig.DEBUG) Log.d(TAG,"onDestroy");
+        if (mReceiver!=null)
+            unregisterReceiver(mReceiver);
+
     }
 
     private boolean fullLoadOver = false;
@@ -1899,10 +1883,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
             case REQUEST_DEVICE_ADMIN_PROXIMITY_LOCK:
                 if (resultCode == Activity.RESULT_OK) {
-                    proximityLockEnabled = true;
-                    listenSensors();
+                    prefs.edit().putBoolean("proximity-switch-lock", true).commit();
+                    Intent proximity = new Intent(this, LauncherService.class);
+                    proximity.setAction(ENABLE_PROXIMITY);
+                    KissApplication.startLaucherService(proximity, this);
                 } else {
-                    proximityLockEnabled = false;
+                    prefs.edit().putBoolean("proximity-switch-lock", false).commit();
                 }
                 break;
 
@@ -2312,18 +2298,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     protected void onPause() {
         super.onPause();
-        if (proximityLockEnabled) {
-            mSensorManager.unregisterListener(this);
+        if (SamsungBadgeObserver.providerExists(this)) {
+            getContentResolver()
+                    .unregisterContentObserver(samsungBadgeObserver);
         }
         instance = null;
     }
 
-    public void stopListeningProximitySensor(){
-        if (mSensorManager!=null){
-            proximityLockEnabled = false;
-            mSensorManager.unregisterListener(this);
-        }
-    }
+
 
     /**
      * Call this function when we're leaving the activity after clicking a search result
@@ -2512,24 +2494,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         ComponentName compName = new ComponentName(this, ZenAdmin.class);
         devicePolicyManager.removeActiveAdmin(compName);
-        proximityLockEnabled = false;
+        prefs.edit().putBoolean("proximity-switch-lock", false).commit();
+        Intent proximity = new Intent(this, LauncherService.class);
+        proximity.setAction(DISABLE_PROXIMITY);
+        KissApplication.startLaucherService(proximity, this);
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-
-        if (proximityLockEnabled && sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            if (sensorEvent.values[0] >= -SENSOR_SENSITIVITY && sensorEvent.values[0] <= SENSOR_SENSITIVITY) {
-                //near
-                lockScreen();
-            } else {
-                //far
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
-    }
 }

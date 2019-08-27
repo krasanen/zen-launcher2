@@ -1,33 +1,37 @@
 package fi.zmengames.zen;
 
 import android.animation.Animator;
-import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.BroadcastReceiver;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.Toast;
 
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,10 +50,14 @@ public class LauncherService extends Service {
     private static final String TAG = LauncherService.class.getSimpleName();
     public static final String LAUNCH_INTENT = "com.zmengames.zenlauncher.LAUNCH_INTENT";
     public static final String SET_BADGE_COUNT = "com.zmengames.zenlauncher.SET_BADGE_COUNT";
+    public static final String ENABLE_PROXIMITY = "com.zmengames.zenlauncher.ENABLE_PROXIMITY";
+    public static final String DISABLE_PROXIMITY = "com.zmengames.zenlauncher.DISABLE_PROXIMITY";
     public static final String GOOGLE_SIGN_IN = "com.zmengames.zenlauncher.GOOGLE_SIGN_IN";
     public static final String GOOGLE_SIGN_OUT = "com.zmengames.zenlauncher.GOOGLE_SIGN_OUT";
     public static final String NIGHTMODE_ON = "com.zmengames.zenlauncher.NIGHTMODE_ON";
     public static final String NIGHTMODE_OFF = "com.zmengames.zenlauncher.NIGHTMODE_OFF";
+    public static final String SCREEN_ON = "com.zmengames.zenlauncher.SCREEN_ON";
+    public static final String SCREEN_OFF = "com.zmengames.zenlauncher.SCREEN_OFF";
     private IBinder mBinder = new MyBinder();
     private ExecutorService serviceExecutor = Executors.newCachedThreadPool();
 
@@ -77,19 +85,108 @@ public class LauncherService extends Service {
     // Constants
     private static final int ANIMATE_DURATION_MILES = 250;
     private static final int NOTIFICATION_NO = 1024;
+    private static SensorManager mSensorManager;
+    private static Sensor mProximity;
+    private static SensorEventListener sensorEventListener;
+    private static final int SENSOR_SENSITIVITY = 4;
+    public static boolean isProximityLockEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (prefs.getBoolean("proximity-switch-lock", false)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public class MyBinder extends Binder {
         public LauncherService getService() {
             return LauncherService.this;
         }
-    }
 
+    }
+    public static void stopListeningProximitySensor(){
+        if (mSensorManager!=null){
+            mSensorManager.unregisterListener(sensorEventListener);
+            lastValue = -1f;
+        }
+    }
+    public static boolean running = true;
+    public static float lastValue=-1f;
+    private void startListeningProximitySensor() {
+        Log.d(TAG, "startListeningProximitySensor");
+        if (lastValue == -1f) {
+            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            sensorEventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    float thisValue = sensorEvent.values[0];
+                    if (thisValue != lastValue && sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+                        Log.d(TAG, "sensorEvent.values[0]:" + thisValue);
+                        lastValue = thisValue;
+                        if (sensorEvent.values[0] < sensorEvent.sensor.getMaximumRange()) {
+                            //far
+                            lockScreenStartTimer(true);
+                        } else {
+                            //near
+                            lockScreenStartTimer(false);
+                        }
+                    }
+                }
+
+
+                final Runnable lockRunnable = new Runnable() {
+                    public void run() {
+                        running = false;
+                        mSensorManager.unregisterListener(sensorEventListener);
+                        lockScreen();
+                    }
+                };
+                Handler handler = new Handler(Looper.getMainLooper());
+
+                private void lockScreenStartTimer(boolean run) {
+                    if (BuildConfig.DEBUG) Log.d(TAG, "lockScreenStartTimer: " + run);
+                    if (run) {
+                        if (!running)
+                            handler.postDelayed(lockRunnable, 2000);
+                    } else {
+                        handler.removeCallbacks(lockRunnable);
+                        running = false;
+                    }
+                }
+
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+
+                }
+            };
+
+            mSensorManager.registerListener(sensorEventListener, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+        } else {
+            Log.d(TAG, "startListeningProximitySensor (was already running)");
+        }
+
+    }
+    public void lockScreen() {
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(this, ZenAdmin.class);
+        boolean active = devicePolicyManager.isAdminActive(compName);
+
+        if (active) {
+            devicePolicyManager.lockNow();
+        } else {
+            Toast.makeText(LauncherService.this, "Device Admin features not enabled", Toast.LENGTH_SHORT).show();
+        }
+
+    }
     @Override
     public void onCreate() {
         if(BuildConfig.DEBUG) Log.i(TAG, "onCreate...");
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mAccessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+
 
 
 
@@ -101,18 +198,28 @@ public class LauncherService extends Service {
     public IBinder onBind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onBind");
 
+        if (isProximityLockEnabled(this)) {
+            startListeningProximitySensor();
+        }
         return mBinder;
     }
 
     @Override
     public void onDestroy() {
+        if(BuildConfig.DEBUG) Log.v(TAG, "in onDestroy");
         super.onDestroy();
+        if (isProximityLockEnabled(this)) {
+            stopListeningProximitySensor();
+        }
         destroyMaskView();
     }
 
     @Override
     public void onRebind(Intent intent) {
         if(BuildConfig.DEBUG) Log.v(TAG, "in onRebind");
+        if (isProximityLockEnabled(this)) {
+            startListeningProximitySensor();
+        }
         super.onRebind(intent);
     }
 
@@ -146,10 +253,27 @@ public class LauncherService extends Service {
                 else if (intent.getAction().equals(NIGHTMODE_OFF)) destroyMaskView();
                 else if (intent.getAction().equals(LAUNCH_INTENT)) launchIntent(intent);
                 else if (intent.getAction().equals(SET_BADGE_COUNT)) setBadgeCount(intent);
+                else if (intent.getAction().equals(ENABLE_PROXIMITY)) startListeningProximitySensor();
+                else if (intent.getAction().equals(DISABLE_PROXIMITY)) stopListeningProximitySensor();
+                else if (intent.getAction().equals(SCREEN_ON)) screenOn();
+                else if (intent.getAction().equals(SCREEN_OFF)) screenOff();
             }
         });
 
         return START_NOT_STICKY;
+    }
+
+    private void screenOn() {
+        if (BuildConfig.DEBUG) Log.d(TAG, "SCREEN_ON");
+        if (isProximityLockEnabled(this)) {
+            startListeningProximitySensor();
+        }
+    }
+    private void screenOff() {
+        if (BuildConfig.DEBUG) Log.d(TAG, "SCREEN_OFF");
+        if (isProximityLockEnabled(this)) {
+            stopListeningProximitySensor();
+        }
     }
 
     private void setBadgeCount(Intent intent) {
