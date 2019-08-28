@@ -51,6 +51,7 @@ public abstract class Result {
      */
     @NonNull
     public final Pojo pojo;
+    private static final String TAG = Result.class.getSimpleName();
 
     Result(@NonNull Pojo pojo) {
         this.pojo = pojo;
@@ -255,7 +256,7 @@ public abstract class Result {
     }
 
     public final void launch(Context context, View v) {
-        Log.i("log", "Launching " + pojo.id);
+        if (BuildConfig.DEBUG) Log.i(TAG, "Launching " + pojo.id);
 
         recordLaunch(context);
 

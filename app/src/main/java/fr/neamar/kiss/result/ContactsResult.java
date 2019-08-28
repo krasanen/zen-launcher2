@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -61,103 +60,124 @@ public class ContactsResult extends Result {
 
     }
 
-    private void buildCallPopupMenu(final View view) {
-        Context context = view.getContext();
-        final int CELL = 0;
-        final int WHATSAPP = 1;
-        final int SIGNAL = 2;
-        final int FACEBOOK = 3;
-        final int COPY_NUMBER = 4;
 
-        PopupMenu popupExcludeMenu = new PopupMenu(context, view);
-        //Adding menu items
-        popupExcludeMenu.getMenu().add(CELL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_cell);
+    private void addCallItemsToMenu(PopupMenu popupExcludeMenu, View view) {
+        popupExcludeMenu.getMenu().add(CELL_CALL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call);
         if (contactPojo.whatsAppCalling != 0) {
-            popupExcludeMenu.getMenu().add(WHATSAPP,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_whatsapp);
+            popupExcludeMenu.getMenu().add(WHATSAPP_CALL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_whatsapp);
         }
         if (contactPojo.signalCalling != 0) {
-            popupExcludeMenu.getMenu().add(SIGNAL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_signal);
+            popupExcludeMenu.getMenu().add(SIGNAL_CALL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_signal);
         }
         if (contactPojo.facebookCalling != 0) {
-            popupExcludeMenu.getMenu().add(FACEBOOK,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_facebook);
+            popupExcludeMenu.getMenu().add(FACEBOOK_CALL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_facebook);
         }
 
-        popupExcludeMenu.getMenu().add(COPY_NUMBER,Menu.NONE, Menu.NONE,R.string.menu_contact_copy_phone);
-        //registering popup with OnMenuItemClickListener
-        popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                Context context = view.getContext();
-                switch (item.getGroupId()) {
-                        case CELL:
-                            launchCall(context);
-                            break;
-                        case WHATSAPP:
-                            launchWhatsAppCall(context);
-                            break;
-                        case SIGNAL:
-                            launchSignalCall(context);
-                            break;
-                        case FACEBOOK:
-                            openFacebook(context, true);
-                            break;
-                        case COPY_NUMBER:
-                            copyPhone(context, contactPojo);
-                            break;
-                }
-                return true;
-            }
-        });
+        popupExcludeMenu.getMenu().add(COPY_NUMBER_CALL,Menu.NONE, Menu.NONE,R.string.menu_contact_copy_phone);
+
+
+    }
+    private final static int CELL_CALL = 1;
+    private final static int WHATSAPP_CALL = 2;
+    private final static int SIGNAL_CALL = 3;
+    private final static int FACEBOOK_CALL = 4;
+    private final static int COPY_NUMBER_CALL = 5;
+    private final static int CELL_MSG = 6;
+    private final static int WHATSAPP_MSG = 7;
+    private final static int SIGNAL_MSG = 8;
+    private final static int FACEBOOK_MSG = 9;
+
+    private void buildCallPopupMenu(final View view) {
+        Context context = view.getContext();
+
+
+        PopupMenu popupExcludeMenu = new PopupMenu(context, view);
+
+        addCallItemsToMenu(popupExcludeMenu, view);
+        //Adding menu items
+
+        setMenuItemsClickable(popupExcludeMenu, view);
 
         Utility.showPopup(popupExcludeMenu, KissApplication.getApplication(context).getMainActivity());
 
 
     }
-    private void buildMsgPopupMenu(final View view) {
-        Context context = view.getContext();
-        final int CELL = 0;
-        final int WHATSAPP = 1;
-        final int SIGNAL = 2;
-        final int FACEBOOK = 3;
 
-
-        PopupMenu popupExcludeMenu = new PopupMenu(context, view);
-        //Adding menu items
-        popupExcludeMenu.getMenu().add(CELL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_sms);
-        if (contactPojo.whatsAppMessaging != 0) {
-            popupExcludeMenu.getMenu().add(WHATSAPP,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_whatsapp);
-        }
-        if (contactPojo.signalMessaging != 0) {
-            popupExcludeMenu.getMenu().add(SIGNAL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_signal);
-        }
-        if (contactPojo.facebookMessaging != 0) {
-            popupExcludeMenu.getMenu().add(FACEBOOK,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_facebook);
-        }
-
+    private void setMenuItemsClickable(PopupMenu popupExcludeMenu, View view) {
         //registering popup with OnMenuItemClickListener
         popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 Context context = view.getContext();
                 switch (item.getGroupId()) {
-                    case CELL:
+                    case CELL_CALL:
+                        launchCall(context);
+                        break;
+                    case WHATSAPP_CALL:
+                        launchWhatsAppCall(context);
+                        break;
+                    case SIGNAL_CALL:
+                        launchSignalCall(context);
+                        break;
+                    case FACEBOOK_CALL:
+                        openFacebook(context, true);
+                        break;
+                    case COPY_NUMBER_CALL:
+                        copyPhone(context, contactPojo);
+                        break;
+                    case CELL_MSG:
                         launchMessaging(context);
                         break;
-                    case WHATSAPP:
+                    case WHATSAPP_MSG:
                         openGenericSomeApp(contactPojo.whatsAppMessaging, context);
                         break;
-                    case SIGNAL:
+                    case SIGNAL_MSG:
                         openGenericSomeApp(contactPojo.signalMessaging, context);
                         break;
-                    case FACEBOOK:
+                    case FACEBOOK_MSG:
                         openFacebook(context, false);
                         break;
                 }
                 return true;
             }
         });
+    }
+
+    private void addMsgItemsToMenu(PopupMenu popupExcludeMenu, View view ){
+        popupExcludeMenu.getMenu().add(CELL_MSG,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_sms);
+        if (contactPojo.whatsAppMessaging != 0) {
+            popupExcludeMenu.getMenu().add(WHATSAPP_MSG,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_whatsapp);
+        }
+        if (contactPojo.signalMessaging != 0) {
+            popupExcludeMenu.getMenu().add(SIGNAL_MSG,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_signal);
+        }
+        if (contactPojo.facebookMessaging != 0) {
+            popupExcludeMenu.getMenu().add(FACEBOOK_MSG,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_message_facebook);
+        }
+
+    }
+
+    private void buildContactClickPopupMenu(final View view) {
+        Context context = view.getContext();
+        PopupMenu popupExcludeMenu = new PopupMenu(context, view);
+        //Adding menu items
+        addCallItemsToMenu(popupExcludeMenu, view);
+        addMsgItemsToMenu(popupExcludeMenu, view);
+        setMenuItemsClickable(popupExcludeMenu, view);
+        popupExcludeMenu.show();
+
+    }
+
+    private void buildMsgPopupMenu(final View view) {
+        Context context = view.getContext();
+        PopupMenu popupExcludeMenu = new PopupMenu(context, view);
+        //Adding menu items
+        addMsgItemsToMenu(popupExcludeMenu, view);
+        setMenuItemsClickable(popupExcludeMenu, view);
 
         popupExcludeMenu.show();
 
     }
+
     @Override
     public View display(Context context, int position, View convertView, FuzzyScore fuzzyScore) {
         View view = convertView;
@@ -225,7 +245,6 @@ public class ContactsResult extends Result {
             @Override
             public void onClick(View v) {
                 recordLaunch(v.getContext());
-                queryInterface.launchOccurred();
             }
         });
 
@@ -245,15 +264,13 @@ public class ContactsResult extends Result {
         // Phone action
         ImageButton phoneButton = view.findViewById(R.id.item_contact_action_phone);
         phoneButton.setColorFilter(primaryColor);
-        // Message action
-        ImageButton messageButton = view.findViewById(R.id.item_contact_action_message);
-        messageButton.setColorFilter(primaryColor);
+
 
         PackageManager pm = context.getPackageManager();
 
         if (pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
             phoneButton.setVisibility(View.VISIBLE);
-            messageButton.setVisibility(View.VISIBLE);
+
             phoneButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -271,30 +288,10 @@ public class ContactsResult extends Result {
             });
 
 
-            messageButton.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    launchMessaging(v.getContext());
-                }
-            });
-            messageButton.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    if (BuildConfig.DEBUG)  Log.i(TAG,"onLongClick");
-                    buildMsgPopupMenu(view);
-                    return true;
-                }
-            });
-
-            if (contactPojo.homeNumber)
-                messageButton.setVisibility(View.INVISIBLE);
-            else
-                messageButton.setVisibility(View.VISIBLE);
 
         } else {
             phoneButton.setVisibility(View.INVISIBLE);
-            messageButton.setVisibility(View.INVISIBLE);
+
         }
 
         return view;
@@ -554,7 +551,9 @@ public class ContactsResult extends Result {
 
     @Override
     public void doLaunch(Context context, View v) {
-        Intent viewContact = new Intent(Intent.ACTION_VIEW);
+        buildContactClickPopupMenu(v);
+
+        /*Intent viewContact = new Intent(Intent.ACTION_VIEW);
 
         viewContact.setData(Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI,
                 String.valueOf(contactPojo.lookupKey)));
@@ -565,6 +564,7 @@ public class ContactsResult extends Result {
         viewContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         viewContact.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         context.startActivity(viewContact);
+        */
     }
 
     private void launchMessaging(final Context context) {
@@ -578,7 +578,6 @@ public class ContactsResult extends Result {
             @Override
             public void run() {
                 recordLaunch(context);
-                queryInterface.launchOccurred();
             }
         }, KissApplication.TOUCH_DELAY);
 
@@ -603,7 +602,6 @@ public class ContactsResult extends Result {
                 @Override
                 public void run() {
                     recordLaunch(context);
-                    queryInterface.launchOccurred();
                 }
             }, KissApplication.TOUCH_DELAY);
         }
@@ -649,7 +647,6 @@ public class ContactsResult extends Result {
                 @Override
                 public void run() {
                     recordLaunch(context);
-                    queryInterface.launchOccurred();
                 }
             }, KissApplication.TOUCH_DELAY);
 
@@ -686,7 +683,6 @@ public class ContactsResult extends Result {
                 @Override
                 public void run() {
                     recordLaunch(context);
-                    queryInterface.launchOccurred();
                 }
             }, KissApplication.TOUCH_DELAY);
         }

@@ -141,7 +141,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         } catch (ArrayIndexOutOfBoundsException ignored) {
             return;
         }
-        parent.launchOccurred();
+  //      parent.launchOccurred();
 
     }
 

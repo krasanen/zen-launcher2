@@ -2220,10 +2220,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // Display the alphabet on the scrollbar (#926)
             list.setFastScrollEnabled(true);
             if (searchTask.getClass().equals(ContactSearcher.class)) {
-                list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
+                //list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
                 list.setFastScrollAlwaysVisible(false);
             } else {
-                list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
+                //list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_RIGHT);
                 list.setFastScrollAlwaysVisible(true);
             }
 

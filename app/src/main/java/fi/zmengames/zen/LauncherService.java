@@ -104,14 +104,24 @@ public class LauncherService extends Service {
         }
 
     }
-    public static void stopListeningProximitySensor(){
+    public void stopListeningProximitySensor(){
         if (mSensorManager!=null){
+            handler.removeCallbacks(lockRunnable);
             mSensorManager.unregisterListener(sensorEventListener);
             lastValue = -1f;
         }
     }
     public static boolean running = true;
     public static float lastValue=-1f;
+    final Runnable lockRunnable = new Runnable() {
+        public void run() {
+            running = false;
+            mSensorManager.unregisterListener(sensorEventListener);
+            lockScreen();
+        }
+    };
+    Handler handler = new Handler(Looper.getMainLooper());
+
     private void startListeningProximitySensor() {
         Log.d(TAG, "startListeningProximitySensor");
         if (lastValue == -1f) {
@@ -135,14 +145,7 @@ public class LauncherService extends Service {
                 }
 
 
-                final Runnable lockRunnable = new Runnable() {
-                    public void run() {
-                        running = false;
-                        mSensorManager.unregisterListener(sensorEventListener);
-                        lockScreen();
-                    }
-                };
-                Handler handler = new Handler(Looper.getMainLooper());
+
 
                 private void lockScreenStartTimer(boolean run) {
                     if (BuildConfig.DEBUG) Log.d(TAG, "lockScreenStartTimer: " + run);

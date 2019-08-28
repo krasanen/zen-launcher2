@@ -38,9 +38,8 @@
 
         android:layout_toEndOf="@+id/item_contact_icon"
         android:layout_toRightOf="@+id/item_contact_icon"
-        android:ellipsize="end"
         android:gravity="fill_horizontal"
-        android:maxLines="1"
+
         android:layout_marginTop="-2dp"
         android:scrollHorizontally="true"
         android:shadowColor="?attr/resultShadowColor"
@@ -51,7 +50,10 @@
         android:textColor="?attr/resultColor"
         android:textSize="18sp"
         tools:ignore="RtlSymmetry"
-        tools:text="@string/stub_contact" />
+        tools:text="@string/stub_contact"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_toLeftOf="@id/item_contact_action_phone"/>
 
     <TextView
         android:id="@+id/item_contact_phone"
@@ -70,7 +72,10 @@
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/result_small_size"
         tools:ignore="RtlSymmetry"
-        tools:text="@string/stub_contact_phone" />
+        tools:text="@string/stub_contact_phone"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_toLeftOf="@id/item_contact_action_phone"/>
 
     <TextView
         android:id="@+id/item_contact_title"
@@ -78,10 +83,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/item_contact_name"
         android:layout_alignStart="@id/item_contact_name"
-
         android:layout_marginTop="20dp"
-
-        android:ellipsize="end"
+        android:scrollHorizontally="false"
         android:shadowColor="?attr/resultShadowColor"
 
         android:shadowRadius="?attr/textShadowRadius"
@@ -89,7 +92,10 @@
         android:textSize="12sp"
         tools:ignore="RtlSymmetry"
         tools:text="@string/stub_contact_nickname"
-        android:layout_alignLeft="@id/item_contact_name" />
+        android:layout_alignLeft="@id/item_contact_name"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_toLeftOf="@id/item_contact_action_phone"/>
 
 
     <TextView
@@ -101,7 +107,6 @@
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/item_contact_phone"
         android:layout_toRightOf="@+id/item_contact_phone"
-        android:ellipsize="end"
         android:paddingEnd="2dp"
         android:paddingRight="2dp"
         android:shadowColor="?attr/resultShadowColor"
@@ -112,18 +117,11 @@
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/result_small_size"
         tools:ignore="RtlSymmetry"
-        tools:text="@string/stub_contact_nickname" />
+        tools:text="@string/stub_contact_nickname"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_toLeftOf="@id/item_contact_action_phone"/>
 
-    <ImageButton
-        android:id="@+id/item_contact_action_message"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/item_contact_action_phone"
-        android:layout_toStartOf="@+id/item_contact_action_phone"
-        android:background="?attr/appSelectableItemBackground"
-        android:contentDescription="@string/ui_item_contact_hint_message"
-        android:src="@drawable/ic_message" />
 
     <ImageButton
         android:id="@+id/item_contact_action_phone"
@@ -132,6 +130,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
         android:adjustViewBounds="false"
         android:background="?attr/appSelectableItemBackground"
         android:contentDescription="@string/ui_item_contact_hint_call"
@@ -143,8 +143,8 @@
         android:layout_height="48dp"
 
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/item_contact_action_message"
-        android:layout_toStartOf="@+id/item_contact_action_message"
+        android:layout_toLeftOf="@+id/item_contact_action_phone"
+        android:layout_toStartOf="@+id/item_contact_action_phone"
         android:background="?attr/appSelectableItemBackground"
         android:contentDescription="@string/ui_item_contact_hint_call"
         android:visibility="gone"/>
@@ -154,8 +154,8 @@
         android:layout_width="38dp"
         android:layout_height="48dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/item_contact_action_message"
-        android:layout_toStartOf="@+id/item_contact_action_message"
+        android:layout_toLeftOf="@+id/item_contact_action_phone"
+        android:layout_toStartOf="@+id/item_contact_action_phone"
         android:background="?attr/appSelectableItemBackground"
         android:contentDescription="@string/ui_item_contact_hint_call"
         android:visibility="gone"
