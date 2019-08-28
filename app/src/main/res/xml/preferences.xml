@@ -238,7 +238,7 @@
                 android:key="force-portrait"
                 android:title="@string/portrait_title" />
             <ListPreference
-                android:defaultValue="invertedAlphabetical"
+                android:defaultValue="alphabetical"
                 android:entries="@array/sortAppListEntries"
                 android:entryValues="@array/sortAppListValues"
                 android:key="sort-apps"

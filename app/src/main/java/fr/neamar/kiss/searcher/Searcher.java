@@ -8,6 +8,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,6 +23,7 @@ import fr.neamar.kiss.pojo.PojoComparator;
 import fr.neamar.kiss.result.Result;
 
 public abstract class Searcher extends AsyncTask<Void, Result, Void> {
+    private static final String TAG = Searcher.class.getSimpleName();
     // define a different thread than the default AsyncTask thread or else we will block everything else that uses AsyncTask while we search
     public static final ExecutorService SEARCH_THREAD = Executors.newSingleThreadExecutor();
     static final int DEFAULT_MAX_RESULTS = 50;
@@ -89,10 +91,12 @@ public abstract class Searcher extends AsyncTask<Void, Result, Void> {
 
         // Loader should still be displayed until all the providers have finished loading
         activity.displayLoader(!KissApplication.getApplication(activity).getDataHandler().allProvidersHaveLoaded);
-
         if (this.processedPojos.isEmpty()) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "onPostExecute clear");
             activity.adapter.clear();
         } else {
+            if (BuildConfig.DEBUG) Log.d(TAG, "onPostExecute processedPojos not empty");
+
             PriorityQueue<Pojo> queue = this.processedPojos;
             ArrayList<Result> results = new ArrayList<>(queue.size());
             while (queue.peek() != null) {

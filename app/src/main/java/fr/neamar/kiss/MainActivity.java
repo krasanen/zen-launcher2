@@ -1111,7 +1111,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Animation can't happen in this method, since the activity is not resumed yet, so they'll happen in the onResume()
         // https://github.com/Neamar/KISS/issues/569
         if (!searchEditText.getText().toString().isEmpty()) {
-            Log.i(TAG, "Clearing search field");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Clearing search field");
             searchEditText.setText("");
         }
 

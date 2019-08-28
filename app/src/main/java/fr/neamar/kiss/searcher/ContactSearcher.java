@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
 
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.pojo.Pojo;
@@ -18,8 +21,9 @@ import fr.neamar.kiss.pojo.PojoComparator;
  * Returns the list of all contacts on the system
  */
 public class ContactSearcher extends Searcher {
+    private static final String TAG = ContactSearcher.class.getSimpleName();
     public ContactSearcher(MainActivity activity) {
-        super(activity, "<application>");
+        super(activity, "<contacts>");
     }
     public static Bitmap whatsAppIcon;
     public static Bitmap signalIcon;
@@ -41,12 +45,14 @@ public class ContactSearcher extends Searcher {
 
     @Override
     protected Void doInBackground(Void... voids) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"ContactSearcher doInBackground");
         MainActivity activity = activityWeakReference.get();
         if (activity == null)
             return null;
 
         List<Pojo> pojos = KissApplication.getApplication(activity).getDataHandler().getContactsProvider().getAllContacts();
-        this.addResult(pojos.toArray(new Pojo[0]));
+        if (pojos != null)
+            this.addResult(pojos.toArray(new Pojo[0]));
         return null;
     }
 

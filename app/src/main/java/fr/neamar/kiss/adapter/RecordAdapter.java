@@ -190,7 +190,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         // Apply app sorting preference
         if (!contacts) {
-            if (!prefs.getString("sort-apps", "alphabetical").equals("invertedAlphabetical")) {
+            if (prefs.getString("sort-apps", "alphabetical").equals("invertedAlphabetical")) {
                 Collections.reverse(sectionList);
             }
         } else {
@@ -199,7 +199,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
             }
         }
 
-            sections = new String[sectionList.size()];
+        sections = new String[sectionList.size()];
         sectionList.toArray(sections);
     }
 

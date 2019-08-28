@@ -26,7 +26,7 @@ public class AppsWithNotifSearcher extends Searcher {
         // Sort from A to Z, so reverse (last item needs to be A, listview starts at the bottom)
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         // Apply app sorting preference
-        if (prefs.getString("sort-apps", "alphabetical").equals("invertedAlphabetical")) {
+        if (prefs.getString("sort-apps", "alphabetical").equals("alphabetical")) {
             return new PriorityQueue<>(DEFAULT_MAX_RESULTS, new PojoComparator());
         } else {
             return new PriorityQueue<>(DEFAULT_MAX_RESULTS, Collections.reverseOrder(new PojoComparator()));

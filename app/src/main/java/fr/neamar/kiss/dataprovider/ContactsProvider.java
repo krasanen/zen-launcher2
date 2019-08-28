@@ -2,11 +2,13 @@ package fr.neamar.kiss.dataprovider;
 
 import android.database.ContentObserver;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.loader.LoadContactsPojos;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
@@ -18,7 +20,8 @@ import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.FuzzyScore;
 
 public class ContactsProvider extends Provider<ContactsPojo> {
-
+    private static final String TAG = ContactsProvider.class.getSimpleName();
+    ArrayList<Pojo> records = new ArrayList<>();
     private final ContentObserver cObserver = new ContentObserver(null) {
 
         @Override
@@ -50,15 +53,21 @@ public class ContactsProvider extends Provider<ContactsPojo> {
         getContentResolver().unregisterContentObserver(cObserver);
     }
 
-    ArrayList<Pojo> records = new ArrayList<>(pojos.size());
+
     public ArrayList<Pojo> getAllContacts() {
+        if (BuildConfig.DEBUG) Log.d(TAG,"getAllContacts");
         records.clear();
-        records.addAll(pojos);
+        for (ContactsPojo pojo : pojos) {
+            pojo.relevance = 0;
+            records.add(pojo);
+        }
         return records;
     }
 
     @Override
     public void requestResults(String query, Searcher searcher) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"requestResults");
+
         StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, false);
 
         if (queryNormalized.codePoints.length == 0) {

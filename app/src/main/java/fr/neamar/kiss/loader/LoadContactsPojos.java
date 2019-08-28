@@ -321,7 +321,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
         }
 
         long end = System.nanoTime();
-        Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list contacts");
+        if (BuildConfig.DEBUG) Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list contacts");
         return contacts;
     }
 
