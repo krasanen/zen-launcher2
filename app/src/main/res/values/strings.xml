@@ -244,7 +244,12 @@
     <string name="wp_animate_sides_desc">The desktop background will be drawn left or right after scrolling the screen</string>
     <string name="show_untagged">Show untagged</string>
     <string name="pref_show_untagged">Show untagged action</string>
-
+    <string name="enable_gestures">Enable gestures on empty areas</string>
+    <string name="enable_gestures_desc">(↑ for keyboard, ↓ for notifications)</string>
+    <string name="notification_support">Display a dot on apps with notifications</string>
+    <string name="notification_dialog">Check ZEN in the following menu to turn it on.</string>
+    <string name="cant_pin_shortcut">Could not add shortcut. Is ZEN your default launcher\?</string>
+    <string name="copy_confirmation">Copied to clipboard</string>
     <string name="unable_to_initialize_shortcuts">Unable to initialize shortcuts. Is Zen Launcher your default launcher?</string>
 
     <!-- Omat -->
@@ -323,5 +328,6 @@
     <string name="device_admin_disabled">Device Admin: disabled</string>
     <string name="proximity_switch_summary">Turn on/off screen with proximity sensor</string>
     <string name="proximity_switch_lock_summary">Lock device with proximity sensor. Like when device put to pocket.</string>
-    />
+
+
 </resources>
