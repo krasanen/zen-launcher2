@@ -256,13 +256,6 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         if (!hasPermission) {
                             if (BuildConfig.DEBUG)
                                 Log.w("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
-                            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
-                            mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
-                            //configureAppWidget(intent);
-
 
                             return null;
                         }
