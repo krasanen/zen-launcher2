@@ -39,6 +39,7 @@ import java.util.Map;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_OPTIONS;
 import static fr.neamar.kiss.MainActivity.REQUEST_BIND_APPWIDGET;
+import static fr.neamar.kiss.MainActivity.RETRY_COUNT;
 
 public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     public static final int REQUEST_REFRESH_APPWIDGET = 10;
@@ -566,7 +567,12 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
                 intent.setComponent(appWidget.configure);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                mainActivity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
+                try {
+                    mainActivity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
+                } catch (SecurityException e){
+                    if (BuildConfig.DEBUG) Log.i(TAG, "configureAppWidget: exception:" + e);
+                    addAppWidget(data);
+                }
             } else {
                 // Otherwise, finish adding the widget.
                 addAppWidget(data);
