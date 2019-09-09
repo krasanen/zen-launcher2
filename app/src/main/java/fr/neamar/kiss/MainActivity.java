@@ -1037,9 +1037,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onDestroy() {
         super.onDestroy();
         if (BuildConfig.DEBUG) Log.d(TAG,"onDestroy");
-        if (mReceiver!=null)
-            unregisterReceiver(mReceiver);
-
+        if (mReceiver!=null) {
+            try {
+                unregisterReceiver(mReceiver);
+            } catch (final IllegalArgumentException unregisteredException) {
+                Log.w(TAG, "Broadcast receiver already unregistered (" + unregisteredException.getMessage() + ")");
+            }
+            mReceiver = null;
+        }
     }
 
     private boolean fullLoadOver = false;
