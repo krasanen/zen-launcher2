@@ -54,11 +54,11 @@ public class AppsGridFragment extends GridFragment {
     public boolean onGridItemLongClick(GridView g, View v, int position, long id) {
         AppPojo app = (AppPojo) getGridAdapter().getItem(position);
         Result result = Result.fromPojo(null,app);
-        ListPopup menu = result.getPopupMenu(getContext(), KissApplication.getApplication(getContext()).getMainActivity().getAdapter(), v);
+        ListPopup menu = result.getPopupMenu(v.getContext(), KissApplication.getApplication(v.getContext()).getMainActivity().getAdapter(), v);
 
         //check if menu contains elements and if yes show it
         if (menu.getAdapter().getCount() > 0) {
-            KissApplication.getApplication(getContext()).getMainActivity().registerPopup(menu);
+            KissApplication.getApplication(v.getContext()).getMainActivity().registerPopup(menu);
             menu.show(v);
         }
         return true;
