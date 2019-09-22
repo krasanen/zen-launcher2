@@ -24,19 +24,16 @@ public class AppGridActivity extends FragmentActivity {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (BuildConfig.DEBUG) Log.i(TAG, "dispatchTouchEvent: " + ev.getAction());
         super.dispatchTouchEvent(ev);
-
-
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             KissApplication.getApplication(this).getMainActivity().dismissPopup();
             return true;
         }
-        return super.dispatchTouchEvent(ev);
+        return true;
     }
     @Override
     public void onBackPressed() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onBackPressed");
         super.onBackPressed();
-        KissApplication.getApplication(this).getMainActivity().dismissPopup();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
