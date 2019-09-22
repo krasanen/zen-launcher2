@@ -112,7 +112,7 @@ public class SettingsActivity extends PreferenceActivity implements
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId() == R.id.help) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("http://help.kisslauncher.com"));
+            intent.setData(Uri.parse("https://zmengames.com/zenlauncherprivacypolicy.html"));
             startActivity(intent);
             return true;
         }
