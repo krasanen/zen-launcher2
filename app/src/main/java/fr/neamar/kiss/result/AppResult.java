@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import fi.zmengames.zen.Utility;
-import fr.neamar.kiss.BadgeHandler;
 
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -32,6 +31,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
@@ -115,7 +117,8 @@ public class AppResult extends Result {
 
         BroadcastHelper.sendDefaultIntentExplicitly(context, intent);
         KissApplication.getApplication(context).getDataHandler().getBadgeHandler().setBadgeCount(packageName, badgeCount);
-
+        ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT);
+        EventBus.getDefault().post(event);
     }
 
     @Override
@@ -128,8 +131,10 @@ public class AppResult extends Result {
         adapter.add(new ListPopup.Item(context, R.string.menu_tags_edit));
         adapter.add(new ListPopup.Item(context, R.string.menu_favorites_remove));
         adapter.add(new ListPopup.Item(context, R.string.menu_app_details));
-        adapter.add(new ListPopup.Item(context, R.string.badge));
-        adapter.add(new ListPopup.Item(context, R.string.removeBadge));
+        adapter.add(new ListPopup.Item(context, R.string.add_badge));
+        if (appPojo.getBadgeCount()>0) {
+            adapter.add(new ListPopup.Item(context, R.string.removeBadge));
+        }
 
         try {
             // app installed under /system can't be uninstalled
@@ -203,7 +208,7 @@ public class AppResult extends Result {
             case R.string.menu_tags_edit:
                 launchEditTagsDialog(context, appPojo);
                 return true;
-            case R.string.badge:
+            case R.string.add_badge:
 
                 try {
                     executeBadge(context, appPojo.packageName, appPojo.activityName, appPojo.getBadgeCount()+1);

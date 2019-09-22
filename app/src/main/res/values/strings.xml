@@ -307,7 +307,7 @@
     <string name="showAppGrid">All Apps</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-    <string name="badge">Add badge</string>
+    <string name="add_badge">Add badge</string>
     <string name="removeBadge">Remove badge</string>
     <string name="wifi_toggle">Toggle Wifi On/Off</string>
     <string name="wifi_off">Wifi Off</string>
