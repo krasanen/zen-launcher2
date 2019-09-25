@@ -33,7 +33,11 @@ public class AppGridActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onBackPressed");
-        super.onBackPressed();
+        if (KissApplication.getApplication(this).getMainActivity().isShowingPopup()){
+            KissApplication.getApplication(this).getMainActivity().dismissPopup();
+        } else {
+            super.onBackPressed();
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -2425,6 +2425,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (mPopup != null)
             mPopup.dismiss();
     }
+    public boolean isShowingPopup(){
+        if (mPopup != null && mPopup.isShowing()){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void showMatchingTags(String tag) {
         runTask(new TagsSearcher(this, tag));
