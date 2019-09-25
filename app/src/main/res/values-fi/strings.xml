@@ -76,7 +76,7 @@
     <string name="ui_empty_1">Aloita minkä tahansa hakeminen</string>
     <string name="ui_empty_2">Näe aina historiasi</string>
     <string name="ui_empty_2_sub">Nopeaa käyttöä varten</string>
-    <string name="ui_empty_3">Nopea pääsy useimmiten käyttämille sovelluksillesi</string>
+    <string name="ui_empty_3">Nopea pääsy eniten käyttämiisi sovelluksiin</string>
     <string name="reset_excluded_apps_name">Resetoi poissuljetut</string>
     <string name="reset_excluded_apps_name_sum">Resetoi sovelluslistasta poissuljetut sovellukset</string>
     <string name="reset_excluded_apps_warn">Tahdotko varmasti nollata poissuljetun sovelluslistasi\?</string>

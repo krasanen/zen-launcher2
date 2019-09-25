@@ -27,8 +27,6 @@
 
     <string name="settings_name">Поставке уређаја</string>
 
-    <string name="phone_name">Бројеви телефона</string>
-
     <string name="main_menu">Мени</string>
     <string name="main_clear">Очисти траку претраге</string>
     <string name="main_kiss">Приказуј списак апликација и омиљено</string>
@@ -108,13 +106,11 @@
     <string name="menu_shortcut_remove">Уклони пречицу</string>
 
     <string name="theme_name">Тема сучеља</string>
-    <string name="enable_sms">Прикажи долазни СМС у историјату</string>
     <string name="enable_phone">Приказуј долазне позиве у историјату</string>
     <string name="enable_app">Прикажи новоинсталиране апликације у историјату</string>
     <string name="enable_favorites_bar">Прикажи омиљене изнад траке за претрагу</string>
     <string name="exclude_favorites">Искључи омиљене из историјата</string>
     <string name="favorites_hide">Сакриј траку омиљених</string>
-    <string name="shortcut_added">Пречица додата у КИС.</string>
 
     <string name="restart_desc">Поправи проблеме теме и приказа нових контаката</string>
     <string name="ui_excluded_apps_dialog_title">Одзначите апликације које желите да укључите</string>
@@ -125,8 +121,6 @@
     <string name="settings_storage">Складиште</string>
     <string name="settings_dev">Опције за програмера</string>
     <string name="settings_accessibility">Приступачност</string>
-    <string name="keyboard_workaround_name">Поправка за предлоге тастатуре</string>
-    <string name="keyboard_workaround_desc">Спречава покварене софтверске тастатуре (нпр. SwiftKey™) да приказују предлоге</string>
     <string name="alternate_history_inputs">Мењај улазе историјата наизменице</string>
     <string name="keyboard_options">Опције тастатуре</string>
     <string name="misc">Разно</string>
@@ -179,7 +173,7 @@
     <string name="search_provider_added">Услуга претраге је додата.</string>
     <string name="search_provider_deleted">Услуге претраге су обрисане.</string>
     <string name="search_provider_error_char">Не користите знак |</string>
-    <string name="search_provider_error_placeholder">Користите {q} за место упита</string>
+    <string name="search_provider_error_placeholder">Користите %s за место упита</string>
     <string name="search_provider_error_url">Користите исправан УРЛ</string>
     <string name="search_provider_error_exists">Услуга истог назива већ постоји</string>
 
@@ -192,13 +186,5 @@
     <string name="title_favorites">Поставке омиљених</string>
     <string name="get_help">Тражите помоћ!</string>
     <string name="permission_denied">Дозвола је одбијена.</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
 
 </resources>

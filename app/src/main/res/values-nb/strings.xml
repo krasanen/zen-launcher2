@@ -1,29 +1,21 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="ui_item_phone">Ring «%s»</string>
     <string name="title_advanced">Avanserte innstillinger</string>
     <string name="ui_item_contact_hint_call">Ring</string>
-
     <string name="ui_search_hint">Søk etter programmer, kontakter, …</string>
     <string name="title_ui">Brukergrensesnitt</string>
     <string name="menu_settings">Enhetsinnstillinger</string>
     <string name="ui_empty_1">Søk etter hva som helst</string>
     <string name="ui_empty_1_sub">Apper, kontakter, innstillinger, …</string>
     <string name="ui_empty_3">Rask tilgang til ofte brukte programmer</string>
-    <string name="ui_empty_3_sub">Zen Launcher lærer seg vanene dine</string>
-
+    <string name="ui_empty_3_sub">Zen-oppstarteren lærer seg vanene dine</string>
     <string name="contacts_name">Kontakter</string>
-
-    <string name="search_name">Vev-søk</string>
-
+    <string name="search_name">Vev-søketilbydere</string>
     <string name="settings_name">Enhetsinnstillinger</string>
-
-    <string name="phone_name">Telefonnummer</string>
-
-    <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Zen Launcher-innstillinger</string>
+    <string name="app_name">Zen-oppstarter</string>
+    <string name="activity_setting">Zen-innstillinger</string>
     <string name="title_history">Historikkinnstillinger</string>
-
     <string name="ui_empty_2">Historikken er alltid tilgjengelig</string>
     <string name="ui_empty_2_sub">For hurtig tilgang</string>
     <string name="ui_item_search">%1$s Søk etter «%2$s»</string>
@@ -37,12 +29,11 @@
     <string name="history_hide_name">Minimalistisk grensesnitt</string>
     <string name="history_onclick_name">Vis historikk ved trykk</string>
     <string name="portrait_title">Tving stående modus</string>
-    <string name="icons_hide_main">Skjul programikoner</string>
+    <string name="icons_hide_main">Skjul ikoner</string>
     <string name="icons_hide_desc">Nyttig på trege enheter</string>
     <string name="root_mode_desc">Hvis tilgjengelig, bruk det til å sende programmer i dvalemodus</string>
     <string name="root_mode_name">Root-modus</string>
     <string name="root_mode_error">Klarte ikke få root-tilgang.</string>
-
     <string name="settings_prefix">"Innstilling: "</string>
     <string name="settings_airplane">Flymodus</string>
     <string name="settings_device_info">Om telefonen</string>
@@ -52,71 +43,53 @@
     <string name="menu_wallpaper">Oppdater bakgrunnsbilde</string>
     <string name="application_not_found">Oida… klarte ikke starte det programmet.</string>
     <string name="history_erased">Historikk tømt.</string>
-
     <string name="removed_item">Fjernet</string>
     <string name="menu_remove">Fjern fra historikk</string>
     <string name="menu_app_details">Programinfo</string>
     <string name="menu_app_uninstall">Avinstaller</string>
     <string name="menu_app_hibernate">Dvalemodus</string>
-
     <string name="toast_hibernate_completed">%s gikk i dvalemodus, vekk programmet ved å starte det på ny.</string>
     <string name="toast_hibernate_error">Klarte ikke sende %s i dvalemodus.</string>
     <string name="menu_contact_copy_phone">Kopier telefonnummer</string>
-    <string name="theme_name">Draktgrensesnitt</string>
+    <string name="theme_name">Drakt</string>
     <string name="menu_phone_create">Opprett kontakt</string>
-
-    <string name="order_apps_name">Sortering for programliste</string>
-
     <string name="alias_contacts">kontakter,folk,relasjoner</string>
-    <string name="alias_web" tools:ignore="Typos">internett,vev,browser</string>
+    <string name="alias_web" tools:ignore="Typos">Internett,vev,nettleser</string>
     <string name="alias_mail">epost,e-post</string>
     <string name="alias_market">marked,butikk,programsenter</string>
     <string name="alias_clock">klokke,alarm,nedtelling,tidsur</string>
     <string name="alias_messaging">melding,tekstmelding,SMS,MMS,meldingsforsendelse</string>
-    <string name="title_providers">Tilbyderutvalg</string>
-
-    <string name="main_kiss">Vis nylig brukte programmer og programliste</string>
+    <string name="title_providers">Søkeinnstillinger</string>
+    <string name="main_kiss">Vis programliste</string>
     <string name="alias_phone">anrop,ringe,telefon</string>
-
     <string name="shortcuts_name">Snarveier</string>
-
     <string name="reset_warn">Vil du tømme historikken din?</string>
-
-    <string name="reset_excluded_apps_name">Tilbakestill listen over utelukkede programmer</string>
+    <string name="reset_excluded_apps_name">Tilbakestill listen over programmer utelukket fra Zen</string>
     <string name="reset_excluded_apps_warn">Ønsker du virkelig å tilbakestille listen over utelukkede programmer?</string>
-    <string name="ui_excluded_apps">Vis eller rediger utelukkede programmer</string>
-    <string name="ui_excluded_apps_dialog_title">Fravelg programmene du vil inkludere</string>
+    <string name="ui_excluded_apps">Vis eller rediger programmer utelukket fra Zen</string>
+    <string name="ui_excluded_apps_dialog_title">Velg programmer å ekskludere</string>
     <string name="ui_excluded_apps_not_found">Ingen programmer har blitt utelukket</string>
     <string name="reset_favorites_name">Tilbakestill din favorittliste</string>
     <string name="reset_favorites_warn">Ønsker du virkelig å tilbakestille dine favoritter?</string>
     <string name="search_providers_title">Velg vevsøk-tilbydere</string>
     <string name="freeze_history_name">Frys historikk</string>
     <string name="freeze_history_warn">Er du sikker på at du vil fryse historikk og skru av fremtidige oppdateringer? Din historikk vil ikke endres lenger.</string>
-
-    <string name="icons_pack_name">Draktikoner (ADW.Launcher)</string>
+    <string name="icons_pack_name">Ikoner (ADW.oppstarterdrakt)</string>
     <string name="icons_pack_default_name">Systemikoner</string>
-
     <string name="settings_nfc">NFC</string>
-    <string name="settings_tethering">Internettdeling</string>
+    <string name="settings_tethering">Tjudring</string>
     <string name="favorites_erased">Favoritter slettet.</string>
     <string name="menu_favorites_add">Legg til i favoritter</string>
     <string name="excluded_app_list_erased">Liste over utelukkede programmer slettet.</string>
-    <string name="excluded_app_list_added">Program utelukket fra Zen Launcher. Gjenopprett i Zen Launcher-innstillinger</string>
-
-    <string name="menu_exclude">Utelukk program fra Zen Launcher</string>
+    <string name="excluded_app_list_added">Program utelukket fra Zen. Gjenopprett i Zen-innstillinger</string>
+    <string name="menu_exclude">Utelukk program …</string>
     <string name="toast_favorites_added">%s ble lagt til i favoritter</string>
-
-    <string name="enable_sms">Vis innkommende SMS-er i historikk</string>
     <string name="enable_phone">Vis innkommende samtaler i historikk</string>
     <string name="enable_app">Vis nylig installerte programmer i historikk</string>
-    <string name="shortcut_added">Snarvei lagt til i Zen Launcher.</string>
-
     <string name="restart_desc">Fiks draktproblemer og manglende visning av nye kontakter</string>
-    <string name="restart_name">Omstart av Zen Launcher</string>
-    <string name="restart_warn">Ønsker du virkelig å starte Zen Launcher på ny? Hvis Zen Launcher ikke er ditt forvalgte oppstartsprogram vil det ganske enkelt lukkes.</string>
-
+    <string name="restart_name">Omstart av Zen</string>
+    <string name="restart_warn">Ønsker du virkelig å starte Zen på ny? Hvis Zen ikke er ditt forvalgte oppstartsprogram vil det ganske enkelt lukkes.</string>
     <string name="items_title">%d elementer</string>
-
     <string name="ui_item_visit">Besøk “%1$s”</string>
     <string name="settings_storage">Lager</string>
     <string name="settings_dev">Utviklingsinnstillinger</string>
@@ -125,9 +98,8 @@
     <string name="settings_display">Skjerm</string>
     <string name="menu_tags_edit">Legg til eller rediger merkelapper</string>
     <string name="tags_add_title">Legg til mellomromsinndelte merkelapper</string>
-    <string name="tags_confirmation_added">Merkelapp lagret</string>
+    <string name="tags_confirmation_added">Merkelapper lagret</string>
     <string name="menu_shortcut_remove">Fjern snarvei</string>
-
     <string name="enable_favorites_bar">Vis favoritter ovenfor søk</string>
     <string name="exclude_favorites">Utelat favoritter fra historikk</string>
     <string name="favorites_hide">Skjul favorittbjelke</string>
@@ -137,87 +109,107 @@
     <string name="misc">Ymse</string>
     <string name="toast_favorites_removed">%s ble fjernet fra favoritter</string>
     <string name="menu_favorites_remove">Fjern favoritt</string>
-
-    <string name="keyboard_workaround_name">Tastaturforslagsfiks</string>
-    <string name="keyboard_workaround_desc">Forhindre feilaktige skjermtastatur (som SwiftKey™) fra å vise forslag</string>
     <string name="history_mode_name">Historikkmodus</string>
-    <string name="history_mode_desc">Velg hvilken måte historikken skal oppføres</string>
+    <string name="history_mode_desc">Velg hvordan historikken skal sorteres</string>
     <string name="default_launcher_warn">Etter å ha valgt forvalgt oppstarter, vil du bli sendt til dens hjemmeskjerm. Vil du fortsette?
 \n
 \nMerk: Hvis du ikke ser et \'Alltid\'-valg, trykk hjemmeknappen etter å ha valgt ønsket oppstarter.</string>
-
-
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Velg en farge"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">Farge <xliff:g example="14" id="color_index">%1$d</xliff:g></string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">Farge <xliff:g example="14" id="color_index">%1$d</xliff:g> valg</string>
+    <string name="color_picker_default_title">"Velg en farge"</string>
+    <string name="color_swatch_description">Farge %1$d</string>
+    <string name="color_swatch_description_selected">Farge %1$d valgt</string>
     <string name="tags_visible">Vis programmerkelapper</string>
     <string name="share">Del til…</string>
     <string name="number_of_display_items">Maks. antall resultater i søk og historikk</string>
-
     <string name="main_color">Primærfarge</string>
     <string name="notification_bar_color">Farge på varslingsfelt</string>
-
-    <string name="color_transparent_dark">Gjennomsiktig mørk</string>
-    <string name="color_transparent_white">Gjennomsiktig hvit</string>
+    <string name="color_transparent_dark">Gjennomsiktlig mørk</string>
+    <string name="color_transparent_white">Gjennomsiktlig hvit</string>
     <string name="color_transparent">Gjennomsiktig</string>
-
-
-    <string name="large_search_bar">Stort søkefelt</string>
+    <string name="large_search_bar">Større søkefelt</string>
     <string name="transparent_search_bar">Gjennomsiktig søkefelt</string>
     <string name="transparent_favorites_bar">Gjennomsiktig favorittfelt</string>
-
-    <string name="menu_widget_add">(Beta) Legg til miniprogram</string>
+    <string name="menu_widget_add">(beta) Legg til miniprogram</string>
     <string name="menu_widget_remove">Fjern miniprogram</string>
-
     <string name="rate_the_app">Vurder programmet</string>
-
-    <string name="search_providers_delete">Slett søketilbydere</string>
-    <string name="custom_search_provider">Legg til søketilbyder</string>
-    <string name="search_provider_reset">Tilbakestill søketilbydere</string>
+    <string name="search_providers_delete">Slett vev-søketilbydere</string>
+    <string name="custom_search_provider">Legg til vev-søketilbyder</string>
+    <string name="search_provider_reset">Tilbakestill vev-søketilbydere</string>
     <string name="search_provider_reset_desc">Ønsker du å tilbakestille listen over søketilbydere?</string>
     <string name="search_provider_reset_done_desc">Listen over søketilbydere har blitt tilbakestilt</string>
     <string name="search_provider_name">Tilbydernavn</string>
     <string name="search_provider_added">Søketilbyderen ble lagt til.</string>
     <string name="search_provider_deleted">Søketilbyderen(ene) ble slettet.</string>
     <string name="search_provider_error_char">Ikke bruk |-tegnet</string>
-    <string name="search_provider_error_placeholder">Bruk {q} for spørrings-plassholderen</string>
+    <string name="search_provider_error_placeholder">Bruk %s for spørrings-plassholderen</string>
     <string name="search_provider_error_url">Bruk en gyldig URL</string>
     <string name="search_provider_error_exists">En tilbyder med det navnet finnes alerede</string>
-
-
     <string name="lwp_touch">Send pekehendelser til bakgrunnsbilde</string>
     <string name="lwp_drag">Emuler dragingshendelse for bakgrunnsbilde</string>
     <string name="lwp_drag_desc">Send flerfoldige pekehendelser</string>
     <string name="wp_drag_animate">Rull bakgrunnsbilde</string>
-    <string name="wp_drag_animate_desc">Dra vannrett for å rulle bakgrunnsbilde</string>
+    <string name="wp_drag_animate_desc">Dra ← → for å rulle bakgrunnsbilde</string>
     <string name="pref_hide_navbar">Skjul navigeringsstolpe</string>
-    <string name="pref_hide_navbar_desc">Skjul navigeringsfelt og skru på oppslukende modus for KitKat (4.4) og høyere</string>
+    <string name="pref_hide_navbar_desc">Skjul navigeringsfelt og skru på oppslukende modus</string>
     <string name="pref_hide_statusbar">Skjul statusfelt</string>
-    <string name="pref_hide_statusbar_desc">Skjul merknadsfelt og skru på oppslukende modus for KitKat (4.4) og høyere</string>
-<string name="history_settings_summary">Tilbakestill historikken din, unntatt programmer…</string>
+    <string name="pref_hide_statusbar_desc">Skjul merknadsfelt og skru på oppslukende modus</string>
+    <string name="history_settings_summary">Tilbakestill historikken din, unnlat programmer…</string>
     <string name="user_interface_summary">Drakter, gjennomsiktighet og farger</string>
-    <string name="providers_summary">Skru av tilbydere, legg til egendefinerte søkemotorer…</string>
+    <string name="providers_summary">Juster søkeresultater, legg til egendefinerte søkemotorer…</string>
     <string name="title_ux">Brukeropplevelse</string>
     <string name="user_experience_summary">Minimalistisk grensesnitt, tastaturinnstillinger…</string>
     <string name="title_favorites">Favoritt-innstillinger</string>
     <string name="history_favorites_summary">Tilbakestill favoritter, fjern favoritt-felt…</string>
     <string name="freeze_history_summary">Behold historikk som den er til den velges bort</string>
-
-<string name="title_wallpaper">Interaksjon med sanntidsbakgrunner</string>
-    <string name="enable_favorites_bar_summary_off">Kun vis favoritter når Zen Launcher-ikonet trykkes</string>
+    <string name="title_wallpaper">Interaksjon med sanntidsbakgrunner</string>
+    <string name="enable_favorites_bar_summary_off">Kun vis favoritter når Zen-ikonet trykkes</string>
     <string name="enable_favorites_bar_summary_on">Vis favoritter ovenfor søkefeltet</string>
-    <string name="get_help">Søk hjelp.</string>
-
-<string name="permission_denied">Tilgang nektet</string>
-
-<string name="rounded_list">Avrundede listehjørner</string>
+    <string name="get_help">Få hjelp</string>
+    <string name="permission_denied">Tilgang nektet</string>
+    <string name="rounded_list">Avrundede listehjørner</string>
     <string name="rounded_bars">Avrundede stolpehjørner</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="colors">Farger</string>
+    <string name="black_notification_icons">Vis merknadsikoner i svart</string>
+    <string name="shortcuts_no_host_permission">Zen er ikke din hovedoppstarter lenger, og har ikke tilgang til snarveiene dine.</string>
+    <string name="unable_add_shortcut">Kunne ikke legge til snarveier (snarveistilbyder er avskrudd i Zen-innstillingene)</string>
+    <string name="wp_animate_center">Sentrer bakgrunn</string>
+    <string name="wp_animate_center_desc">Bakgrunnen vil returnere til senter etter rulling</string>
+    <string name="wp_animate_sides">Fest bakgrunn til siden</string>
+    <string name="wp_animate_sides_desc">Bakgrunnen vil feste seg til venstre eller høyre etter rulling</string>
+    <string name="screen_toggle_tags">Tilpass etikettmeny</string>
+    <string name="pref_toggle_tags_select">Etiketter å vise i menyen</string>
+    <string name="ctx_menu">Zen-meny</string>
+    <string name="pref_tags_menu">Legg til etiketter i meny</string>
+    <string name="popup_tags_title">Tilgjengelige etiketter</string>
+    <string name="popup_tags_actions">Tilgjengelige handlinger</string>
+    <string name="show_history">Vis historikk</string>
+    <string name="unable_to_initialize_shortcuts">Kunne ikke sette igang snarveier. Er Zen din forvalgte oppstarter?</string>
+    <string name="pref_tags_menu_dismiss">Lukk etikettmeny etter valg er gjort</string>
+    <string name="show_untagged">Vis umerkede</string>
+    <string name="pref_show_untagged">Vis avmerkingshandling</string>
+    <string name="pref_hide_circle">Skjul Zen-sirkelen</string>
+    <string name="pref_hide_circle_desc">Programlisten vil fremdeles være tilgjengelig</string>
+    <string name="reset_excluded_from_history_apps_name">Tilbakestill ekskluderinger fra programlistehistorikk</string>
+    <string name="reset_excluded_from_history_apps_warn">Ønsker du virkelig å tilbakestille ekskluderinger fra programlistehistorikk\?</string>
+    <string name="settings_excluded_apps">Ekskluderte programmer</string>
+    <string name="ui_excluded_from_history_apps">Vis eller rediger dine ekskluderinger fra programlistehistorikk</string>
+    <string name="excluded_app_history_added">Program ekskludert fra historikk. Tilbakestill gjennom Zen-innstillingene</string>
+    <string name="menu_exclude_kiss">fra Zen</string>
+    <string name="menu_exclude_history">fra historikk</string>
+    <string name="history_sort_name">Sorter historikk</string>
+    <string name="history_sort_desc">Sorter historikk alfabetisk</string>
+    <string name="contacts_call_on_click">Klikk for å ringe kontakter</string>
+    <string name="swap_kiss_button_with_menu">Zen-knapp til høyre</string>
+    <string name="enable_gestures">Skru på håndvendinger i tomme områder</string>
+    <string name="enable_gestures_desc">(↑ for tastatur, ↓ for merknader)</string>
+    <string name="keyboard_suggestions">Skru på autofullføring/forslag</string>
+    <string name="notification_support">Vis en dott for programmer med merknader</string>
+    <string name="notification_dialog">Merk Zen i følgende meny for å skru det på.</string>
+    <string name="cant_pin_shortcut">Kunne ikke legge til snarvei. Er Zen din forvalgte oppstarter\?</string>
+    <string name="search_results_options">Søkeresultater</string>
+    <string name="search_provider_toggle">Lenker til vevsøketilbydere</string>
+    <string name="copy_confirmation">Kopiert til utklippstavle</string>
+    <string name="search_provider_default">Forvalgt søkemotortilbyder når enter klikkes</string>
+    <string name="shortcuts_reset">Tilbakestill snarveier</string>
+    <string name="shortcuts_reset_desc">Ønsker du å tilbakestille listen over snarveier\?</string>
+    <string name="shortcuts_reset_done_desc">Snarveier tilbakestilt</string>
 </resources>

@@ -1,43 +1,34 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher başlatıcı</string>
-    <string name="activity_setting">Zen Launcher ayarları</string>
-    <string name="ui_search_hint">Uygulamaları, kişileri, v.b. ara</string>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zen başlatıcı</string>
+    <string name="activity_setting">Zen ayarları</string>
+    <string name="ui_search_hint">Uygulama ve kişileri ara …</string>
     <string name="ui_item_search">%1$s içinde “%2$s” ara</string>
     <string name="ui_item_phone">Çağrı yap: “%s”</string>
     <string name="ui_item_contact_hint_message">Mesaj</string>
     <string name="ui_item_contact_hint_call">Çağrı</string>
-
     <string name="title_ui">Kullanıcı Arayüzü</string>
     <string name="title_history">Geçmiş Ayarları</string>
-    <string name="title_providers">Sağlayıcı Seçimi</string>
+    <string name="title_providers">Arama ayarları</string>
     <string name="menu_settings">Aygıt Ayarları</string>
-
     <string name="ui_empty_1">Bir şeyleri aramaya başlayın</string>
     <string name="ui_empty_1_sub">Uygulamalar, kişiler, ayarlar, …</string>
     <string name="ui_empty_2">Her zaman geçmişinizi görün</string>
     <string name="ui_empty_2_sub">Hızlı erişim için</string>
     <string name="ui_empty_3">En çok kullanılan uygulamalara hızlı erişim</string>
-    <string name="ui_empty_3_sub">Zen Launcher başlatıcı alışkanlıklarınızdan öğrenir</string>
-
+    <string name="ui_empty_3_sub">Zen başlatıcı alışkanlıklarınızdan öğrenir</string>
     <string name="contacts_name">Kişiler</string>
-
-    <string name="search_name">Web\'de Ara</string>
-
-    <string name="settings_name">Aygıt Ayarları</string>
-
-    <string name="phone_name">Telefon numaraları</string>
-
+    <string name="search_name">Web arama sağlayıcıları</string>
+    <string name="settings_name">Aygıt ayarları</string>
     <string name="main_menu">Menü</string>
     <string name="main_clear">Arama çubuğunu temizle</string>
-    <string name="main_kiss">Sık kullanılanları ve uygulama listesini göster</string>
+    <string name="main_kiss">Uygulama listesini göster</string>
     <string name="main_kiss_back">Geçmişi göster</string>
     <string name="reset_name">Geçmişi sıfırla</string>
     <string name="keyboard_name">Klavyeyi başlangıçta göster</string>
-
     <string name="alias_phone">çevir,ara,telefon</string>
     <string name="alias_contacts">kişiler,insanlar,ilişkiler</string>
-    <string name="alias_web">internet,web,tarayıcı</string>
+    <string name="alias_web">İnternet,web,tarayıcı</string>
     <string name="alias_mail">posta,eposta,e-posta</string>
     <string name="alias_market">market,mağaza,uygulama merkezi</string>
     <string name="alias_clock">saat,alarm,zamanlayıcı,kronometre</string>
@@ -51,174 +42,177 @@
     <string name="menu_wallpaper">Duvar kağıdını değiştir</string>
     <string name="application_not_found">Ayy… o uygulama başlatılamadı.</string>
     <string name="history_erased">Geçmiş silindi.</string>
-
     <string name="removed_item">Kaldırıldı</string>
     <string name="menu_remove">Geçmişten kaldır</string>
     <string name="menu_app_details">Uygulama bilgisi</string>
     <string name="menu_app_uninstall">Kaldır</string>
     <string name="menu_contact_copy_phone">Telefon numarasını kopyala</string>
-    <string name="theme_name">Gövde arayüzü</string>
-
+    <string name="theme_name">Gövde</string>
     <string name="title_advanced">Gelişmiş Ayarlar</string>
     <string name="root_mode_desc">Kullanılabilirse uygulamaları uyutmak için kullan</string>
     <string name="root_mode_name">Kök kipi</string>
     <string name="root_mode_error">Kök hakları sağlanamadı.</string>
-
     <string name="menu_app_hibernate">Hazırda beklet</string>
-
     <string name="toast_hibernate_completed">%s hazırda bekletildi, uyandırmak için yeniden başlatın.</string>
     <string name="toast_hibernate_error">%s hazırda bekletilemedi.</string>
     <string name="portrait_title">Dikey kipi zorla</string>
     <string name="menu_phone_create">Kişi oluştur</string>
-
-    <string name="order_apps_name">Uygulama listesi sıralaması</string>
-
-    <string name="history_hide_desc">Geçmiş ve giriş ekranını gizle, widgetları etkinleştir</string>
+    <string name="history_hide_desc">Geçmiş ve giriş ekranını gizle, widget\'ları aç</string>
     <string name="history_hide_name">Basit arayüz</string>
     <string name="shortcuts_name">Kısayollar</string>
-
-    <string name="reset_excluded_apps_name">Dahil edilmeyen uygulamalar listesini sıfırla</string>
+    <string name="reset_excluded_apps_name">Zen dışında bırakılan uygulamaların listesini sıfırla</string>
     <string name="reset_excluded_apps_warn">Dahil edilmeyen uygulamalar listenizi gerçekten sıfırlamak istiyor musunuz?</string>
-    <string name="reset_warn">Geçmişinizi gerçekten sıfırlamak istiyor musunuz?</string>
+    <string name="reset_warn">Geçmişi gerçekten sıfırlamak istiyor musunuz\?</string>
     <string name="history_onclick_name">Geçmişi dokunma ile göster</string>
-    <string name="icons_hide_main">Uygulama simgelerini gizle</string>
+    <string name="icons_hide_main">Simgeleri gizle</string>
     <string name="icons_hide_desc">Yavaş aygıtlarda yararlıdır</string>
     <string name="excluded_app_list_erased">Dahil edilmeyen uygulamaların listesi silindi.</string>
-    <string name="excluded_app_list_added">Uygulama Zen Launcher\'e dahil edilmedi. Zen Launcher ayarlarından sıfırlayın</string>
-
-    <string name="menu_exclude">Uygulamayı Zen Launcher\'e dahil etme</string>
-    <string name="enable_sms">Gelen SMS\'leri geçmişte göster</string>
+    <string name="excluded_app_list_added">Uygulama Zen\'e dahil edilmedi. Zen ayarlarından sıfırlayın</string>
+    <string name="menu_exclude">Uygulamayı çıkar …</string>
     <string name="enable_phone">Gelen çağrıları geçmişte göster</string>
     <string name="enable_app">Yeni yüklenen uygulamaları geçmişte göster</string>
-
     <string name="reset_favorites_name">Sık kullanılanlar listesinizi sıfırlayın</string>
-    <string name="reset_favorites_warn">Sık kullanılanlarınızı gerçekten sıfırlamak istiyor musunuz?</string>
+    <string name="reset_favorites_warn">Sık kullanılanları gerçekten sıfırlamak istiyor musunuz\?</string>
     <string name="favorites_erased">Sık kullanılanlar silindi.</string>
     <string name="menu_favorites_add">Sık kullanılanlara ekle</string>
     <string name="toast_favorites_added">%s sık kullanılanlara eklendi</string>
-
-    <string name="shortcut_added">Kısayol Zen Launcher\'e eklendi.</string>
-
-    <string name="icons_pack_name">Gövde simgeleri (ADW.Launcher theme)</string>
+    <string name="icons_pack_name">Simgeler (ADW.Launcher gövdesi)</string>
     <string name="icons_pack_default_name">Sistem simgeleri</string>
-
     <string name="settings_nfc">NFC</string>
     <string name="settings_tethering">Ağ noktası</string>
-    <string name="ui_excluded_apps">Dahil edilmeyen uygulamalarınızı görüntüleyin veya düzenleyin</string>
-    <string name="ui_excluded_apps_dialog_title">Dahil etmek istediğiniz uygulamaların imini kaldırın</string>
+    <string name="ui_excluded_apps">Zen\'den çıkarılan uygulamaları görüntüle veya listele</string>
+    <string name="ui_excluded_apps_dialog_title">Dışlanacak uygulamaları seç</string>
     <string name="ui_excluded_apps_not_found">Dahil edilmeyen uygulama yok</string>
     <string name="freeze_history_name">Geçmişi dondur</string>
     <string name="freeze_history_warn">Geçmişi dondurmak ve yeni eklemeleri kapatmak istediğinizden emin misiniz? Geçmişiniz artık değişmeyecektir.</string>
-
     <string name="restart_desc">Gövde sorunlarını ve yeni kişilerin gözükmemesini çöz</string>
-    <string name="restart_name">Zen Launcher\'i yeniden başlat</string>
-    <string name="restart_warn">Zen Launcher\'i gerçekten yeniden başlatmak istiyor musunuz? Eğer Zen Launcher öntanımlı başlatıcınız değilse sadece kapanacaktır.</string>
-
+    <string name="restart_name">Zen\'i yeniden başlat</string>
+    <string name="restart_warn">Zen\'i gerçekten yeniden başlatmak istiyor musunuz? Eğer Zen öntanımlı başlatıcınız değilse sadece kapanacaktır.</string>
     <string name="items_title">%d öge</string>
-
     <string name="enable_favorites_bar">Sık kullanılanları arama çubuğunun üstünde göster</string>
     <string name="search_providers_title">Web arama sağlayıcılarını seç</string>
     <string name="history_mode_name">Geçmiş kipi</string>
-    <string name="history_mode_desc">Geçmişin doldurulma yolunu seç</string>
+    <string name="history_mode_desc">Geçmişin nasıl sıralanacağını seç</string>
     <string name="settings_storage">Depolama</string>
     <string name="settings_dev">Geliştirici ayarları</string>
     <string name="settings_accessibility">Erişebilirlik</string>
     <string name="menu_shortcut_remove">Kısayolu kaldır</string>
-
     <string name="exclude_favorites">Sık kullanılanları geçmişe dahil etme</string>
-    <string name="favorites_hide">Sık Kullanılanlar Çubuğunu Gizle</string>
-    <string name="keyboard_workaround_desc">Bozuk yazılım-klavyelerinin (SwiftKey™ gibi) öneri göstermelerini engelle</string>
-    <string name="keyboard_workaround_name">Klavye önerileri çözümü</string>
+    <string name="favorites_hide">Sık kullanılanlar çubuğunu gizle</string>
     <string name="misc">Diğer</string>
-
     <string name="keyboard_options">Klavye seçenekleri</string>
     <string name="alternate_history_inputs">Geçmiş girdilerini değiştir</string>
     <string name="settings_sound">Ses ve ses düzeyi</string>
     <string name="settings_display">Ekran</string>
     <string name="menu_tags_edit">Etiket ekle veya düzenle</string>
     <string name="tags_add_title">Boşlukla ayrılmış etiketler ekle</string>
-    <string name="tags_confirmation_added">Etiket ayarlandı</string>
+    <string name="tags_confirmation_added">Etiketler ayarlandı</string>
     <string name="tags_visible">Uygulama etiketlerini göster</string>
     <string name="default_launcher_title">Öntanımlı Başlatıcıyı Değiştir</string>
-    <string name="default_launcher_warn">Öntanımlı Başlatıcıyı seçtikten sonra onun ana ekranına gönderileceksiniz. Devam etmek istediğinize emin misiniz? 
-\n 
+    <string name="default_launcher_warn">Öntanımlı Başlatıcıyı seçtikten sonra onun ana ekranına gönderileceksiniz. Devam etmek istediğinize emin misiniz?
+\n
 \nNot: Eğer \"Her Zaman\" seçeneğini görmüyorsanız, istediğiniz başlatıcıyı seçtikten sonra \"Ev\" düğmesine basın.</string>
-
     <string name="toast_favorites_removed">%s sık kullanılanlardan kaldırıldı</string>
     <string name="menu_favorites_remove">Sık kullanılanı kaldır</string>
     <string name="share">Paylaş…</string>
-
     <string name="ui_item_visit">Ziyaret et: “%1$s”</string>
-
-
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Bir Renk Seçin"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">Renk <xliff:g example="14" id="color_index">%1$d</xliff:g></string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">Renk <xliff:g example="14" id="color_index">%1$d</xliff:g> seçildi</string>
+    <string name="color_picker_default_title">"Bir Renk Seçin"</string>
+    <string name="color_swatch_description">Renk %1$d%1$d</string>
+    <string name="color_swatch_description_selected">%1$d rengi seçildi%1$d seçildi</string>
     <string name="number_of_display_items">Aramadaki ve geçmişteki en fazla sonuç sayısı</string>
-
     <string name="main_color">Temel renk</string>
     <string name="notification_bar_color">Bildirim çubuğu rengi</string>
-
-    <string name="color_transparent_dark">Şeffaf Koyu</string>
-    <string name="color_transparent_white">Şeffaf Beyaz</string>
-    <string name="color_transparent">Şeffaf</string>
-
-
-    <string name="large_search_bar">İri arama çubuğu</string>
+    <string name="color_transparent_dark">Siyahımsı saydam</string>
+    <string name="color_transparent_white">Beyazımsı saydam</string>
+    <string name="color_transparent">Saydam</string>
+    <string name="large_search_bar">Büyük arama çubuğu</string>
     <string name="transparent_search_bar">Saydam arama çubuğu</string>
     <string name="transparent_favorites_bar">Saydam sık kullanılanlar çubuğu</string>
-
-    <string name="menu_widget_add">(BETA) Widget ekle</string>
+    <string name="menu_widget_add">(beta) Widget ekle</string>
     <string name="menu_widget_remove">Widget\'ı kaldır</string>
-
     <string name="rate_the_app">Uygulamayı değerlendir</string>
-
     <string name="search_providers_delete">Arama sağlayıcıları sil</string>
-    <string name="custom_search_provider">Arama sağlayıcı ekle</string>
-    <string name="search_provider_reset">Arama sağlayıcıları sıfırla</string>
+    <string name="custom_search_provider">Web arama sağlayıcı ekle</string>
+    <string name="search_provider_reset">Web arama sağlayıcıları sıfırla</string>
     <string name="search_provider_reset_desc">Arama sağlayıcıların listesini sıfırlamak ister misiniz?</string>
     <string name="search_provider_reset_done_desc">Arama sağlayıcıları sıfırlandı</string>
     <string name="search_provider_name">Sağlayıcı adı</string>
     <string name="search_provider_added">Arama sağlayıcı eklendi.</string>
     <string name="search_provider_deleted">Arama sağlayıcı(ları) silindi.</string>
     <string name="search_provider_error_char">Lütfen | karakterini kullanmayın</string>
-    <string name="search_provider_error_placeholder">Lütfen sorgu yer tutucusu için {q} kullanın</string>
+    <string name="search_provider_error_placeholder">Lütfen sorgu yer tutucusu için %s kullanın</string>
     <string name="search_provider_error_url">Lütfen geçerli bir URL kullanın</string>
     <string name="search_provider_error_exists">Bu adda bir sağlayıcı zaten var</string>
-
-
     <string name="lwp_touch">Dokunma eylemlerini duvar kağıdına gönder</string>
     <string name="lwp_drag">Duvar kağıdı için taşıma eylemini öykün</string>
     <string name="lwp_drag_desc">Birden çok dokunma eylemi gönder</string>
     <string name="wp_drag_animate">Duvar kağıdını kaydır</string>
-    <string name="wp_drag_animate_desc">Duvar kağıdını kaydırmak için yatay sürükle</string>
+    <string name="wp_drag_animate_desc">Duvar kağıdını kaydırmak için ← → sürükle</string>
     <string name="pref_hide_navbar">Gezinti çubuğunu gizle</string>
     <string name="pref_hide_statusbar">Durum çubuğunu gizle</string>
-    <string name="pref_hide_navbar_desc">Gezinti çubuğunu gizle ve KitKat (4.4) ve üzeri için kapsayan kipi etkinleştir</string>
-    <string name="pref_hide_statusbar_desc">Bildirim çubuğunu gizle ve KitKat (4.4) ve üstü için kapsayan kipi etkinleştir</string>
-<string name="user_interface_summary">Temalar, saydamlık ve renkler</string>
-    <string name="providers_summary">Sağlayıcıları devre dışı bırak, özel arama motorları ekle, …</string>
+    <string name="pref_hide_navbar_desc">Gezinti çubuğunu gizle ve kapsayan kipi aç</string>
+    <string name="pref_hide_statusbar_desc">Bildirim çubuğunu gizle ve kapsayan kipi aç</string>
+    <string name="user_interface_summary">Temalar, saydamlık ve renkler</string>
+    <string name="providers_summary">Arama sonuçlarını düzenle, özel arama motorları ekle, …</string>
     <string name="title_ux">Kullanıcı deneyimi</string>
     <string name="history_settings_summary">Geçmişinizi sıfırlayın, uygulamaları dışlayın, …</string>
     <string name="user_experience_summary">Minimalistik kullanıcı arayüzü, klavye ayarları, …</string>
-    <string name="title_favorites">Gözde ayarları</string>
-    <string name="history_favorites_summary">Gözdelerinizi sıfırlayın, gözdeler çubuğunu kaldırın, …</string>
+    <string name="title_favorites">Sık kullanılanlar ayarları</string>
+    <string name="history_favorites_summary">Sık kullanılanları sıfırlayın, sık kullanılanlar çubuğunu kaldırın, …</string>
     <string name="title_wallpaper">Canlı duvar kağıdı etkileşimleri</string>
     <string name="freeze_history_summary">Onay kaldırılana dek geçmişi olduğu gibi tut</string>
-    <string name="enable_favorites_bar_summary_off">Gözdeleri yalnızca Zen Launcher simgesine dokununca göster</string>
-    <string name="enable_favorites_bar_summary_on">Gözdeleri arama çubuğunun üstünde göster</string>
-    <string name="get_help">Yardım al!</string>
-
-<string name="permission_denied">İzin reddedildi</string>
-
+    <string name="enable_favorites_bar_summary_off">Sık kullanılanları yalnızca Zen simgesine dokununca göster</string>
+    <string name="enable_favorites_bar_summary_on">Sık kullanılanları arama çubuğunun üstünde göster</string>
+    <string name="get_help">Yardım al</string>
+    <string name="permission_denied">İzin reddedildi</string>
     <string name="rounded_list">Yuvarlatılmış liste köşeleri</string>
     <string name="rounded_bars">Yuvarlatılmış çubuk köşeleri</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="wp_animate_center">Duvar kağıdını ortala</string>
+    <string name="wp_animate_center_desc">Kaydırmadan sonra duvar kağıdı ortaya dönecek</string>
+    <string name="wp_animate_sides">Duvar kağıdını köşeye yapıştır</string>
+    <string name="wp_animate_sides_desc">Kaydırmadan sonra duvar kağıdı sola veya sağa yapışacak</string>
+    <string name="colors">Renkler</string>
+    <string name="black_notification_icons">Bildirim simgelerini siyah göster</string>
+    <string name="shortcuts_no_host_permission">Zen, artık ana başlatıcınız değil ve kısayollarınıza erişemeyecek.</string>
+    <string name="unable_add_shortcut">Kısayol eklenemiyor (Zen ayarlarında kısayol sağlayıcı kapatılmış)</string>
+    <string name="screen_toggle_tags">Etiketler menüsünü özelleştir</string>
+    <string name="pref_toggle_tags_select">Menüde gösterilecek etiketler</string>
+    <string name="pref_tags_menu">Menüde etiket ekle</string>
+    <string name="popup_tags_title">Uygun etiketler</string>
+    <string name="popup_tags_actions">Uygun eylemler</string>
+    <string name="show_history">Geçmişi göster</string>
+    <string name="ctx_menu">Zen Menüsü</string>
+    <string name="unable_to_initialize_shortcuts">Kısayollar kullanıma hazırlanamıyor. Zen öntanımlı başlatıcınız mı?</string>
+    <string name="pref_tags_menu_dismiss">Seçimden sonra etiketler menüsünü kapat</string>
+    <string name="show_untagged">Etiketsizleri göster</string>
+    <string name="pref_show_untagged">Etiketsiz eylemleri göster</string>
+    <string name="pref_hide_circle">Zen yuvarlağını gizle</string>
+    <string name="pref_hide_circle_desc">Uygulama listesine hala erişilebilir olacak</string>
+    <string name="reset_excluded_from_history_apps_name">Geçmişten çıkarılan uygulamaların listesini sıfırla</string>
+    <string name="reset_excluded_from_history_apps_warn">Geçmiş uygulama listesinden çıkarılanları gerçekten sıfırlamak istiyor musunuz\?</string>
+    <string name="settings_excluded_apps">Çıkarılan uygulamalar</string>
+    <string name="ui_excluded_from_history_apps">Geçmişten çıkarılan uygulamaları görüntüle veya düzenle</string>
+    <string name="excluded_app_history_added">Uygulama geçmişten çıkarıldı. Zen ayarları ile sıfırlayın</string>
+    <string name="menu_exclude_kiss">Zen\'den</string>
+    <string name="menu_exclude_history">geçmişten</string>
+    <string name="history_sort_name">Geçmişi sırala</string>
+    <string name="history_sort_desc">Geçmiş girişlerini alfabetik olarak sırala</string>
+    <string name="contacts_call_on_click">Kişileri çaldırmak için tıkla</string>
+    <string name="swap_kiss_button_with_menu">Zen düğmesi sağda</string>
+    <string name="enable_gestures">Boş alanlarda hareketleri etkinleştir</string>
+    <string name="enable_gestures_desc">(klavye için ↑, bildirimler için ↓)</string>
+    <string name="keyboard_suggestions">Otomatik tamamlamayı/öneriyi etkinleştir</string>
+    <string name="notification_support">Bildirimi olan uygulamaların üzerinde bir nokta göster</string>
+    <string name="notification_dialog">Açmak için sonraki menüde Zen\'i gözden geçirin.</string>
+    <string name="cant_pin_shortcut">Kısayollar eklenemedi. Zen varsayılan başlatıcınız mı\?</string>
+    <string name="search_results_options">Arama sonuçları</string>
+    <string name="search_provider_toggle">Web arama sağlayıcıların linkleri</string>
+    <string name="copy_confirmation">Panoya kopyalandı</string>
+    <string name="search_provider_default">Varsayılan web arama sağlayıcısı girildiğinde</string>
+    <string name="shortcuts_reset">Kısayolları sıfırla</string>
+    <string name="shortcuts_reset_desc">Kısayol listesini sıfırlamak istiyor musunuz\?</string>
+    <string name="shortcuts_reset_done_desc">Kısayollar sıfırlandı</string>
+    <string name="pref_fav_tags_select">Favori çubuğunda gösterilecek etiketler</string>
+    <string name="pref_fav_tags_drawable_desc">Birçok favori etiketi için daha az bellek kullanmak için kapatın</string>
+    <string name="pref_fav_tags_drawable">Favori etiketleri için simgeler oluştur</string>
 </resources>

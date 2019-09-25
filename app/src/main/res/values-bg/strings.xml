@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Zen Launcher настройки</string>
+<resources>
+    <string name="app_name">Zen launcher</string>
+    <string name="activity_setting">Zen настройки</string>
     <string name="ui_search_hint">Потърси приложения, контакти, …</string>
     <string name="ui_item_phone">Обади се на “%s”</string>
     <string name="ui_item_contact_hint_message">Съобщение</string>
@@ -14,7 +14,7 @@
     <string name="ui_empty_1_sub">Приложения, контакти, настройки, …</string>
     <string name="ui_empty_2_sub">За бърз достъп</string>
     <string name="ui_empty_3">Бърз достъп до най-използваните приложения</string>
-    <string name="ui_empty_3_sub">Zen Launcher се учи от навиците Ви</string>
+    <string name="ui_empty_3_sub">Zen launcher се учи от навиците Ви</string>
 
     <string name="contacts_name">Контакти</string>
 
@@ -22,15 +22,13 @@
 
     <string name="settings_name">Настройки на устройството</string>
 
-    <string name="phone_name">телефонни номера</string>
-
     <string name="shortcuts_name">Преки пътища</string>
 
     <string name="main_menu">Меню</string>
     <string name="main_clear">Изчисти полето за търсене</string>
     <string name="main_kiss">Покажи любимите приложения и списъка с приложения</string>
     <string name="main_kiss_back">Покажи история</string>
-    <string name="reset_name">Занулирай историята на Zen Launcher</string>
+    <string name="reset_name">Занулирай историята на Zen</string>
     <string name="reset_excluded_apps_name">Занулирай списъка на изключените приложения</string>
     <string name="reset_excluded_apps_warn">Наистина ли искате да занулирате списъка на изключените приложения?</string>
     <string name="ui_excluded_apps">Прегледай/Редактирай изключените приложения</string>
@@ -70,11 +68,11 @@
     <string name="favorites_erased">Любими изтрити.</string>
     <string name="menu_favorites_add">Добави към любими</string>
     <string name="excluded_app_list_erased">Списъкът с изключените приложения бе изтрит.</string>
-    <string name="excluded_app_list_added">Приложението е премахнато от Zen Launcher. Това може да се занулира през настройките</string>
+    <string name="excluded_app_list_added">Приложението е премахнато от Zen. Това може да се занулира през настройките</string>
 
     <string name="removed_item">Премахнато</string>
     <string name="menu_remove">Премахване от историята</string>
-    <string name="menu_exclude">Премахни приложението от Zen Launcher</string>
+    <string name="menu_exclude">Премахни приложението от Zen</string>
     <string name="menu_app_details">Информация за приложението</string>
     <string name="menu_app_uninstall">Деинсталиране</string>
     <string name="menu_app_hibernate">Хибернирай</string>
@@ -87,16 +85,14 @@
 
     <string name="toast_favorites_added">%s е добавен към любимите</string>
 
-    <string name="enable_sms">Покажи входящи SMS в историята</string>
     <string name="enable_phone">Показване на входящите повиквания в историята</string>
     <string name="enable_app">Показване на новоинсталираните приложение в историята</string>
     <string name="enable_favorites_bar">Показване на любими над полето за търсене</string>
     <string name="exclude_favorites">Изключване на \"Предпочитани\" от историята</string>
     <string name="favorites_hide">Скрий лентата с предпочитани</string>
-    <string name="shortcut_added">Прекият път бе добавен към Zen Launcher.</string>
 
-    <string name="restart_name">Рестартиране на Zen Launcher</string>
-    <string name="restart_warn">Наистина ли искате да рестартирате Zen Launcher? Ако Zen Launcher не е launcher-ът ви по подразбиране, приложението просто ще се затвори.</string>
+    <string name="restart_name">Рестартиране на Zen</string>
+    <string name="restart_warn">Наистина ли искате да рестартирате Zen? Ако Zen не е launcher-ът ви по подразбиране, приложението просто ще се затвори.</string>
 
     <string name="items_title">%d елемента</string>
     <string name="keyboard_options">Настройки за клавиатурата</string>
@@ -110,15 +106,7 @@
     <string name="reset_favorites_warn">Наистина ли искате да занулирате вашите предпочитани?</string>
     <string name="keyboard_name">Покажи клавиатурата при стартиране</string>
 
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Избиране на цвят"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">"Цвят <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">"Избрахте цвят <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="color_picker_default_title">Избиране на цвят</string>
+    <string name="color_swatch_description">Цвят %1$d</string>
+    <string name="color_swatch_description_selected">Избрахте цвят %1$d</string>
 </resources>

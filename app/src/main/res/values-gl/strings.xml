@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Axustes de Zen Launcher</string>
+<resources>
+    <string name="app_name">Zen launcher</string>
+    <string name="activity_setting">Axustes de Zen</string>
     <string name="ui_search_hint">Buscar aplicativos, contactos, …</string>
     <string name="ui_item_search">%1$s Buscar \"%2$s\"</string>
     <string name="ui_item_phone">Chamar a \"%s\"</string>
@@ -19,15 +19,13 @@
     <string name="ui_empty_2">Mostrar sempre o historial</string>
     <string name="ui_empty_2_sub">Para acceder rápidamente</string>
     <string name="ui_empty_3">Acceso directo ós aplicativos máis utilizados</string>
-    <string name="ui_empty_3_sub">Zen Launcher aprende dos teus hábitos</string>
+    <string name="ui_empty_3_sub">Zen launcher aprende dos teus hábitos</string>
 
     <string name="contacts_name">Contactos</string>
 
     <string name="search_name">Búsqueda de Google</string>
 
     <string name="settings_name">Axustes</string>
-
-    <string name="phone_name">Teléfono</string>
 
     <string name="main_menu">Menú</string>
     <string name="main_clear">Limpa o campo de búsqueda</string>
@@ -71,8 +69,6 @@
     <string name="theme_name">Tema</string>
     <string name="menu_phone_create">Crear contacto</string>
 
-    <string name="order_apps_name">Orden da listaxe</string>
-
     <string name="shortcuts_name">Atallos</string>
 
     <string name="reset_warn">Realmente desexas reiniciar o teu historial?</string>
@@ -81,15 +77,7 @@
     <string name="icons_hide_desc">Activar en dispositivos lentos</string>
 
 
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Selecciona unha cor"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">"Cor <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">"Seleccionouse a cor <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="color_picker_default_title">Selecciona unha cor</string>
+    <string name="color_swatch_description">Cor %1$d</string>
+    <string name="color_swatch_description_selected">Seleccionouse a cor %1$d</string>
 </resources>

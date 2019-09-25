@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools"><string name="activity_setting">Zen Launcher Параметри</string>
-    <string name="app_name">Zen Launcher Запускач</string>
+<resources xmlns:tools="http://schemas.android.com/tools"><string name="activity_setting">Zen Параметри</string>
+    <string name="app_name">Zen Запускач</string>
     <string name="ui_search_hint">Пошук застосунків, контактів, …</string>
     <string name="ui_item_search">Пошук %1$s для “%2$s”</string>
     <string name="ui_item_visit">Відвідайте “%1$s”</string>
@@ -14,8 +14,6 @@
 
     <string name="search_name">Веб-пошук</string>
 
-    <string name="phone_name">Телефонні номери</string>
-
     <string name="main_menu">Меню</string>
     <string name="settings_device_info">Інформація про пристрій</string>
     <string name="menu_wallpaper">Оновити тло</string>
@@ -25,7 +23,7 @@
 
     <string name="keyboard_options">Параметри клавіатури</string>
     <string name="color_picker_default_title">Вибір кольору</string>
-    <string name="color_swatch_description">Колір <xliff:g example="14" id="color_index">%1$d</xliff:g></string>
+    <string name="color_swatch_description">Колір %1$d</string>
     <string name="menu_widget_add">(БЕТА-ВЕРСІЯ) Додати віджет</string>
     <string name="menu_widget_remove">Вилучити віджет</string>
     <string name="rate_the_app">Оцініть застосунок</string>
@@ -38,7 +36,7 @@
     <string name="ui_empty_2">Завжди бачити свою історію</string>
     <string name="ui_empty_2_sub">Для швидкого доступу</string>
     <string name="ui_empty_3">Швидкий доступ до найбільш використовуваних додатків</string>
-    <string name="ui_empty_3_sub">Zen Launcher запускач дізнається з ваших звичок</string>
+    <string name="ui_empty_3_sub">Zen запускач дізнається з ваших звичок</string>
 
     <string name="settings_name">Параметри пристрою</string>
 
@@ -77,8 +75,6 @@
     <string name="root_mode_name">Root режим</string>
     <string name="title_wallpaper">Живе інтерактивне тло</string>
     <string name="title_providers">Вибір постачальників</string>
-    <string name="keyboard_workaround_name">Виправлення клавіатурних пропозицій</string>
-    <string name="keyboard_workaround_desc">Перешкоджати зламаним програмним клавіатурам (наприклад, SwiftKey ™) від показу пропозицій</string>
     <string name="history_onclick_name">Показати історію при дотику</string>
     <string name="portrait_title">Примусовий портретний режим</string>
     <string name="lwp_touch">Надсилайте дотичні події на тло</string>
@@ -88,7 +84,7 @@
     <string name="wp_drag_animate_desc">Перетягніть горизонтально, щоб прокрутити тло</string>
     <string name="search_provider_reset_desc">Ви хочете скинути список постачальників пошуку?</string>
     <string name="search_provider_deleted">Постачальника(-ів) пошуку було видалено.</string>
-    <string name="search_provider_error_placeholder">Будь ласка, використовуйте {q} для заповнювача запитів</string>
+    <string name="search_provider_error_placeholder">Будь ласка, використовуйте %s для заповнювача запитів</string>
     <string name="search_provider_error_exists">Постачальник з такою назвою вже існує</string>
 
 
@@ -130,9 +126,9 @@
     <string name="tags_confirmation_added">Теґ встановлено</string>
     <string name="tags_visible">Показати теґи додатків</string>
     <string name="excluded_app_list_erased">Список виключених програм стерто.</string>
-    <string name="excluded_app_list_added">"Програма виключена з Zen Launcher. Скинути через Zen Launcher  налаштування "</string>
+    <string name="excluded_app_list_added">"Програма виключена з Zen. Скинути через Zen  налаштування "</string>
 
-    <string name="menu_exclude">Виключити додаток з Zen Launcher</string>
+    <string name="menu_exclude">Виключити додаток з Zen</string>
     <string name="menu_app_details">Інформація про додаток</string>
     <string name="menu_app_uninstall">Видалити</string>
     <string name="menu_app_hibernate">Сплячий режим</string>
@@ -144,8 +140,6 @@
     <string name="theme_name">Тема інтерфейсу</string>
     <string name="toast_favorites_added">%s було додано до вподобань</string>
 
-    <string name="order_apps_name">Порядок сортування списку додатків</string>
-    <string name="enable_sms">Показати вхідні SMS-повідомлення в історії</string>
     <string name="enable_phone">Показати вхідні дзвінки в історії</string>
     <string name="enable_app">Показати нещодавно встановлені додатки в історії</string>
     <string name="enable_favorites_bar">Показ уподобань над панеллю пошуку</string>
@@ -155,11 +149,10 @@
     <string name="pref_hide_navbar_desc">Приховати навігаційну панель та активувати режим занурення для KitKat (4.4) та вище</string>
     <string name="pref_hide_statusbar">Приховати панель стану</string>
     <string name="pref_hide_statusbar_desc">Приховати панель сповіщень та активувати режим занурення для KitKat (4.4) та вище</string>
-    <string name="shortcut_added">Ярлик доданий до Zen Launcher.</string>
 
     <string name="restart_desc">Виправлення тем та нових контактів, які не відображаються</string>
-    <string name="restart_name">Перезапустити Zen Launcher</string>
-    <string name="restart_warn">Ви дійсно хочете перезапустити Zen Launcher? Якщо Zen Launcher не є запускачем за замовчуванням, додаток просто завершить роботу.</string>
+    <string name="restart_name">Перезапустити Zen</string>
+    <string name="restart_warn">Ви дійсно хочете перезапустити Zen? Якщо Zen не є запускачем за замовчуванням, додаток просто завершить роботу.</string>
 
     <string name="default_launcher_title">Змінити запускач за замовчуванням</string>
     <string name="default_launcher_warn">Вибравши Запускача за замовчуванням, ви будете відправлені на головний екран. Ви впевнені, що хочете продовжити?
@@ -182,7 +175,7 @@
     <string name="color_transparent">Прозорий</string>
 
 
-    <string name="color_swatch_description_selected" tools:ignore="PluralsCandidate">Колір <xliff:g example="14" id="color_index">%1$d</xliff:g> вибрано</string>
+    <string name="color_swatch_description_selected" tools:ignore="PluralsCandidate">Колір %1$d вибрано</string>
 
     <string name="transparent_search_bar">Прозора панель пошуку</string>
     <string name="transparent_favorites_bar">Прозора панель уподобань</string>
@@ -194,15 +187,7 @@
     <string name="user_experience_summary">Мінімалістичний інтерфейс, налаштування клавіатури, …</string>
     <string name="history_favorites_summary">Скидання ваших уподобань, видалення панелі вподобань, …</string>
     <string name="freeze_history_summary">Залишити історію, як є, поки не буде помічено</string>
-    <string name="enable_favorites_bar_summary_off">Відображати тільки уподобання, коли натиснувши на Zen Launcher піктограму</string>
+    <string name="enable_favorites_bar_summary_off">Відображати тільки уподобання, коли натиснувши на Zen піктограму</string>
     <string name="enable_favorites_bar_summary_on">Відобразити вибране над панеллю пошуку</string>
     <string name="get_help">Отримати допомогу!</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
-</resources>
+    </resources>

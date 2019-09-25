@@ -1,37 +1,36 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Pengaturan Zen Launcher</string>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zen launcher</string>
+    <string name="activity_setting">Pengaturan Zen</string>
     <string name="ui_search_hint">Cari aplikasi, kontak, …</string>
     <string name="ui_item_search">Cari %1$s untuk “%2$s”</string>
     <string name="ui_item_phone">Panggil “%s”</string>
     <string name="ui_item_contact_hint_message">Pesan</string>
     <string name="ui_item_contact_hint_call">Panggil</string>
 
-    <string name="title_ui">Antarmuka Pengguna</string>
-    <string name="title_history">Pengaturan Riwayat</string>
-    <string name="title_providers">Pemilihan Operator</string>
-    <string name="title_advanced">Pengaturan Tingkat Lanjut</string>
-    <string name="menu_settings">Pengaturan Perangkat</string>
+    <string name="title_ui">Antarmuka pengguna</string>
+    <string name="title_history">Pengaturan riwayat</string>
+    <string name="title_providers">Pemilihan operator</string>
+    <string name="title_advanced">Pengaturan tingkat lanjut</string>
+    <string name="menu_settings">Pengaturan perangkat</string>
 
     <string name="ui_empty_1">Mulai mencari untuk apapun</string>
     <string name="ui_empty_1_sub">Aplikasi, kontak, pengaturan, …</string>
     <string name="ui_empty_2">Selalu lihat riwayat anda</string>
     <string name="ui_empty_2_sub">Untuk akses cepat</string>
     <string name="ui_empty_3">Akses cepat untuk app yang sering digunakan</string>
-    <string name="ui_empty_3_sub">Launcher Zen Launcher belajar dari kebiasaan anda</string>
+    <string name="ui_empty_3_sub">Launcher Zen belajar dari kebiasaan anda</string>
 
     <string name="contacts_name">Kontak</string>
     <string name="search_name">Pencari Web</string>
     <string name="settings_name">Pengaturan Perangkat</string>
-    <string name="phone_name">Nomor telepon</string>
     <string name="shortcuts_name">Jalan pintas</string>
 
     <string name="main_menu">Menu</string>
     <string name="main_clear">Bersihkan kolom pencarian</string>
     <string name="main_kiss">Tampilkan favorit dan daftar app</string>
     <string name="main_kiss_back">Tampilkan riwayat</string>
-    <string name="reset_name">Hapus riwayat Zen Launcher anda</string>
+    <string name="reset_name">Hapus riwayat</string>
     <string name="reset_excluded_apps_name">Hapus daftar app pengecualian</string>
     <string name="reset_excluded_apps_warn">Kamu benar-benar ingin menghapus daftar pengecualian app anda?</string>
     <string name="reset_warn">Anda benar-benar ingin menghapus riwayat anda?</string>
@@ -42,9 +41,9 @@
     <string name="history_hide_name">UI Minimalistik</string>
     <string name="history_onclick_name">Tampilkan riwayat saat menyentuh</string>
     <string name="portrait_title">Paksa mode portrait</string>
-    <string name="icons_hide_main">Sembunyikan ikon aplikasi</string>
+    <string name="icons_hide_main">Sembunyikan ikon apl</string>
     <string name="icons_hide_desc">Berfungsi pada perangkat lambat</string>
-    <string name="root_mode_desc">Jika tersedia gunakan hal itu untuk menghibernasi aplikasi</string>
+    <string name="root_mode_desc">Jika tersedia gunakan untuk menghibernasi apl</string>
     <string name="root_mode_name">Mode root</string>
     <string name="root_mode_error">Gagal mendapatkan izin root.</string>
 
@@ -54,10 +53,10 @@
     <string name="alias_phone">hubungi,panggil,telepon</string>
     <string name="alias_contacts">kontak,orang,relasi</string>
     <string name="alias_web">internet,situs,peramban</string>
-    <string name="alias_mail">surat,surat elektronik</string>
+    <string name="alias_mail">surat, surat elektronik, surel</string>
     <string name="alias_market">pasar,toko,pusat aplikasi</string>
     <string name="alias_clock">jam,alarm,penghitung,stopwatch</string>
-    <string name="alias_messaging">pesan teks,buat,sms,mms,perpesanan</string>
+    <string name="alias_messaging">pesan teks,buat,SMS,MMS,perpesanan</string>
     <string name="settings_prefix">"Pengaturan: "</string>
     <string name="settings_airplane">Mode pesawat</string>
     <string name="settings_device_info">Info perangkat</string>
@@ -67,16 +66,16 @@
     <string name="settings_nfc">NFC</string>
     <string name="settings_tethering">Peranggitan</string>
     <string name="menu_wallpaper">Perbarui wallpaper</string>
-    <string name="application_not_found">Waw… gagal menjalanjan app tersebut.</string>
+    <string name="application_not_found">Ups... gagal menjalankan app tersebut.</string>
     <string name="history_erased">Riwayat terhapus.</string>
     <string name="favorites_erased">Favorit terhapus.</string>
     <string name="menu_favorites_add">Tambahkan ke favorit</string>
     <string name="excluded_app_list_erased">Daftar app pengecualian terhapus.</string>
-    <string name="excluded_app_list_added">App yang dikecualikan Zen Launcher. Atur ulang lewat pengaturan Zen Launcher</string>
+    <string name="excluded_app_list_added">App yang dikecualikan Zen. Atur ulang lewat pengaturan Zen</string>
 
     <string name="removed_item">Terhapus</string>
     <string name="menu_remove">Hapus dari riwayat</string>
-    <string name="menu_exclude">Kecualikan app dari Zen Launcher</string>
+    <string name="menu_exclude">Kecualikan app dari Zen</string>
     <string name="menu_app_details">Info app</string>
     <string name="menu_app_uninstall">Copot pemasangan</string>
     <string name="menu_app_hibernate">Hibernasi</string>
@@ -89,17 +88,14 @@
 
     <string name="toast_favorites_added">%s telah ditambahkan ke favorit</string>
 
-    <string name="order_apps_name">Susunan urutan daftar app</string>
-    <string name="enable_sms">Tampilkan SMS yang masuk diriwayat</string>
     <string name="enable_phone">Tampilkan panggilan masuk diriwayat</string>
     <string name="enable_app">Tampilkan app yang baru terinstal diriwayat</string>
-    <string name="shortcut_added">Jalan pintas ditambahkan untuk Zen Launcher.</string>
 
     <string name="items_title">%d item</string>
 
     <string name="restart_desc">Perbaikan masalah tema / kontak baru tidak tampil</string>
-    <string name="restart_name">Mulai-ulang Zen Launcher</string>
-    <string name="restart_warn">Anda ingin benar-benar memulai-ulang Zen Launcher? Jika Zen Launcher bukan launcher baku anda maka app akan keluar.</string>
+    <string name="restart_name">Mulai-ulang Zen</string>
+    <string name="restart_warn">Anda ingin benar-benar memulai-ulang Zen? Jika Zen bukan launcher baku anda maka app akan keluar.</string>
 
     <string name="freeze_history_name">Riwayat pembekuan</string>
     <string name="freeze_history_warn">Anda yakin ingin membekukan riwayat dan menonaktifkan semua pembaruan? Riwayat anda tidak akan berubah lagi.</string>
@@ -108,7 +104,7 @@
     <string name="ui_excluded_apps_dialog_title">Batalkan pilihan app yang anda ingin masukkan</string>
     <string name="ui_excluded_apps_not_found">Tidak ada app yang sudah diabaikan</string>
     <string name="search_providers_title">Pilih layanan pencari web</string>
-    <string name="history_mode_name">Mode diwayat</string>
+    <string name="history_mode_name">Mode riwayat</string>
     <string name="history_mode_desc">Pilih cara bagaimana riwayat diisi</string>
     <string name="menu_shortcut_remove">Hapus jalan pintas</string>
 
@@ -118,8 +114,6 @@
     <string name="settings_storage">Penyimpanan</string>
     <string name="settings_dev">Pengaturan pengembang</string>
     <string name="settings_accessibility">Aksesibilitas</string>
-    <string name="keyboard_workaround_name">Saran solusi keyboard</string>
-    <string name="keyboard_workaround_desc">Cegah soft-keyboards (seperti SwiftKey™) dari menampilkan sugesti</string>
     <string name="alternate_history_inputs">Alternatif masukan riwayat</string>
     <string name="keyboard_options">Opsi keyboard</string>
     <string name="misc">Dll</string>
@@ -151,14 +145,7 @@ Catatan: Jika anda tidak ingin melihat opsi \'Selalu\', tekan Tombol Rumah setel
 
 
     <string name="color_picker_default_title">Pilih warna</string>
-    <string name="color_swatch_description">Warna <xliff:g example="14" id="color_index">%1$d</xliff:g></string>
-    <string name="color_swatch_description_selected">Warna <xliff:g example="14" id="color_index">%1$d</xliff:g> terpilih</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
-</resources>
+    <string name="color_swatch_description">Warna %1$d</string>
+    <string name="color_swatch_description_selected">Warna %1$d terpilih</string>
+<string name="lwp_touch">Kirim peristiwa sentuhan ke wallpaper</string>
+    </resources>

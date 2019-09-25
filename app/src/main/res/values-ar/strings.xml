@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher قاذفة</string>
-    <string name="activity_setting">إعدادات Zen Launcher</string>
+<resources>
+    <string name="app_name">Zen قاذفة</string>
+    <string name="activity_setting">إعدادات Zen</string>
     <string name="ui_search_hint">بحث التطبيقات، والاتصالات، …</string>
     <string name="ui_item_search">%1$s البحث عن \"%2$s\"</string>
     <string name="ui_item_phone">اتصال \"%s\"</string>
@@ -9,9 +9,9 @@
     <string name="ui_item_contact_hint_call">مكالمة</string>
 
     <string name="title_ui">واجهة المستخدم</string>
-    <string name="title_history">التاريخ</string>
+    <string name="title_history">سِجلّ الإعدادات</string>
     <string name="title_providers">اختيار مقدمي</string>
-    <string name="title_advanced">إعدادات متقدمة</string>
+    <string name="title_advanced">الإعدادات المتقدمة</string>
     <string name="menu_settings">إعدادات الجهاز</string>
 
     <string name="ui_empty_1">البدء في البحث عن أي شيء</string>
@@ -19,20 +19,18 @@
     <string name="ui_empty_2">نرى دائما تاريخكم</string>
     <string name="ui_empty_2_sub">للوصول السريع</string>
     <string name="ui_empty_3">الوصول السريع إلى التطبيقات الأكثر استخداما</string>
-    <string name="ui_empty_3_sub">Zen Launcher قاذفة يتعلم من عاداتك</string>
+    <string name="ui_empty_3_sub">Zen قاذفة يتعلم من عاداتك</string>
 
     <string name="contacts_name">جهات الاتصال</string>
 
-    <string name="search_name">بحث جوجل</string>
+    <string name="search_name">البحث على الويب</string>
 
-    <string name="settings_name">إعدادات</string>
-
-    <string name="phone_name">هاتف</string>
+    <string name="settings_name">إعدادات الجهاز</string>
 
     <string name="shortcuts_name">الاختصارات</string>
 
     <string name="main_menu">قائمة</string>
-    <string name="main_clear">حقل البحث واضح</string>
+    <string name="main_clear">مسح شريط البحث</string>
     <string name="main_kiss">عرض قائمة التطبيقات المفضلة</string>
     <string name="main_kiss_back">عرض التاريخ</string>
     <string name="reset_name">إعادة تعيين التاريخ</string>
@@ -42,11 +40,11 @@
     <string name="reset_favorites_name">المفضلة إعادة تعيين</string>
     <string name="reset_favorites_warn">هل تريد حقا أن إعادة المفضلة لديك؟</string>
     <string name="keyboard_name">لوحة المفاتيح عرض</string>
-    <string name="history_hide_desc">إخفاء التاريخ وشاشة مقدمات</string>
+    <string name="history_hide_desc">إخفاء التاريخ وشاشة المقدمات و تفعيل الويدجات</string>
     <string name="history_hide_name">واجهة أضيق الحدود</string>
     <string name="history_onclick_name">واجهة أضيق الحدود: عرض التاريخ على اتصال</string>
     <string name="portrait_title">وضع صورة القوة</string>
-    <string name="icons_hide_main">إخفاء التطبيقات</string>
+    <string name="icons_hide_main">إخفاء أيقونات التطبيق</string>
     <string name="icons_hide_desc">تمكين على الأجهزة البطيئة</string>
     <string name="root_mode_desc">تمكين ميزات الجذر إذا كان متوفرا (إلى السبات التطبيقات)</string>
     <string name="root_mode_name">وضع الجذر</string>
@@ -55,7 +53,7 @@
     <string name="alias_phone">الاتصال الهاتفي، والدعوة، الهاتف</string>
     <string name="alias_contacts">الاتصالات، والناس، والعلاقات</string>
     <string name="alias_web">ومتصفح الإنترنت، والإنترنت،</string>
-    <string name="alias_mail">البريد الإلكتروني البريد</string>
+    <string name="alias_mail">البريد الإلكتروني، البريد، بريد</string>
     <string name="alias_market">السوق، مخزن، مركز التطبيق</string>
     <string name="alias_clock">على مدار الساعة، والتنبيه، وتوقيت، ساعة توقيت</string>
     <string name="alias_messaging">رسالة نصية، يؤلف، والرسائل القصيرة، رسائل الوسائط المتعددة والرسائل</string>
@@ -71,38 +69,27 @@
     <string name="favorites_erased">المفضلة محوها.</string>
     <string name="menu_favorites_add">أضف الى المفضلة</string>
     <string name="excluded_app_list_erased">محت قائمة التطبيقات استبعادها.</string>
-    <string name="excluded_app_list_added">التطبيق استبعادها من قبلة. إعادة تعيين من خلال إعدادات Zen Launcher</string>
+    <string name="excluded_app_list_added">التطبيق استبعادها من قبلة. إعادة تعيين من خلال إعدادات Zen</string>
 
     <string name="removed_item">إزالة</string>
     <string name="menu_remove">إزالة من التاريخ</string>
-    <string name="menu_exclude">استبعاد التطبيق من Zen Launcher</string>
+    <string name="menu_exclude">استبعاد التطبيق من Zen</string>
     <string name="menu_app_details">معلومات التطبيق</string>
     <string name="menu_app_uninstall">الغاء التثبيت</string>
     <string name="menu_app_hibernate">نام</string>
 
     <string name="toast_hibernate_completed">%s مسبوت بنجاح، استئناف مستيقظا.</string>
-    <string name="toast_hibernate_error">%s لا مسبوت بنجاح.</string>
+    <string name="toast_hibernate_error"/>
     <string name="menu_contact_copy_phone">رقم الهاتف نسخة</string>
     <string name="theme_name">موضوع</string>
     <string name="menu_phone_create">إنشاء اتصال</string>
 
     <string name="toast_favorites_added">تمت إضافة%s إلى المفضلة</string>
 
-    <string name="order_apps_name">التطبيق ترتيب القائمة</string>
-    <string name="enable_sms">تجميع التاريخ من الرسائل النصية</string>
     <string name="enable_phone">تجميع التاريخ من المكالمات الهاتفية</string>
     <string name="enable_app">تجميع التاريخ من التطبيق تثبيت</string>
-    <string name="shortcut_added">وأضاف اختصار لـ Zen Launcher.</string>
 
-    <string name="color_picker_default_title">"تحديد لون:"</string>
-    <string name="color_swatch_description">"اللون <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="color_swatch_description_selected">"تم تحديد اللون <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
-</resources>
+    <string name="color_picker_default_title">اختيار لون</string>
+<string name="ui_item_visit">زر ”%1$s“</string>
+    <string name="color_swatch_description">اللون %1$d</string>
+    </resources>
