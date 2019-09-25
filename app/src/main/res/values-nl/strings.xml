@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
 
-    <string name="app_name">Zen Launcher-launcherdas</string>
-    <string name="activity_setting">Zen Launcher-instellingen</string>
+    <string name="app_name">Zen-launcherdas</string>
+    <string name="activity_setting">Zen-instellingen</string>
     <string name="ui_search_hint">Zoek apps, contacten, …</string>
     <string name="ui_item_search">%1$s Zoek naar “%2$s”</string>
     <string name="ui_item_phone">Bel “%s”</string>
@@ -19,15 +19,13 @@
     <string name="ui_empty_2">Laat altijd geschiedenis zien</string>
     <string name="ui_empty_2_sub">Voor snelle toegang</string>
     <string name="ui_empty_3">Snelle toegang tot uw meest gebruikte apps</string>
-    <string name="ui_empty_3_sub">Zen Launcher-launcher leert van jouw gebruik</string>
+    <string name="ui_empty_3_sub">Zen-launcher leert van jouw gebruik</string>
 
     <string name="contacts_name">Contacten</string>
 
     <string name="search_name">Zoeken op het web</string>
 
     <string name="settings_name">Apparaatinstellingen</string>
-
-    <string name="phone_name">Telefoon</string>
 
     <string name="main_menu">Menu</string>
     <string name="main_clear">Zoekbalk leegmaken</string>
@@ -74,7 +72,6 @@
 
     <string name="shortcuts_name">Snelkoppelingen</string>
 
-    <string name="stub_app_tag">Tagvoorbeeld</string>
     <string name="reset_excluded_apps_name">Reset lijst met uitgesloten apps</string>
     <string name="reset_excluded_apps_warn">Weet je zeker dat je de lijst met uitgesloten apps wil resetten?</string>
     <string name="ui_excluded_apps">Bekijk of bewerk uw uitgesloten apps</string>
@@ -83,8 +80,6 @@
     <string name="reset_warn">Weet je zeker dat je jouw geschiedenis wil resetten?</string>
     <string name="reset_favorites_name">Reset lijst met favorieten</string>
     <string name="reset_favorites_warn">Weet je zeker dat je jouw favorieten wil resetten?</string>
-    <string name="keyboard_workaround_name">Workaround voor toetsenbordsuggesties</string>
-    <string name="keyboard_workaround_desc">Voorkom dat toetsenborden als Swiftkey suggesties tonen</string>
     <string name="history_hide_desc">Geschiedenis- en intro-scherm verbergen; widgets inschakelen</string>
     <string name="history_hide_name">Minimalistische UI</string>
     <string name="history_onclick_name">Toon geschiedenis bij aanraking</string>
@@ -111,29 +106,26 @@
     <string name="menu_favorites_add">Voeg toe aan favorieten</string>
     <string name="menu_tags_edit">Voeg tags toe of bewerk tags</string>
     <string name="tags_add_title">Voeg spatiegescheiden tags toe</string>
-    <string name="tags_confirmation_added">Tag is ingesteld</string>
+    <string name="tags_confirmation_added">Labels ingesteld</string>
     <string name="excluded_app_list_erased">Lijst van verborgen apps leeggemaakt.</string>
-    <string name="excluded_app_list_added">App verborgen in Zen Launcher. Reset in de instellingen</string>
+    <string name="excluded_app_list_added">App verborgen in Zen. Reset in de instellingen</string>
 
-    <string name="menu_exclude">Laat app niet zien in Zen Launcher</string>
+    <string name="menu_exclude">Laat app niet zien in Zen</string>
     <string name="menu_shortcut_remove">Verwijder shortcut</string>
 
     <string name="menu_phone_create">Contactpersoon creëren</string>
 
     <string name="toast_favorites_added">%s toegevoegd aan favorieten</string>
 
-    <string name="order_apps_name">Volgorde applicatielijst</string>
-    <string name="enable_sms">Inkomende sms-berichten weergeven in geschiedenis</string>
     <string name="enable_phone">Toon inkomende gesprekken in geschiedenis</string>
     <string name="enable_app">Laat laatst geïnstalleerde apps zien in geschiedenis</string>
     <string name="enable_favorites_bar">Favoriete boven zoekbalk weergeven</string>
     <string name="exclude_favorites">Toon favorieten niet in geschiedenis</string>
     <string name="favorites_hide">Verberg favorietenbalk</string>
-    <string name="shortcut_added">Snelkoppeling toegevoegd aan Zen Launcher.</string>
 
     <string name="restart_desc">Themaproblemen en contacten die niet worden weergegeven herstellen</string>
-    <string name="restart_name">Herstart Zen Launcher</string>
-    <string name="restart_warn">Weet u zeker dat u Zen Launcher wilt herstarten? Als Zen Launcher niet uw standaard-beginscherm is, zal het programma simpelweg afsluiten.</string>
+    <string name="restart_name">Herstart Zen</string>
+    <string name="restart_warn">Weet u zeker dat u Zen wilt herstarten? Als Zen niet uw standaard-beginscherm is, zal het programma simpelweg afsluiten.</string>
 
     <string name="default_launcher_title">Standaard-beginscherm wijzigen</string>
     <string name="items_title">%d items</string>
@@ -153,9 +145,9 @@
     <string name="number_of_display_items">Maximaal aantal zoek- en geschiedenisresultaten</string>
 
 
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Een kleur selecteren"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">Kleur <xliff:g example="14" id="color_index">%1$d</xliff:g></string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">Kleur <xliff:g example="14" id="color_index">%1$d</xliff:g> geselecteerd</string>
+    <string name="color_picker_default_title">"Een kleur selecteren"</string>
+    <string name="color_swatch_description">Kleur \'%1$d\'%1$d</string>
+    <string name="color_swatch_description_selected">Kleur \'%1$d\' geselecteerd%1$d geselecteerd</string>
     <string name="color_transparent_dark">Doorzichtig donker</string>
     <string name="color_transparent_white">Doorzichtig wit</string>
     <string name="color_transparent">Doorzichtig</string>
@@ -178,7 +170,7 @@
     <string name="search_provider_added">De zoekdienst is toegevoegd.</string>
     <string name="search_provider_deleted">De zoekdienst(en) is (zijn) verwijderd.</string>
     <string name="search_provider_error_char">Gebruik niet het teken |</string>
-    <string name="search_provider_error_placeholder">Gebruik {q} als plaatsopvuller</string>
+    <string name="search_provider_error_placeholder">Gebruik %s als plaatsopvuller</string>
     <string name="search_provider_error_url">Gebruik een geldige URL</string>
     <string name="search_provider_error_exists">Er bestaat al een dienst met deze naam</string>
 
@@ -189,9 +181,9 @@
     <string name="wp_drag_animate">Verschuivende achtergrond</string>
     <string name="wp_drag_animate_desc">Horizontaal slepen zal de achtergrond doen verschuiven</string>
     <string name="pref_hide_navbar">Navigatiebalk verbergen</string>
-    <string name="pref_hide_navbar_desc">Navigatiebalk verbergen en volledig scherm-modus inschakelen (KitKat (4.4) en hoger)</string>
+    <string name="pref_hide_navbar_desc">Navigatiebalk verbergen en volledig scherm-modus inschakelen</string>
     <string name="pref_hide_statusbar">Statusbalk verbergen</string>
-    <string name="pref_hide_statusbar_desc">Meldingenbalk verbergen en volledig scherm-modus inschakelen (KitKat (4.4) en hoger)</string>
+    <string name="pref_hide_statusbar_desc">Meldingenbalk verbergen en volledig scherm-modus inschakelen</string>
     <string name="history_settings_summary">Wis uw geschiedenis, sluit apps uit, …</string>
     <string name="user_interface_summary">Thema\'s, doorzichtigheid en kleuren</string>
     <string name="providers_summary">Schakel diensten uit, voeg aangepaste zoekmachines toe, …</string>
@@ -210,12 +202,19 @@
 
     <string name="rounded_list">Afgeronde lijsthoeken</string>
     <string name="rounded_bars">Afgeronde balkhoeken</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="colors">Kleuren</string>
+    <string name="black_notification_icons">Zwarte meldingspictogrammen gebruiken</string>
+    <string name="shortcuts_no_host_permission">Zen is niet je standaard beginscherm meer en heeft dus geen toegang tot snelkoppelingen.</string>
+    <string name="unable_add_shortcut">Het toevoegen van snelkoppelingen is onmogelijk; de dienst is uitgeschakeld in de Zen-instellingen)</string>
+    <string name="wp_animate_center">Achtergrond centreren</string>
+    <string name="wp_animate_center_desc">De achtergrond zal gecentreerd worden na scrollen</string>
+    <string name="wp_animate_sides">Doorlopende achtergrond</string>
+    <string name="wp_animate_sides_desc">De achtergrond zal doorlopen langs de linker- of rechterkant na scrollen</string>
+    <string name="screen_toggle_tags">Labelbalk aanpassen</string>
+    <string name="pref_toggle_tags_select">Te tonen labels op balk</string>
+    <string name="ctx_menu">Zen-menu</string>
+    <string name="pref_tags_menu">Labelsmenu inschakelen</string>
+    <string name="popup_tags_title">Beschikbare labels</string>
+    <string name="popup_tags_actions">Beschikbare acties</string>
+    <string name="show_history">Geschiedenis tonen</string>
 </resources>

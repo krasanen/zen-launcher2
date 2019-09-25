@@ -1,43 +1,34 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Параметры</string>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zen</string>
+    <string name="activity_setting">Параметры Zen</string>
     <string name="ui_search_hint">Поиск…</string>
     <string name="ui_item_search">%1$s “%2$s”</string>
     <string name="ui_item_phone">Вызвать “%s”</string>
     <string name="ui_item_contact_hint_message">Сообщение</string>
     <string name="ui_item_contact_hint_call">Вызов</string>
-
     <string name="title_ui">Интерфейс</string>
     <string name="title_history">История</string>
     <string name="title_providers">Поиск</string>
     <string name="menu_settings">Настройки</string>
-
     <string name="ui_empty_1">Поищите что-нибудь</string>
     <string name="ui_empty_1_sub">Приложения, контакты, …</string>
     <string name="ui_empty_2">История под рукой</string>
     <string name="ui_empty_2_sub">Находите быстрее</string>
     <string name="ui_empty_3">Приложения рядом</string>
     <string name="ui_empty_3_sub">Самые нужные</string>
-
     <string name="contacts_name">Контакты</string>
-
     <string name="search_name">Веб-поиск</string>
-
     <string name="settings_name">Настройки</string>
-
-    <string name="phone_name">Номера</string>
-
     <string name="main_menu">Меню</string>
     <string name="main_clear">Очистить поле</string>
-    <string name="main_kiss">Избранное и приложения</string>
+    <string name="main_kiss">Список приложений</string>
     <string name="main_kiss_back">История</string>
     <string name="reset_name">Сброс истории</string>
     <string name="keyboard_name">Показать при запуске</string>
-
     <string name="alias_phone">звонок,вызов,телефон</string>
     <string name="alias_contacts">контакты,люди,друзья</string>
-    <string name="alias_web">интернет,сайты,браузер</string>
+    <string name="alias_web">интернет,веб,браузер</string>
     <string name="alias_mail">почта,сообщение,написать,письмо</string>
     <string name="alias_market">маркет,магазин,репозиторий</string>
     <string name="alias_clock">часы,будильник,таймер,секундомер</string>
@@ -51,120 +42,91 @@
     <string name="menu_wallpaper">Обои</string>
     <string name="application_not_found">Не удалось запустить приложение</string>
     <string name="history_erased">История сброшена</string>
-
     <string name="removed_item">Удалено</string>
     <string name="menu_remove">Убрать из истории</string>
     <string name="menu_app_details">О приложении</string>
     <string name="menu_app_uninstall">Деинсталляция</string>
     <string name="theme_name">Тема</string>
-
     <string name="menu_contact_copy_phone">Копировать номер</string>
     <string name="title_advanced">Дополнительно</string>
     <string name="root_mode_desc">Для остановки приложений</string>
     <string name="root_mode_name">Root-режим</string>
     <string name="root_mode_error">Root-права не предоставлены</string>
-
     <string name="menu_app_hibernate">Остановить</string>
-
     <string name="toast_hibernate_completed">%s остановлено</string>
     <string name="toast_hibernate_error">%s не остановлено</string>
     <string name="portrait_title">Портретный режим</string>
     <string name="menu_phone_create">Создать контакт</string>
-
-    <string name="order_apps_name">Сортировка приложений</string>
-
     <string name="history_hide_desc">Скрыть историю и приветствие, включить виджеты</string>
     <string name="history_hide_name">Лаконичный UI</string>
     <string name="history_onclick_name">История при нажатии</string>
     <string name="icons_hide_main">Скрыть значки</string>
     <string name="icons_hide_desc">Для медленных устройств</string>
     <string name="shortcuts_name">Ярлыки</string>
-
     <string name="reset_warn">История будет сброшена. Продолжить?</string>
-    <string name="enable_sms">Входящие SMS</string>
     <string name="enable_phone">Входящие вызовы</string>
     <string name="enable_app">Новые приложения</string>
-
-    <string name="reset_excluded_apps_name">Сброс списка скрытых</string>
-    <string name="reset_excluded_apps_warn">Список скрытых будет сброшен. Продолжить?</string>
-    <string name="excluded_app_list_erased">Список скрытых сброшен</string>
+    <string name="reset_excluded_apps_name">Сброс списка исключённых из Zen</string>
+    <string name="reset_excluded_apps_warn">Список исключённых приложений будет сброшен. Продолжить\?</string>
+    <string name="excluded_app_list_erased">Список исключённых приложений сброшен</string>
     <string name="excluded_app_list_added">Приложение можно восстановить в Параметрах</string>
-
-    <string name="menu_exclude">Скрыть</string>
-
+    <string name="menu_exclude">Исключить …</string>
     <string name="reset_favorites_name">Сброс избранного</string>
     <string name="reset_favorites_warn">Избранное будет сброшено. Продолжить?</string>
     <string name="favorites_erased">Избранное сброшено</string>
     <string name="menu_favorites_add">В избранное</string>
     <string name="toast_favorites_added">%s добавлено в избранное</string>
-
-    <string name="shortcut_added">Ярлык добавлен в Zen Launcher</string>
-
     <string name="icons_pack_name">Значки (ADW.Launcher)</string>
     <string name="icons_pack_default_name">Системные значки</string>
-
     <string name="settings_nfc">Радиосвязь NFC</string>
     <string name="settings_tethering">Режим модема и точка доступа</string>
     <string name="restart_desc">Помогает при ошибках тем и невидимых новых контактах</string>
-    <string name="restart_name">Перезапуск Zen Launcher</string>
-    <string name="restart_warn">Если Zen Launcher не лончер по умолчанию, он будет закрыт. Продолжить?</string>
-
+    <string name="restart_name">Перезапуск Zen</string>
+    <string name="restart_warn">Если Zen не лончер по умолчанию, возможно, он будет закрыт. Продолжить\?</string>
     <string name="items_title">%d элементов</string>
-
     <string name="freeze_history_name">Закрепить историю</string>
     <string name="freeze_history_warn">История не будет изменяться. Продолжить?</string>
-
-    <string name="ui_excluded_apps">Список скрытых</string>
-    <string name="ui_excluded_apps_dialog_title">Снимите метку для восстановления приложения</string>
+    <string name="ui_excluded_apps">Исключённые из Zen приложения</string>
+    <string name="ui_excluded_apps_dialog_title">Выбор исключений</string>
     <string name="ui_excluded_apps_not_found">Нет приложений</string>
     <string name="search_providers_title">Выбор служб</string>
     <string name="history_mode_name">Режим истории</string>
     <string name="history_mode_desc">Способ заполнения истории</string>
     <string name="menu_shortcut_remove">Убрать ярлык</string>
-
     <string name="enable_favorites_bar">Избранное над поиском</string>
-    <string name="exclude_favorites">Кроме избранных</string>
-    <string name="favorites_hide">Скрывать избранное</string>
+    <string name="exclude_favorites">Исключить избранные из истории</string>
+    <string name="favorites_hide">Скрыть избранное</string>
     <string name="settings_storage">Накопитель</string>
     <string name="settings_dev">Для разработчиков</string>
     <string name="settings_accessibility">Специальные возможности</string>
     <string name="ui_item_visit">Открыть “%1$s”</string>
-    <string name="keyboard_workaround_desc">Блокировать варианты ввода в сторонних клавиатурах</string>
-    <string name="keyboard_workaround_name">Обход вариантов</string>
     <string name="settings_sound">Звук и громкость</string>
     <string name="settings_display">Дисплей</string>
     <string name="menu_tags_edit">Теги</string>
     <string name="tags_add_title">Добавьте теги через пробел</string>
-    <string name="tags_confirmation_added">Теги добавлены</string>
+    <string name="tags_confirmation_added">Теги обновлены</string>
     <string name="default_launcher_title">Лончер по умолчанию</string>
     <string name="alternate_history_inputs">Другие источники</string>
     <string name="keyboard_options">Клавиатура</string>
     <string name="misc">Разное</string>
     <string name="toast_favorites_removed">%s удалено из избранного</string>
     <string name="menu_favorites_remove">Убрать из избранного</string>
-
     <string name="default_launcher_warn">Выбрав лончер по умолчанию, Вы попадёте на его домашний экран. Продолжить?
 \n
 \nСовет: если кнопка \'Всегда\' недоступна, нажмите \'Домой\' после выбора лончера.</string>
-
-
-    <string name="color_picker_default_title" msgid="1248663997452044787">Выбор цвета</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">Цвет <xliff:g id="color_index" example="14">%1$d</xliff:g></string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">Выбран <xliff:g example="14" id="color_index">%1$d</xliff:g> цвет</string>
+    <string name="color_picker_default_title">Выбор цвета</string>
+    <string name="color_swatch_description">Цвет %1$d</string>
+    <string name="color_swatch_description_selected">Выбран %1$d цвет</string>
     <string name="tags_visible">Показать теги</string>
     <string name="share">Отправить…</string>
     <string name="number_of_display_items">Лимит истории и поиска</string>
-
     <string name="main_color">Основной цвет</string>
     <string name="notification_bar_color">Цвет строки уведомлений</string>
-
     <string name="color_transparent_dark">Чёрный прозрачный</string>
     <string name="color_transparent_white">Белый прозрачный</string>
     <string name="color_transparent">Прозрачный</string>
-
-
     <string name="large_search_bar">Крупный поиск</string>
-<string name="lwp_touch">Касаться обоев</string>
+    <string name="lwp_touch">Касаться обоев</string>
     <string name="lwp_drag">Перетаскивание для обоев</string>
     <string name="lwp_drag_desc">Несколько событий касания</string>
     <string name="wp_drag_animate">Прокрутка обоев</string>
@@ -178,23 +140,19 @@
     <string name="search_provider_added">Служба поиска добавлена</string>
     <string name="search_provider_deleted">Служба поиска удалена</string>
     <string name="search_provider_error_char">Не используйте символ |</string>
-    <string name="search_provider_error_placeholder">Используйте {q} для подстановки запроса</string>
+    <string name="search_provider_error_placeholder">Используйте %s для подстановки запроса</string>
     <string name="search_provider_error_url">Используйте корректный URL</string>
     <string name="search_provider_error_exists">Служба с таким именем уже существует</string>
-
-
     <string name="pref_hide_navbar">Скрыть кнопки</string>
-    <string name="pref_hide_navbar_desc">Скрыть экранные кнопки в KK+</string>
+    <string name="pref_hide_navbar_desc">Скрыть экранные кнопки, включить режим погружения</string>
     <string name="pref_hide_statusbar">Скрыть панель уведомлений</string>
-    <string name="pref_hide_statusbar_desc">Скрыть панель уведомлений, включить режим погружения в KK+</string>
+    <string name="pref_hide_statusbar_desc">Скрыть панель уведомлений, включить режим погружения</string>
     <string name="transparent_search_bar">Прозрачный поиск</string>
     <string name="transparent_favorites_bar">Прозрачное избранное</string>
-
     <string name="menu_widget_add">Виджеты</string>
     <string name="menu_widget_remove">Убрать виджеты</string>
     <string name="rate_the_app">Отзыв</string>
-
-<string name="history_settings_summary">Сброс истории, скрытие приложений, …</string>
+    <string name="history_settings_summary">Сброс истории, исключение приложений, …</string>
     <string name="user_interface_summary">Темы, цвета и прозрачность</string>
     <string name="providers_summary">Провайдеры и службы поиска, …</string>
     <string name="title_ux">Использование</string>
@@ -202,22 +160,59 @@
     <string name="title_favorites">Избранное</string>
     <string name="history_favorites_summary">Сброс избранного, панель избранного, …</string>
     <string name="freeze_history_summary">Не менять историю, пока отмечено</string>
-
-<string name="title_wallpaper">Живые обои</string>
-    <string name="enable_favorites_bar_summary_off">Показать избранное нажатием значка Zen Launcher</string>
+    <string name="title_wallpaper">Живые обои</string>
+    <string name="enable_favorites_bar_summary_off">Показать избранное нажатием значка Zen</string>
     <string name="enable_favorites_bar_summary_on">Показать избранное над панелью поиска</string>
-    <string name="get_help">Получить помощь!</string>
-
-<string name="permission_denied">Разрешение было отклонено</string>
-
-<string name="rounded_list">Округлый список</string>
+    <string name="get_help">Получить помощь</string>
+    <string name="permission_denied">Разрешение было отклонено</string>
+    <string name="rounded_list">Округлый список</string>
     <string name="rounded_bars">Округлые панели</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="wp_animate_center">Центровка обоев</string>
+    <string name="wp_animate_center_desc">Центровать обои после прокрутки</string>
+    <string name="wp_animate_sides">Края обоев</string>
+    <string name="wp_animate_sides_desc">Удерживать обои у края после прокрутки</string>
+    <string name="colors">Цвет</string>
+    <string name="black_notification_icons">Чёрные значки уведомлений</string>
+    <string name="shortcuts_no_host_permission">Zen не лончер по умолчанию и не имеет доступа к ярлыкам.</string>
+    <string name="unable_add_shortcut">Не удалось добавить ярлыки (провайдер отключён в параметрах Zen)</string>
+    <string name="screen_toggle_tags">Меню тегов</string>
+    <string name="pref_toggle_tags_select">Теги для меню</string>
+    <string name="ctx_menu">Меню Zen</string>
+    <string name="pref_tags_menu">Меню тегов</string>
+    <string name="popup_tags_title">Теги</string>
+    <string name="popup_tags_actions">Действия</string>
+    <string name="show_history">История</string>
+    <string name="unable_to_initialize_shortcuts">Сбой инициализации ярлыков. Zen является лончером по умолчанию?</string>
+    <string name="pref_hide_circle">Скрыть круг Zen</string>
+    <string name="pref_hide_circle_desc">Но список приложений будет доступен</string>
+    <string name="pref_tags_menu_dismiss">Закрыть меню после выбора</string>
+    <string name="show_untagged">Без тегов</string>
+    <string name="pref_show_untagged">Без тегов</string>
+    <string name="reset_excluded_from_history_apps_name">Сброс списка исключённых из истории</string>
+    <string name="reset_excluded_from_history_apps_warn">Список исключённых из истории приложений будет сброшен. Продолжить\?</string>
+    <string name="settings_excluded_apps">Исключённые приложения</string>
+    <string name="ui_excluded_from_history_apps">Исключённые из истории приложения</string>
+    <string name="excluded_app_history_added">Приложение исключено из истории. Восстановление в параметрах Zen</string>
+    <string name="menu_exclude_kiss">из Zen</string>
+    <string name="menu_exclude_history">из истории</string>
+    <string name="history_sort_name">Сортировка истории</string>
+    <string name="history_sort_desc">Сортировать элементы истории по алфавиту</string>
+    <string name="contacts_call_on_click">Вызов контактов нажатием</string>
+    <string name="swap_kiss_button_with_menu">Круг Zen справа</string>
+    <string name="enable_gestures">Жесты в пустых зонах</string>
+    <string name="enable_gestures_desc">(↑ клавиатура, ↓ уведомления)</string>
+    <string name="keyboard_suggestions">Автодополнение / варианты слов</string>
+    <string name="notification_support">Точка на приложениях с уведомлениями</string>
+    <string name="notification_dialog">В следующем меню включите доступ для Zen</string>
+    <string name="cant_pin_shortcut">Не удаётся создать ярлыки. Zen является лончером по умолчанию\?</string>
+    <string name="search_results_options">Результаты поиска</string>
+    <string name="search_provider_toggle">Ссылки на службы поиска</string>
+    <string name="copy_confirmation">Скопировано в буфер</string>
+    <string name="search_provider_default">Служба по умолчанию</string>
+    <string name="shortcuts_reset">Сброс ярлыков</string>
+    <string name="shortcuts_reset_desc">Сбросить список ярлыков\?</string>
+    <string name="shortcuts_reset_done_desc">Список ярлыков сброшен</string>
+    <string name="pref_fav_tags_select">Теги для избранного</string>
+    <string name="pref_fav_tags_drawable_desc">Отключите для экономии памяти при избытке избранных тегов</string>
+    <string name="pref_fav_tags_drawable">Создать значки для тегов избранного</string>
 </resources>

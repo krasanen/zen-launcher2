@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
 
-    <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Zen Launcher postavke</string>
+    <string name="app_name">Zen launcher</string>
+    <string name="activity_setting">Zen postavke</string>
     <string name="ui_search_hint">Pretraži aplikacije, kontakte, …</string>
     <string name="ui_item_search">%1$s Potraži “%2$s”</string>
     <string name="ui_item_phone">Nazovi “%s”</string>
@@ -20,15 +20,13 @@
     <string name="ui_empty_2">Uvijek prikaži povIjest pretraživanja</string>
     <string name="ui_empty_2_sub">Za brži pristup</string>
     <string name="ui_empty_3">Brzi pristup do najkorištenijih aplikacija</string>
-    <string name="ui_empty_3_sub">Zen Launcher uči iz vaših navika</string>
+    <string name="ui_empty_3_sub">Zen uči iz vaših navika</string>
 
     <string name="contacts_name">Kontakti</string>
 
     <string name="search_name">Pretraživanje interneta</string>
 
     <string name="settings_name">Postavke uređaja</string>
-
-    <string name="phone_name">Brojevi telefona</string>
 
     <string name="main_menu">Meni</string>
     <string name="main_clear">Očisti tekst</string>
@@ -80,8 +78,6 @@
     <string name="reset_warn">Želite li obrisati povijest?</string>
     <string name="reset_favorites_name">Obriši favorite</string>
     <string name="reset_favorites_warn">Želite li obrisati favorite?</string>
-    <string name="keyboard_workaround_name">Zaobiđi prijedloge tipkovnice</string>
-    <string name="keyboard_workaround_desc">Onemogući tipkovnicama da pokazuju prijedloge</string>
     <string name="history_hide_desc">Sakrij povijest i uvodni sadržaj</string>
     <string name="history_hide_name">Minimalističko sučelje</string>
     <string name="history_onclick_name">Prikaži povijest na dodir</string>
@@ -105,7 +101,7 @@
     <string name="menu_favorites_add">Dodaj u favorite</string>
     <string name="portrait_title">Prisili uspravni prikaz</string>
     <string name="excluded_app_list_erased">Lista skrivenih aplikacija obrisana.</string>
-    <string name="excluded_app_list_added">Aplikacija skrivena. Vratite ju unutar Zen Launcher postavki</string>
+    <string name="excluded_app_list_added">Aplikacija skrivena. Vratite ju unutar Zen postavki</string>
 
     <string name="menu_exclude">Sakrij aplikaciju</string>
     <string name="menu_shortcut_remove">Ukloni prečac</string>
@@ -114,32 +110,21 @@
 
     <string name="toast_favorites_added">%s dodan u favorite</string>
 
-    <string name="order_apps_name">Sortiranje aplikacija</string>
-    <string name="enable_sms">Prikaži povijest dolaznih SMS poruka</string>
     <string name="enable_phone">Prikaži povijest dolaznih poziva</string>
     <string name="enable_app">Prikaži povijest novih aplikacija</string>
     <string name="enable_favorites_bar">Prikaži favorite iznad polja za pretraživanje</string>
     <string name="exclude_favorites">Sakrij favorite iz povijesti</string>
     <string name="favorites_hide">Sakrij polje favorita</string>
-    <string name="shortcut_added">Prečac dodan u Zen Launcher.</string>
 
     <string name="restart_desc">Popravi probleme teme / ne prikazivanje novih kontakata</string>
-    <string name="restart_name">Ponovo pokreni Zen Launcher</string>
-    <string name="restart_warn">Želite li ponovo pokrenuti Zen Launcher? Ako Zen Launcher nije vaš glavni pokretač aplikacija će se zatvoriti.</string>
+    <string name="restart_name">Ponovo pokreni Zen</string>
+    <string name="restart_warn">Želite li ponovo pokrenuti Zen? Ako Zen nije vaš glavni pokretač aplikacija će se zatvoriti.</string>
 
     <string name="items_title">%d stavke</string>
     <string name="keyboard_options">Postavke tipkovnice</string>
 
 
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Odabir boje"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">"Boja <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">"Odabrana je boja <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="color_picker_default_title">Odabir boje</string>
+    <string name="color_swatch_description">Boja %1$d</string>
+    <string name="color_swatch_description_selected">Odabrana je boja %1$d</string>
 </resources>

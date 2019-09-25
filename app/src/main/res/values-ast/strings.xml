@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_name">Llanzador Zen Launcher</string>
-    <string name="activity_setting">Axustes de Zen Launcher</string>
+    <string name="app_name">Llanzador Zen</string>
+    <string name="activity_setting">Axustes de Zen</string>
     <string name="ui_search_hint">Gueta aplicaciones, contautos…</string>
     <string name="ui_item_search">%1$s Guetar «%2$s»</string>
     <string name="ui_item_phone">Llamar a «%s»</string>
@@ -14,7 +14,7 @@
     <string name="ui_empty_1">Entama guetando daqué</string>
     <string name="ui_empty_1_sub">Aplicaciones, contautos, axustes…</string>
     <string name="ui_empty_3">Accesu rápidu a les apliacaciones más usaes</string>
-    <string name="ui_empty_3_sub">El llanzador Zen Launcher deprende de los tos vezos</string>
+    <string name="ui_empty_3_sub">El llanzador Zen deprende de los tos vezos</string>
 
     <string name="contacts_name">Contautos</string>
 
@@ -22,7 +22,6 @@
 
     <string name="settings_name">Axustes del preséu</string>
 
-    <string name="phone_name">Númberos de teléfonu</string>
     <string name="main_menu">Menú</string>
     <string name="history_hide_name">IU minimalística</string>
     <string name="root_mode_name">Mou root</string>
@@ -54,7 +53,7 @@
 
     <string name="ui_item_contact_hint_call">Llamar a</string>
 
-    <string name="reset_name">Reanicia la to historia de Zen Launcher</string>
+    <string name="reset_name">Reanicia la to historia de Zen</string>
     <string name="keyboard_name">Amosar tecláu nel aniciu</string>
     <string name="portrait_title">Forciar mou vertical</string>
     <string name="root_mode_desc">Si ta disponible, úsalu pa hibernar aplicaciones</string>
@@ -80,7 +79,6 @@
     <string name="shortcuts_name">Atayos</string>
 
     <string name="reset_warn">¿De xuru que quies reafitar la to historia?</string>
-    <string name="enable_sms">Poblar historia con mensaxes de testu</string>
     <string name="enable_phone">Poblar historia con llamaes telefóniques</string>
     <string name="enable_app">Poblar historia con instalaciones d\'aplicaciones</string>
 
@@ -95,7 +93,6 @@
     <string name="menu_favorites_add">Amestar a favoritos</string>
     <string name="settings_nfc">NFC</string>
     <string name="settings_tethering">Tethering</string>
-    <string name="shortcut_added">Amestóse l\'atayu a Zen Launcher.</string>
 
     <string name="ui_excluded_apps_not_found">Nun s\'escluyeron aplicaciones</string>
     <string name="ui_excluded_apps_dialog_title">Deseleiciona les aplicaciones que te prestaría incluyir</string>
@@ -103,12 +100,4 @@
     <string name="search_providers_title">Esbillar fornidores de gueta web</string>
     <string name="history_mode_name">Mou historia</string>
     <string name="history_mode_desc">Esbilla\'l mou nel que s\'enllena l\'historial</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
 </resources>

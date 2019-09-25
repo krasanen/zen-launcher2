@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Zen Launcher başladıcı</string>
-    <string name="activity_setting">Zen Launcher parametrləri</string>
+    <string name="app_name">Zen başladıcı</string>
+    <string name="activity_setting">Zen parametrləri</string>
     <string name="ui_search_hint">Axtar: Proqramlar, kontaktlar, …</string>
     <string name="ui_item_search">%1$s Şunu axtar: \"%2$s\"</string>
     <string name="ui_item_contact_hint_message">Mesaj</string>
@@ -15,15 +15,13 @@
     <string name="ui_empty_2">"Hər zaman keçmişi görün "</string>
     <string name="ui_empty_2_sub">Sürətli erişim üçün</string>
     <string name="ui_empty_3">Ən çox istifadə proqramlara sürətli giriş</string>
-    <string name="ui_empty_3_sub">Zen Launcher başladıcı vərdişlərinizə görə çalışır</string>
+    <string name="ui_empty_3_sub">Zen başladıcı vərdişlərinizə görə çalışır</string>
 
     <string name="contacts_name">Kontaktlar</string>
 
     <string name="search_name">Google axtarışı</string>
 
     <string name="settings_name">Parametrlər</string>
-
-    <string name="phone_name">Telefon</string>
 
     <string name="main_menu">Menyu</string>
     <string name="main_clear">Mətni sil</string>
@@ -73,12 +71,4 @@
 
     <string name="history_hide_desc">Keçmişi və daxil ekranını gizlət</string>
     <string name="history_hide_name">Minimalistik interfeys</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
 </resources>

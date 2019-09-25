@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_name">Zen Launcher ĵetilo</string>
-    <string name="activity_setting">Agordoj de Zen Launcher</string>
+    <string name="app_name">Zen ĵetilo</string>
+    <string name="activity_setting">Agordoj de Zen</string>
     <string name="ui_search_hint">Serĉi aplikaĵojn, kontaktojn, …</string>
     <string name="ui_item_search">Serĉi %1$s por “%2$s”</string>
     <string name="ui_item_visit">Viziti “%1$s”</string>
@@ -20,15 +20,13 @@
     <string name="ui_empty_2">Ĉiam vidi vian historion</string>
     <string name="ui_empty_2_sub">Por rapida aliro</string>
     <string name="ui_empty_3">Rapida aliro al plej uzataj aplikaĵoj</string>
-    <string name="ui_empty_3_sub">Zen Launcher ĵetilo lernas de viaj kutimoj</string>
+    <string name="ui_empty_3_sub">Zen ĵetilo lernas de viaj kutimoj</string>
 
     <string name="contacts_name">kontaktoj</string>
 
     <string name="search_name">TTT-serĉo</string>
 
     <string name="settings_name">Aparatoagordo</string>
-
-    <string name="phone_name">Telefonaj nombroj</string>
 
     <string name="shortcuts_name">Mallongirejoj</string>
 
@@ -46,7 +44,6 @@
     <string name="reset_favorites_name">Restarigi vian ŝatatoliston</string>
     <string name="reset_favorites_warn">Ĉu vi vere volas restarigi viajn ŝatatajn?</string>
     <string name="keyboard_name">Montri klavaron en komenco</string>
-    <string name="keyboard_workaround_name">Klavaraj sugestoj riparado</string>
     <string name="history_hide_desc">Kaŝi historion kaj komencan ekranon, ebligi widgets</string>
     <string name="history_onclick_name">Montri historion sur tuŝado</string>
     <string name="icons_hide_main">Kaŝi aplikaĵojn ikonojn</string>
@@ -59,14 +56,6 @@
     <string name="color_transparent_dark">Travidebla malluma</string>
     <string name="color_transparent_white">Travidebla blanka</string>
     <string name="color_transparent">Travidebla</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
 
 
-</resources>
+    </resources>

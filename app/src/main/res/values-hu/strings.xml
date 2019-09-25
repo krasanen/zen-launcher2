@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher indító</string>
-    <string name="activity_setting">Zen Launcher beállításai</string>
+<resources>
+    <string name="app_name">Zen indító</string>
+    <string name="activity_setting">Zen beállításai</string>
     <string name="ui_search_hint">App-ok, névjegyek, beállítások keresése, …</string>
     <string name="ui_item_search">%1$s “%2$s” keresése</string>
     <string name="ui_item_phone">“%s” hívása</string>
@@ -18,7 +18,7 @@
     <string name="ui_empty_2">Mindig láthatod az előzményeidet</string>
     <string name="ui_empty_2_sub">Gyorsan elérhető</string>
     <string name="ui_empty_3">Gyors hozzáférés a gyakran használt app-okhoz</string>
-    <string name="ui_empty_3_sub">A Zen Launcher indító tanul a szokásaidból</string>
+    <string name="ui_empty_3_sub">A Zen indító tanul a szokásaidból</string>
 
     <string name="contacts_name">Névjegyek</string>
 
@@ -26,13 +26,11 @@
 
     <string name="settings_name">Eszköz beállítások</string>
 
-    <string name="phone_name">Telefonszámok</string>
-
     <string name="main_menu">Menü</string>
     <string name="main_clear">Kereső szöveg törlése</string>
     <string name="main_kiss">Kedvencek és app lista megjelenítése</string>
     <string name="main_kiss_back">Előzmények megjelenítése</string>
-    <string name="reset_name">Zen Launcher előzmények törlése</string>
+    <string name="reset_name">Zen előzmények törlése</string>
     <string name="keyboard_name">Billentyűzet mutatása induláskor</string>
 
     <string name="alias_phone">tárcsázás,hívás,telefon</string>
@@ -92,15 +90,11 @@
     <string name="excluded_app_list_erased">Az elrejtett alkalmazások listája törölve.</string>
     <string name="excluded_app_list_added">App elrejtve. Ismét megjeleníthető a beállításokon keresztül</string>
 
-    <string name="menu_exclude">App kizárása a Zen Launcherből</string>
+    <string name="menu_exclude">App kizárása a Zenből</string>
     <string name="menu_phone_create">Névjegy létrehozása</string>
 
     <string name="toast_favorites_added">a(z) %s hozzáadva a kedvencekhez</string>
 
-    <string name="order_apps_name">App lista rendezése</string>
-    <string name="shortcut_added">Parancsikon hozzáadva.</string>
-
-    <string name="enable_sms">Bejövő SMS-ek mutatása az előzmények között</string>
     <string name="enable_phone">Bejövő hívások mutatása az előzmények között</string>
     <string name="enable_app">Újonnan telepített app-ok mutatása az előzmények között</string>
     <string name="ui_excluded_apps">Láthatatlan app-ok megtekintése, szerkesztése</string>
@@ -108,8 +102,8 @@
     <string name="freeze_history_name">Előzmények megállítása</string>
     <string name="freeze_history_warn">Biztosan meg szeretnéd állítani az előzményeket? Az előzményeid mostantól változatlanok maradnak.</string>
 
-    <string name="restart_name">Zen Launcher újraindítása</string>
-    <string name="restart_warn">Biztosan újraindítod a Zen Launcher indítót? Ha a Zen Launcher nem az alapértelmezett indító, akkor a Zen Launcher egyszerűen leáll.</string>
+    <string name="restart_name">Zen újraindítása</string>
+    <string name="restart_warn">Biztosan újraindítod a Zen indítót? Ha a Zen nem az alapértelmezett indító, akkor a Zen egyszerűen leáll.</string>
 
     <string name="items_title">%d elem</string>
 
@@ -117,15 +111,7 @@
     <string name="ui_excluded_apps_dialog_title">Vedd le a kijelölést azokról az app-okról, amiket láthatóvá akarsz tenni</string>
 
 
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Válasszon színt"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">"<xliff:g id="COLOR_INDEX">%1$d</xliff:g>. szín"</string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">"<xliff:g id="COLOR_INDEX">%1$d</xliff:g>. szín kiválasztva"</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="color_picker_default_title">"Válasszon színt"</string>
+    <string name="color_swatch_description">%1$d. szín"</string>
+    <string name="color_swatch_description_selected">%1$d. szín kiválasztva"</string>
 </resources>

@@ -1,206 +1,219 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools">
-
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Impostazioni di Zen Launcher</string>
-    <string name="ui_search_hint">Cerca applicazioni, contatti, …</string>
+    <string name="activity_setting">Impostazioni Zen</string>
+    <string name="ui_search_hint">Cerca Applicazioni, Contatti, …</string>
     <string name="ui_item_search">Cerca con %1$s: “%2$s”</string>
     <string name="ui_item_visit">Visita “%1$s”</string>
     <string name="ui_item_phone">Chiama “%s”</string>
-    <string name="ui_item_contact_hint_message">Invia messaggio a</string>
+    <string name="ui_item_contact_hint_message">Invia messaggio</string>
     <string name="ui_item_contact_hint_call">Chiama</string>
-
-    <string name="title_ui">Interfaccia utente</string>
+    <string name="title_ui">Interfaccia</string>
     <string name="title_history">Cronologia</string>
-    <string name="title_providers">Provider di ricerca</string>
-    <string name="title_advanced">Impostazioni avanzate</string>
-    <string name="menu_settings">Impostazioni dispositivo</string>
-
+    <string name="title_providers">Impostazioni Ricerca</string>
+    <string name="title_advanced">Avanzate</string>
+    <string name="menu_settings">Impostazioni Dispositivo</string>
     <string name="ui_empty_1">Inizia cercando qualcosa</string>
-    <string name="ui_empty_1_sub">Applicazioni, contatti, impostazioni, …</string>
-    <string name="ui_empty_2">Mostra sempre la cronologia</string>
+    <string name="ui_empty_1_sub">Applicazioni, Contatti, Impostazioni, …</string>
+    <string name="ui_empty_2">Vedi la tua Cronologia</string>
     <string name="ui_empty_2_sub">Per un accesso rapido</string>
-    <string name="ui_empty_3">Accedi rapidamente alle applicazioni più usate</string>
-    <string name="ui_empty_3_sub">Zen Launcher apprende dalle tue abitudini</string>
-
+    <string name="ui_empty_3">Accesso rapido alle App più usate</string>
+    <string name="ui_empty_3_sub">Zen apprende dalle tue abitudini</string>
     <string name="contacts_name">Contatti</string>
-
-    <string name="search_name">Ricerca web</string>
-
-    <string name="settings_name">Impostazioni dispositivo</string>
-
-    <string name="phone_name">Numeri di telefono</string>
-
-    <string name="shortcuts_name">Collegamenti</string>
-
+    <string name="search_name">Motori di Ricerca Web</string>
+    <string name="settings_name">Impostazioni Dispositivo</string>
+    <string name="shortcuts_name">Scorciatoie</string>
     <string name="main_menu">Menu</string>
-    <string name="main_clear">Elimina i dati di ricerca</string>
-    <string name="main_kiss">Mostra preferiti e lista applicazioni</string>
-    <string name="main_kiss_back">Mostra la cronologia</string>
-    <string name="reset_name">Elimina la cronologia</string>
-    <string name="reset_excluded_apps_name">Azzera l\'elenco delle applicazioni escluse</string>
-    <string name="reset_excluded_apps_warn">Sei sicuro di voler azzerare l\'elenco delle applicazioni escluse?</string>
-    <string name="ui_excluded_apps">Visualizza o modifica le applicazioni escluse</string>
-    <string name="ui_excluded_apps_dialog_title">Deseleziona le applicazioni che intendi includere</string>
-    <string name="ui_excluded_apps_not_found">Non vi sono applicazioni escluse</string>
-    <string name="reset_warn">Sei sicuro di voler eliminare la cronologia?</string>
-    <string name="reset_favorites_name">Azzera l\'elenco dei preferiti</string>
-    <string name="reset_favorites_warn">Sei sicuro di voler azzerare l\'elenco dei preferiti?</string>
-    <string name="keyboard_name">Visualizza la tastiera all\'avvio</string>
-    <string name="keyboard_workaround_name">Forza disabilitazione dei suggerimenti</string>
-    <string name="keyboard_workaround_desc">Disabilita la visualizzazione dei suggerimenti nelle tastiere con bug (come SwiftKey™)</string>
-    <string name="history_hide_desc">Cronologia e schermata introduttiva saranno nascoste</string>
-    <string name="history_hide_name">Interfaccia minimale</string>
-    <string name="history_onclick_name">Visualizza la cronologia al tocco</string>
-    <string name="portrait_title">Forza la modalità verticale</string>
-    <string name="lwp_touch">Manda gli eventi di tocco allo sfondo</string>
-    <string name="lwp_drag">Simula l\'evento di trascinamento per lo sfondo</string>
-    <string name="lwp_drag_desc">Registra eventi per i tocchi multipli</string>
-    <string name="wp_drag_animate">Trascina sfondo</string>
-    <string name="wp_drag_animate_desc">Trascina orizzontalmente per navigare nello sfondo</string>
-    <string name="icons_hide_main">Nascondi le icone delle applicazioni</string>
-    <string name="icons_hide_desc">Utile per i dispositivi lenti</string>
-    <string name="search_providers_title">Motore di ricerca</string>
-    <string name="search_providers_delete">Cancella i motori di ricerca</string>
-    <string name="custom_search_provider">Aggiungi un motore di ricerca</string>
-    <string name="search_provider_reset">Resetta i motori di ricerca</string>
-    <string name="search_provider_reset_desc">Vorresti reimpostare la lista di motori di ricerca?</string>
-    <string name="search_provider_reset_done_desc">I motori di ricerca sono stati reimpostati</string>
-    <string name="search_provider_name">Name del motore di ricerca</string>
-    <string name="search_provider_added">Il motore di ricerca è stato aggiunto.</string>
-    <string name="search_provider_deleted">Il motore di ricerca è stato cancellato.</string>
-    <string name="search_provider_error_char">Per favore, non usare il carattere |</string>
-    <string name="search_provider_error_placeholder">Per favore, usa {q} come placeholder della query</string>
-    <string name="search_provider_error_url">Per favore, inserisci un URL valido</string>
-    <string name="search_provider_error_exists">Un motore con questo nome esiste già</string>
-
-
-    <string name="history_mode_name">Generazione della cronologia</string>
-    <string name="history_mode_desc">Il criterio secondo cui la cronologia è generata</string>
-    <string name="root_mode_desc">Permette l\'ibernazione delle applicazioni</string>
-    <string name="root_mode_name">Modalità root</string>
-    <string name="root_mode_error">Richiesta di root fallita.</string>
-    <string name="freeze_history_name">Congela la cronologia</string>
-    <string name="freeze_history_warn">Sei sicuro di voler congelare la cronologia e mantenerla inalterata? La cronologia non verrà più aggiornata.</string>
-
-    <string name="icons_pack_name">Pacchetti icone (progettati per ADW.Launcher)</string>
-    <string name="icons_pack_default_name">Icone di sistema</string>
-
-    <string name="alias_phone">componi,chiama,telefona</string>
+    <string name="main_clear">Pulisci Barra di Ricerca</string>
+    <string name="main_kiss">Mostra elenco applicazioni</string>
+    <string name="main_kiss_back">Mostra Cronologia</string>
+    <string name="reset_name">Elimina Cronologia</string>
+    <string name="reset_excluded_apps_name">Elimina elenco app escluse da Zen</string>
+    <string name="reset_excluded_apps_warn">Vuoi veramente eliminare l\'elenco delle applicazioni escluse\?</string>
+    <string name="ui_excluded_apps">Visualizza o modifica app escluse da Zen</string>
+    <string name="ui_excluded_apps_dialog_title">Seleziona le App da Escludere</string>
+    <string name="ui_excluded_apps_not_found">Nessuna Applicazione Esclusa</string>
+    <string name="reset_warn">Vuoi veramente eliminare la cronologia\?</string>
+    <string name="reset_favorites_name">Elimina Elenco Preferiti</string>
+    <string name="reset_favorites_warn">Vuoi veramente eliminare i preferiti\?</string>
+    <string name="keyboard_name">Visualizza Tastiera all\'Avvio</string>
+    <string name="history_hide_desc">Nascondi Cronologia/Introdzione, abilitando i Widget</string>
+    <string name="history_hide_name">Interfaccia Minimale</string>
+    <string name="history_onclick_name">Mostra Cronologia al Tocco</string>
+    <string name="portrait_title">Forza Modalità Verticale</string>
+    <string name="lwp_touch">Invia Eventi di Tocco allo Sfondo</string>
+    <string name="lwp_drag">Simula Evento di Trascinamento per lo Sfondo</string>
+    <string name="lwp_drag_desc">Invia Eventi di Tocco Multipli</string>
+    <string name="wp_drag_animate">Scorrimento Sfondo</string>
+    <string name="wp_drag_animate_desc">Trascina ← → per scorrere lo sfondo</string>
+    <string name="icons_hide_main">Nascondi Icone</string>
+    <string name="icons_hide_desc">Utile su dispositivi lenti</string>
+    <string name="search_providers_title">Seleziona</string>
+    <string name="search_providers_delete">Elimina</string>
+    <string name="custom_search_provider">Aggiungi</string>
+    <string name="search_provider_reset">Elimina Tutti</string>
+    <string name="search_provider_reset_desc">Vuoi veramente ripristinare l\'elenco dei motori di ricerca web predefinito\?</string>
+    <string name="search_provider_reset_done_desc">Motori di Ricerca Web ripristinati</string>
+    <string name="search_provider_name">Nome Motore di Ricerca Web</string>
+    <string name="search_provider_added">Motore di Ricerca Web aggiunto.</string>
+    <string name="search_provider_deleted">Motore di Ricerca Web eliminato.</string>
+    <string name="search_provider_error_char">Carattere \"|\" non consentito</string>
+    <string name="search_provider_error_placeholder">Usare \"%s\" come placeholder della query</string>
+    <string name="search_provider_error_url">Usare un URL valido</string>
+    <string name="search_provider_error_exists">Esiste già un Motore di Ricerca Web con questo nome</string>
+    <string name="history_mode_name">Modalità Cronologia</string>
+    <string name="history_mode_desc">Seleziona come deve essere ordinata la cronologia</string>
+    <string name="root_mode_desc">Se disponibile, usarla per ibernare le applicazioni</string>
+    <string name="root_mode_name">Modalità Root</string>
+    <string name="root_mode_error">Impossibile ottenere i privilegi di root.</string>
+    <string name="freeze_history_name">Congela Cronologia</string>
+    <string name="freeze_history_warn">Vuoi veramente congelare la Cronologia, disattivando ulteriori aggiornamenti\? La cronologia non cambierà più.</string>
+    <string name="icons_pack_name">Icone (per ADW.Launcher)</string>
+    <string name="icons_pack_default_name">Icone di Sistema</string>
+    <string name="alias_phone">componi,chiamate,telefono</string>
     <string name="alias_contacts">contatti,persone,relazioni</string>
     <string name="alias_web">internet,web,browser</string>
-    <string name="alias_mail">mail,email</string>
-    <string name="alias_market">market,store,centro applicazioni</string>
+    <string name="alias_mail">posta,email,e-mail</string>
+    <string name="alias_market">market,store,applicazioni</string>
     <string name="alias_clock">orologio,sveglia,timer,cronometro</string>
-    <string name="alias_messaging">messaggio,componi,sms,mms,messaggistica</string>
+    <string name="alias_messaging">messaggio,componi,SMS,MMS,messaggistica</string>
     <string name="settings_prefix">"Impostazione: "</string>
-    <string name="settings_airplane">Modalità aereo</string>
-    <string name="settings_device_info">Informazioni dispositivo</string>
+    <string name="settings_airplane">Modalità Aereo</string>
+    <string name="settings_device_info">Info Dispositivo</string>
     <string name="settings_applications">Applicazioni</string>
     <string name="settings_connectivity">Connettività</string>
     <string name="settings_battery">Batteria</string>
     <string name="settings_nfc">NFC</string>
     <string name="settings_tethering">Tethering</string>
     <string name="settings_storage">Archiviazione</string>
-    <string name="settings_dev">Opzioni sviluppatore</string>
+    <string name="settings_dev">Opzioni Sviluppatore</string>
     <string name="settings_accessibility">Accessibilità</string>
-    <string name="settings_sound">Suoni e volume</string>
+    <string name="settings_sound">Suoni e Volume</string>
     <string name="settings_display">Schermo</string>
-    <string name="menu_wallpaper">Imposta sfondo</string>
-    <string name="application_not_found">Impossibile avviare l\'applicazione.</string>
+    <string name="menu_wallpaper">Cambia Sfondo</string>
+    <string name="application_not_found">Ops... impossibile avviare l\'applicazione.</string>
     <string name="history_erased">Cronologia eliminata.</string>
-    <string name="favorites_erased">Preferiti azzerati.</string>
-    <string name="menu_favorites_add">Aggiungi ai preferiti</string>
-    <string name="menu_tags_edit">Aggiungi / modifica tag</string>
-    <string name="tags_add_title">Aggiungi tag separati da spazio</string>
-    <string name="tags_confirmation_added">Tag aggiunto</string>
-    <string name="tags_visible">Mostra i tag per le applicazioni</string>
-    <string name="excluded_app_list_erased">Elenco delle applicazioni escluse azzerato.</string>
-    <string name="excluded_app_list_added">L\'applicazione è stata esclusa da Zen Launcher. Per annullare, controlla le impostazioni del launcher</string>
-
-    <string name="removed_item">Elemento rimosso</string>
-    <string name="menu_remove">Rimuovi dalla cronologia</string>
-    <string name="menu_exclude">Escludi da Zen Launcher</string>
-    <string name="menu_app_details">Informazioni applicazione</string>
+    <string name="favorites_erased">Preferiti eliminati.</string>
+    <string name="menu_favorites_add">Aggiungi ai Preferiti</string>
+    <string name="menu_tags_edit">Modifica Tag</string>
+    <string name="tags_add_title">Aggiungi Tag Separati da Spazi</string>
+    <string name="tags_confirmation_added">Tag impostati</string>
+    <string name="tags_visible">Mostra Tag Applicazioni</string>
+    <string name="excluded_app_list_erased">Elenco Applicazioni Escluse eliminato.</string>
+    <string name="excluded_app_list_added">Applicazione esclusa da Zen. Puoi ripristinarla dalle impostazioni di Zen</string>
+    <string name="removed_item">Rimosso</string>
+    <string name="menu_remove">Rimuovi dalla Cronologia</string>
+    <string name="menu_exclude">Escludi App…</string>
+    <string name="menu_app_details">Info Applicazione</string>
     <string name="menu_app_uninstall">Disinstalla</string>
     <string name="menu_app_hibernate">Iberna</string>
-    <string name="menu_shortcut_remove">Rimuovi collegamento</string>
-
-    <string name="toast_hibernate_completed">Ibernazione di %s completata. Riavvia l\'applicazione per risvegliarla.</string>
-    <string name="toast_hibernate_error">Ibernazione di %s fallita.</string>
-    <string name="menu_contact_copy_phone">Copia numero di telefono</string>
+    <string name="menu_shortcut_remove">Rimuovi Scorciatoia</string>
+    <string name="toast_hibernate_completed">\"%s\" ibernata, avviarla per risvegliarla.</string>
+    <string name="toast_hibernate_error">\"%s\" non ibernata.</string>
+    <string name="menu_contact_copy_phone">Copia Numero di Telefono</string>
     <string name="theme_name">Tema</string>
-    <string name="menu_phone_create">Crea contatto</string>
-
-    <string name="toast_favorites_added">L\'elemento %s è stato aggiunto ai preferiti</string>
-
-    <string name="order_apps_name">Ordine dell\'elenco delle applicazioni</string>
-    <string name="enable_sms">Visualizza gli SMS ricevuti</string>
-    <string name="enable_phone">Visualizza le chiamate ricevute</string>
-    <string name="enable_app">Visualizza le applicazioni appena installate</string>
-    <string name="enable_favorites_bar">Visualizza i preferiti sopra la barra di ricerca</string>
-    <string name="exclude_favorites">Escludi i preferiti</string>
-    <string name="favorites_hide">Nascondi la barra dei preferiti</string>
-    <string name="shortcut_added">Collegamento aggiunto a Zen Launcher.</string>
-
-    <string name="restart_desc">Risolve i problemi di temi non correttamente applicati o contatti non visualizzati.</string>
-    <string name="restart_name">Riavvia Zen Launcher</string>
-    <string name="restart_warn">Sei sicuro di voler riavviare Zen Launcher? Se Zen Launcher non è il tuo launcher predefinito, verrà solamente terminato.</string>
-
-    <string name="items_title">%d elementi</string>
-    <string name="alternate_history_inputs">Elementi aggiuntivi</string>
-    <string name="keyboard_options">Tastiera e opzioni d\'immissione</string>
+    <string name="menu_phone_create">Crea Contatto</string>
+    <string name="toast_favorites_added">\"%s\" aggiunto ai preferiti</string>
+    <string name="enable_phone">Mostra Chiamate Ricevute</string>
+    <string name="enable_app">Mostra App appena Installate</string>
+    <string name="enable_favorites_bar">Mostra Preferiti sopra la Barra di Ricerca</string>
+    <string name="exclude_favorites">Escludi Preferiti dalla Cronologia</string>
+    <string name="favorites_hide">Nascondi Barra dei Preferiti</string>
+    <string name="pref_hide_navbar">Nascondi Barra di Navigazione</string>
+    <string name="pref_hide_navbar_desc">Nascondi la Barra di Navigazione, attivando la Modalità a Schermo Intero</string>
+    <string name="pref_hide_statusbar">Nascondi Barra di Stato</string>
+    <string name="pref_hide_statusbar_desc">Nascondi la Barra delle Notifiche, attivando la Modalità a Schermo Intero</string>
+    <string name="restart_desc">Risolve problemi di temi e contatti non visualizzati</string>
+    <string name="restart_name">Riavvia Zen</string>
+    <string name="restart_warn">Vuoi veramente riavviare Zen\? Se Zen non è il tuo launcher predefinito verrà solo terminato.</string>
+    <string name="default_launcher_title">Cambia Launcher Predefinito</string>
+    <string name="default_launcher_warn">Dopo aver selezionato il Launcher Predefinito, verrai portato alla sua schermata iniziale. Vuoi procedere\? 
+\n 
+\nNota: In assenza dell\'opzione \"Sempre\", premi il tasto \"Home\" una volta selezionato il launcher desiderato.</string>
+    <string name="items_title" tools:ignore="PluralsCandidate">%d elementi</string>
+    <string name="alternate_history_inputs">Altri Elementi della Cronologia</string>
+    <string name="keyboard_options">Opzioni Tastiera</string>
     <string name="misc">Altro</string>
-    <string name="toast_favorites_removed">%s rimosso dai preferiti</string>
-    <string name="menu_favorites_remove">Rimuovi preferito</string>
+    <string name="toast_favorites_removed">\"%s\" rimosso dai preferiti</string>
+    <string name="menu_favorites_remove">Rimuovi dai Preferiti</string>
     <string name="share">Condividi…</string>
-    <string name="number_of_display_items">Numero massimo di risultati di ricerca e nella cronologia</string>
-
-    <string name="main_color">Colore principale</string>
-    <string name="notification_bar_color">Colore barra di notifica</string>
-
-    <string name="color_transparent_dark">Trasparente scuro</string>
-    <string name="color_transparent_white">Trasparente bianco</string>
+    <string name="number_of_display_items">Numero Massimo di Risultati</string>
+    <string name="main_color">Colore Principale</string>
+    <string name="notification_bar_color">Colore Barra Notifiche</string>
+    <string name="color_transparent_dark">Trasparente Scuro</string>
+    <string name="color_transparent_white">Trasparente Bianco</string>
     <string name="color_transparent">Trasparente</string>
-
-
     <!-- Default title for color picker dialog [CHAR LIMIT=30] -->
-    <string name="color_picker_default_title">"Seleziona un colore"</string>
+    <string name="color_picker_default_title">Seleziona Colore</string>
     <!-- Content description for a color square. -->
-    <string name="color_swatch_description">"Colore &lt;xliff:g id=\"COLOR_INDEX\" &gt;%1$d&lt;/xliff:g&gt;"</string>
+    <string name="color_swatch_description">Colore %1$d</string>
     <!-- Content description for a selected color square. -->
-    <string name="color_swatch_description_selected" tools:ignore="PluralsCandidate">Color <xliff:g example="14" id="color_index">%1$d</xliff:g> selected</string>
-
-    <string name="transparent_search_bar">Barra di ricerca trasparente</string>
-    <string name="transparent_favorites_bar">Barra dei favoriti trasparente</string>
-
-    <string name="large_search_bar">Barra di ricerca larga</string>
-    <string name="rounded_list">Bordi della lista arrotondati</string>
-    <string name="rounded_bars">Bordi delle barre arrotondati</string>
+    <string name="color_swatch_description_selected" tools:ignore="PluralsCandidate">Colore %1$d selezionato</string>
+    <string name="transparent_search_bar">Barra Ricerca Trasparente</string>
+    <string name="transparent_favorites_bar">Barra Preferiti Trasparente</string>
+    <string name="large_search_bar">Barra Ricerca più Grande</string>
+    <string name="rounded_list">Angoli Arrotondati per Elenco</string>
+    <string name="rounded_bars">Angoli Arrotondati per Barra</string>
     <!-- Widget strings, preference id should not be translated -->
-    <string name="menu_widget_add">(BETA) Aggiungi widget</string>
-    <string name="menu_widget_remove">Rimuovi widget</string>
-    <string name="rate_the_app">Recensisci l\'app</string>
-    <string name="history_settings_summary">Reimposta la cronologia, escludi applicazioni, ...</string>
-    <string name="user_interface_summary">Temi, trasparenza e colori</string>
-    <string name="providers_summary">Disabilita i provider, aggiungi motori di ricerca personalizzati, ...</string>
-    <string name="title_ux">Esperienza utente</string>
-    <string name="user_experience_summary">Interfaccia minimalista, impostazioni tastiera, ...</string>
-    <string name="title_favorites">Impostazioni preferite</string>
-    <string name="history_favorites_summary">Reimposta i tuoi favoriti, rimuovi la barra dei favoriti, ...</string>
-    <string name="title_wallpaper">Interazione con lo sfondo live</string>
-    <string name="freeze_history_summary">Mantieni la cronologia attuale</string>
-    <string name="enable_favorites_bar_summary_off">Mostra solo i favoriti quando si preme l\'icona di Zen</string>
-    <string name="enable_favorites_bar_summary_on">Mostra i favoriti sopra la barra di ricerca</string>
-    <string name="get_help">Ottieni aiuto!</string>
-    <string name="permission_denied">Il permesso e\' stato rifiutato</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
-
+    <string name="menu_widget_add">(beta) Aggiungi Widget</string>
+    <string name="menu_widget_remove">Rimuovi Widget</string>
+    <string name="rate_the_app">Valuta Zen</string>
+    <string name="history_settings_summary">Elimina Cronologia, Escludi Applicazioni, …</string>
+    <string name="user_interface_summary">Temi, Trasparenza e Colori</string>
+    <string name="providers_summary">Imposta Risultati di Ricerca, Aggiungi Motori di Ricerca Web, …</string>
+    <string name="title_ux">Esperienza Utente</string>
+    <string name="user_experience_summary">Interfaccia Minimale, Impostazioni Tastiera, …</string>
+    <string name="title_favorites">Impostazioni Preferiti</string>
+    <string name="history_favorites_summary">Elimina Preferiti, Rimuovi Barra Preferiti, …</string>
+    <string name="title_wallpaper">Interazioni Sfondo Animato</string>
+    <string name="freeze_history_summary">Impedisce l\'aggiornamento della Cronologia</string>
+    <string name="enable_favorites_bar_summary_off">Mostra i Preferiti solo alla pressione dell\'icona di Zen</string>
+    <string name="enable_favorites_bar_summary_on">Visualizza Preferiti sopra la Barra di Ricerca</string>
+    <string name="get_help">Cerca aiuto</string>
+    <string name="permission_denied">Permesso negato</string>
+    <string name="colors">Colori</string>
+    <string name="wp_animate_center">Sfondo al Centro</string>
+    <string name="unable_to_initialize_shortcuts">Impossibile inizializzare le Scorciatoie. Zen è il tuo launcher predefinito\?</string>
+    <string name="wp_animate_center_desc">Lo sfondo tornerà al centro dopo lo scorrimento</string>
+    <string name="wp_animate_sides">Sfondo ai Lati</string>
+    <string name="wp_animate_sides_desc">Lo sfondo resterà a sinistra o a destra dopo lo scorrimento</string>
+    <string name="pref_hide_circle">Nascondi il Cerchio di Zen</string>
+    <string name="pref_hide_circle_desc">L\'Elenco delle Applicazioni sarà comunque accessibile</string>
+    <string name="black_notification_icons">Visualizza Icone Notifiche in Nero</string>
+    <string name="shortcuts_no_host_permission">Zen non è più il launcher principale e non può accedere alle scorciatoie.</string>
+    <string name="unable_add_shortcut">Impossibile aggiungere scorciatoie (Provider delle Scorciatoie disattivato nelle Impostazioni di Zen)</string>
+    <string name="screen_toggle_tags">Modifica Menu Tag</string>
+    <string name="pref_toggle_tags_select">Tag da Mostrare nel Menu</string>
+    <string name="ctx_menu">Menu Zen</string>
+    <string name="pref_tags_menu">Aggiungi il Menu Tag</string>
+    <string name="pref_tags_menu_dismiss">Chiudi il Menu Tag dopo la Selezione</string>
+    <string name="popup_tags_title">Tag</string>
+    <string name="popup_tags_actions">Azioni</string>
+    <string name="show_history">Mostra Cronologia</string>
+    <string name="show_untagged">Mostra Elementi senza Tag</string>
+    <string name="pref_show_untagged">Azione \"Mostra Elementi senza Tag\"</string>
+    <string name="reset_excluded_from_history_apps_name">Elimina elenco app escluse dalla cronologia</string>
+    <string name="reset_excluded_from_history_apps_warn">Vuoi veramente eliminare l\'elenco delle applicazioni escluse dalla cronologia\?</string>
+    <string name="settings_excluded_apps">Applicazioni Escluse</string>
+    <string name="ui_excluded_from_history_apps">Visualizza o modifica app escluse dalla cronologia</string>
+    <string name="excluded_app_history_added">Applicazione esclusa dalla cronologia. Puoi ripristinarla dalle impostazioni di Zen</string>
+    <string name="menu_exclude_kiss">da Zen</string>
+    <string name="menu_exclude_history">dalla Cronologia</string>
+    <string name="history_sort_name">Ordina Cronologia</string>
+    <string name="history_sort_desc">Ordina alfabeticamente gli elementi della Cronologia</string>
+    <string name="contacts_call_on_click">Clicca per chiamare i contatti</string>
+    <string name="swap_kiss_button_with_menu">Pulsante di Zen sulla destra</string>
+    <string name="enable_gestures">Attiva i gesti sulle aree vuote</string>
+    <string name="enable_gestures_desc">(↑ per la tastiera, ↓ per le notifiche)</string>
+    <string name="keyboard_suggestions">Attiva autocompletamento/suggerimenti</string>
+    <string name="notification_support">Mostra un Punto su App che hanno Notifiche</string>
+    <string name="notification_dialog">Spunta Zen nel menu seguente per attivarlo.</string>
+    <string name="cant_pin_shortcut">Impossibile aggiungere scorciatoie. Zen è il tuo launcher predefinito\?</string>
+    <string name="search_results_options">Risultati di Ricerca</string>
+    <string name="search_provider_toggle">Collegamenti ai Motori di Ricerca Web</string>
+    <string name="copy_confirmation">Copiato negli appunti</string>
+    <string name="search_provider_default">Motore di ricerca web predefinito quando si preme invio</string>
+    <string name="shortcuts_reset">Ripristina Scorciatoie</string>
+    <string name="shortcuts_reset_desc">Vuoi ripristinare l\'elenco delle scorciatoie\?</string>
+    <string name="shortcuts_reset_done_desc">Scorciatoie ripristinate</string>
 </resources>

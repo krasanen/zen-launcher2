@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Zen Launcher</string>
-    <string name="activity_setting">Zen Launcher nastavenia</string>
+<resources>
+    <string name="app_name">Zen launcher</string>
+    <string name="activity_setting">Zen nastavenia</string>
     <string name="ui_search_hint">Hľadaj aplikácie, kontakty, …</string>
     <string name="ui_item_search">%1$s Vyhľadať “%2$s”</string>
     <string name="ui_item_phone">Volaj “%s”</string>
@@ -18,7 +18,7 @@
     <string name="ui_empty_2">Vždy zobrazovať históriu</string>
     <string name="ui_empty_2_sub">Pre rýchly prístup</string>
     <string name="ui_empty_3">Rýchly prístup pre najpoužívanejšie aplikácie</string>
-    <string name="ui_empty_3_sub">Zen Launcher sa učí z Vaších zvykov</string>
+    <string name="ui_empty_3_sub">Zen launcher sa učí z Vaších zvykov</string>
 
     <string name="contacts_name">Kontakty</string>
 
@@ -26,18 +26,8 @@
 
     <string name="settings_name">Nastavenia</string>
 
-    <string name="phone_name">Telefón</string>
 
-
-    <string name="color_picker_default_title" msgid="1248663997452044787">"Vyberte farbu"</string>
-    <string name="color_swatch_description" msgid="2883438431173736180">"Farba <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="color_swatch_description_selected" msgid="5020921249944943124">"Bola vybratá farba <xliff:g id="COLOR_INDEX">%1$d</xliff:g>"</string>
-    <string name="double_click_numeric_kb">Screen doubleclick changes keyboard type</string>
-    <string name="triple_tap_flashlight">Tripletap flashlight</string>
-    <string name="order_contacts_name">Contacts list sort order</string>
-    <string name="wifi_toggle">Toggle Wifi On/Off</string>
-    <string name="wifi_off">Wifi Off</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">Show app names in favbar</string>
+    <string name="color_picker_default_title">"Vyberte farbu"</string>
+    <string name="color_swatch_description">Farba %1$d</string>
+    <string name="color_swatch_description_selected">"Bola vybratá farba %1$d"</string>
 </resources>
