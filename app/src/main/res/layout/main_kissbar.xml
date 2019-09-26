@@ -19,7 +19,7 @@
         android:focusable="true"
         android:onClick="onLauncherButtonClicked"
         android:paddingLeft="@dimen/launcher_button_padding"
-        android:paddingRight="5dp"
+        android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/ic_z"
         android:tag="hideMenu" />
     <ImageView
@@ -29,6 +29,8 @@
         android:layout_marginLeft="@dimen/launcher_button_width"
         android:layout_centerVertical="true"
         android:contentDescription="@string/alias_contacts"
+        android:layout_toLeftOf="@+id/allAppsButton"
+
         android:focusable="true"
         android:visibility="visible"
         android:onClick="onContactsButtonClicked"
@@ -36,13 +38,14 @@
         android:paddingLeft="@dimen/launcher_button_padding"
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/contacts"
-        android:tag="showMenu"/>
+        android:tag="showMenu"
+        android:layout_toStartOf="@+id/allAppsButton" />
     <ImageView
         android:id="@+id/appsWithNotifButton"
         android:layout_width="@dimen/launcher_button_width"
         android:layout_height="@dimen/bar_height"
-        android:layout_toRightOf="@+id/whiteContactsButton"
-        android:layout_toEndOf="@+id/whiteContactsButton"
+        android:layout_toRightOf="@+id/allAppsButton"
+        android:layout_toEndOf="@+id/allAppsButton"
         android:layout_centerInParent="true"
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
@@ -57,8 +60,7 @@
         android:id="@+id/allAppsButton"
         android:layout_width="@dimen/launcher_button_width"
         android:layout_height="@dimen/bar_height"
-        android:layout_toRightOf="@+id/appsWithNotifButton"
-        android:layout_toEndOf="@+id/appsWithNotifButton"
+
         android:layout_centerInParent="true"
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
