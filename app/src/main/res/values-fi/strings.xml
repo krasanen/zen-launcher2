@@ -289,5 +289,6 @@
     <string name="enable_sms">Näytä tulevat SMS viestit historiassa</string>
     <string name="proximity_switch_summary">Sammuta/käynnistä näyttö etäisyystunnistimella</string>
     <string name="proximity_switch_lock_summary">Lukitse laite etäisyystunnistimella, esim kun laite laitetaan taskuun</string>
+    <string name="swap_kiss_button_with_menu">Zen nappi oikealla</string>
 
 </resources>
