@@ -14,6 +14,7 @@ import java.util.PriorityQueue;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.PojoComparator;
 
@@ -49,8 +50,11 @@ public class ContactSearcher extends Searcher {
         MainActivity activity = activityWeakReference.get();
         if (activity == null)
             return null;
-
-        List<Pojo> pojos = KissApplication.getApplication(activity).getDataHandler().getContactsProvider().getAllContacts();
+        List<Pojo> pojos = null;
+        ContactsProvider contactsProvider = KissApplication.getApplication(activity).getDataHandler().getContactsProvider();
+        if (contactsProvider != null) {
+            pojos = contactsProvider.getAllContacts();
+        }
         if (pojos != null)
             this.addResult(pojos.toArray(new Pojo[0]));
         return null;
