@@ -111,9 +111,12 @@ public class SaveOreoShortcutAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(@NonNull Boolean success) {
-        final Context context = this.context.get();
-        if (context != null && success) {
-            Toast.makeText(context, R.string.shortcut_added, Toast.LENGTH_SHORT).show();
+        if (success) {
+            Log.i(TAG, "Shortcuts added to Zen");
+
+            if (this.dataHandler.get().getShortcutsProvider() != null) {
+                this.dataHandler.get().getShortcutsProvider().reload();
+            }
         }
     }
 
