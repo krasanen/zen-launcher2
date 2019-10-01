@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 
 public class AppGridActivity extends FragmentActivity {
@@ -25,7 +26,7 @@ public class AppGridActivity extends FragmentActivity {
         if (BuildConfig.DEBUG) Log.i(TAG, "dispatchTouchEvent: " + ev.getAction());
         super.dispatchTouchEvent(ev);
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            KissApplication.getApplication(this).getMainActivity().dismissPopup();
+            MainActivity.dismissPopup();
             return true;
         }
         return true;
@@ -33,8 +34,8 @@ public class AppGridActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onBackPressed");
-        if (KissApplication.getApplication(this).getMainActivity().isShowingPopup()){
-            KissApplication.getApplication(this).getMainActivity().dismissPopup();
+        if (MainActivity.isShowingPopup()){
+            MainActivity.dismissPopup();
         } else {
             super.onBackPressed();
         }

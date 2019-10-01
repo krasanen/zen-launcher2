@@ -286,7 +286,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      */
     private boolean isDisplayingKissBar = false;
 
-    private PopupWindow mPopup;
+    public static PopupWindow mPopup;
 
     private ForwarderManager forwarderManager;
     private static boolean mKeyboardVisible;
@@ -2448,11 +2448,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         list.animateChange();
     }
 
-    public void dismissPopup() {
+    public static void dismissPopup() {
         if (mPopup != null)
             mPopup.dismiss();
     }
-    public boolean isShowingPopup(){
+    public static boolean isShowingPopup(){
         if (mPopup != null && mPopup.isShowing()){
             return true;
         } else {
