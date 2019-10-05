@@ -136,14 +136,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dialog" />
 
         <Spinner
             android:id="@+id/value_gravity_hor"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dialog" />
 
     </LinearLayout>
 

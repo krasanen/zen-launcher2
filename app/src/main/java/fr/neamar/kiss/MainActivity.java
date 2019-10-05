@@ -183,6 +183,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 14;
     public static final int MY_PERMISSIONS_RECORD_AUDIO = 15;
     private static final int MY_PERMISSIONS_OVERLAY = 16;
+    private static final int MY_PERMISSIONS_HUAWEI = 18;
+
 
     // intent data that is the conflict id.  used when resolving a conflict.
     public static final String CONFLICT_ID = "conflictId";
@@ -470,6 +472,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
+    public void checkPermissionHuawei(Activity activity) {
+        if (BuildConfig.DEBUG)
+            Log.i(TAG, "checkPermissionHuawei");
+        // Should we show an explanation?
+
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{"com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER"},
+                    MY_PERMISSIONS_HUAWEI);
+
+            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+
+    }
+
     public RecordAdapter getAdapter(){
         return adapter;
     }
@@ -719,11 +736,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     private void buildWidgetPopupMenu(final View view) {
+        checkPermissionHuawei(this);
         widgetAddY = y;
         show(this, x, y);
     }
 
     public void show(Activity activity, final float x, final float y) {
+        if (BuildConfig.DEBUG) Log.i(TAG, "show");
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final int ADD_WIDGET = 0;
         final int WIDGET_SETTINGS = 1;
@@ -1956,6 +1975,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 } else {
                     setBlueLightFilter(true);
                 }
+                break;
+            case MY_PERMISSIONS_HUAWEI:
+                if (BuildConfig.DEBUG) Log.i(TAG, "MY_PERMISSIONS_HUAWEI:" + resultCode);
                 break;
             case RC_SIGN_IN:
                 handleSignInResult(data);

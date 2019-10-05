@@ -21,12 +21,21 @@ package fi.zmengames.zen;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
+import java.util.Arrays;
+import java.util.List;
+
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.R;
 
 /**
@@ -36,9 +45,11 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
     private boolean mHasPerformedLongPress;
     private CheckForLongPress mPendingCheckForLongPress;
     private LayoutInflater mInflater;
-
+    private Context context;
+    private static final String TAG = LauncherAppWidgetHostView.class.getSimpleName();
     public LauncherAppWidgetHostView(Context context) {
         super(context);
+        this.context=context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -48,7 +59,27 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
         return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
 
+    private void dealWithHuaweiPermissions(){
+        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        mainIntent.addCategory(this.getAppWidgetInfo().provider.getPackageName());
+        if (BuildConfig.DEBUG) Log.d(TAG,"dealWithHuaweiPermissions: "+this.getAppWidgetInfo().provider.getPackageName());
+
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(this.getAppWidgetInfo().provider.getPackageName(), PackageManager.GET_PERMISSIONS);
+            if (BuildConfig.DEBUG) Log.d(TAG,"requestedPermissions: "+ Arrays.toString(packageInfo.requestedPermissions));
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"onInterceptTouchEvent"+ ev);
+        if (this.getAppWidgetInfo().provider.getPackageName().startsWith("com.huawei")){
+            if (BuildConfig.DEBUG) Log.d(TAG,"intercepted touch to incompatible Huawei widget that would require special system permissions");
+            // dealWithHuaweiPermissions();
+            return true;
+        }
         // Consume any touch events for ourselves after longpress is triggered
         if (mHasPerformedLongPress) {
             mHasPerformedLongPress = false;

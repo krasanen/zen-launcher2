@@ -12,6 +12,7 @@ package fi.zmengames.zen;
         import android.net.Uri;
         import android.os.Build;
         import android.util.DisplayMetrics;
+        import android.util.Log;
         import android.util.TypedValue;
         import android.view.Display;
         import android.view.View;
@@ -19,10 +20,13 @@ package fi.zmengames.zen;
         import android.view.WindowManager;
         import android.widget.PopupMenu;
 
+        import fr.neamar.kiss.BuildConfig;
+
 /**
  * @author Fung Gwo (fython) fython@163.com
  */
 public final class Utility {
+    private static final String TAG = Utility.class.getSimpleName();
 
     private static boolean sFontInitialized = false;
 
@@ -189,6 +193,7 @@ public final class Utility {
      */
 
     public static void showPopup(PopupMenu menu, Activity activity){
+        if (BuildConfig.DEBUG) Log.i(TAG, "showPopup");
         if (!activity.isFinishing()){
             menu.show();
         }

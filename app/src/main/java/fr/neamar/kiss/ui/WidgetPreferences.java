@@ -4,14 +4,18 @@ package fr.neamar.kiss.ui;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.XmlResourceParser;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -109,6 +113,9 @@ public class WidgetPreferences implements Serializable {
                 .getDefaultDisplay()
                 .getSize(windowSize);
         menu.setScreenSize(windowSize);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            menu.setBackgroundDrawable(mainActivity.getDrawable(R.drawable.main_bg_navigation));
+        }
         menu.show(mainActivity, this, hostView);
         mainActivity.registerPopup(menu);
     }
@@ -151,58 +158,72 @@ public class WidgetPreferences implements Serializable {
     static class Menu extends ListPopup {
         private final Point mWindowSize = new Point(1, 1);
         private final SharedPreferences prefs;
+        private boolean shown;
 
         public Menu(Context context, SharedPreferences widgetPrefs) {
             super(context);
             prefs = widgetPrefs;
             ScrollView scrollView = new ScrollView(context);
+
             LayoutInflater.from(context).inflate(R.layout.widget_customize, scrollView);
             setContentView(scrollView);
+
             setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
             setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         }
 
-        public void show(final MainActivity mainActivity, final WidgetPreferences widgetPreferences, final LauncherAppWidgetHostView hostView) {
-            final View contentView = getContentView();
-            final AppWidgetProviderInfo info = hostView.getAppWidgetInfo();
+        private void updateWidget(){
+            SeekBar seek;
+            Spinner dropDown;
 
+            //Width
+            seek = contentView.findViewById(R.id.seek_width);
+            widgetPreferences.width = seek.getProgress() + info.minWidth;
+            //seek.setProgress(info.minWidth);
+            //Height
+            seek = contentView.findViewById(R.id.seek_height);
+            widgetPreferences.height = seek.getProgress() + info.minHeight;
+            //seek.setProgress(info.minHeight);
+            //Offset top
+            seek = contentView.findViewById(R.id.seek_top);
+            widgetPreferences.offsetVertical = seek.getProgress();
+            //Position
+            //dropDown = contentView.findViewById(R.id.value_pos);
+            widgetPreferences.position = POSITION_MIDDLE; //((SpinnerItem) dropDown.getSelectedItem()).value;
+            //Gravity
+            widgetPreferences.gravity = Gravity.NO_GRAVITY;
+            dropDown = contentView.findViewById(R.id.value_gravity_ver);
+            widgetPreferences.gravity |= ((SpinnerItem) dropDown.getSelectedItem()).value;
+            dropDown = contentView.findViewById(R.id.value_gravity_hor);
+            widgetPreferences.gravity |= ((SpinnerItem) dropDown.getSelectedItem()).value;
+
+            int appWidgetId = hostView.getAppWidgetId();
+            prefs.edit().putString(String.valueOf(appWidgetId), serialize(widgetPreferences)).apply();
+            mainActivity.refreshWidget(appWidgetId);
+        }
+        View contentView;
+        AppWidgetProviderInfo info;
+        WidgetPreferences widgetPreferences;
+        MainActivity mainActivity;
+        LauncherAppWidgetHostView hostView;
+        public void show(MainActivity mainActivityIn, WidgetPreferences widgetPreferencesIn, LauncherAppWidgetHostView hostViewIn) {
+            contentView = getContentView();
+            info = hostViewIn.getAppWidgetInfo();
+            widgetPreferences = widgetPreferencesIn;
+            mainActivity = mainActivityIn;
+            hostView = hostViewIn;
             contentView.findViewById(R.id.btn_apply).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
-                    SeekBar seek;
-                    Spinner dropDown;
 
-                    //Width
-                    seek = contentView.findViewById(R.id.seek_width);
-                    widgetPreferences.width = seek.getProgress() + info.minWidth;
-                    seek.setProgress(info.minWidth);
-                    //Height
-                    seek = contentView.findViewById(R.id.seek_height);
-                    widgetPreferences.height = seek.getProgress() + info.minHeight;
-                    seek.setProgress(info.minHeight);
-                    //Offset top
-                    seek = contentView.findViewById(R.id.seek_top);
-                    widgetPreferences.offsetVertical = seek.getProgress();
-                    //Position
-                    //dropDown = contentView.findViewById(R.id.value_pos);
-                    widgetPreferences.position = POSITION_MIDDLE; //((SpinnerItem) dropDown.getSelectedItem()).value;
-                    //Gravity
-                    widgetPreferences.gravity = Gravity.NO_GRAVITY;
-                    dropDown = contentView.findViewById(R.id.value_gravity_ver);
-                    widgetPreferences.gravity |= ((SpinnerItem) dropDown.getSelectedItem()).value;
-                    dropDown = contentView.findViewById(R.id.value_gravity_hor);
-                    widgetPreferences.gravity |= ((SpinnerItem) dropDown.getSelectedItem()).value;
-
-                    int appWidgetId = hostView.getAppWidgetId();
-                    prefs.edit().putString(String.valueOf(appWidgetId), serialize(widgetPreferences)).apply();
-                    mainActivity.refreshWidget(appWidgetId);
                 }
             });
             contentView.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
+                    updateWidget();
                 }
             });
 
@@ -273,6 +294,18 @@ public class WidgetPreferences implements Serializable {
             dropDownItems.add(new SpinnerItem(Gravity.BOTTOM, "Bottom"));
             dropDown.setAdapter(new ArrayAdapter<>(mainActivity, android.R.layout.simple_spinner_dropdown_item, dropDownItems));
             dropDown.setSelection(dropDownItems.indexOf(new SpinnerItem(widgetPreferences.gravity & MASK_GRAVITY_VERTICAL)));
+            dropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    updateWidget();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    // your code here
+                }
+
+            });
 
             //Gravity horizontal
             dropDown = contentView.findViewById(R.id.value_gravity_hor);
@@ -282,9 +315,21 @@ public class WidgetPreferences implements Serializable {
             dropDownItems.add(new SpinnerItem(Gravity.RIGHT, "Right"));
             dropDown.setAdapter(new ArrayAdapter<>(mainActivity, android.R.layout.simple_spinner_dropdown_item, dropDownItems));
             dropDown.setSelection(dropDownItems.indexOf(new SpinnerItem(widgetPreferences.gravity & MASK_GRAVITY_HORIZONTAL)));
+            dropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    updateWidget();
+                }
 
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    // your code here
+                }
+
+            });
             setFocusable(true);
             showAtLocation(mainActivity.emptyListView, Gravity.CENTER, 0, 0);
+            shown = true;
         }
 
         void setScreenSize(Point size) {
@@ -292,7 +337,7 @@ public class WidgetPreferences implements Serializable {
             mWindowSize.y = size.y;
         }
 
-        static class SeekBarSync implements SeekBar.OnSeekBarChangeListener {
+        class SeekBarSync implements SeekBar.OnSeekBarChangeListener {
             final TextView mTextView;
             final int mMin;
 
@@ -311,6 +356,7 @@ public class WidgetPreferences implements Serializable {
                 }
                 if (textProgress != progress)
                     mTextView.setText(String.valueOf(progress + mMin));
+                if (shown) updateWidget();
             }
 
             @Override
@@ -324,7 +370,7 @@ public class WidgetPreferences implements Serializable {
             }
         }
 
-        static class TextViewSync implements TextWatcher, View.OnFocusChangeListener {
+        class TextViewSync implements TextWatcher, View.OnFocusChangeListener {
             final SeekBar mSeekBar;
             final int mMin;
 
@@ -353,6 +399,7 @@ public class WidgetPreferences implements Serializable {
                 }
                 if (progress >= 0)
                     mSeekBar.setProgress(progress);
+                if (shown) updateWidget();
             }
 
             @Override
