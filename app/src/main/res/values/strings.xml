@@ -330,6 +330,7 @@
     <string name="device_admin_disabled">Device Admin: disabled</string>
     <string name="proximity_switch_summary">Turn on/off screen with proximity sensor</string>
     <string name="proximity_switch_lock_summary">Lock device with proximity sensor. Like when device put to pocket.</string>
+    <string name="error_setting_default">Error setting Zen as default. Please check default apps from your device.</string>
 
 
 </resources>

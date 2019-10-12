@@ -290,5 +290,6 @@
     <string name="proximity_switch_summary">Sammuta/käynnistä näyttö etäisyystunnistimella</string>
     <string name="proximity_switch_lock_summary">Lukitse laite etäisyystunnistimella, esim kun laite laitetaan taskuun</string>
     <string name="swap_kiss_button_with_menu">Zen nappi oikealla</string>
+    <string name="error_setting_default">Virhe asetettaessa oletukseksi. Katso oletussovellukset asetuksista.</string>
 
 </resources>
