@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -34,8 +35,10 @@ import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
+import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.ui.ListPopup;
@@ -198,6 +201,16 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             } else {
                 badgeView.setVisibility(View.GONE);
             }
+            ImageView notificationView = favoritesViews.get(i).findViewById(R.id.item_notification_dot);
+            notificationView.setVisibility(pojo.getHasNotification() ? View.VISIBLE : View.GONE);
+            int primaryColor = UIColors.getPrimaryColor(mainActivity);
+            if (result instanceof AppResult) {
+                String packageName = ((AppResult) result).getPackageName();
+                notificationView.setTag(packageName);
+            } else if (result instanceof ContactsResult){
+                notificationView.setTag(pojo.getNotificationPackage()+result.pojo.getName());
+            }
+            notificationView.setColorFilter(primaryColor);
         }
 
         // Hide empty favorites (not enough favorites yet)

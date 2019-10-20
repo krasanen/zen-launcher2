@@ -15,10 +15,11 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-                android:gravity="center"
-              android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -39,6 +40,17 @@
             android:layout_height="16dp"
             android:visibility="gone"
             android:textSize="10sp" />
+        <ImageView
+            android:id="@+id/zen_item_notification_dot"
+            android:layout_alignBottom="@id/icon"
+            android:layout_alignEnd="@id/icon"
+            android:layout_alignRight="@id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:contentDescription="@null"
+            android:src="@drawable/notification_dot" />
     </RelativeLayout>
 
     <TextView

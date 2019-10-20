@@ -28,6 +28,8 @@ public abstract class Pojo {
     private String displayBadge;
     // Name for this pojo, e.g. app name
     String name = "";
+    private boolean hasNotification;
+    private String notificationPackage;
 
     public Pojo(String id) {
         this.id = id;
@@ -75,5 +77,18 @@ public abstract class Pojo {
 
     public String getBadgeText(){
         return String.valueOf(badgeCount);
+    }
+
+    public void setHasNotification(boolean hasNotification){
+        this.hasNotification = hasNotification;
+    }
+    public boolean getHasNotification(){
+        return hasNotification;
+    }
+    public void setNotificationPackage(String notificationPackage){
+        this.notificationPackage = notificationPackage;
+    }
+    public String getNotificationPackage(){
+        return notificationPackage;
     }
 }

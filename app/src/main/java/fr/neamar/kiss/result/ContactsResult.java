@@ -23,8 +23,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -62,6 +66,10 @@ public class ContactsResult extends Result {
 
 
     private void addCallItemsToMenu(PopupMenu popupExcludeMenu, View view) {
+
+        if (pojo.getHasNotification()){
+            popupExcludeMenu.getMenu().add(OPEN_NOTIFICATION,Menu.NONE, Menu.NONE,R.string.open_notification_package);
+        }
         popupExcludeMenu.getMenu().add(CELL_CALL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call);
         if (contactPojo.whatsAppCalling != 0) {
             popupExcludeMenu.getMenu().add(WHATSAPP_CALL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call_whatsapp);
@@ -77,6 +85,7 @@ public class ContactsResult extends Result {
 
 
     }
+    private final static int OPEN_NOTIFICATION = 0;
     private final static int CELL_CALL = 1;
     private final static int WHATSAPP_CALL = 2;
     private final static int SIGNAL_CALL = 3;
@@ -109,6 +118,9 @@ public class ContactsResult extends Result {
             public boolean onMenuItemClick(MenuItem item) {
                 Context context = view.getContext();
                 switch (item.getGroupId()) {
+                    case OPEN_NOTIFICATION:
+                        openNotification(context);
+                        break;
                     case CELL_CALL:
                         launchCall(context);
                         break;
@@ -140,6 +152,12 @@ public class ContactsResult extends Result {
                 return true;
             }
         });
+    }
+
+    private void openNotification(Context context) {
+
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(pojo.getNotificationPackage());
+        context.startActivity( launchIntent );
     }
 
     private void addMsgItemsToMenu(PopupMenu popupExcludeMenu, View view ){
@@ -178,11 +196,13 @@ public class ContactsResult extends Result {
 
     }
 
+    @NonNull
     @Override
-    public View display(Context context, int position, View convertView, FuzzyScore fuzzyScore) {
+    public View display(Context context, int position, View convertView, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
+
         View view = convertView;
         if (convertView == null)
-            view = inflateFromId(context, R.layout.item_contact);
+            view = inflateFromId(context, R.layout.item_contact, parent);
 
         // Contact name
         TextView contactName = view.findViewById(R.id.item_contact_name);
@@ -237,6 +257,15 @@ public class ContactsResult extends Result {
             contactIcon.setImageDrawable(null);
         }
 
+        ImageView notificationView = view.findViewById(R.id.item_notification_dot);
+        notificationView.setVisibility(pojo.getHasNotification() ? View.VISIBLE : View.GONE);
+        notificationView.setTag(pojo.getName());
+
+        int primaryColor = UIColors.getPrimaryColor(context);
+        notificationView.setColorFilter(primaryColor);
+
+
+
         contactIcon.assignContactUri(Uri.withAppendedPath(
                 ContactsContract.Contacts.CONTENT_LOOKUP_URI,
                 String.valueOf(contactPojo.lookupKey)));
@@ -247,9 +276,6 @@ public class ContactsResult extends Result {
                 recordLaunch(v.getContext());
             }
         });
-
-        int primaryColor = UIColors.getPrimaryColor(context);
-
 
         //  SOME call
         if (prefs.getBoolean("someCallButton", false)) {
@@ -411,8 +437,6 @@ public class ContactsResult extends Result {
             someCallButton.setVisibility(View.GONE);
         }
     } // SOME call
-
-
 
 
     @Override

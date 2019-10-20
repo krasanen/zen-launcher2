@@ -142,6 +142,27 @@ public class ContactsProvider extends Provider<ContactsPojo> {
 
         return null;
     }
+
+    public ContactsPojo findByName(String name) {
+
+        for (ContactsPojo pojo : pojos) {
+            if (pojo.getName().equals(name)) {
+                return pojo;
+            }
+        }
+
+        return null;
+    }
+    public List<Pojo> getContactsWithNotif() {
+        records.clear();
+        for (ContactsPojo pojo : pojos) {
+            pojo.relevance = 0;
+            if (pojo.getHasNotification()) {
+                records.add(pojo);
+            }
+        }
+        return records;
+    }
     public ContactsPojo findById(int id) {
 
         for (ContactsPojo pojo : pojos) {

@@ -203,7 +203,7 @@
     <string name="enable_gestures">Activer les gestures dans les zones vides</string>
     <string name="enable_gestures_desc">(↑ pour le clavier, ↓ pour les notifications)</string>
     <string name="notification_support">Afficher un rond sur les applis avec des notifications</string>
-    <string name="notification_dialog">Cochez Zen dans l\'écran suivant pour activer.</string>
+    <string name="notification_dialog">Cochez Zen Launcher dans l\'écran suivant pour activer.</string>
     <string name="cant_pin_shortcut">Impossible d\'ajouter le raccourci. Zen est-il bien votre launcher par défaut \?</string>
     <string name="search_results_options">Résultats de recherche</string>
     <string name="search_provider_toggle">Liens des sources de recherche web</string>

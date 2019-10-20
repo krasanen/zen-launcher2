@@ -31,6 +31,17 @@ android:layout_height="match_parent">
 
             android:visibility="gone"
             android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/item_notification_dot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/notification_dot"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
     </RelativeLayout>
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -43,5 +54,7 @@ android:layout_height="match_parent">
         android:layout_marginBottom="2dp"
         android:textColor="@color/kiss_text_on_light"
         android:gravity="center"/>
+
+
 
 </RelativeLayout>

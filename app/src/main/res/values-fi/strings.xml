@@ -291,5 +291,8 @@
     <string name="proximity_switch_lock_summary">Lukitse laite etäisyystunnistimella, esim kun laite laitetaan taskuun</string>
     <string name="swap_kiss_button_with_menu">Zen nappi oikealla</string>
     <string name="error_setting_default">Virhe asetettaessa oletukseksi. Katso oletussovellukset asetuksista.</string>
+    <string name="notification_dialog">Valitse Zen Launcher seuraavasta valikosta</string>
+    <string name="open_notification_package">Avaa ilmoituksen sovellus</string>
+    <string name="notification_support">Merkkaa pisteellä tulokset joissa ilmoituksia</string>
 
 </resources>

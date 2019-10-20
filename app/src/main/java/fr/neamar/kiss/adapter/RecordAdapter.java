@@ -2,6 +2,7 @@ package fr.neamar.kiss.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 
@@ -55,9 +56,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         this.parent = parent;
         this.results = results;
         this.fuzzyScore = null;
-
     }
-
 
     @Override
     public int getViewTypeCount() {
@@ -116,14 +115,14 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
                 convertView = null;
             }
         }
-        View view = results.get(position).display(context, results.size() - position, convertView, fuzzyScore);
-        //if(BuildConfig.DEBUG) Log.w( "TBog", "getView pos " + position + " convertView " + ((convertView == null) ? "null" : convertView.toString()) + " will return " + view.toString() );
+        View view = results.get(position).display(parent.getContext(), results.size() - position, convertView, parent, fuzzyScore);
+        //Log.d( "TBog", "getView pos " + position + " convertView " + ((convertView == null) ? "null" : convertView.toString()) + " will return " + view.toString() );
         view.setTag(getItemViewType(position));
         return view;
     }
 
     public void onLongClick(final int pos, View v) {
-        ListPopup menu = results.get(pos).getPopupMenu(context, this, v);
+        ListPopup menu = results.get(pos).getPopupMenu(v.getContext(), this, v);
 
         //check if menu contains elements and if yes show it
         if (menu.getAdapter().getCount() > 0) {
@@ -137,15 +136,26 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
 
         try {
             result = results.get(position);
-            result.launch(context, v);
+            result.launch(v.getContext(), v);
         } catch (ArrayIndexOutOfBoundsException ignored) {
             return;
         }
-  //      parent.launchOccurred();
+
+        // Record the launch after some period,
+        // * to ensure the animation runs smoothly
+        // * to avoid a flickering -- launchOccurred will refresh the list
+        // Thus TOUCH_DELAY * 3
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                parent.launchOccurred();
+            }
+        }, KissApplication.TOUCH_DELAY * 3);
 
     }
 
-    public void removeResult(Result result) {
+    public void removeResult(Context context, Result result) {
         results.remove(result);
         result.deleteRecord(context);
         notifyDataSetChanged();

@@ -246,7 +246,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      * Favorites bar. Can be either the favorites within the Zen Launcher bar,
      * or the external favorites bar (default)
      */
-    public View favoritesBar;
+    public ViewGroup favoritesBar;
     /**
      * Progress bar displayed when loading
      */
@@ -2356,6 +2356,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     protected void onPause() {
         super.onPause();
+        forwarderManager.onPause();
         if (SamsungBadgeObserver.providerExists(this)) {
             getContentResolver()
                     .unregisterContentObserver(samsungBadgeObserver);

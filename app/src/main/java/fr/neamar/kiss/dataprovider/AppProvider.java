@@ -29,11 +29,16 @@ import fr.neamar.kiss.utils.Base64Serialize;
 import fr.neamar.kiss.utils.FuzzyScore;
 import fr.neamar.kiss.utils.UserHandle;
 
+import static fr.neamar.kiss.notification.NotificationListener.NOTIFICATION_PREFERENCES_NAME;
+
+
 public class AppProvider extends Provider<AppPojo> {
+    private SharedPreferences prefs;
 
     @Override
     @SuppressLint("NewApi")
     public void onCreate() {
+        prefs = getBaseContext().getSharedPreferences(NOTIFICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
         loadCache();
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Package installation/uninstallation events for the main
@@ -192,6 +197,15 @@ public class AppProvider extends Provider<AppPojo> {
         return null;
     }
 
+    public Pojo findByPackageName(String packageName){
+        for (Pojo pojo : pojos) {
+            if (pojo.id.contains(packageName)) {
+                return pojo;
+            }
+        }
+        return null;
+    }
+
     ArrayList<Pojo> records = new ArrayList<>();
 
     public ArrayList<Pojo> getAllApps() {
@@ -224,7 +238,7 @@ public class AppProvider extends Provider<AppPojo> {
         records.clear();
         for (AppPojo pojo : pojos) {
             pojo.relevance = 0;
-            if (pojo.getBadgeCount() > 0) {
+            if (pojo.getBadgeCount() > 0||pojo.getHasNotification()) {
                 records.add(pojo);
             }
         }
@@ -239,9 +253,15 @@ public class AppProvider extends Provider<AppPojo> {
 
     private void saveCache() {
         HashSet<String> appSet = new HashSet<>();
+        Set<String> allKeys = new HashSet<>(prefs.getAll().keySet());
         for (AppPojo appPojo : pojos) {
             String serializedPojo = Base64Serialize.encode(appPojo.id, appPojo.packageName, appPojo.activityName, appPojo.getName());
             appSet.add(serializedPojo);
+            if (allKeys.contains(appPojo.packageName)){
+                appPojo.setHasNotification(true);
+            } else {
+                appPojo.setHasNotification(false);
+            }
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit().putStringSet("AppProviderCache", appSet).apply();

@@ -500,6 +500,12 @@ public class DataHandler
     }
 
     @Nullable
+    public List<Pojo> getContactssWithNotif() {
+        ContactsProvider contactsProvider = getContactsProvider();
+        return contactsProvider != null ? contactsProvider.getContactsWithNotif() : null;
+    }
+
+    @Nullable
     public ContactsProvider getContactsProvider() {
         ProviderEntry entry = this.providers.get("contacts");
         return (entry != null) ? ((ContactsProvider) entry.provider) : null;

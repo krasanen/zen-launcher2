@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -15,11 +13,17 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -77,6 +81,9 @@ public abstract class Result {
         throw new RuntimeException("Unable to create a result from POJO");
     }
 
+    public String getPojoId() {
+        return pojo.id;
+    }
 
     @Override
     public String toString() {
@@ -88,10 +95,26 @@ public abstract class Result {
      *
      * @param context     android context
      * @param convertView a view to be recycled
-     * @param fuzzyScore
+     * @param parent      view that provides a set of LayoutParams values
+     * @param fuzzyScore  information for highlighting search result
      * @return a view to display as item
      */
-    public abstract View display(Context context, int position, View convertView, FuzzyScore fuzzyScore);
+    @NonNull
+    public abstract View display(Context context, int position, View convertView, @NonNull ViewGroup parent, FuzzyScore fuzzyScore);
+
+    @NonNull
+    public View inflateFavorite(@NonNull Context context, @Nullable View favoriteView, @NonNull ViewGroup parent) {
+        if (favoriteView == null)
+            favoriteView = LayoutInflater.from(context).inflate(R.layout.favorite_item, parent, false);
+        Drawable drawable = getDrawable(context);
+        ImageView favoriteImage = favoriteView.findViewById(R.id.favorite_item_image);
+        if (drawable == null)
+            favoriteImage.setImageResource(R.drawable.ic_z);
+        else
+            favoriteImage.setImageDrawable(drawable);
+        favoriteView.setContentDescription(pojo.getName());
+        return favoriteView;
+    }
 
     public void displayHighlighted(String text, List<Pair<Integer, Integer>> positions, TextView view, Context context) {
         SpannableString enriched = new SpannableString(text);
@@ -109,7 +132,7 @@ public abstract class Result {
     }
 
     public boolean displayHighlighted(StringNormalizer.Result normalized, String text, FuzzyScore fuzzyScore,
-            TextView view, Context context) {
+                                      TextView view, Context context) {
         FuzzyScore.MatchInfo matchInfo = fuzzyScore.match(normalized.codePoints);
 
         if (!matchInfo.match) {
@@ -257,7 +280,7 @@ public abstract class Result {
      */
     private void removeItem(Context context, RecordAdapter parent) {
         Toast.makeText(context, R.string.removed_item, Toast.LENGTH_SHORT).show();
-        parent.removeResult(this);
+        parent.removeResult(context, this);
     }
 
     public final void launch(Context context, View v) {
@@ -335,13 +358,12 @@ public abstract class Result {
      *
      * @param context android context
      * @param id      id to inflate
+     * @param parent  view that provides a set of LayoutParams values
      * @return the view specified by the id
      */
-    View inflateFromId(Context context, int id) {
-        LayoutInflater vi = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assert vi != null;
-        return vi.inflate(id, null);
+    View inflateFromId(Context context, @LayoutRes int id, @NonNull ViewGroup parent) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        return inflater.inflate(id, parent, false);
     }
 
     /**

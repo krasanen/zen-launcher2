@@ -2,6 +2,7 @@ package fr.neamar.kiss.loader;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -25,19 +26,20 @@ import static fi.zmengames.zen.ContactsProjection.SIGNAL_CALL_MIMETYPE;
 import static fi.zmengames.zen.ContactsProjection.SIGNAL_CONTACT_MIMETYPE;
 import static fi.zmengames.zen.ContactsProjection.WHATSAPP_CALL_MIMETYPE;
 import static fi.zmengames.zen.ContactsProjection.WHATSAPP_CONTACT_MIMETYPE;
+import static fr.neamar.kiss.notification.NotificationListener.NOTIFICATION_PREFERENCES_NAME;
 
 public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
     private static final String TAG = LoadPojos.class.getSimpleName();
-
+    private SharedPreferences prefs;
     public LoadContactsPojos(Context context) {
         super(context, "contact://");
+        prefs = context.getSharedPreferences(NOTIFICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
     // Get specific details from organization
 
     @Override
     protected ArrayList<ContactsPojo> doInBackground(Void... params) {
         long start = System.nanoTime();
-
         ArrayList<ContactsPojo> contacts = new ArrayList<>();
         Context c = context.get();
         if(c == null) {
@@ -292,7 +294,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             cursor.close();
         }
 
-
+        Set<String> notificationKeys = new HashSet<>(prefs.getAll().keySet());
         for (
                 Set<ContactsPojo> phones : mapContacts.values())
 
@@ -301,6 +303,11 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             // Find primary phone and add this one.
             Boolean hasPrimary = false;
             for (ContactsPojo contact : phones) {
+                if (notificationKeys.contains(contact.getName())){
+                    contact.setHasNotification(true);
+                } else {
+                    contact.setHasNotification(false);
+                }
                 if (contact.primary) {
                     contacts.add(contact);
                     hasPrimary = true;

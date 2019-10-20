@@ -18,12 +18,15 @@ import android.os.Build;
 import android.os.UserHandle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -46,10 +49,12 @@ public class ShortcutsResult extends Result {
         this.shortcutPojo = shortcutPojo;
     }
 
+    @NonNull
     @Override
-    public View display(final Context context, int position, View v, FuzzyScore fuzzyScore) {
+    @SuppressWarnings("CatchAndPrintStackTrace")
+    public View display(final Context context, int position, View v, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
         if (v == null)
-            v = inflateFromId(context, R.layout.item_shortcut);
+            v = inflateFromId(context, R.layout.item_shortcut, parent);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -193,12 +198,11 @@ public class ShortcutsResult extends Result {
             case R.string.menu_shortcut_remove:
                 launchUninstall(context, shortcutPojo);
                 // Also remove item, since it will be uninstalled
-                parent.removeResult(this);
+                parent.removeResult(context, this);
                 return true;
             case R.string.menu_tags_edit:
                 launchEditTagsDialog(context, shortcutPojo);
                 return true;
-
         }
         return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
@@ -242,7 +246,6 @@ public class ShortcutsResult extends Result {
 
         dialog.show();
     }
-
 
     private void launchUninstall(Context context, ShortcutsPojo shortcutPojo) {
         DataHandler dh = KissApplication.getApplication(context).getDataHandler();

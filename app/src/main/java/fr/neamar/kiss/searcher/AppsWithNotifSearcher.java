@@ -44,9 +44,13 @@ public class AppsWithNotifSearcher extends Searcher {
         if (activity == null)
             return null;
 
-        List<Pojo> pojos = KissApplication.getApplication(activity).getDataHandler().getAppsWithNotif();
-        if (pojos != null)
-            this.addResult(pojos.toArray(new Pojo[0]));
+        List<Pojo> appPojos = KissApplication.getApplication(activity).getDataHandler().getAppsWithNotif();
+        if (appPojos != null)
+            this.addResult(appPojos.toArray(new Pojo[0]));
+
+        List<Pojo> contactPojos = KissApplication.getApplication(activity).getDataHandler().getContactssWithNotif();
+        if (contactPojos != null)
+            this.addResult(contactPojos.toArray(new Pojo[0]));
         return null;
     }
 
