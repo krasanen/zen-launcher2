@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.notification.NotificationListener;
@@ -16,11 +17,13 @@ import fr.neamar.kiss.notification.NotificationListener;
 import static android.content.Context.MODE_PRIVATE;
 
 class Notification extends Forwarder {
+    private static final String TAG = Notification.class.getSimpleName();
     private final SharedPreferences notificationPreferences;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onNotificationDisplayed = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String packageName) {
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String packageAndTitle) {
+            if (BuildConfig.DEBUG) Log.d(TAG,"onSharedPreferenceChanged:"+packageAndTitle);
             ListView list = mainActivity.list;
 
             // A new notification was received, iterate over the currently displayed results
@@ -32,9 +35,9 @@ class Notification extends Forwarder {
             // and do not rebuild them all, just toggle visibility if required.
             // Also, it means we get to display an animation, and that's cool :D
 
-            updateDots(list, list.getLastVisiblePosition() - list.getFirstVisiblePosition(), packageName);
+            updateDots(list, list.getLastVisiblePosition() - list.getFirstVisiblePosition(), packageAndTitle);
 
-            updateDots(mainActivity.favoritesBar, mainActivity.favoritesBar.getChildCount(), packageName);
+            updateDots(mainActivity.favoritesBar, mainActivity.favoritesBar.getChildCount(), packageAndTitle);
 
         }
     };
@@ -60,12 +63,12 @@ class Notification extends Forwarder {
         }
     }
 
-    private void updateDots(ViewGroup vg, int childCount, String packageName) {
+    private void updateDots(ViewGroup vg, int childCount, String packageAndTitle) {
         for (int i = 0; i < childCount; i++) {
             View v = vg.getChildAt(i);
             final View notificationDot = v.findViewById(R.id.item_notification_dot);
-            if (notificationDot != null && packageName.equals(notificationDot.getTag())) {
-                boolean hasNotification = notificationPreferences.contains(packageName);
+            if (notificationDot != null && packageAndTitle.equals(notificationDot.getTag())) {
+                boolean hasNotification = notificationPreferences.contains(packageAndTitle);
                 animateDot(notificationDot, hasNotification);
             }
         }

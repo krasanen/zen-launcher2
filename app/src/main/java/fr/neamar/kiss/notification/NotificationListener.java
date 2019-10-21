@@ -53,7 +53,10 @@ public class NotificationListener extends NotificationListenerService {
             if(isNotificationTrivial(sbn.getNotification())) {
                 continue;
             }
-            String title = sbn.getNotification().extras.getString("android.title");
+            String title = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                title = sbn.getNotification().extras.getString("android.title");
+            }
             String packageName = sbn.getPackageName();
             if (!notificationsByPackage.containsKey(packageName+":"+title)) {
                 notificationsByPackage.put(packageName+title, new HashSet<String>());
@@ -93,25 +96,35 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
 
-        Pojo pojo  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider().findByPackageName(sbn.getPackageName());
-        if (pojo!=null){
-            pojo.setHasNotification(true);
-            pojo.setNotificationPackage(sbn.getPackageName());
+        String title = null;
+        String category = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            title = sbn.getNotification().extras.getString("android.title");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                category = sbn.getNotification().category;
+            }
         }
-        String title = sbn.getNotification().extras.getString("android.title");
-        String category = sbn.getNotification().category;
+
         Set<String> currentNotifications = getCurrentNotificationsForPackage(sbn.getPackageName()+title);
 
         currentNotifications.add(Integer.toString(sbn.getId()));
-        prefs.edit().putStringSet(sbn.getPackageName()+title, currentNotifications).apply();
 
 
-        if (category!=null && (category.equals(Notification.CATEGORY_MESSAGE) || category.equals(Notification.CATEGORY_CALL))) {
+
+        if (title !=null && category!=null && (category.equals(Notification.CATEGORY_MESSAGE) || category.equals(Notification.CATEGORY_CALL))) {
             Pojo contact  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getContactsProvider().findByName(title);
             if (contact!=null){
+                if (BuildConfig.DEBUG) Log.v(TAG, "1. Package:"+sbn.getPackageName()+" title:"+title);
                 prefs.edit().putStringSet(sbn.getPackageName()+title, currentNotifications).apply();
                 contact.setHasNotification(true);
                 contact.setNotificationPackage(sbn.getPackageName());
+            }
+        }else {
+            Pojo pojo  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider().findByPackageName(sbn.getPackageName());
+            if (pojo!=null){
+                if (BuildConfig.DEBUG) Log.v(TAG, "2. Package:"+sbn.getPackageName()+" title:"+title);
+                prefs.edit().putStringSet(sbn.getPackageName(), currentNotifications).apply();
+                pojo.setHasNotification(true);
             }
         }
         if (BuildConfig.DEBUG) Log.v(TAG, "Added notification for " + sbn.getPackageName() + " title:" +title + " category:"+category);
@@ -122,32 +135,47 @@ public class NotificationListener extends NotificationListenerService {
         if(isNotificationTrivial(sbn.getNotification())) {
             return;
         }
-        Pojo pojo  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider().findByPackageName(sbn.getPackageName());
-        if (pojo!=null){
-            pojo.setHasNotification(false);
+
+        String title = null;
+        String category = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            title = sbn.getNotification().extras.getString("android.title");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                category = sbn.getNotification().category;
+            }
         }
-        String title = sbn.getNotification().extras.getString("android.title");
-        String category = sbn.getNotification().category;
+
         Set<String> currentNotifications = getCurrentNotificationsForPackage(sbn.getPackageName()+title);
 
         currentNotifications.remove(Integer.toString(sbn.getId()));
 
         SharedPreferences.Editor editor = prefs.edit();
-        if (currentNotifications.isEmpty()) {
-            // Clean up!
-            editor.remove(sbn.getPackageName()+title);
-        } else {
-            editor.putStringSet(sbn.getPackageName()+title, currentNotifications);
-        }
-        editor.apply();
 
-        if (category!=null && (category.equals(Notification.CATEGORY_MESSAGE) || category.equals(Notification.CATEGORY_CALL))) {
+        if (title!= null && category!=null && (category.equals(Notification.CATEGORY_MESSAGE) || category.equals(Notification.CATEGORY_CALL))) {
             Pojo contact  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getContactsProvider().findByName(title);
             if (contact!=null){
                 contact.setHasNotification(false);
+                if (currentNotifications.isEmpty()) {
+                    // Clean up!
+                    editor.remove(sbn.getPackageName()+title);
+                } else {
+                    editor.putStringSet(sbn.getPackageName()+title, currentNotifications);
+                }
+            }
+        } else {
+            Pojo pojo  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider().findByPackageName(sbn.getPackageName());
+            if (pojo!=null){
+                pojo.setHasNotification(false);
+                if (currentNotifications.isEmpty()) {
+                    // Clean up!
+                    editor.remove(sbn.getPackageName());
+                } else {
+                    editor.putStringSet(sbn.getPackageName(), currentNotifications);
+                }
             }
         }
-        if (BuildConfig.DEBUG) Log.v(TAG, "Removed notification for " + sbn.getPackageName() + ": " + currentNotifications.toString());
+        editor.apply();
+        if (BuildConfig.DEBUG) Log.v(TAG, "Removed notification for " + sbn.getPackageName() + title + ": " + currentNotifications.toString());
     }
 
     public Set<String> getCurrentNotificationsForPackage(String packageName) {
