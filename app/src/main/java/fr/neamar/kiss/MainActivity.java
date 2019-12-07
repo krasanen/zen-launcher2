@@ -68,7 +68,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -169,7 +168,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int REQUEST_CODE_SIGN_IN = 1;
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     public static final int REQUEST_DEVICE_ADMIN_LOCK = 3;
-    public static final int REQUEST_DEVICE_ADMIN_PROXIMITY_LOCK = 4;
+    public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN = 4;
 
     private DriveServiceHelper mDriveServiceHelper;
     private String mOpenFileId;
@@ -184,6 +183,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final int MY_PERMISSIONS_RECORD_AUDIO = 15;
     private static final int MY_PERMISSIONS_OVERLAY = 16;
     private static final int MY_PERMISSIONS_HUAWEI = 18;
+    private static final int MY_PERMISSIONS_DND = 19;
 
 
     // intent data that is the conflict id.  used when resolving a conflict.
@@ -200,6 +200,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String FLASHLIGHT_ON = "com.zmengames.zenlauncher.FLASHLIGHT_ON";
     public static final String FLASHLIGHT_OFF = "com.zmengames.zenlauncher.FLASHLIGHT_OFF";
     public static final String UPDATE_WALLPAPER = "com.zmengames.zenlauncher.UPDATE_WALLPAPER";
+    public static final String ALARM_IN_ACTION = "com.zmengames.zenlauncher.ALARM_IN_ACTION";
+    public static final String ALARM_AT = "com.zmengames.zenlauncher.ALARM_AT";
+    public static final String LOCK_IN = "com.zmengames.zenlauncher.LOCK_IN";
 
     /**
      * Adapter to display records
@@ -471,6 +474,23 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             return true;
         }
     }
+    public boolean checkPermissionDoNotDisturb(Activity activity) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.EXTRA_DO_NOT_DISTURB_MODE_ENABLED,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, MY_PERMISSIONS_DND);
+                return false;
+            }
+            if (BuildConfig.DEBUG) Log.i(TAG, "dnd permission ok");
+            return true;
+        } else {
+            if (BuildConfig.DEBUG)
+                Log.i(TAG, "dnd permission ok, sdk:" + Build.VERSION.SDK_INT);
+            return true;
+        }
+    }
+
 
     public void checkPermissionHuawei(Activity activity) {
         if (BuildConfig.DEBUG)
@@ -1149,8 +1169,51 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     toggleFlashLight();
                 } else if (UPDATE_WALLPAPER.equals(event.getText())) {
                     updateWallPaper();
+                } else if (ALARM_AT.equals(event.getText())) {
+                    askAlarmAt();
                 }
         }
+    }
+    Locale getCurrentLocale(Context context){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else{
+            //noinspection deprecation
+            return context.getResources().getConfiguration().locale;
+        }
+    }
+
+    private void askAlarmAt() {
+
+        Date currentTime = Calendar.getInstance().getTime();
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle(R.string.alarmAt);
+
+
+        final EditText input = new EditText(this);
+
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        builder.setView(input);
+        input.setText(currentTime.toString());
+        input.selectAll();
+
+// Set up the buttons
+        builder.setPositiveButton(R.string.alarmAt, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 
     @Override
@@ -1923,7 +1986,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-
+        if (BuildConfig.DEBUG) Log.d(TAG, "onActivityResult,"+requestCode+ " "+resultCode);
         switch (requestCode) {
 
             case REQUEST_DEVICE_ADMIN_LOCK:
@@ -1935,14 +1998,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                 }
                 break;
-            case REQUEST_DEVICE_ADMIN_PROXIMITY_LOCK:
+            case REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN:
                 if (resultCode == Activity.RESULT_OK) {
-                    prefs.edit().putBoolean("proximity-switch-lock", true).commit();
+                    Log.e(TAG, "REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN, OK");
+                    if (prefs.getBoolean("proximity-switch-lock", false)) {
+                        prefs.edit().putBoolean("proximity-switch-lock", true).commit();
+                    }
                     Intent proximity = new Intent(this, LauncherService.class);
                     proximity.setAction(ENABLE_PROXIMITY);
                     KissApplication.startLaucherService(proximity, this);
                 } else {
-                    prefs.edit().putBoolean("proximity-switch-lock", false).commit();
                 }
                 break;
 

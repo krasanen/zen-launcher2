@@ -16,6 +16,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
+import fi.zmengames.zen.AlarmReceiver;
+import fi.zmengames.zen.AlarmUtils;
 import fi.zmengames.zen.Utility;
 
 import android.os.Build;
@@ -242,6 +244,10 @@ public class AppResult extends Result {
 
                 try {
                     executeBadge(context, appPojo.packageName, appPojo.activityName, 0);
+                    if (appPojo.packageName.equals(context.getPackageName())){
+                        if (BuildConfig.DEBUG) Log.d(TAG,"remove ZEN alarms");
+                        AlarmUtils.cancelAllAlarms(context);
+                    }
                 } catch (ShortcutBadgeException e) {
                     e.printStackTrace();
                 }

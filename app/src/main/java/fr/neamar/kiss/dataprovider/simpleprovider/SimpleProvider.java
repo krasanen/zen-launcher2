@@ -32,7 +32,7 @@ public abstract class SimpleProvider implements IProvider {
     }
 
     @Override
-    public List<? extends Pojo> getPojos() {
+    public List<Pojo> getPojos() {
         return null;
     }
 }

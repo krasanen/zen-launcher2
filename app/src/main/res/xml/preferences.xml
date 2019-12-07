@@ -363,16 +363,16 @@
             android:key="restart"
             android:summary="@string/restart_desc"
             android:title="@string/restart_name" />
-        <fr.neamar.kiss.preference.ProximitySwitch
-            android:defaultValue="false"
-            android:key="proximity-switch"
-            android:summary="@string/proximity_switch_summary"
-            android:title="@string/proximity_switch" />
         <fi.zmengames.zen.ProximityLockSwitch
             android:defaultValue="false"
             android:key="proximity-switch-lock"
             android:summary="@string/proximity_switch_lock_summary"
             android:title="@string/proximity_switch" />
+        <fi.zmengames.zen.DeviceAdminSwitch
+            android:defaultValue="false"
+            android:key="device-admin-switch"
+            android:summary="@string/deviceadmin_switch_text"
+            android:title="@string/deviceadmin_switch" />
     </PreferenceScreen>
     <Preference
         android:key="rate-app"

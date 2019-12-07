@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ConflictDisplay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/alarmText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="3"
+        android:background="@color/kiss_background_dark_transparent"
+        android:gravity="center"
+        android:text="@string/alarmIn"
+        android:textAllCaps="false"
+        android:textColor="@color/zenlauncher"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="5"
+        android:text="Snooze time" />
+    android:layout_weight="3" />
+
+    <Button
+        android:id="@+id/snooze"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="3"
+        android:background="@color/kiss_background_dark_transparent"
+        android:text="Snooze"
+        android:textColor="@color/zenlauncher" />
+
+    <Button
+        android:id="@+id/awake"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="3"
+        android:background="@color/kiss_background_dark_transparent"
+        android:text="Awake"
+        android:textColor="@color/zenlauncher" />
+
+</LinearLayout>

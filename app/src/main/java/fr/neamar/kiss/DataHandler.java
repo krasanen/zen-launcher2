@@ -31,6 +31,8 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import fi.zmengames.zen.ZenProvider;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.dataprovider.IProvider;
@@ -62,7 +64,7 @@ public class DataHandler
      * List all known providers
      */
     final static private List<String> PROVIDER_NAMES = Arrays.asList(
-            "app", "contacts", "settings", "shortcuts"
+            "app", "contacts", "settings", "shortcuts", "zen"
     );
     private TagsHandler tagsHandler;
     private BadgeHandler badgeHandler;
@@ -119,6 +121,9 @@ public class DataHandler
         ProviderEntry searchEntry = new ProviderEntry();
         searchEntry.provider = new SearchProvider(context);
         this.providers.put("search", searchEntry);
+        ProviderEntry zenEntry = new ProviderEntry();
+        zenEntry.provider = new ZenProvider(context);
+        this.providers.put("zen", zenEntry);
     }
 
     @Override
@@ -697,6 +702,7 @@ public class DataHandler
     public void resetTagsHandler() {
         tagsHandler = new TagsHandler(this.context);
     }
+
 
     static final class ProviderEntry {
         public IProvider provider = null;

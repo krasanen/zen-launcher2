@@ -13,10 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.loader.LoadPojos;
 import fr.neamar.kiss.pojo.Pojo;
 
@@ -30,7 +28,7 @@ public abstract class Provider<T extends Pojo> extends Service implements IProvi
     /**
      * Storage for search items used by this provider
      */
-    List<T> pojos = new ArrayList<>();
+    public List<T> pojos = new ArrayList<>();
     private boolean loaded = false;
     /**
      * Scheme used to build ids for the pojos created by this provider
@@ -49,7 +47,7 @@ public abstract class Provider<T extends Pojo> extends Service implements IProvi
     }
 
 
-    void initialize(LoadPojos<T> loader) {
+    public void initialize(LoadPojos<T> loader) {
         Log.i(TAG, "Starting provider: " + this.getClass().getSimpleName());
 
         loader.setProvider(this);
@@ -107,7 +105,7 @@ public abstract class Provider<T extends Pojo> extends Service implements IProvi
     }
 
     @Override
-    public List<? extends Pojo> getPojos() {
+    public List<Pojo> getPojos() {
         return Collections.unmodifiableList(pojos);
     }
 

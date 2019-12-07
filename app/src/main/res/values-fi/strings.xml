@@ -277,7 +277,7 @@
     <string name="swipe_up_keyboard_sum">Ylösveto avaa näppäimistön</string>
     <string name="toast_favorites_removed">%s poistettiin suosikeista</string>
     <string name="triple_tap_flashlight_sum">Taskulamppu käynnistyy kolmella näpäytyksellä</string>
-    <string name="add_widget">Lisää pienoissovelluss</string>
+    <string name="add_widget">Lisää pienoissovellus</string>
     <string name="double_click_lock">Lukitus tuplaklikkauksella</string>
     <string name="double_click_lock_sum">Näytön tuplaklikkaus lukitsee laitteen</string>
     <string name="black_notification_icons_sum">Piirrä ilmoitusikonit mustalla värillä</string>
@@ -294,5 +294,15 @@
     <string name="notification_dialog">Valitse Zen Launcher seuraavasta valikosta</string>
     <string name="open_notification_package">Avaa ilmoituksen sovellus</string>
     <string name="notification_support">Merkkaa pisteellä tulokset joissa ilmoituksia</string>
-
+    <string name="alarmIn">Herätys</string>
+    <string name="lockIn">Lukitse</string>
+    <string name="alarmAt">Herätys</string>
+    <string name="add_badge">Lisää merkki</string>
+    <string name="copy_confirmation">Kopioitu leikepöydälle</string>
+    <string name="enable_gestures">Eleet tyhjillä alueilla</string>
+    <string name="enable_gestures_desc">(↑ näppäimistö, ↓ ilmoitukset)</string>
+    <string name="hours">tuntia</string>
+    <string name="minutes">minuuttia</string>
+    <string name="snooze">Snooze</string>
+    <string name="removeAlarm">Remove Alarm</string>
 </resources>

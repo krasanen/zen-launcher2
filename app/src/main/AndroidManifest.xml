@@ -28,25 +28,22 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-
-    <!--for Google Drive API. Used when saving&loading launcher layout to users own google drive -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <!--for Zen Flashlight, needed to be able to enable camera flash -->
-    <uses-permission android:name="android.permission.CAMERA"
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- for Google Drive API. Used when saving&loading launcher layout to users own google drive -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- for Zen Flashlight, needed to be able to enable camera flash -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- for Zen Alarm -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission
+        android:name="android.permission.CAMERA"
         android:maxSdkVersion="22"
-        android:required="false"/>
-
-    <!--for Samsung-->
-    <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
-    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
-
-    <!--for Huawei widgets-->
-    <uses-permission android:name="com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER"/>
+        android:required="false" /> <!-- for Samsung -->
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ" />
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" /> <!-- for Huawei widgets -->
+    <uses-permission android:name="com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER" />
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -71,7 +68,17 @@
         android:resizeableActivity="true"
         android:theme="@style/AppThemeLight"
         tools:ignore="GoogleAppIndexingWarning">
-        <receiver android:name=".ZenWidget"
+        <activity android:name="fi.zmengames.zen.AlarmActivity">
+            android:launchMode="singleTask"
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".ZenWidget"
             android:label="Zen Flashlight">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -79,10 +86,8 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-
                 android:resource="@xml/zen_widget_info" />
         </receiver>
-
         <receiver android:name=".broadcast.BadgeCountHandler">
             <intent-filter>
                 <action android:name="android.intent.action.BADGE_COUNT_UPDATE" />
@@ -90,16 +95,17 @@
                 <action android:name="com.sonyericsson.home.action.UPDATE_BADGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="fi.zmengames.zen.ZenAdmin" android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data android:name="android.app.device_admin"
+        <receiver
+            android:name="fi.zmengames.zen.ZenAdmin"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
                 android:resource="@xml/policies" />
 
             <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
-
         </receiver>
-
 
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
@@ -196,6 +202,9 @@
                 <action android:name="android.intent.action.SCREEN_ON" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="fi.zmengames.zen.AlarmReceiver"
+            android:process=":remote"></receiver>
 
         <service android:name=".dataprovider.AppProvider" />
         <service android:name=".dataprovider.ContactsProvider" />
@@ -203,8 +212,9 @@
         <service android:name=".dataprovider.ShortcutsProvider" />
         <service
             android:name="fi.zmengames.zen.LauncherService"
-            android:enabled="true"/>
-        <service android:name=".notification.NotificationListener"
+            android:enabled="true" />
+        <service
+            android:name=".notification.NotificationListener"
             android:enabled="@bool/notification_service_enabled"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import androidx.annotation.NonNull;
+
+import android.util.Log;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -17,6 +20,7 @@ import fr.neamar.kiss.dataprovider.ContactsProvider;
 
 
 public class Permission extends Forwarder {
+    private static final String TAG = Permission.class.getSimpleName();
     private static final int PERMISSION_READ_CONTACTS = 0;
     private static final int PERMISSION_CALL_PHONE = 1;
 
@@ -77,7 +81,7 @@ public class Permission extends Forwarder {
         if (grantResults.length == 0) {
             return;
         }
-
+        if (BuildConfig.DEBUG) Log.d(TAG,"permissions:"+permissions);
         if (requestCode == PERMISSION_READ_CONTACTS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // Great! Reload the contact provider. We're done :)
             ContactsProvider contactsProvider = KissApplication.getApplication(mainActivity).getDataHandler().getContactsProvider();

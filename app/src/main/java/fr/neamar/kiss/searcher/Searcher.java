@@ -27,12 +27,12 @@ public abstract class Searcher extends AsyncTask<Void, Result, Void> {
     // define a different thread than the default AsyncTask thread or else we will block everything else that uses AsyncTask while we search
     public static final ExecutorService SEARCH_THREAD = Executors.newSingleThreadExecutor();
     static final int DEFAULT_MAX_RESULTS = 50;
-    final WeakReference<MainActivity> activityWeakReference;
+    public final WeakReference<MainActivity> activityWeakReference;
     private final PriorityQueue<Pojo> processedPojos;
     private long start;
     protected final String query;
 
-    Searcher(MainActivity activity, String query) {
+    public Searcher(MainActivity activity, String query) {
         super();
         this.query = query;
         this.activityWeakReference = new WeakReference<>(activity);

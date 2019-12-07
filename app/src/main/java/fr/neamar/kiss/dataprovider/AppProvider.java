@@ -11,19 +11,24 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserManager;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import android.preference.PreferenceManager;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import androidx.annotation.RequiresApi;
+
+import fi.zmengames.zen.AlarmUtils;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.broadcast.PackageAddedRemovedHandler;
 import fr.neamar.kiss.loader.LoadAppPojos;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.Base64Serialize;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -242,6 +247,16 @@ public class AppProvider extends Provider<AppPojo> {
                 records.add(pojo);
             }
         }
+        for (long idAlarm : AlarmUtils.getAlarmIds(getApplicationContext())) {
+            Calendar calAlarm = Calendar.getInstance();
+            calAlarm.setTimeZone(TimeZone.getTimeZone("GMT"));
+            calAlarm.setTimeInMillis(idAlarm);
+            SearchPojo pojo = new SearchPojo(calAlarm.getTime().toString(), String.valueOf(idAlarm),SearchPojo.ZEN_ALARM);
+            pojo.relevance = 0;
+            pojo.setName(calAlarm.getTime().toString());
+            records.add(pojo);
+        }
+
         return records;
     }
 

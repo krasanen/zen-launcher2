@@ -28,6 +28,7 @@ import androidx.annotation.StringRes;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import fi.zmengames.zen.ZenPojo;
 import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
@@ -76,7 +77,6 @@ public abstract class Result {
             return new PhoneResult((PhonePojo) pojo);
         else if (pojo instanceof ShortcutsPojo)
             return new ShortcutsResult((ShortcutsPojo) pojo);
-
 
         throw new RuntimeException("Unable to create a result from POJO");
     }

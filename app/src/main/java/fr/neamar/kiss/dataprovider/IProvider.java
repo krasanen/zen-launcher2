@@ -59,5 +59,5 @@ public interface IProvider {
      *
      * @return
      */
-    List<? extends Pojo> getPojos();
+    List<Pojo> getPojos();
 }

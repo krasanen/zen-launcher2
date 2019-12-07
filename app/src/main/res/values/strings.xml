@@ -332,6 +332,15 @@
     <string name="proximity_switch_lock_summary">Lock device with proximity sensor. Like when device put to pocket.</string>
     <string name="error_setting_default">Error setting Zen as default. Please check default apps from your device.</string>
     <string name="open_notification_package">Start notification app</string>
-
+    <string name="alarmIn">Alarm</string>
+    <string name="alarmAt">Alarm at</string>
+    <string name="lockIn">Lock</string>
+    <string name="after">after</string>
+    <string name="minutes">minutes</string>
+    <string name="hours">hours</string>
+    <string name="snooze">Snooze</string>
+    <string name="deviceadmin_switch_text">Enable device admin permanently. Lock after X minutes feature needs this.</string>
+    <string name="deviceadmin_switch">Device Admin</string>
+    <string name="removeAlarm">Remove Alarm</string>
 
 </resources>
