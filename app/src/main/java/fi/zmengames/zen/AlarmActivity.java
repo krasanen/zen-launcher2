@@ -5,15 +5,17 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -24,9 +26,6 @@ import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.R;
 
 import android.os.Vibrator;
-
-import java.util.Calendar;
-import java.util.Date;
 
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
@@ -66,6 +65,11 @@ public class AlarmActivity extends Activity {
         setContentView(R.layout.activity_alarm);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
         disableDnd();
+        AudioManager am;
+        am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+
+        //For Normal mode
+        am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
     }
 
     private void disableDnd() {
@@ -174,21 +178,15 @@ public class AlarmActivity extends Activity {
             }
         });
 
-        // Get instance of Vibrator from current Context
-        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-
-        // Start without a delay
-        // Each element then alternates between vibrate, sleep, vibrate, sleep...
-        long[] pattern = {300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
-                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
-                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
-                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
-                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100};
-        if (vib != null && vib.hasVibrator()) {
-            vib.vibrate(pattern, -1);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (prefs.getBoolean("alarmVibrate-on-alarm", false)) {
+            alarmVibrate();
         }
+        alarmSound();
 
+    }
+
+    private void alarmSound(){
         Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
         if (alert == null) {
@@ -202,10 +200,26 @@ public class AlarmActivity extends Activity {
                 alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             }
         }
-
-
         r = RingtoneManager.getRingtone(getApplicationContext(), alert);
         r.play();
+    }
+
+    private void alarmVibrate() {
+
+        // Get instance of Vibrator from current Context
+        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+
+        // Start without a delay
+        // Each element then alternates between alarmVibrate, sleep, alarmVibrate, sleep...
+        long[] pattern = {300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
+                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
+                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
+                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100,
+                300, 200, 300, 200, 100, 200, 100, 200, 100, 200, 300, 200, 100};
+        if (vib != null && vib.hasVibrator()) {
+            vib.vibrate(pattern, -1);
+        }
     }
 
     private void returnHome(Intent intent) {

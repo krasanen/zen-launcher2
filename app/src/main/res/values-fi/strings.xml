@@ -305,4 +305,6 @@
     <string name="minutes">minuuttia</string>
     <string name="snooze">Snooze</string>
     <string name="removeAlarm">Remove Alarm</string>
+    <string name="vibrate_on_alarm">Vibrate on alarm</string>
+    <string name="vibrate_on_alarm_switch">Vibrate on alarm</string>
 </resources>

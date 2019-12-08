@@ -373,6 +373,11 @@
             android:key="device-admin-switch"
             android:summary="@string/deviceadmin_switch_text"
             android:title="@string/deviceadmin_switch" />
+        <fi.zmengames.zen.VibrateOnAlarmSwitch
+            android:defaultValue="true"
+            android:key="vibrate-on-alarm"
+            android:summary="@string/vibrate_on_alarm"
+            android:title="@string/vibrate_on_alarm_switch" />
     </PreferenceScreen>
     <Preference
         android:key="rate-app"

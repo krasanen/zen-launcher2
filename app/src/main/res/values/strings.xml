@@ -342,5 +342,7 @@
     <string name="deviceadmin_switch_text">Enable device admin permanently. Lock after X minutes feature needs this.</string>
     <string name="deviceadmin_switch">Device Admin</string>
     <string name="removeAlarm">Remove Alarm</string>
+    <string name="vibrate_on_alarm">Vibrate on alarm</string>
+    <string name="vibrate_on_alarm_switch">Vibrate on alarm</string>
 
 </resources>
