@@ -63,6 +63,7 @@ import static fi.zmengames.zen.AlarmActivity.ALARM_ID;
 import static fi.zmengames.zen.AlarmActivity.ALARM_TIME;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
+import static fr.neamar.kiss.MainActivity.ALARM_PICKER;
 import static fr.neamar.kiss.MainActivity.LOCK_IN;
 
 public class LauncherService extends Service {
@@ -78,7 +79,7 @@ public class LauncherService extends Service {
     public static final String SCREEN_ON = "com.zmengames.zenlauncher.SCREEN_ON";
     public static final String SCREEN_OFF = "com.zmengames.zenlauncher.SCREEN_OFF";
     public static final String ALARM_ENTERED_TEXT = "com.zmengames.zenlauncher.ALARM_ENTERED_TEXT";
-
+    public static final String ALARM_DATE_PICKER_MILLIS = "com.zmengames.zenlauncher.ALARM_DATE_PICKER_MILLIS";
     private IBinder mBinder = new MyBinder();
     private ExecutorService serviceExecutor = Executors.newCachedThreadPool();
 
@@ -290,10 +291,22 @@ public class LauncherService extends Service {
                 else if (intent.getAction().equals(SCREEN_OFF)) screenOff();
                 else if (intent.getAction().equals(LOCK_IN)) lockScreenTimer(intent);
                 else if (intent.getAction().equals(ALARM_IN_ACTION)) alarmIn(intent);
+                else if (intent.getAction().equals(ALARM_PICKER)) alarmAtPicker(intent);
             }
         });
 
         return START_NOT_STICKY;
+    }
+
+    private void alarmAtPicker(Intent intent) {
+        long millis = intent.getLongExtra(ALARM_DATE_PICKER_MILLIS,0);
+        String enteredText = intent.getStringExtra(ALARM_ENTERED_TEXT);
+
+        if (BuildConfig.DEBUG)  Log.d(TAG,"alarmAtPicker, millis:"+ millis);
+        Calendar calAlarm = Calendar.getInstance();
+        calAlarm.setTimeZone(TimeZone.getTimeZone("GMT"));
+        calAlarm.setTimeInMillis(millis);
+        setAlarm(calAlarm, enteredText);
     }
 
     private void lockScreenTimer(Intent intent) {

@@ -68,8 +68,8 @@
         android:resizeableActivity="true"
         android:theme="@style/AppThemeLight"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="fi.zmengames.zen.AlarmActivity">
-            android:launchMode="singleTask"
+        <activity android:name="fi.zmengames.zen.AlarmActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

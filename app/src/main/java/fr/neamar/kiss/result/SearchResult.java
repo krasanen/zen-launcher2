@@ -1,8 +1,9 @@
 package fr.neamar.kiss.result;
 
+
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.util.Log;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -30,9 +33,11 @@ import java.util.concurrent.TimeUnit;
 
 import fi.zmengames.zen.AlarmUtils;
 import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenProvider;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.pojo.SearchPojo;
@@ -42,6 +47,7 @@ import fr.neamar.kiss.utils.FuzzyScore;
 
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
+import static fr.neamar.kiss.MainActivity.DATE_TIME_PICKER;
 import static fr.neamar.kiss.MainActivity.LOCK_IN;
 
 public class SearchResult extends Result {
@@ -137,7 +143,13 @@ public class SearchResult extends Result {
                 if (searchPojo.url.contains(ZenProvider.mAlarm)) {
                     String minutesOrTime = searchPojo.url.substring(ZenProvider.mAlarm.length());
                     Intent alarmIntent = new Intent(context, LauncherService.class);
-                    if (!minutesOrTime.isEmpty()) {
+                    if (BuildConfig.DEBUG) Log.w("ZEN_QUERY", "minutesOrTime: " + minutesOrTime);
+                    if (minutesOrTime.isEmpty()) {
+                        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, DATE_TIME_PICKER);
+                        EventBus.getDefault().post(event);
+                        return;
+                    }
+                    else {
                         if (BuildConfig.DEBUG) Log.w("ZEN_QUERY", "minutesOrTime: " + minutesOrTime);
                         if (BuildConfig.DEBUG) Log.w("ZEN_QUERY", "id: " + searchPojo.id);
                         if (minutesOrTime.contains(":")) {
@@ -246,4 +258,5 @@ public class SearchResult extends Result {
 
         return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
+
 }

@@ -6,7 +6,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
 
@@ -65,11 +69,14 @@ import android.view.ViewTreeObserver;
 
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -155,6 +162,8 @@ import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
+import static fi.zmengames.zen.LauncherService.ALARM_DATE_PICKER_MILLIS;
+import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.ENABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
@@ -202,7 +211,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String UPDATE_WALLPAPER = "com.zmengames.zenlauncher.UPDATE_WALLPAPER";
     public static final String ALARM_IN_ACTION = "com.zmengames.zenlauncher.ALARM_IN_ACTION";
     public static final String ALARM_AT = "com.zmengames.zenlauncher.ALARM_AT";
+    public static final String ALARM_PICKER = "com.zmengames.zenlauncher.ALARM_AT_PICKER";
     public static final String LOCK_IN = "com.zmengames.zenlauncher.LOCK_IN";
+    public static final String DATE_TIME_PICKER = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
 
     /**
      * Adapter to display records
@@ -1171,8 +1182,54 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     updateWallPaper();
                 } else if (ALARM_AT.equals(event.getText())) {
                     askAlarmAt();
+                } else if (DATE_TIME_PICKER.equals(event.getText())) {
+                    dateTimePicker();
                 }
         }
+    }
+
+    private void dateTimePicker() {
+        showDialog(999);
+    }
+
+    Calendar calAlarm = Calendar.getInstance();
+    int year,month,date;
+    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker arg0, int y, int m, int d) {
+            year = y;
+            month = m;
+            date = d;
+            showDialog(1000);
+        }
+    };
+    private TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
+            calAlarm.set(year,month, date, hours,minutes,0);
+            Intent alarmIntent = new Intent(getApplicationContext(), LauncherService.class);
+            alarmIntent.putExtra(ALARM_DATE_PICKER_MILLIS, calAlarm.getTimeInMillis());
+            alarmIntent.putExtra(ALARM_ENTERED_TEXT,searchEditText.getText());
+            alarmIntent.setAction(ALARM_PICKER);
+            startService(alarmIntent);
+        }
+    };
+
+    protected Dialog onCreateDialog(int id) {
+        // TODO Auto-generated method stub
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int date = Calendar.getInstance().get(Calendar.DATE);
+        int hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int minutes = Calendar.getInstance().get(Calendar.MINUTE);
+
+        switch (id) {
+            case 999:
+                return new DatePickerDialog(this, myDateListener, year, month, date);
+            case 1000:
+                return new TimePickerDialog(this, myTimeListener, hours, minutes, true);
+        }
+        return null;
     }
     Locale getCurrentLocale(Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
