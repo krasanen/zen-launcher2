@@ -48,7 +48,7 @@ public class AlarmActivity extends Activity {
         // Now getIntent() returns the updated Intent
         mAlarmIntent = getIntent();
     }
-
+    int originalVolume = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +67,17 @@ public class AlarmActivity extends Activity {
         disableDnd();
         AudioManager am;
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
-
+        originalVolume = am.getStreamVolume(AudioManager.STREAM_RING);
+        // TODO: smart ringer, rising volume
+        if (originalVolume == 0) {
+         /*   SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            if (!prefs.getBoolean("vibrate-on-alarm", false)) {
+                am.setStreamVolume(AudioManager.STREAM_RING, am.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+            }*/
+        }
         //For Normal mode
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
     }
 
     private void disableDnd() {
@@ -240,6 +248,9 @@ public class AlarmActivity extends Activity {
         if (vib != null && vib.hasVibrator()) {
             vib.cancel();
         }
+        AudioManager am;
+        am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamVolume(AudioManager.STREAM_RING, originalVolume, 0);
 
     }
 

@@ -145,7 +145,7 @@ public class SearchResult extends Result {
                     Intent alarmIntent = new Intent(context, LauncherService.class);
                     if (BuildConfig.DEBUG) Log.w("ZEN_QUERY", "minutesOrTime: " + minutesOrTime);
                     if (minutesOrTime.isEmpty()) {
-                        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, DATE_TIME_PICKER);
+                        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, DATE_TIME_PICKER+searchPojo.query);
                         EventBus.getDefault().post(event);
                         return;
                     }

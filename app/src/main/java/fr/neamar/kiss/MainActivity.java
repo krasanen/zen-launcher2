@@ -1182,16 +1182,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     updateWallPaper();
                 } else if (ALARM_AT.equals(event.getText())) {
                     askAlarmAt();
-                } else if (DATE_TIME_PICKER.equals(event.getText())) {
-                    dateTimePicker();
+                } else if (event.getText().startsWith(DATE_TIME_PICKER)){
+                    dateTimePicker(event.getText());
                 }
         }
     }
 
-    private void dateTimePicker() {
+    private void dateTimePicker(String text) {
+        alarmText = text.replace(DATE_TIME_PICKER, "");
         showDialog(999);
     }
 
+    String alarmText;
     Calendar calAlarm = Calendar.getInstance();
     int year,month,date;
     private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
@@ -1209,7 +1211,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             calAlarm.set(year,month, date, hours,minutes,0);
             Intent alarmIntent = new Intent(getApplicationContext(), LauncherService.class);
             alarmIntent.putExtra(ALARM_DATE_PICKER_MILLIS, calAlarm.getTimeInMillis());
-            alarmIntent.putExtra(ALARM_ENTERED_TEXT,searchEditText.getText());
+            alarmIntent.putExtra(ALARM_ENTERED_TEXT,alarmText);
             alarmIntent.setAction(ALARM_PICKER);
             startService(alarmIntent);
         }
