@@ -21,6 +21,8 @@ import java.util.Set;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.dataprovider.AppProvider;
+import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.result.AppResult;
@@ -55,7 +57,7 @@ public class NotificationListener extends NotificationListenerService {
             }
             String title = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                title = sbn.getNotification().extras.getString("android.title");
+                title = sbn.getNotification().extras.getString("android.title").toString();
             }
             String packageName = sbn.getPackageName();
             if (!notificationsByPackage.containsKey(packageName+":"+title)) {
@@ -112,7 +114,11 @@ public class NotificationListener extends NotificationListenerService {
 
 
         if (title !=null && category!=null && (category.equals(Notification.CATEGORY_MESSAGE) || category.equals(Notification.CATEGORY_CALL))) {
-            Pojo contact  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getContactsProvider().findByName(title);
+            ContactsProvider contactsProvider = KissApplication.getApplication(getApplicationContext()).getDataHandler().getContactsProvider();
+            Pojo contact = null;
+            if (contactsProvider != null) {
+                contact = contactsProvider.findByName(title);
+            }
             if (contact!=null){
                 if (BuildConfig.DEBUG) Log.v(TAG, "1. Package:"+sbn.getPackageName()+" title:"+title);
                 prefs.edit().putStringSet(sbn.getPackageName()+title, currentNotifications).apply();
@@ -139,7 +145,7 @@ public class NotificationListener extends NotificationListenerService {
         String title = null;
         String category = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            title = sbn.getNotification().extras.getString("android.title");
+            title = sbn.getNotification().extras.getString("android.title").toString();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 category = sbn.getNotification().category;
             }
@@ -152,26 +158,34 @@ public class NotificationListener extends NotificationListenerService {
         SharedPreferences.Editor editor = prefs.edit();
 
         if (title!= null && category!=null && (category.equals(Notification.CATEGORY_MESSAGE) || category.equals(Notification.CATEGORY_CALL))) {
-            Pojo contact  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getContactsProvider().findByName(title);
+            if (currentNotifications.isEmpty()) {
+                // Clean up!
+                editor.remove(sbn.getPackageName()+title);
+            } else {
+                editor.putStringSet(sbn.getPackageName()+title, currentNotifications);
+            }
+            ContactsProvider contactsProvider = KissApplication.getApplication(getApplicationContext()).getDataHandler().getContactsProvider();
+            Pojo contact = null;
+            if (contactsProvider != null) {
+                contact = contactsProvider.findByName(title);
+            }
             if (contact!=null){
                 contact.setHasNotification(false);
-                if (currentNotifications.isEmpty()) {
-                    // Clean up!
-                    editor.remove(sbn.getPackageName()+title);
-                } else {
-                    editor.putStringSet(sbn.getPackageName()+title, currentNotifications);
-                }
             }
         } else {
-            Pojo pojo  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider().findByPackageName(sbn.getPackageName());
+            if (currentNotifications.isEmpty()) {
+                // Clean up!
+                editor.remove(sbn.getPackageName());
+            } else {
+                editor.putStringSet(sbn.getPackageName(), currentNotifications);
+            }
+            AppProvider appProvider = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider();
+            Pojo pojo = null;
+            if (appProvider!=null) {
+                pojo = appProvider.findByPackageName(sbn.getPackageName());
+            }
             if (pojo!=null){
                 pojo.setHasNotification(false);
-                if (currentNotifications.isEmpty()) {
-                    // Clean up!
-                    editor.remove(sbn.getPackageName());
-                } else {
-                    editor.putStringSet(sbn.getPackageName(), currentNotifications);
-                }
             }
         }
         editor.apply();
