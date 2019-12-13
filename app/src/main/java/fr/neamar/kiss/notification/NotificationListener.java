@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.text.SpannableString;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -40,7 +42,19 @@ public class NotificationListener extends NotificationListenerService {
         super.onCreate();
         prefs = getBaseContext().getSharedPreferences(NOTIFICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
-
+    private static String extractStringFromExtra(Bundle extras, String key) {
+        Object extra = extras.get(key);
+        if (extra == null) {
+            return null;
+        } else if (extra instanceof String) {
+            return (String) extra;
+        } else if (extra instanceof SpannableString) {
+            return extra.toString();
+        } else {
+            Log.e(TAG, "Don't know how to extract text from extra of type: " + extra.getClass().getCanonicalName());
+            return null;
+        }
+    }
     @Override
     public void onListenerConnected() {
         super.onListenerConnected();
@@ -57,7 +71,7 @@ public class NotificationListener extends NotificationListenerService {
             }
             String title = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                title = sbn.getNotification().extras.getString("android.title").toString();
+                title = extractStringFromExtra(sbn.getNotification().extras, "android.title");
             }
             String packageName = sbn.getPackageName();
             if (!notificationsByPackage.containsKey(packageName+":"+title)) {
@@ -101,7 +115,7 @@ public class NotificationListener extends NotificationListenerService {
         String title = null;
         String category = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            title = sbn.getNotification().extras.getString("android.title");
+            title = extractStringFromExtra(sbn.getNotification().extras, "android.title");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 category = sbn.getNotification().category;
             }
@@ -145,7 +159,7 @@ public class NotificationListener extends NotificationListenerService {
         String title = null;
         String category = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            title = sbn.getNotification().extras.getString("android.title").toString();
+            title = extractStringFromExtra(sbn.getNotification().extras, "android.title");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 category = sbn.getNotification().category;
             }

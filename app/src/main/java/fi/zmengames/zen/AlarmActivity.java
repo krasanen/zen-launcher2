@@ -187,7 +187,7 @@ public class AlarmActivity extends Activity {
         });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (prefs.getBoolean("alarmVibrate-on-alarm", false)) {
+        if (prefs.getBoolean("vibrate-on-alarm", false)) {
             alarmVibrate();
         }
         alarmSound();
@@ -244,9 +244,12 @@ public class AlarmActivity extends Activity {
         if (r.isPlaying()) {
             r.stop();
         }
-        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (vib != null && vib.hasVibrator()) {
-            vib.cancel();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (prefs.getBoolean("vibrate-on-alarm", false)) {
+            Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vib != null && vib.hasVibrator()) {
+                vib.cancel();
+            }
         }
         AudioManager am;
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);

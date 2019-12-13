@@ -338,10 +338,15 @@ public class LauncherService extends Service {
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                handleShowToast("Zen needs to ignore battery opt to be able to wake up for alarm.");
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse("package:" + packageName));
-                startActivity(intent);
+                try {
+                    startActivity(intent);
+                } catch (RuntimeException e){
+                    handleShowToast("Zen needs to ignore battery opt to be able to wake up for alarm.");
+                }
             }
         }
     }
@@ -370,7 +375,7 @@ public class LauncherService extends Service {
             // If notification policy access granted for this package
             if (mNotificationManager.isNotificationPolicyAccessGranted()) {
             } else {
-                handleShowToast("Zen Alarm needs notification policy access");
+                handleShowToast("Zen Alarm needs notification policy access for do not disturb control");
                 /*
                     String ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
                         Activity Action : Show Do Not Disturb access settings.
@@ -383,7 +388,11 @@ public class LauncherService extends Service {
                 // If notification policy access not granted for this package
                 Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                try {
+                    startActivity(intent);
+                } catch (RuntimeException e){
+                    handleShowToast("Zen Alarm needs notification policy access for do not disturb control");
+                }
             }
         }
     }

@@ -1202,6 +1202,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             year = y;
             month = m;
             date = d;
+            Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int date = c.get(Calendar.DATE);
+            arg0.updateDate(year,month,date);
             showDialog(1000);
         }
     };
@@ -1213,17 +1218,25 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             alarmIntent.putExtra(ALARM_DATE_PICKER_MILLIS, calAlarm.getTimeInMillis());
             alarmIntent.putExtra(ALARM_ENTERED_TEXT,alarmText);
             alarmIntent.setAction(ALARM_PICKER);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Calendar c = Calendar.getInstance();
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+                timePicker.setHour(hour);
+                timePicker.setMinute(minute);
+            }
             startService(alarmIntent);
         }
     };
 
     protected Dialog onCreateDialog(int id) {
         // TODO Auto-generated method stub
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        int month = Calendar.getInstance().get(Calendar.MONTH);
-        int date = Calendar.getInstance().get(Calendar.DATE);
-        int hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        int minutes = Calendar.getInstance().get(Calendar.MINUTE);
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int date = c.get(Calendar.DATE);
+        int hours = c.get(Calendar.HOUR_OF_DAY);
+        int minutes = c.get(Calendar.MINUTE);
 
         switch (id) {
             case 999:
