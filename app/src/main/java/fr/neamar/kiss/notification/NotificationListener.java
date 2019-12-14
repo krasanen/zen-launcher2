@@ -140,11 +140,15 @@ public class NotificationListener extends NotificationListenerService {
                 contact.setNotificationPackage(sbn.getPackageName());
             }
         }else {
-            Pojo pojo  = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider().findByPackageName(sbn.getPackageName());
-            if (pojo!=null){
+            AppProvider appProvider = KissApplication.getApplication(getApplicationContext()).getDataHandler().getAppProvider();
+            Pojo appPojo = null;
+            if (appProvider!=null){
+                appPojo  = appProvider.findByPackageName(sbn.getPackageName());
+            }
+            if (appPojo!=null){
                 if (BuildConfig.DEBUG) Log.v(TAG, "2. Package:"+sbn.getPackageName()+" title:"+title);
                 prefs.edit().putStringSet(sbn.getPackageName(), currentNotifications).apply();
-                pojo.setHasNotification(true);
+                appPojo.setHasNotification(true);
             }
         }
         if (BuildConfig.DEBUG) Log.v(TAG, "Added notification for " + sbn.getPackageName() + " title:" +title + " category:"+category);
