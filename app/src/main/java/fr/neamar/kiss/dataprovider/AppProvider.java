@@ -166,6 +166,10 @@ public class AppProvider extends Provider<AppPojo> {
         boolean match;
 
         for (AppPojo pojo : pojos) {
+            if(pojo.isExcluded()) {
+                continue;
+            }
+
             matchInfo = fuzzyScore.match(pojo.normalizedName.codePoints);
             match = matchInfo.match;
             pojo.relevance = matchInfo.score;
@@ -270,7 +274,7 @@ public class AppProvider extends Provider<AppPojo> {
         HashSet<String> appSet = new HashSet<>();
         Set<String> allKeys = new HashSet<>(prefs.getAll().keySet());
         for (AppPojo appPojo : pojos) {
-            String serializedPojo = Base64Serialize.encode(appPojo.id, appPojo.packageName, appPojo.activityName, appPojo.getName());
+            String serializedPojo = Base64Serialize.encode(appPojo.id, appPojo.packageName, appPojo.activityName, appPojo.getName(), appPojo.isExcluded(), appPojo.isExcludedFromHistory());
             appSet.add(serializedPojo);
             if (allKeys.contains(appPojo.packageName)){
                 appPojo.setHasNotification(true);
@@ -290,9 +294,9 @@ public class AppProvider extends Provider<AppPojo> {
         pojos.clear();
         for (String serializedPojo : appSet) {
             Object[] pojoData = Base64Serialize.decode(serializedPojo);
-            if (pojoData == null || pojoData.length != 4)
+            if (pojoData == null || pojoData.length != 5)
                 continue;
-            AppPojo app = new AppPojo((String) pojoData[0], (String) pojoData[1], (String) pojoData[2], new UserHandle());
+            AppPojo app = new AppPojo((String) pojoData[0], (String) pojoData[1], (String) pojoData[2], new UserHandle(),(Boolean) pojoData[3],(Boolean) pojoData[4]);
             app.setName((String) pojoData[3]);
             pojos.add(app);
         }

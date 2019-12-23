@@ -116,10 +116,10 @@ public class DBHelper {
      */
     public static void insertHistory(Context context, String query, String record) {
         SQLiteDatabase db = getDatabase(context);
-
         ContentValues values = new ContentValues();
         values.put("query", query);
         values.put("record", record);
+        values.put("timeStamp",System.currentTimeMillis());
         db.insert("history", null, values);
     }
 
@@ -168,6 +168,25 @@ public class DBHelper {
     }
 
     /**
+     * Get the most used history items adaptively based on a set period of time
+     *
+     * @param db The SQL db
+     * @param hours How many hours back we want to test frequency against
+     * @param limit Maximum result size
+     * @return Cursor
+     */
+    private static Cursor getHistoryByAdaptive(SQLiteDatabase db, int hours,int limit) {
+        // order history based on frequency
+        String sql = "SELECT record, count(*) FROM history " +
+                "WHERE timeStamp >= 0 "+
+                "AND timeStamp >" + (System.currentTimeMillis() - ( hours *3600000))+
+                " GROUP BY record " +
+                " ORDER BY count(*) DESC " +
+                " LIMIT " + limit;
+        return db.rawQuery(sql, null);
+    }
+
+    /**
      * Retrieve previous query history
      *
      * @param context     android context
@@ -187,6 +206,9 @@ public class DBHelper {
                 break;
             case "frequency":
                 cursor = getHistoryByFrequency(db, limit);
+                break;
+            case "adaptive":
+                cursor = getHistoryByAdaptive(db,36, limit);
                 break;
             default:
                 cursor = getHistoryByRecency(db, limit);
@@ -259,8 +281,15 @@ public class DBHelper {
         return records;
     }
 
-    public static void insertShortcut(Context context, ShortcutRecord shortcut) {
+    public static boolean insertShortcut(Context context, ShortcutRecord shortcut) {
         SQLiteDatabase db = getDatabase(context);
+        // Do not add duplicate shortcuts
+        Cursor cursor = db.query("shortcuts", new String[]{"package", "intent_uri"},
+                "package = ? AND intent_uri = ?", new String[]{shortcut.packageName, shortcut.intentUri}, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            return false;
+        }
+        cursor.close();
 
         ContentValues values = new ContentValues();
         values.put("name", shortcut.name);
@@ -270,13 +299,41 @@ public class DBHelper {
         values.put("icon_blob", shortcut.icon_blob);
 
         db.insert("shortcuts", null, values);
+        return true;
     }
 
-    public static void removeShortcut(Context context, String name) {
+    public static void removeShortcut(Context context, ShortcutsPojo shortcut) {
         SQLiteDatabase db = getDatabase(context);
-        db.delete("shortcuts", "name = ?", new String[]{name});
+        db.delete("shortcuts", "package = ? AND intent_uri = ?", new String[]{shortcut.packageName, shortcut.intentUri});
     }
 
+    public static ArrayList<ShortcutRecord> getShortcuts(Context context, String packageName) {
+        ArrayList<ShortcutRecord> records = new ArrayList<>();
+        SQLiteDatabase db = getDatabase(context);
+
+        // Cursor query (String table, String[] columns, String selection,
+        // String[] selectionArgs, String groupBy, String having, String
+        // orderBy)
+        Cursor cursor = db.query("shortcuts", new String[]{"name", "package", "icon", "intent_uri", "icon_blob"},
+                "package = ?", new String[]{packageName}, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            ShortcutRecord entry = new ShortcutRecord();
+
+            entry.name = cursor.getString(0);
+            entry.packageName = cursor.getString(1);
+            entry.iconResource = cursor.getString(2);
+            entry.intentUri = cursor.getString(3);
+            entry.icon_blob = cursor.getBlob(4);
+
+            records.add(entry);
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return records;
+    }
 
     public static ArrayList<ShortcutRecord> getShortcuts(Context context) {
         ArrayList<ShortcutRecord> records = new ArrayList<>();
@@ -313,7 +370,7 @@ public class DBHelper {
         // String[] selectionArgs, String groupBy, String having, String
         // orderBy)
         Cursor cursor = db.query("shortcuts", new String[]{"name", "package", "icon", "intent_uri", "icon_blob"},
-                "intent_uri LIKE ?", new String[]{"%" + packageName + "%"}, null, null, null);
+                null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) { // remove from history
@@ -323,7 +380,13 @@ public class DBHelper {
         cursor.close();
 
         //remove shortcuts
-        db.delete("shortcuts", "intent_uri LIKE ?", new String[]{"%" + packageName + "%"});
+        db.delete("shortcuts", "package LIKE ?", new String[]{"%" + packageName + "%"});
+    }
+
+    public static void removeAllShortcuts(Context context) {
+        SQLiteDatabase db = getDatabase(context);
+        // delete whole table
+        db.delete("shortcuts", null, null);
     }
 
     /**
@@ -335,7 +398,6 @@ public class DBHelper {
      */
     public static void insertTagsForId(Context context, String tag, String record) {
         SQLiteDatabase db = getDatabase(context);
-
         ContentValues values = new ContentValues();
         values.put("tag", tag);
         values.put("record", record);

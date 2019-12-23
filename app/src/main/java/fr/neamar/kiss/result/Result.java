@@ -28,8 +28,6 @@ import androidx.annotation.StringRes;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import fi.zmengames.zen.ZenPojo;
-import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
@@ -251,9 +249,11 @@ public abstract class Result {
                 break;
         }
 
+        MainActivity mainActivity = (MainActivity) context;
+        //Update favorite bar
+        mainActivity.onFavoriteChange();
         //Update Search to reflect favorite add, if the "exclude favorites" option is active
-        MainActivity mainActivity = KissApplication.getApplication(context).getMainActivity();
-        if(mainActivity.prefs.getBoolean("exclude-favorites", false) && mainActivity.isViewingSearchResults()) {
+        if (mainActivity.prefs.getBoolean("exclude-favorites", false) && mainActivity.isViewingSearchResults()) {
             mainActivity.updateSearchRecords();
         }
 
@@ -262,13 +262,13 @@ public abstract class Result {
 
     private void launchAddToFavorites(Context context, Pojo app) {
         String msg = context.getResources().getString(R.string.toast_favorites_added);
-        KissApplication.getApplication(context).getDataHandler().addToFavorites(KissApplication.getApplication(context).getMainActivity(), app.id);
+        KissApplication.getApplication(context).getDataHandler().addToFavorites(app.id);
         Toast.makeText(context, String.format(msg, app.getName()), Toast.LENGTH_SHORT).show();
     }
 
     private void launchRemoveFromFavorites(Context context, Pojo app) {
         String msg = context.getResources().getString(R.string.toast_favorites_removed);
-        KissApplication.getApplication(context).getDataHandler().removeFromFavorites(KissApplication.getApplication(context).getMainActivity(), app.id);
+        KissApplication.getApplication(context).getDataHandler().removeFromFavorites(app.id);
         Toast.makeText(context, String.format(msg, app.getName()), Toast.LENGTH_SHORT).show();
     }
 
@@ -322,7 +322,9 @@ public abstract class Result {
     boolean isDrawableCached() {
         return false;
     }
-    void setDrawableCache( Drawable drawable ) {}
+
+    void setDrawableCache(Drawable drawable) {
+    }
 
     void setAsyncDrawable(ImageView view) {
         // the ImageView tag will store the async task if it's running

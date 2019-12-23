@@ -1,5 +1,6 @@
 package fr.neamar.kiss;
 
+import android.annotation.TargetApi;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -8,7 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap.CompressFormat;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -48,6 +51,7 @@ import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.utils.ShortcutUtil;
 import fr.neamar.kiss.utils.UserHandle;
 import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
@@ -385,13 +389,40 @@ public class DataHandler
             record.icon_blob = baos.toByteArray();
         }
 
-        DBHelper.insertShortcut(this.context, record);
+        Log.d(TAG, "Shortcut " + shortcut.id);
+        return DBHelper.insertShortcut(this.context, record);
+    }
 
-        if (this.getShortcutsProvider() != null) {
-            this.getShortcutsProvider().reload();
+    @TargetApi(Build.VERSION_CODES.O)
+    public boolean addShortcut(String packageName) {
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return false;
         }
 
-        if (BuildConfig.DEBUG) Log.i(TAG, "Shortcut " + shortcut.id + " added.");
+        List<ShortcutInfo> shortcuts;
+        try {
+            shortcuts = ShortcutUtil.getShortcut(context, packageName);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        for (ShortcutInfo shortcutInfo : shortcuts) {
+            // Create Pojo
+            ShortcutsPojo pojo = ShortcutUtil.createShortcutPojo(context, shortcutInfo, true);
+            if (pojo == null) {
+                continue;
+            }
+            // Add shortcut to the DataHandler
+            addShortcut(pojo);
+
+            Log.d(TAG, "Shortcut " + pojo.id + " added.");
+        }
+
+        if (!shortcuts.isEmpty() && this.getShortcutsProvider() != null) {
+            this.getShortcutsProvider().reload();
+        }
         return true;
     }
 
@@ -400,7 +431,9 @@ public class DataHandler
     }
 
     public void removeShortcut(ShortcutsPojo shortcut) {
-        DBHelper.removeShortcut(this.context, shortcut.getName());
+        // Also remove shortcut from favorites
+        removeFromFavorites(shortcut.id);
+        DBHelper.removeShortcut(this.context, shortcut);
 
         if (this.getShortcutsProvider() != null) {
             this.getShortcutsProvider().reload();
@@ -408,6 +441,17 @@ public class DataHandler
     }
 
     public void removeShortcuts(String packageName) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
+        // Remove all shortcuts from favorites for given package name
+        List<ShortcutRecord> shortcutsList = DBHelper.getShortcuts(context, packageName);
+        for (ShortcutRecord shortcut : shortcutsList) {
+            String id = ShortcutUtil.generateShortcutId(shortcut.name);
+            removeFromFavorites(id);
+        }
+
         DBHelper.removeShortcuts(this.context, packageName);
 
         if (this.getShortcutsProvider() != null) {
@@ -440,7 +484,41 @@ public class DataHandler
         // modifying in place is not supported by putStringSet()
         Set<String> excluded = new HashSet<>(getExcludedFromHistory());
         excluded.add(app.id);
+
+        if (ShortcutUtil.areShortcutsEnabled(context)) {
+            // Add all shortcuts for given package name to being excluded from history
+            List<ShortcutRecord> shortcutsList = DBHelper.getShortcuts(context, app.packageName);
+            for (ShortcutRecord shortcut : shortcutsList) {
+                String id = ShortcutUtil.generateShortcutId(shortcut.name);
+                excluded.add(id);
+            }
+            // Refresh shortcuts
+            if (!shortcutsList.isEmpty() && this.getShortcutsProvider() != null) {
+                this.getShortcutsProvider().reload();
+            }
+        }
+
         PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps-from-history", excluded).apply();
+        app.setExcludedFromHistory(true);
+    }
+
+    public void removeFromExcludedFromHistory(AppPojo app) {
+        // The set needs to be cloned and then edited,
+        // modifying in place is not supported by putStringSet()
+        Set<String> excluded = new HashSet<>(getExcludedFromHistory());
+        excluded.remove(app.id);
+
+        if (ShortcutUtil.areShortcutsEnabled(context)) {
+            // Add all shortcuts for given package name to being included in history
+            List<ShortcutRecord> shortcutsList = DBHelper.getShortcuts(context, app.packageName);
+            for (ShortcutRecord shortcut : shortcutsList) {
+                String id = ShortcutUtil.generateShortcutId(shortcut.name);
+                excluded.remove(id);
+            }
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps-from-history", excluded).apply();
+        app.setExcludedFromHistory(false);
     }
 
     public void addToExcluded(AppPojo app) {
@@ -449,11 +527,31 @@ public class DataHandler
         Set<String> excluded = new HashSet<>(getExcluded());
         excluded.add(app.getComponentName());
         PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps", excluded).apply();
+        app.setExcluded(true);
+
+        // Ensure it's removed from favorites too
+        DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
+        dataHandler.removeFromFavorites(app.id);
+
+        //Exclude shortcuts for this app
+        removeShortcuts(app.packageName);
+    }
+
+    public void removeFromExcluded(AppPojo app) {
+        // The set needs to be cloned and then edited,
+        // modifying in place is not supported by putStringSet()
+        Set<String> excluded = new HashSet<>(getExcluded());
+        excluded.remove(app.getComponentName());
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps", excluded).apply();
+        app.setExcluded(false);
+
+        //Add shortcuts for this app
+        addShortcut(app.packageName);
     }
 
     public void removeFromExcluded(String packageName) {
         Set<String> excluded = getExcluded();
-        Set<String> newExcluded = new HashSet<String>();
+        Set<String> newExcluded = new HashSet<>();
         for (String excludedItem : excluded) {
             if (!excludedItem.contains(packageName + "/")) {
                 newExcluded.add(excludedItem);
@@ -470,7 +568,7 @@ public class DataHandler
         }
 
         Set<String> excluded = getExcluded();
-        Set<String> newExcluded = new HashSet<String>();
+        Set<String> newExcluded = new HashSet<>();
         for (String excludedItem : excluded) {
             if (!user.hasStringUserSuffix(excludedItem, '#')) {
                 newExcluded.add(excludedItem);
@@ -545,6 +643,7 @@ public class DataHandler
 
         String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
                 getString("favorite-apps-list", "");
+        assert favApps != null;
         List<String> favAppsList = Arrays.asList(favApps.split(";"));
 
         // We might skip some later but this avoid to expand memory multiple times
@@ -569,9 +668,9 @@ public class DataHandler
      * @param position the new position of the fav
      */
     public void setFavoritePosition(MainActivity context, String id, int position) {
-        Log.e(TAG, "setFavoritePosition: "+id);
         String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
                 getString("favorite-apps-list", "");
+        assert favApps != null;
         List<String> favAppsList = new ArrayList<>(Arrays.asList(favApps.split(";")));
 
         int currentPos = favAppsList.indexOf(id);
@@ -600,39 +699,37 @@ public class DataHandler
      * @param id      the app you want to get the position of.
      * @return favorite position
      */
-    public int getFavoritePosition(MainActivity context, String id) {
+    public int getFavoritePosition(String id) {
         String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
                 getString("favorite-apps-list", "");
+        assert favApps != null;
         List<String> favAppsList = new ArrayList<>(Arrays.asList(favApps.split(";")));
 
         return favAppsList.indexOf(id);
     }
 
-    public void addToFavorites(MainActivity context, String id) {
+    public void addToFavorites(String id) {
 
         String favApps = PreferenceManager.getDefaultSharedPreferences(context).
                 getString("favorite-apps-list", "");
 
         // Check if we are already a fav icon
+        assert favApps != null;
         if (favApps.contains(id + ";")) {
             //shouldn't happen
             return;
         }
 
-        List<String> favAppsList = Arrays.asList(favApps.split(";"));
-
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString("favorite-apps-list", favApps + id + ";").apply();
-
-        context.onFavoriteChange();
     }
 
-    public void removeFromFavorites(MainActivity context, String id) {
-
+    public void removeFromFavorites(String id) {
         String favApps = PreferenceManager.getDefaultSharedPreferences(context).
                 getString("favorite-apps-list", "");
 
         // Check if we are not already a fav icon
+        assert favApps != null;
         if (!favApps.contains(id + ";")) {
             //shouldn't happen
             return;
@@ -640,10 +737,9 @@ public class DataHandler
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString("favorite-apps-list", favApps.replace(id + ";", "")).apply();
-
-        context.onFavoriteChange();
     }
 
+    @SuppressWarnings("StringSplitter")
     public void removeFromFavorites(UserHandle user) {
         // This is only intended for apps from foreign-profiles
         if (user.isCurrentUser()) {
@@ -703,9 +799,8 @@ public class DataHandler
         tagsHandler = new TagsHandler(this.context);
     }
 
-
     static final class ProviderEntry {
         public IProvider provider = null;
-        public ServiceConnection connection = null;
+        ServiceConnection connection = null;
     }
 }

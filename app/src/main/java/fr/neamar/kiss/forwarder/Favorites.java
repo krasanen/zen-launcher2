@@ -274,7 +274,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                         // and we would have to update the String below to the new default resolver
                         activityName = "com.google.android.dialer.extensions.GoogleDialtactsActivity";
                     }
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites(mainActivity, "app://" + packageName + "/" + activityName);
+                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
                 }
             }
         }
@@ -285,8 +285,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             if (resolveInfo != null) {
                 String packageName = resolveInfo.activityInfo.packageName;
                 Log.i(TAG, "Contacts resolves to:" + packageName);
-                if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites(mainActivity, "app://" + packageName + "/" + resolveInfo.activityInfo.name);
+                if (resolveInfo.activityInfo.name != null && !resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER)) {
+                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + resolveInfo.activityInfo.name);
                 }
             }
 
@@ -309,7 +309,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                         // and we would have to update the String below to the new default resolver
                         activityName = "com.google.android.apps.chrome.Main";
                     }
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites(mainActivity, "app://" + packageName + "/" + activityName);
+                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
                 }
             }
         }
@@ -322,7 +322,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 Log.i(TAG, "Camera resolves to:" + packageName);
                 if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
                     String activityName = resolveInfo.activityInfo.name;
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites(mainActivity, "app://" + packageName + "/" + activityName);
+                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
                 }
             }
         }
@@ -467,7 +467,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 // currentX is relative to the view not the screen, so add the current X of the view.
                 final boolean leftSide = (left + currentX < left + (width / 2));
 
-                final int pos = KissApplication.getApplication(mainActivity).getDataHandler().getFavoritePosition(mainActivity, overApp.id);
+                final int pos = KissApplication.getApplication(mainActivity).getDataHandler().getFavoritePosition(overApp.id);
                 draggedView.post(new Runnable() {
                      @Override
                      public void run() {
