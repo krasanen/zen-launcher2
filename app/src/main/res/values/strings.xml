@@ -345,5 +345,6 @@
     <string name="vibrate_on_alarm">Vibrate on alarm</string>
     <string name="vibrate_on_alarm_switch">Vibrate on alarm</string>
     <string name="cant_save_shortcuts">Could not add shortcuts. Is Zen your default launcher\\?</string>
+    <string name="add_shortcut">Add shortcut</string>
 
 </resources>

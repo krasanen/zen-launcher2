@@ -350,7 +350,11 @@ public class AppResult extends Result {
     private void launchUninstall(Context context, AppPojo app) {
         Intent intent = new Intent(Intent.ACTION_DELETE,
                 Uri.fromParts("package", app.packageName, null));
-        context.startActivity(intent);
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e){
+            Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

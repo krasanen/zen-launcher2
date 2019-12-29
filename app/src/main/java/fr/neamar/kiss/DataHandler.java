@@ -1,12 +1,9 @@
 package fr.neamar.kiss;
 
 import android.annotation.TargetApi;
-import android.app.KeyguardManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
@@ -68,7 +65,7 @@ public class DataHandler
      * List all known providers
      */
     final static private List<String> PROVIDER_NAMES = Arrays.asList(
-            "app", "contacts", "settings", "shortcuts", "zen"
+            "app", "contacts", "settings", "shortcuts"
     );
     private TagsHandler tagsHandler;
     private BadgeHandler badgeHandler;
@@ -389,8 +386,15 @@ public class DataHandler
             record.icon_blob = baos.toByteArray();
         }
 
-        Log.d(TAG, "Shortcut " + shortcut.id);
-        return DBHelper.insertShortcut(this.context, record);
+        if (BuildConfig.DEBUG) Log.d(TAG, "Shortcut " + shortcut.id);
+        if (DBHelper.insertShortcut(this.context, record)){
+            if (this.getShortcutsProvider()!=null) {
+                this.getShortcutsProvider().reload();
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.O)

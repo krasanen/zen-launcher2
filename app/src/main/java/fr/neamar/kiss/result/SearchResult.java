@@ -36,11 +36,13 @@ import fi.zmengames.zen.LauncherService;
 import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenProvider;
 import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.pojo.SearchPojo;
+import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.ClipboardUtils;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -52,7 +54,8 @@ import static fr.neamar.kiss.MainActivity.LOCK_IN;
 
 public class SearchResult extends Result {
     private final SearchPojo searchPojo;
-
+    private boolean zenQuery = false;
+    private boolean urlQuery = false;
     SearchResult(SearchPojo searchPojo) {
         super(searchPojo);
         this.searchPojo = searchPojo;
@@ -63,7 +66,8 @@ public class SearchResult extends Result {
     public View display(Context context, int position, View v, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
         if (v == null)
             v = inflateFromId(context, R.layout.item_search, parent);
-
+        zenQuery = false;
+        urlQuery = false;
         TextView searchText = v.findViewById(R.id.item_search_text);
         ImageView image = v.findViewById(R.id.item_search_icon);
 
@@ -72,6 +76,7 @@ public class SearchResult extends Result {
         int len;
 
         if (searchPojo.type == SearchPojo.URL_QUERY) {
+            urlQuery = true;
             text = String.format(context.getString(R.string.ui_item_visit), this.pojo.getName());
             pos = text.indexOf(this.pojo.getName());
             len = this.pojo.getName().length();
@@ -87,6 +92,7 @@ public class SearchResult extends Result {
             len = text.length() - pos;
             image.setImageResource(R.drawable.ic_functions);
         } else if (searchPojo.type == SearchPojo.ZEN_QUERY) {
+            zenQuery = true;
             text = searchPojo.query;
             pos = text.indexOf(searchPojo.query);
             len = searchPojo.query.length();
@@ -101,6 +107,7 @@ public class SearchResult extends Result {
             pos = text.indexOf(searchPojo.query);
             len = searchPojo.query.length();
             image.setImageResource(R.drawable.ic_alarm_add_24px);
+            zenQuery = true;
         }
 
         else {
@@ -226,7 +233,6 @@ public class SearchResult extends Result {
                 }
                 break;
             case SearchPojo.ZEN_ALARM:
-
                 break;
         }
     }
@@ -234,7 +240,12 @@ public class SearchResult extends Result {
     @Override
     protected ListPopup buildPopupMenu(Context context, ArrayAdapter<ListPopup.Item> adapter, final RecordAdapter parent, View parentView) {
         adapter.add(new ListPopup.Item(context, R.string.share));
-        adapter.add(new ListPopup.Item(context,R.string.removeAlarm));
+        if (zenQuery) {
+            adapter.add(new ListPopup.Item(context, R.string.removeAlarm));
+        }
+        if (urlQuery){
+            adapter.add(new ListPopup.Item(context, R.string.add_shortcut));
+        }
         return inflatePopupMenu(adapter, context);
     }
 
@@ -252,8 +263,15 @@ public class SearchResult extends Result {
             case R.string.removeAlarm:
                 AlarmUtils.cancelAlarm(context, Long.parseLong(searchPojo.url));
                 parent.clear();
-
                 return true;
+            case R.string.add_shortcut:
+                DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
+                ShortcutsPojo record = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, searchPojo.url, searchPojo.url, searchPojo.url, null);
+                record.setName(searchPojo.url);
+                record.setTags(searchPojo.url);
+                dataHandler.addShortcut(record);
+                return true;
+
         }
 
         return super.popupMenuClickHandler(context, parent, stringId, parentView);

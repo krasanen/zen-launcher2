@@ -23,6 +23,7 @@ class DB extends SQLiteOpenHelper {
                 + "icon TEXT, intent_uri TEXT NOT NULL, icon_blob BLOB)");
         createTags(database);
         createBadges(database);
+        addTimeStamps(database);
     }
 
     private void createTags(SQLiteDatabase database) {
@@ -31,6 +32,10 @@ class DB extends SQLiteOpenHelper {
     }
     private void createBadges(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE badges ( _id INTEGER PRIMARY KEY AUTOINCREMENT, package INT NOT NULL, badge_count INT NOT NULL)");
+    }
+
+    private void addTimeStamps(SQLiteDatabase database) {
+        database.execSQL("ALTER TABLE history ADD COLUMN timeStamp INTEGER DEFAULT 0  NOT NULL");
     }
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
@@ -50,6 +55,9 @@ class DB extends SQLiteOpenHelper {
                     // fall through
                 case 5:
                     createBadges(database);
+                    // fall through
+                case 6:
+                    addTimeStamps(database);
                     // fall through
                 default:
                     break;
