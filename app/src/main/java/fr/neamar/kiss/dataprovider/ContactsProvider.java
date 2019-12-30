@@ -9,15 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.dataprovider.simpleprovider.PhoneProvider;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.loader.LoadContactsPojos;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.ContactsPojo;
+import fr.neamar.kiss.pojo.PhoneAddPojo;
 import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.result.AddPhoneResult;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.FuzzyScore;
+
+import static fr.neamar.kiss.dataprovider.simpleprovider.PhoneProvider.PHONE_SCHEME;
 
 public class ContactsProvider extends Provider<ContactsPojo> {
     private static final String TAG = ContactsProvider.class.getSimpleName();
@@ -57,6 +62,11 @@ public class ContactsProvider extends Provider<ContactsPojo> {
     public ArrayList<Pojo> getAllContacts() {
         if (BuildConfig.DEBUG) Log.d(TAG,"getAllContacts");
         records.clear();
+        PhoneAddPojo pojoPhone = new PhoneAddPojo(PHONE_SCHEME + "", "");
+        pojoPhone.relevance = 20;
+        pojoPhone.normalizedName = StringNormalizer.normalizeWithResult("", false);
+
+        records.add(pojoPhone);
         for (ContactsPojo pojo : pojos) {
             pojo.relevance = 0;
             records.add(pojo);

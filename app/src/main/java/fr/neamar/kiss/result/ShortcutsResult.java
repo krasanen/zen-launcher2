@@ -38,6 +38,7 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.preference.DefaultLauncherPreference;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 import fr.neamar.kiss.utils.SpaceTokenizer;
@@ -157,7 +158,10 @@ public class ShortcutsResult extends Result {
             }
         }
     }
-
+    private void launchAppChooser(Context context) {
+        Log.d(TAG, "launchAppChooser()");
+        DefaultLauncherPreference.selectLauncher(context);
+    }
     @TargetApi(Build.VERSION_CODES.O)
     private void doOreoLaunch(Context context, View v) {
         final LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
@@ -166,6 +170,7 @@ public class ShortcutsResult extends Result {
         // Only the default launcher is allowed to start shortcuts
         if (!launcherApps.hasShortcutHostPermission()) {
             Toast.makeText(context, context.getString(R.string.shortcuts_no_host_permission), Toast.LENGTH_LONG).show();
+            launchAppChooser(context);
             return;
         }
 

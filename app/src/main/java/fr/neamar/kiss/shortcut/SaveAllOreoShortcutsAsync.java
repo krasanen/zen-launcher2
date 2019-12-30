@@ -2,6 +2,7 @@ package fr.neamar.kiss.shortcut;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.os.AsyncTask;

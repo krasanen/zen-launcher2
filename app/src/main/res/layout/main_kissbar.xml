@@ -12,8 +12,8 @@
         android:id="@+id/whiteLauncherButton"
         android:layout_width="@dimen/launcher_button_width"
         android:layout_height="@dimen/bar_height"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/main_kiss"
         android:focusable="true"
@@ -22,40 +22,71 @@
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/ic_z"
         android:tag="hideMenu" />
+
     <ImageView
         android:id="@+id/whiteContactsButton"
         android:layout_width="@dimen/launcher_button_width"
         android:layout_height="@dimen/bar_height"
-        android:layout_marginLeft="@dimen/launcher_button_width"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/alias_contacts"
+        android:layout_toStartOf="@+id/allAppsButton"
         android:layout_toLeftOf="@+id/allAppsButton"
-
+        android:contentDescription="@string/alias_contacts"
         android:focusable="true"
-        android:visibility="visible"
         android:onClick="onContactsButtonClicked"
-        android:tint="@color/zenlauncher"
         android:paddingLeft="@dimen/launcher_button_padding"
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/contacts"
         android:tag="showMenu"
-        android:layout_toStartOf="@+id/allAppsButton" />
+        android:tint="@color/zenlauncher"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/webShortcutsButton"
+        android:layout_width="@dimen/launcher_button_width"
+        android:layout_height="@dimen/bar_height"
+        android:layout_toLeftOf="@id/whiteContactsButton"
+        android:contentDescription="@string/alias_contacts"
+        android:focusable="true"
+        android:onClick="onWebShortcutsButtonClicked"
+        android:paddingLeft="@dimen/launcher_button_padding"
+        android:paddingRight="@dimen/launcher_button_padding"
+        android:src="@drawable/ic_open_in_browser_24px"
+        android:tag="showMenu"
+        android:tint="@color/zenlauncher"
+        android:visibility="visible" />
+
     <ImageView
         android:id="@+id/appsWithNotifButton"
         android:layout_width="@dimen/launcher_button_width"
         android:layout_height="@dimen/bar_height"
-        android:layout_toRightOf="@+id/allAppsButton"
         android:layout_toEndOf="@+id/allAppsButton"
-        android:layout_centerInParent="true"
+        android:layout_toRightOf="@+id/allAppsButton"
+
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
-        android:visibility="visible"
         android:onClick="onApsWithNotifButtonClicked"
-        android:tint="@color/zenlauncher"
         android:paddingLeft="@dimen/launcher_button_padding"
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/ic_baseline_notification_important_24px"
-        android:tag="showMenu"/>
+        android:tag="showMenu"
+        android:tint="@color/zenlauncher"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/shortcutsButton"
+        android:layout_width="@dimen/launcher_button_width"
+        android:layout_height="@dimen/bar_height"
+        android:layout_toEndOf="@+id/appsWithNotifButton"
+        android:layout_toRightOf="@+id/appsWithNotifButton"
+        android:contentDescription="@string/alias_contacts"
+        android:focusable="true"
+        android:onClick="onShortcutsButtonClicked"
+        android:paddingLeft="@dimen/launcher_button_padding"
+        android:paddingRight="@dimen/launcher_button_padding"
+        android:src="@drawable/ic_open_with_24px"
+        android:tag="showMenu"
+        android:tint="@color/zenlauncher"
+        android:visibility="visible" />
+
     <ImageView
         android:id="@+id/allAppsButton"
         android:layout_width="@dimen/launcher_button_width"
@@ -64,13 +95,13 @@
         android:layout_centerInParent="true"
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
-        android:visibility="visible"
         android:onClick="onAllAppsButtonClicked"
-        android:tint="@color/zenlauncher"
         android:paddingLeft="@dimen/launcher_button_padding"
         android:paddingRight="@dimen/launcher_button_padding"
         android:src="@drawable/setting_apps"
-        android:tag="showMenu"/>
+        android:tag="showMenu"
+        android:tint="@color/zenlauncher"
+        android:visibility="visible" />
 
 
     <LinearLayout
@@ -81,5 +112,5 @@
         android:layout_toRightOf="@+id/appsWithNotifButton"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        tools:layout="@layout/favorite_item"/>
+        tools:layout="@layout/favorite_item" />
 </RelativeLayout>

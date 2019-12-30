@@ -2,6 +2,9 @@ package fr.neamar.kiss.dataprovider;
 
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.loader.LoadShortcutsPojos;
 import fr.neamar.kiss.normalizer.StringNormalizer;
@@ -66,5 +69,19 @@ public class ShortcutsProvider extends Provider<ShortcutsPojo> {
                 return pojo;
         }
         return null;
+    }
+
+    public List<ShortcutsPojo> getAll(){
+        return pojos;
+    }
+
+    public List<Pojo> getWebPojos() {
+        ArrayList<Pojo> webPojos = new ArrayList<>();
+        for (ShortcutsPojo pojo : pojos) {
+            if (pojo.packageName.equals("zen")){
+                webPojos.add(pojo);
+            }
+        }
+        return webPojos;
     }
 }

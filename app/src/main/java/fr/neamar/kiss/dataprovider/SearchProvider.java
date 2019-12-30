@@ -89,6 +89,11 @@ public class SearchProvider extends SimpleProvider {
                 pojo.relevance = 50;
                 pojo.setName(guessedUrl, false);
                 records.add(pojo);
+
+                SearchPojo pojo2 = new SearchPojo("", guessedUrl, SearchPojo.URL_QUERY);
+                pojo2.relevance = 0;
+                pojo2.setName(guessedUrl, false);
+                records.add(pojo2);
             }
         }
         return records;

@@ -56,6 +56,8 @@ public class SearchResult extends Result {
     private final SearchPojo searchPojo;
     private boolean zenQuery = false;
     private boolean urlQuery = false;
+    private boolean urlAdd = false;
+
     SearchResult(SearchPojo searchPojo) {
         super(searchPojo);
         this.searchPojo = searchPojo;
@@ -68,6 +70,7 @@ public class SearchResult extends Result {
             v = inflateFromId(context, R.layout.item_search, parent);
         zenQuery = false;
         urlQuery = false;
+        urlAdd = false;
         TextView searchText = v.findViewById(R.id.item_search_text);
         ImageView image = v.findViewById(R.id.item_search_icon);
 
@@ -76,11 +79,22 @@ public class SearchResult extends Result {
         int len;
 
         if (searchPojo.type == SearchPojo.URL_QUERY) {
-            urlQuery = true;
-            text = String.format(context.getString(R.string.ui_item_visit), this.pojo.getName());
-            pos = text.indexOf(this.pojo.getName());
-            len = this.pojo.getName().length();
-            image.setImageResource(R.drawable.ic_public);
+            text = "";
+            pos = 0;
+            len = 0;
+            if (searchPojo.relevance == 50) {
+                urlQuery = true;
+                text = String.format(context.getString(R.string.ui_item_visit), this.pojo.getName());
+                pos = text.indexOf(this.pojo.getName());
+                len = this.pojo.getName().length();
+                image.setImageResource(R.drawable.ic_public);
+            } else if (searchPojo.relevance == 0) {
+                urlAdd = true;
+                text = String.format(context.getString(R.string.add_shortcut_link), this.pojo.getName());
+                pos = text.indexOf(this.pojo.getName());
+                len = this.pojo.getName().length();
+                image.setImageResource(R.drawable.ic_open_in_browser_24px);
+            }
         } else if (searchPojo.type == SearchPojo.SEARCH_QUERY) {
             text = String.format(context.getString(R.string.ui_item_search), this.pojo.getName(), searchPojo.query);
             pos = text.indexOf(searchPojo.query);
@@ -124,6 +138,13 @@ public class SearchResult extends Result {
     public void doLaunch(Context context, View v) {
         switch (searchPojo.type) {
             case SearchPojo.URL_QUERY:
+                if (urlAdd){
+                    DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
+                    ShortcutsPojo record = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, "zen", searchPojo.url, searchPojo.url, null);
+                    record.setName(searchPojo.url);
+                    dataHandler.addShortcut(record);
+                }
+                break;
             case SearchPojo.SEARCH_QUERY:
                 String query;
                 try {
@@ -266,9 +287,8 @@ public class SearchResult extends Result {
                 return true;
             case R.string.add_shortcut:
                 DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
-                ShortcutsPojo record = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, searchPojo.url, searchPojo.url, searchPojo.url, null);
+                ShortcutsPojo record = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, "zen", searchPojo.url, searchPojo.url, null);
                 record.setName(searchPojo.url);
-                record.setTags(searchPojo.url);
                 dataHandler.addShortcut(record);
                 return true;
 

@@ -308,5 +308,6 @@
     <string name="vibrate_on_alarm">Vibrate on alarm</string>
     <string name="vibrate_on_alarm_switch">Vibrate on alarm</string>
     <string name="cant_save_shortcuts">Could not add shortcuts. Is Zen your default launcher\\?</string>
-    <string name="add_shortcut">Add shortcut</string>
+    <string name="add_shortcut">Lisää web linkki</string>
+    <string name="add_shortcut_link">Lisää web linkki “%1$s”</string>
 </resources>

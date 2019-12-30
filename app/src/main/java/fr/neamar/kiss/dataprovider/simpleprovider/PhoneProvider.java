@@ -11,7 +11,7 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.searcher.Searcher;
 
 public class PhoneProvider extends SimpleProvider {
-    private static final String PHONE_SCHEME = "phone://";
+    public static final String PHONE_SCHEME = "phone://";
     private boolean deviceIsPhone;
     private Pattern phonePattern = Pattern.compile("^[*+0-9# ]{3,}$");
 

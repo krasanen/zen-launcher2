@@ -156,6 +156,7 @@ import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.searcher.QuerySearcher;
 import fr.neamar.kiss.searcher.Searcher;
+import fr.neamar.kiss.searcher.ShortcutsSearcher;
 import fr.neamar.kiss.searcher.TagsSearcher;
 import fr.neamar.kiss.searcher.UntaggedSearcher;
 import fr.neamar.kiss.shortcut.SaveSingleOreoShortcutAsync;
@@ -2383,6 +2384,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.displayKissBar(display, true, new AppsWithNotifSearcher(MainActivity.this));
     }
 
+    public void displayShortcuts(Boolean display) {
+        this.displayKissBar(display, true, new ShortcutsSearcher(MainActivity.this, false));
+    }
+    public void displayWebShortcuts(Boolean display) {
+        this.displayKissBar(display, true, new ShortcutsSearcher(MainActivity.this, true));
+    }
     private void displayKissBar(boolean display, boolean clearSearchText, Searcher searchTask) {
         dismissPopup();
         // get the center for the clipping circle
@@ -2711,4 +2718,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         KissApplication.startLaucherService(proximity, this);
     }
 
+    public void onShortcutsButtonClicked(View view) {
+        boolean showMenu = view.getTag().equals("showMenu");
+        displayShortcuts(showMenu);
+    }
+
+    public void onWebShortcutsButtonClicked(View view) {
+        boolean showMenu = view.getTag().equals("showMenu");
+        displayWebShortcuts(showMenu);
+    }
 }
