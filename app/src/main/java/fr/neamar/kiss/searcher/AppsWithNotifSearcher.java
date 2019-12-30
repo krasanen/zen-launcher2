@@ -10,8 +10,10 @@ import java.util.PriorityQueue;
 
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.PojoComparator;
+import fr.neamar.kiss.pojo.SearchPojo;
 
 /**
  * Returns the list of all applications on the system
@@ -44,6 +46,11 @@ public class AppsWithNotifSearcher extends Searcher {
         if (activity == null)
             return null;
 
+        SearchPojo pojoAddAlarm = new SearchPojo("zen://", "Alarm", "Alarm",SearchPojo.ZEN_ALARM);
+        pojoAddAlarm.relevance = 0;
+        pojoAddAlarm.normalizedName = StringNormalizer.normalizeWithResult("ZAlarm", false);
+        this.addResult(pojoAddAlarm);
+
         List<Pojo> appPojos = KissApplication.getApplication(activity).getDataHandler().getAppsWithNotif();
         if (appPojos != null)
             this.addResult(appPojos.toArray(new Pojo[0]));
@@ -52,6 +59,7 @@ public class AppsWithNotifSearcher extends Searcher {
         if (contactPojos != null)
             this.addResult(contactPojos.toArray(new Pojo[0]));
         return null;
+
     }
 
     @Override

@@ -49,6 +49,7 @@ import fr.neamar.kiss.utils.FuzzyScore;
 
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
+import static fr.neamar.kiss.MainActivity.ALARM_PICKER;
 import static fr.neamar.kiss.MainActivity.DATE_TIME_PICKER;
 import static fr.neamar.kiss.MainActivity.LOCK_IN;
 
@@ -254,6 +255,8 @@ public class SearchResult extends Result {
                 }
                 break;
             case SearchPojo.ZEN_ALARM:
+                ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, DATE_TIME_PICKER+searchPojo.query);
+                EventBus.getDefault().post(event);
                 break;
         }
     }
@@ -282,8 +285,12 @@ public class SearchResult extends Result {
                 context.startActivity(shareIntent);
                 return true;
             case R.string.removeAlarm:
-                AlarmUtils.cancelAlarm(context, Long.parseLong(searchPojo.url));
-                parent.clear();
+                try {
+                    AlarmUtils.cancelAlarm(context, Long.parseLong(searchPojo.url));
+                    parent.clear();
+                } catch (NumberFormatException e){
+
+                }
                 return true;
             case R.string.add_shortcut:
                 DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
