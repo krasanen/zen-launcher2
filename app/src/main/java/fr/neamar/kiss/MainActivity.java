@@ -883,6 +883,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onMainbarButtonclicked(View view) {
         if (isKeyboardVisible()) {
             switchInputType();
+            systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
         } else {
             if (isShowingPopup()){
                 dismissPopup();
