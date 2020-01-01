@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 
 import java.io.ByteArrayInputStream;
@@ -22,13 +23,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Collections;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.pojo.ShortcutsPojo;
 
 public class DBHelper {
     private static SQLiteDatabase database = null;
-
+    private static final String TAG = DBHelper.class.getSimpleName();
     private DBHelper() {
     }
     public static Map<String, Integer> loadBadges(Context context) {
@@ -283,13 +285,25 @@ public class DBHelper {
 
     public static boolean insertShortcut(Context context, ShortcutRecord shortcut) {
         SQLiteDatabase db = getDatabase(context);
+        if (BuildConfig.DEBUG) Log.d(TAG,"insertShortcut, packageName: "+shortcut.packageName+" intentUri: " + shortcut.intentUri);
         // Do not add duplicate shortcuts
-        Cursor cursor = db.query("shortcuts", new String[]{"package", "intent_uri"},
-                "package = ? AND intent_uri = ?", new String[]{shortcut.packageName, shortcut.intentUri}, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            return false;
+        if (shortcut.packageName!=null&&shortcut.intentUri!=null) {
+            Cursor cursor = db.query("shortcuts", new String[]{"package", "intent_uri"},
+                    "package = ? AND intent_uri = ?", new String[]{shortcut.packageName, shortcut.intentUri}, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                return false;
+            }
+            cursor.close();
+
+            // packageName can be null on Android 7 chrome shortcut
+        } else if (shortcut.packageName==null&&shortcut.intentUri!=null){
+            Cursor cursor = db.query("shortcuts", new String[]{"intent_uri"},
+                    "intent_uri = ?", new String[]{shortcut.intentUri}, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                return false;
+            }
+            cursor.close();
         }
-        cursor.close();
 
         ContentValues values = new ContentValues();
         values.put("name", shortcut.name);

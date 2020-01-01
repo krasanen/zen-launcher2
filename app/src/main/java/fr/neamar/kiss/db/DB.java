@@ -10,7 +10,7 @@ import fr.neamar.kiss.BuildConfig;
 class DB extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "kiss.s3db";
-    private final static int DB_VERSION = 6;
+    private final static int DB_VERSION = 7;
 
     DB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

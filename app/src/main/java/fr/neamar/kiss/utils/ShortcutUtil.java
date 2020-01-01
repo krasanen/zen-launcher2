@@ -35,7 +35,7 @@ import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED;
 
 public class ShortcutUtil {
 
-    final static private String TAG = "ShortcutUtil";
+    private static final String TAG = ShortcutUtil.class.getSimpleName();
 
     /**
      * @return shortcut id generated from shortcut name

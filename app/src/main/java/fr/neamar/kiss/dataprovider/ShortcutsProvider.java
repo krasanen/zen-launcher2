@@ -14,7 +14,7 @@ import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.FuzzyScore;
 
 public class ShortcutsProvider extends Provider<ShortcutsPojo> {
-
+    private static final String TAG = ShortcutsProvider.class.getSimpleName();
     @Override
     public void reload() {
         super.reload();
@@ -78,7 +78,7 @@ public class ShortcutsProvider extends Provider<ShortcutsPojo> {
     public List<Pojo> getWebPojos() {
         ArrayList<Pojo> webPojos = new ArrayList<>();
         for (ShortcutsPojo pojo : pojos) {
-            if (pojo.packageName.equals("zen")){
+            if (pojo.packageName!=null && pojo.packageName.equals("zen")){
                 webPojos.add(pojo);
             }
         }
