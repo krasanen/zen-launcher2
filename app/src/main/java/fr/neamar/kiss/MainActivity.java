@@ -9,7 +9,6 @@ import android.app.Activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.app.UiModeManager;
@@ -26,8 +25,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ShortcutInfo;
-import android.content.pm.ShortcutManager;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,7 +33,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -141,13 +137,11 @@ import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenAdmin;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
-import fr.neamar.kiss.dataprovider.ShortcutsProvider;
 import fr.neamar.kiss.db.DBHelper;
 
 import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.forwarder.Widget;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
 import fr.neamar.kiss.searcher.AppsWithNotifSearcher;
@@ -159,14 +153,12 @@ import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.searcher.ShortcutsSearcher;
 import fr.neamar.kiss.searcher.TagsSearcher;
 import fr.neamar.kiss.searcher.UntaggedSearcher;
-import fr.neamar.kiss.shortcut.SaveSingleOreoShortcutAsync;
 import fr.neamar.kiss.ui.AnimatedListView;
 import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.utils.PackageManagerUtils;
-import fr.neamar.kiss.utils.ShortcutUtil;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 
 
@@ -177,6 +169,7 @@ import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.ENABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
+import static fr.neamar.kiss.forwarder.ExperienceTweaks.mNumericInputTypeForced;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener{
@@ -294,6 +287,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private View clearButton;
 
     public View numericButton;
+    public View keyboardButton;
+    public View historyButton;
+
+    private View resultsLayout;
 
     /**
      * Task launched on text change
@@ -314,7 +311,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static PopupWindow mPopup;
 
     private ForwarderManager forwarderManager;
-    private static boolean mKeyboardVisible;
     public static boolean mDebugJson = false;
     GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SAVE_SNAPSHOT = 51;
@@ -620,7 +616,26 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.whiteLauncherButton = findViewById(R.id.whiteLauncherButton);
         this.clearButton = findViewById(R.id.clearButton);
         this.numericButton = findViewById(R.id.numericButton);
-        this.numericButton.setClickable(false);
+        this.keyboardButton = findViewById(R.id.keyboardButton);
+        this.historyButton = findViewById(R.id.historyButton);
+        this.resultsLayout = findViewById(R.id.resultLayout);
+        this.resultsLayout.setTag(this.resultsLayout.getVisibility());
+        this.resultsLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int newVis = resultsLayout.getVisibility();
+                if((int)resultsLayout.getTag() != newVis)
+                {
+                    resultsLayout.setTag(resultsLayout.getVisibility());
+                    if (newVis == View.GONE){
+                        resultsVisible = false;
+                    } else {
+                        resultsVisible = true;
+                    }
+                }
+            }
+        });
+
         /*
          * Initialize components behavior
          * Note that a lot of behaviors are also initialized through the forwarderManager.onCreate() call.
@@ -714,6 +729,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         searchEditText.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
+                if (BuildConfig.DEBUG) Log.d(TAG,"searchEditText, onDrag()");
                 return true;
             }
         });
@@ -724,12 +740,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == android.R.id.closeButton) {
-                    systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
                     if (mPopup != null) {
                         mPopup.dismiss();
                         return true;
                     }
-                    systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
                     hider.fixScroll();
                     return false;
                 }
@@ -866,14 +880,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
-    public void onNumericKeypadClicked(View view) {
+    public void onMainbarButtonclicked(View view) {
         if (isKeyboardVisible()) {
-            forwarderManager.switchInputType();
+            switchInputType();
         } else {
             if (isShowingPopup()){
                 dismissPopup();
             }
-            showHistory();
+            numericButton.setVisibility(View.GONE);
+            keyboardButton.setVisibility(View.GONE);
+            historyButton.setVisibility(View.VISIBLE);
+            if (!resultsVisible) {
+                showHistory();
+            } else {
+                searchEditText.setText("");
+            }
         }
     }
 
@@ -900,10 +921,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 int keypadHeight = screenHeight - r.bottom;
 
                 if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
-                    mKeyboardVisible = true;
+                    systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
                 } else {
-                    mKeyboardVisible = false;
-                    forwarderManager.hideKeyboard();
+                    systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
                 }
             }
         });
@@ -1114,7 +1134,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
 
         forwarderManager.onResume();
-        this.numericButton.setClickable(false);
         super.onResume();
     }
 
@@ -2303,22 +2322,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (BuildConfig.DEBUG) Log.i(TAG, "dispatchTouchEvent: " + ev.getAction());
-        x = (int) ev.getX();
-        y = (int) ev.getY();
-        int location[] = new int[2];
-        searchEditText.getLocationOnScreen(location);
-        int viewX = location[0];
-        int viewY = location[1];
-
-        if (((x > viewX && x < (viewX + searchEditText.getWidth())) &&
-                (y > viewY && y < (viewY + searchEditText.getHeight())))) {
-            if (BuildConfig.DEBUG)
-                Log.i(TAG, "dispatchTouchEvent, searchEditText " + ev.getAction());
-            if (ev.getAction() == 0) {
-                systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
-                forwarderManager.onTouch(searchEditText, ev);
-            }
-        }
 
         if (mPopup != null && ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             dismissPopup();
@@ -2572,12 +2575,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     public void showKeyboard() {
+        if (BuildConfig.DEBUG) Log.d(TAG,"showKeyboard");
         searchEditText.requestFocus();
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         assert mgr != null;
         mgr.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
-
-        systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
     }
 
     @Override
@@ -2590,7 +2592,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 //noinspection ConstantConditions
                 inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
-            systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
             dismissPopup();
         }
     }
@@ -2649,15 +2650,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         menuButton.setVisibility(View.INVISIBLE);
     }
 
+    boolean resultsVisible = false;
     public void showHistory() {
         runTask(new HistorySearcher(this));
-
         clearButton.setVisibility(View.VISIBLE);
         menuButton.setVisibility(View.INVISIBLE);
     }
 
-    public static boolean isKeyboardVisible() {
-        return mKeyboardVisible;
+    public boolean isKeyboardVisible() {
+        return systemUiVisibilityHelper.isKeyboardVisible();
     }
 
 
@@ -2726,5 +2727,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onWebShortcutsButtonClicked(View view) {
         boolean showMenu = view.getTag().equals("showMenu");
         displayWebShortcuts(showMenu);
+    }
+
+    public void onSearchEditClick(View view) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"onSearchEditClick");
+    }
+
+    public void switchInputType() {
+        forwarderManager.switchInputType();
     }
 }

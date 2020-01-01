@@ -60,7 +60,6 @@
         android:id="@+id/externalFavoriteBar"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-
         android:layout_above="@+id/searchEditLayout"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
@@ -137,9 +136,11 @@
             android:importantForAutofill="no"
             android:inputType="textVisiblePassword|textNoSuggestions"
             android:singleLine="true"
+            android:focusedByDefault="true"
             android:textColor="?attr/searchColor"
             android:textColorHint="?android:attr/textColorSecondary"
             android:textCursorDrawable="@null"
+            android:onClick="onSearchEditClick"
             android:textSize="16sp" />
 
         <FrameLayout
@@ -177,6 +178,18 @@
         </FrameLayout>
 
         <ImageView
+            android:id="@+id/historyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/large_bar_height"
+            android:background="?attr/appSelectableItemBackground"
+
+            android:contentDescription="@string/main_clear"
+            android:onClick="onMainbarButtonclicked"
+            android:src="@drawable/ic_history_24px"
+            android:tint="?attr/searchColor" />
+        <ImageView
             android:id="@+id/numericButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -185,8 +198,22 @@
             android:background="?attr/appSelectableItemBackground"
 
             android:contentDescription="@string/main_clear"
-            android:onClick="onNumericKeypadClicked"
-            android:src="@drawable/touch_app"
+            android:onClick="onMainbarButtonclicked"
+            android:src="@drawable/ic_dialpad_24px"
+            android:visibility="gone"
+            android:tint="?attr/searchColor" />
+        <ImageView
+            android:id="@+id/keyboardButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/large_bar_height"
+            android:background="?attr/appSelectableItemBackground"
+
+            android:contentDescription="@string/main_clear"
+            android:onClick="onMainbarButtonclicked"
+            android:src="@drawable/ic_keyboard_24px"
+            android:visibility="gone"
             android:tint="?attr/searchColor" />
 
     </RelativeLayout>

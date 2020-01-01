@@ -35,7 +35,6 @@ import fr.neamar.kiss.searcher.NullSearcher;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.text.InputType.TYPE_CLASS_PHONE;
-import static fr.neamar.kiss.MainActivity.isKeyboardVisible;
 import static fr.neamar.kiss.MainActivity.mDebugJson;
 
 
@@ -219,7 +218,7 @@ public class ExperienceTweaks extends Forwarder {
         } else {
             // Not used (thanks windowSoftInputMode)
             // unless coming back from Zen Launcher settings
-            if(MainActivity.isKeyboardVisible()) {
+            if(mainActivity.isKeyboardVisible()) {
                 mainActivity.hideKeyboard();
             }
         }
@@ -333,7 +332,7 @@ public class ExperienceTweaks extends Forwarder {
     }
 
     public void onDoubleTap() {
-        if (isKeyboardVisible()) {
+        if (mainActivity.isKeyboardVisible()) {
             if (prefs.getBoolean("double-click-numeric-kb", false)) {
                 if (mainActivity.searchEditText.getInputType() != TYPE_CLASS_PHONE) {
                     mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);

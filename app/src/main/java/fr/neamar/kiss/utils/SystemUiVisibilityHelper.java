@@ -10,6 +10,9 @@ import android.view.View;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
+
+import static fr.neamar.kiss.forwarder.ExperienceTweaks.mNumericInputTypeForced;
 
 public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChangeListener {
     private final MainActivity mMainActivity;
@@ -18,7 +21,7 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
     private boolean mKeyboardVisible;
     private boolean mIsScrolling;
     private int mPopupCount;
-
+    private static final String TAG = SystemUiVisibilityHelper.class.getSimpleName();
     // This is used to emulate SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     private final Runnable autoApplySystemUiRunnable = new Runnable() {
         @Override
@@ -49,15 +52,32 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
         }
     }
 
+    public boolean isKeyboardVisible(){
+        return mKeyboardVisible;
+    }
+
     public void onKeyboardVisibilityChanged(boolean isVisible) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"onKeyboardVisibilityChanged:"+ isVisible);
         mKeyboardVisible = isVisible;
         if (isVisible) {
             mHandler.removeCallbacks(autoApplySystemUiRunnable);
             applySystemUi(false, false);
-            mMainActivity.numericButton.setClickable(true);
+            mMainActivity.historyButton.setVisibility(View.GONE);
+            if (mNumericInputTypeForced) {
+                mMainActivity.numericButton.setVisibility(View.GONE);
+                mMainActivity.keyboardButton.setVisibility(View.VISIBLE);
+            } else {
+                mMainActivity.numericButton.setVisibility(View.VISIBLE);
+                mMainActivity.keyboardButton.setVisibility(View.GONE);
+            }
         } else {
             autoApplySystemUiRunnable.run();
-            mMainActivity.numericButton.setClickable(false);
+            mMainActivity.numericButton.setVisibility(View.GONE);
+            mMainActivity.keyboardButton.setVisibility(View.GONE);
+            mMainActivity.historyButton.setVisibility(View.VISIBLE);
+            if (mNumericInputTypeForced){
+                mMainActivity.switchInputType();
+            }
         }
     }
 
