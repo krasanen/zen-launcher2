@@ -216,7 +216,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String ALARM_PICKER = "com.zmengames.zenlauncher.ALARM_AT_PICKER";
     public static final String LOCK_IN = "com.zmengames.zenlauncher.LOCK_IN";
     public static final String DATE_TIME_PICKER = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
-    public static final String REFRESH_UI = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
+    public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
     /**
      * Adapter to display records
      */
@@ -313,9 +313,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private ForwarderManager forwarderManager;
     public static boolean mDebugJson = false;
     GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SAVE_SNAPSHOT = 51;
-    private static final int RC_LOAD_SNAPSHOT = 52;
-    private static final int RC_LIST_SAVED_GAMES = 53;
     private static final int RC_SIGN_IN = 54;
     private int widgetAddY,widgetAddX;
     public int action;
