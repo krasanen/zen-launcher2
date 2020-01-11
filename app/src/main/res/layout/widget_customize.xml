@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="250dp"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/favorite_padding">
@@ -79,7 +79,38 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Offset top" />
+        android:text="Offset horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/seek_horiz"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/value_horiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxEms="5"
+            android:minEms="3"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:text="0"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Offset vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -120,32 +151,12 @@
         android:spinnerMode="dropdown" />  -->
 
     <!-- Gravity -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Gravity" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:id="@+id/value_gravity_ver"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:spinnerMode="dialog" />
-
-        <Spinner
-            android:id="@+id/value_gravity_hor"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:spinnerMode="dialog" />
-
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
     <!-- Ok Cancel buttons -->
     <LinearLayout

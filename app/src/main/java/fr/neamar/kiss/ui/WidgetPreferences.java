@@ -4,19 +4,14 @@ package fr.neamar.kiss.ui;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.XmlResourceParser;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -52,7 +47,7 @@ public class WidgetPreferences implements Serializable {
     public int height = 0;
     public int offsetVertical = 0;
     public int offsetHorizontal = 0;
-    public int gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+    public int gravity = Gravity.TOP | Gravity.START;
     public byte[] appWidgetProviderInfo;
     public byte[] appWidgetOptions;
 
@@ -187,15 +182,14 @@ public class WidgetPreferences implements Serializable {
             //Offset top
             seek = contentView.findViewById(R.id.seek_top);
             widgetPreferences.offsetVertical = seek.getProgress();
+
+            seek = contentView.findViewById(R.id.seek_horiz);
+            widgetPreferences.offsetHorizontal = seek.getProgress();
+
+            widgetPreferences.gravity = Gravity.TOP | Gravity.START;
             //Position
             //dropDown = contentView.findViewById(R.id.value_pos);
             widgetPreferences.position = POSITION_MIDDLE; //((SpinnerItem) dropDown.getSelectedItem()).value;
-            //Gravity
-            widgetPreferences.gravity = Gravity.NO_GRAVITY;
-            dropDown = contentView.findViewById(R.id.value_gravity_ver);
-            widgetPreferences.gravity |= ((SpinnerItem) dropDown.getSelectedItem()).value;
-            dropDown = contentView.findViewById(R.id.value_gravity_hor);
-            widgetPreferences.gravity |= ((SpinnerItem) dropDown.getSelectedItem()).value;
 
             int appWidgetId = hostView.getAppWidgetId();
             prefs.edit().putString(String.valueOf(appWidgetId), serialize(widgetPreferences)).apply();
@@ -240,8 +234,6 @@ public class WidgetPreferences implements Serializable {
 
             SeekBar seek;
             TextViewSync textSync;
-            Spinner dropDown;
-            ArrayList<SpinnerItem> dropDownItems;
 
             //Width
             text = contentView.findViewById(R.id.value_width);
@@ -276,6 +268,17 @@ public class WidgetPreferences implements Serializable {
             text.setOnFocusChangeListener(textSync);
             text.setText(String.valueOf(widgetPreferences.offsetVertical));
 
+            //Offset horiz
+            text = contentView.findViewById(R.id.value_horiz);
+            seek = contentView.findViewById(R.id.seek_horiz);
+            seek.setMax(mWindowSize.y - info.minHeight);
+            seek.setOnSeekBarChangeListener(new SeekBarSync(text, 0));
+            seek.setProgress(widgetPreferences.offsetHorizontal);
+            textSync = new TextViewSync(seek, 0);
+            text.addTextChangedListener(textSync);
+            text.setOnFocusChangeListener(textSync);
+            text.setText(String.valueOf(widgetPreferences.offsetHorizontal));
+
             //Position
            /* dropDown = contentView.findViewById(R.id.value_pos);
             dropDownItems = new ArrayList<>(3);
@@ -285,48 +288,6 @@ public class WidgetPreferences implements Serializable {
             dropDown.setAdapter(new ArrayAdapter<>(mainActivity, android.R.layout.simple_spinner_dropdown_item, dropDownItems));
             dropDown.setSelection(dropDownItems.indexOf(new SpinnerItem(widgetPreferences.position)));
 */
-
-            //Gravity vertical
-            dropDown = contentView.findViewById(R.id.value_gravity_ver);
-            dropDownItems = new ArrayList<>(3);
-            dropDownItems.add(new SpinnerItem(Gravity.TOP, "Top"));
-            dropDownItems.add(new SpinnerItem(Gravity.CENTER_VERTICAL, "Center vertical"));
-            dropDownItems.add(new SpinnerItem(Gravity.BOTTOM, "Bottom"));
-            dropDown.setAdapter(new ArrayAdapter<>(mainActivity, android.R.layout.simple_spinner_dropdown_item, dropDownItems));
-            dropDown.setSelection(dropDownItems.indexOf(new SpinnerItem(widgetPreferences.gravity & MASK_GRAVITY_VERTICAL)));
-            dropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    updateWidget();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parentView) {
-                    // your code here
-                }
-
-            });
-
-            //Gravity horizontal
-            dropDown = contentView.findViewById(R.id.value_gravity_hor);
-            dropDownItems = new ArrayList<>(3);
-            dropDownItems.add(new SpinnerItem(Gravity.LEFT, "Left"));
-            dropDownItems.add(new SpinnerItem(Gravity.CENTER_HORIZONTAL, "Center horizontal"));
-            dropDownItems.add(new SpinnerItem(Gravity.RIGHT, "Right"));
-            dropDown.setAdapter(new ArrayAdapter<>(mainActivity, android.R.layout.simple_spinner_dropdown_item, dropDownItems));
-            dropDown.setSelection(dropDownItems.indexOf(new SpinnerItem(widgetPreferences.gravity & MASK_GRAVITY_HORIZONTAL)));
-            dropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    updateWidget();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parentView) {
-                    // your code here
-                }
-
-            });
             setFocusable(true);
             showAtLocation(mainActivity.emptyListView, Gravity.CENTER, 0, 0);
             shown = true;

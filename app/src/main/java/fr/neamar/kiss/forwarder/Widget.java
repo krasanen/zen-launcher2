@@ -427,10 +427,14 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         if (BuildConfig.DEBUG) Log.i(TAG, "3w:" + w + " h:" + h);
 
         WidgetLayout.LayoutParams layoutParams = new WidgetLayout.LayoutParams(w, h);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        layoutParams.gravity = Gravity.START | Gravity.TOP;
         if (mainActivity.getWidgetAddY()>0) {
             layoutParams.topMargin = mainActivity.getWidgetAddY();
             mainActivity.resetWidgetAddY();
+        }
+        if (mainActivity.getWidgetAddX()>0) {
+            layoutParams.leftMargin = mainActivity.getWidgetAddX();
+            mainActivity.resetWidgetAddX();
         }
         if (wp != null) {
             wp.apply(layoutParams);

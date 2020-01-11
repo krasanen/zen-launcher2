@@ -317,7 +317,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int RC_LOAD_SNAPSHOT = 52;
     private static final int RC_LIST_SAVED_GAMES = 53;
     private static final int RC_SIGN_IN = 54;
-    private int widgetAddY;
+    private int widgetAddY,widgetAddX;
     public int action;
 
     /**
@@ -792,6 +792,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void buildWidgetPopupMenu(final View view) {
         checkPermissionHuawei(this);
         widgetAddY = y;
+        widgetAddX = x;
         show(this, x, y);
     }
 
@@ -903,10 +904,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public int getWidgetAddY() {
         return widgetAddY;
     }
+    // place to put widget when long clicking on widgetlayout
+    public int getWidgetAddX() {
+        return widgetAddX;
+    }
+
 
     public void resetWidgetAddY() {
         widgetAddY = 0;
     }
+    public void resetWidgetAddX() {
+        widgetAddX = 0;
+    }
+
 
     Rect r = new Rect();
 

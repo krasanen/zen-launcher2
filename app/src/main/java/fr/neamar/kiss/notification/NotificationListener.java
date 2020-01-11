@@ -62,31 +62,37 @@ public class NotificationListener extends NotificationListenerService {
 
         // Build a map of notifications currently displayed,
         // ordered per package
-        StatusBarNotification[] sbns = getActiveNotifications();
-        SharedPreferences.Editor editor = prefs.edit();
-        Map<String, Set<String>> notificationsByPackage = new HashMap<>();
-        for (StatusBarNotification sbn : sbns) {
-            if(isNotificationTrivial(sbn.getNotification())) {
-                continue;
-            }
-            String title = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                title = extractStringFromExtra(sbn.getNotification().extras, "android.title");
-            }
-            String packageName = sbn.getPackageName();
-            if (!notificationsByPackage.containsKey(packageName+":"+title)) {
-                notificationsByPackage.put(packageName+title, new HashSet<String>());
+        try {
+            StatusBarNotification[] sbns = getActiveNotifications();
+            SharedPreferences.Editor editor = prefs.edit();
+            Map<String, Set<String>> notificationsByPackage = new HashMap<>();
+            for (StatusBarNotification sbn : sbns) {
+                if(isNotificationTrivial(sbn.getNotification())) {
+                    continue;
+                }
+                String title = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    title = extractStringFromExtra(sbn.getNotification().extras, "android.title");
+                }
+                String packageName = sbn.getPackageName();
+                if (!notificationsByPackage.containsKey(packageName+":"+title)) {
+                    notificationsByPackage.put(packageName+title, new HashSet<String>());
+                }
+
+                if (notificationsByPackage.containsKey(packageName+title)) {
+                    editor.putStringSet(packageName+title, notificationsByPackage.get(packageName+title));
+                } else {
+                    editor.remove(packageName+title);
+                }
+                notificationsByPackage.get(packageName+title).add(Integer.toString(sbn.getId()));
             }
 
-            if (notificationsByPackage.containsKey(packageName+title)) {
-                editor.putStringSet(packageName+title, notificationsByPackage.get(packageName+title));
-            } else {
-                editor.remove(packageName+title);
-            }
-            notificationsByPackage.get(packageName+title).add(Integer.toString(sbn.getId()));
+            editor.apply();
+        } catch (SecurityException e){
+            e.printStackTrace();
         }
 
-        editor.apply();
+
     }
 
     @Override
