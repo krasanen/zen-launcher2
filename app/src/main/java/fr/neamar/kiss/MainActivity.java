@@ -216,7 +216,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String ALARM_PICKER = "com.zmengames.zenlauncher.ALARM_AT_PICKER";
     public static final String LOCK_IN = "com.zmengames.zenlauncher.LOCK_IN";
     public static final String DATE_TIME_PICKER = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
-
+    public static final String REFRESH_UI = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
     /**
      * Adapter to display records
      */
@@ -1213,6 +1213,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     askAlarmAt();
                 } else if (event.getText().startsWith(DATE_TIME_PICKER)){
                     dateTimePicker(event.getText());
+                } else if (event.getText().startsWith(REFRESH_UI)){
+                    //Update favorite bar
+                    this.onFavoriteChange();
+                    //Update Search to reflect favorite add, if the "exclude favorites" option is active
+                    if (this.prefs.getBoolean("exclude-favorites", false) && this.isViewingSearchResults()) {
+                        this.updateSearchRecords();
+                    }
                 }
         }
     }

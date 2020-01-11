@@ -25,9 +25,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
@@ -47,6 +50,8 @@ import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
+
+import static fr.neamar.kiss.MainActivity.REFRESH_UI;
 
 public abstract class Result {
     /**
@@ -248,14 +253,8 @@ public abstract class Result {
                 launchRemoveFromFavorites(context, pojo);
                 break;
         }
-
-        MainActivity mainActivity = (MainActivity) context;
-        //Update favorite bar
-        mainActivity.onFavoriteChange();
-        //Update Search to reflect favorite add, if the "exclude favorites" option is active
-        if (mainActivity.prefs.getBoolean("exclude-favorites", false) && mainActivity.isViewingSearchResults()) {
-            mainActivity.updateSearchRecords();
-        }
+        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+        EventBus.getDefault().post(event);
 
         return false;
     }
