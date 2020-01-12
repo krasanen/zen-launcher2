@@ -27,6 +27,9 @@ import fr.neamar.kiss.R;
 
 import android.os.Vibrator;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
 
@@ -69,6 +72,7 @@ public class AlarmActivity extends Activity {
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         originalVolume = am.getStreamVolume(AudioManager.STREAM_RING);
         // TODO: smart ringer, rising volume
+
         if (originalVolume == 0) {
          /*   SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             if (!prefs.getBoolean("vibrate-on-alarm", false)) {
@@ -77,7 +81,27 @@ public class AlarmActivity extends Activity {
         }
         //For Normal mode
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+     }
 
+    private void risingVolume(){
+        AudioManager am;
+        am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+        int streamMaxVolume = am.getStreamMaxVolume(AudioManager.STREAM_RING);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask()
+        {
+            int volume = 0;
+            @Override
+            public void run()
+            {
+                volume++;
+                if (BuildConfig.DEBUG) Log.d(TAG,"risingVolume volume:"+volume);
+                am.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
+                if (volume>=streamMaxVolume){
+                    cancel();
+                }
+            }
+        }, 0, 5000);
     }
 
     private void disableDnd() {
@@ -210,6 +234,7 @@ public class AlarmActivity extends Activity {
         }
         r = RingtoneManager.getRingtone(getApplicationContext(), alert);
         r.play();
+        risingVolume();
     }
 
     private void alarmVibrate() {
