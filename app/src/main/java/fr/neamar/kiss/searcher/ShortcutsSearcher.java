@@ -10,6 +10,7 @@ import java.util.PriorityQueue;
 
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.dataprovider.ShortcutsProvider;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.PojoComparator;
 
@@ -47,10 +48,11 @@ public class ShortcutsSearcher extends Searcher {
         if (activity == null)
             return null;
         List<Pojo> shortcutPojos = null;
+        ShortcutsProvider shortcutsProvider = KissApplication.getApplication(activity).getDataHandler().getShortcutsProvider();
         if (!web){
-            shortcutPojos = KissApplication.getApplication(activity).getDataHandler().getShortcutsProvider().getPojos();
+            if (shortcutsProvider!=null) shortcutPojos = shortcutsProvider.getPojos();
         } else {
-            shortcutPojos = KissApplication.getApplication(activity).getDataHandler().getShortcutsProvider().getWebPojos();
+            if (shortcutsProvider!=null) shortcutPojos = shortcutsProvider.getWebPojos();
         }
 
         if (shortcutPojos != null)
