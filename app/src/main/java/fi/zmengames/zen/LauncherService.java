@@ -39,6 +39,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -328,7 +329,9 @@ public class LauncherService extends Service {
         if (BuildConfig.DEBUG)  Log.d(TAG,"alarmIn, minutes:"+ minutes);
         Calendar calAlarm = Calendar.getInstance();
         calAlarm.setTimeZone(TimeZone.getTimeZone("GMT"));
-        calAlarm.setTimeInMillis(System.currentTimeMillis()+minutes*60*1000);
+        Date alarm = new Date(System.currentTimeMillis()+minutes*60*1000);
+        alarm.setSeconds(0);
+        calAlarm.setTimeInMillis(alarm.getTime());
         setAlarm(calAlarm, query);
     }
 
