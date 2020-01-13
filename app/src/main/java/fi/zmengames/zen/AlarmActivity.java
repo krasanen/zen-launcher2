@@ -82,13 +82,12 @@ public class AlarmActivity extends Activity {
         //For Normal mode
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
      }
-
+    Timer risingVolumeTimer = new Timer();
     private void risingVolume(){
         AudioManager am;
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         int streamMaxVolume = am.getStreamMaxVolume(AudioManager.STREAM_RING);
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask()
+        risingVolumeTimer.schedule(new TimerTask()
         {
             int volume = 0;
             @Override
@@ -279,6 +278,7 @@ public class AlarmActivity extends Activity {
         AudioManager am;
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         am.setStreamVolume(AudioManager.STREAM_RING, originalVolume, 0);
+        risingVolumeTimer.cancel();
 
     }
 

@@ -69,6 +69,7 @@
         android:theme="@style/AppThemeLight"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="fi.zmengames.zen.AlarmActivity"
+            android:noHistory="true"
             android:launchMode="singleTask">
 
         </activity>
