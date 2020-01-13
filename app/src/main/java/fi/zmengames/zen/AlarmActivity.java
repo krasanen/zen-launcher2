@@ -282,7 +282,7 @@ public class AlarmActivity extends Activity {
 
     }
 
-    private void snoozeAlarm(String alarmText, int minutes) {
+    private void snoozeAlarm(String alarmText, long minutes) {
         Intent snoozeIntent = new Intent(getApplicationContext(), LauncherService.class);
         snoozeIntent.putExtra(ALARM_ENTERED_TEXT, alarmText + "\n" + "SNOOZED!");
         snoozeIntent.putExtra(ZenProvider.mMinutes, minutes);
