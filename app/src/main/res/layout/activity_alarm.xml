@@ -8,6 +8,20 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/timeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="10:10"
+        android:background="@color/kiss_background_dark_transparent"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:textAlignment="center"
+        android:textColor="@color/zenlauncher"
+        android:textSize="40sp"
+        android:textStyle="bold|italic" />
+
+    <TextView
         android:id="@+id/alarmText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,12 +36,12 @@
         android:textStyle="bold" />
 
     <SeekBar
+        android:layout_marginTop="@dimen/large_bar_height"
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:progress="5"
         android:text="Snooze time" />
-    android:layout_weight="3" />
 
     <Button
         android:id="@+id/snooze"
@@ -36,8 +50,10 @@
         android:layout_margin="5dp"
         android:layout_weight="3"
         android:background="@color/kiss_background_dark_transparent"
-        android:text="Snooze"
-        android:textColor="@color/zenlauncher" />
+        android:clickable="true"
+        android:text="@string/snooze"
+        android:textColor="@color/zenlauncher"
+        android:focusable="true" />
 
     <Button
         android:id="@+id/awake"
@@ -46,7 +62,9 @@
         android:layout_margin="5dp"
         android:layout_weight="3"
         android:background="@color/kiss_background_dark_transparent"
-        android:text="Awake"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/awake"
         android:textColor="@color/zenlauncher" />
 
 </LinearLayout>

@@ -347,5 +347,6 @@
     <string name="cant_save_shortcuts">Could not add shortcuts. Is Zen your default launcher\\?</string>
     <string name="add_shortcut">Add shortcut</string>
     <string name="add_shortcut_link">Add shortcut “%1$s”</string>
+    <string name="awake">Awake</string>
 
 </resources>

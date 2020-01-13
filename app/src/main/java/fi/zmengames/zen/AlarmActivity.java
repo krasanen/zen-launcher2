@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -27,6 +28,10 @@ import fr.neamar.kiss.R;
 
 import android.os.Vibrator;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -82,25 +87,37 @@ public class AlarmActivity extends Activity {
         //For Normal mode
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
      }
-    Timer risingVolumeTimer = new Timer();
+    Timer risingVolumeTimer;
     private void risingVolume(){
         AudioManager am;
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         int streamMaxVolume = am.getStreamMaxVolume(AudioManager.STREAM_RING);
+        risingVolumeTimer = new Timer();
         risingVolumeTimer.schedule(new TimerTask()
         {
             int volume = 0;
+            int i = 0;
             @Override
             public void run()
             {
-                volume++;
-                if (BuildConfig.DEBUG) Log.d(TAG,"risingVolume volume:"+volume);
-                am.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
-                if (volume>=streamMaxVolume){
-                    cancel();
+                if (i % 5 == 0) { // update audio volume every 5 sec
+                    if (volume < streamMaxVolume) {
+                        volume++;
+                        if (BuildConfig.DEBUG) Log.d(TAG, "risingVolume volume:" + volume);
+                        am.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
+                    }
                 }
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                String currentDateandTime = sdf.format(new Date());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        currentTime.setText(currentDateandTime);
+                    }
+                });
+                i++;
             }
-        }, 0, 5000);
+        }, 0, 1000);
     }
 
     private void disableDnd() {
@@ -159,7 +176,7 @@ public class AlarmActivity extends Activity {
             }
         }
     }
-
+    TextView currentTime;
     @Override
     protected void onStart() {
         super.onStart();
@@ -169,6 +186,10 @@ public class AlarmActivity extends Activity {
         if (!alarmText.isEmpty()) {
             textView.setText(alarmText);
         }
+        currentTime = findViewById(R.id.timeView);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        currentTime.setText(currentDateandTime);
         SeekBar seekBar = findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

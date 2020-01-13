@@ -564,7 +564,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Log.i(TAG, "onCreate");
         instance = this;
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
-        mReceiver = new ScreenReceiver(this);
         KissApplication.getApplication(this).setMainActivity(this);
 
 
@@ -1088,6 +1087,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (BuildConfig.DEBUG) Log.i(TAG, "onResume()");
         // Apps may notify badge updates for Samsung devices
         // through a ContentResolver on the url: content://com.sec.badge/apps
+        mReceiver = new ScreenReceiver(this);
         if (SamsungBadgeObserver.providerExists(this)) {
 
             //Content Resolver has content, so, register for updates and load its actual content
@@ -1149,14 +1149,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onDestroy() {
         super.onDestroy();
         if (BuildConfig.DEBUG) Log.d(TAG,"onDestroy");
-        if (mReceiver!=null) {
-            try {
-                unregisterReceiver(mReceiver);
-            } catch (final IllegalArgumentException unregisteredException) {
-                Log.w(TAG, "Broadcast receiver already unregistered (" + unregisteredException.getMessage() + ")");
-            }
-            mReceiver = null;
-        }
     }
 
     private boolean fullLoadOver = false;
@@ -2532,6 +2524,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     .unregisterContentObserver(samsungBadgeObserver);
         }
         instance = null;
+        if (mReceiver!=null) {
+            try {
+                unregisterReceiver(mReceiver);
+            } catch (final IllegalArgumentException unregisteredException) {
+                Log.w(TAG, "Broadcast receiver already unregistered (" + unregisteredException.getMessage() + ")");
+            }
+            mReceiver = null;
+        }
     }
 
 
