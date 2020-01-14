@@ -276,6 +276,9 @@ public class AlarmActivity extends Activity {
     }
 
     private void returnHome(Intent intent) {
+        AudioManager am;
+        am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamVolume(AudioManager.STREAM_RING, originalVolume, 0);
         AlarmUtils.cancelAlarm(getApplicationContext(), getIntent().getLongExtra(ALARM_ID,0));
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
@@ -296,9 +299,7 @@ public class AlarmActivity extends Activity {
                 vib.cancel();
             }
         }
-        AudioManager am;
-        am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
-        am.setStreamVolume(AudioManager.STREAM_RING, originalVolume, 0);
+
         risingVolumeTimer.cancel();
 
     }
@@ -314,8 +315,7 @@ public class AlarmActivity extends Activity {
     @Override
     public void onBackPressed() {
       /*  if (r.isPlaying()){
-            r.stop();
-        }
+onDestroyonDestroyonDestroy        }
         super.onBackPressed(); */
     }
 
