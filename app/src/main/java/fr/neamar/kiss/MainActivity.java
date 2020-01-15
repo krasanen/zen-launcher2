@@ -9,6 +9,10 @@ import android.app.Activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.app.UiModeManager;
@@ -29,6 +33,7 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -125,6 +130,7 @@ import java.util.Map;
 import java.util.Set;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 
@@ -142,6 +148,7 @@ import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.forwarder.Widget;
+import fr.neamar.kiss.preference.DefaultLauncherPreference;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
 import fr.neamar.kiss.searcher.AppsWithNotifSearcher;
@@ -180,6 +187,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     public static final int REQUEST_DEVICE_ADMIN_LOCK = 3;
     public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN = 4;
+    private static final int ZEN_NOTIFICATION_ID = 73;
+
 
     private DriveServiceHelper mDriveServiceHelper;
     private String mOpenFileId;
@@ -217,6 +226,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String LOCK_IN = "com.zmengames.zenlauncher.LOCK_IN";
     public static final String DATE_TIME_PICKER = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
     public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
+    private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
     /**
      * Adapter to display records
      */
@@ -564,11 +574,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Log.i(TAG, "onCreate");
         instance = this;
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
-        KissApplication.getApplication(this).setMainActivity(this);
-
-
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(mReceiver, filter);
+        if (mReceiver==null) {
+            mReceiver = new ScreenReceiver(this);
+            KissApplication.getApplication(this).setMainActivity(this);
+            filter.addAction(Intent.ACTION_SCREEN_OFF);
+            registerReceiver(mReceiver, filter);
+        }
 
         /*
          * Initialize preferences
@@ -782,9 +793,72 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // setBlueLightFilter(true);
         }
 
+        boolean defaultLauncher = DefaultLauncherPreference.isZenLauncherDefault(this);
+        if (!defaultLauncher){
+            if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
+            defaultLauncherNotification(this.getCurrentFocus());
+        }
+
     }
 
+    // Remove notification
+    private void removeNotification() {
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(ZEN_NOTIFICATION_ID);
+    }
 
+    public void defaultLauncherNotification(View view) {
+
+        //Get an instance of NotificationManager//
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // The id of the channel.
+        String id = "zen_channel_01";
+
+        // The user-visible name of the channel.
+        CharSequence name = "Default Launcher";
+
+        // The user-visible description of the channel.
+        String description = "Zen Launcher notifications";
+
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationCompat.Builder mBuilder =
+                null;
+        // Configure the notification channel.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(id, name,importance);
+            mChannel.setDescription(description);
+            mNotificationManager.createNotificationChannel(mChannel);
+            mBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.ic_z)
+                    .setContentTitle(getResources().getString(R.string.set_as_default))
+                    .setChannelId(mChannel.getId())
+                    .setContentText(getResources().getString(R.string.set_as_default_info));
+        } else {
+            mBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.ic_z)
+                    .setContentTitle(getResources().getString(R.string.set_as_default))
+                    .setContentText(getResources().getString(R.string.set_as_default_info));
+        }
+        Intent notifyIntent = new Intent(this, MainActivity.class);
+        notifyIntent.setAction(ACTION_SET_DEFAULT_LAUNCHER);
+       /*notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, ZEN_NOTIFICATION_ID, notifyIntent,  PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(pendingIntent);
+
+
+        // When you issue multiple notifications about the same type of event,
+        // it’s best practice for your app to try to update an existing notification
+        // with this new information, rather than immediately creating a new notification.
+        // If you want to update this notification at a later date, you need to assign it an ID.
+        // You can then use this ID whenever you issue a subsequent notification.
+        // If the previous notification is still visible, the system will update this existing notification,
+        // rather than create a new one. In this example, the notification’s ID is 001//
+
+        mNotificationManager.notify(ZEN_NOTIFICATION_ID, mBuilder.build());
+    }
     private void buildWidgetPopupMenu(final View view) {
         checkPermissionHuawei(this);
         widgetAddY = y;
@@ -978,7 +1052,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             camera.release();
         }
         forwarderManager.onStop();
-        super.onStop();
         if (mServiceBound) {
             unbindService(mServiceConnection);
             mServiceBound = false;
@@ -1087,7 +1160,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (BuildConfig.DEBUG) Log.i(TAG, "onResume()");
         // Apps may notify badge updates for Samsung devices
         // through a ContentResolver on the url: content://com.sec.badge/apps
-        mReceiver = new ScreenReceiver(this);
         if (SamsungBadgeObserver.providerExists(this)) {
 
             //Content Resolver has content, so, register for updates and load its actual content
@@ -1149,6 +1221,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     protected void onDestroy() {
         super.onDestroy();
         if (BuildConfig.DEBUG) Log.d(TAG,"onDestroy");
+        if (mReceiver!=null) {
+            try {
+                unregisterReceiver(mReceiver);
+            } catch (final IllegalArgumentException unregisteredException) {
+                Log.w(TAG, "Broadcast receiver already unregistered (" + unregisteredException.getMessage() + ")");
+            }
+            mReceiver = null;
+        }
     }
 
     private boolean fullLoadOver = false;
@@ -1325,6 +1405,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     protected void onNewIntent(Intent intent) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"onNewIntent");
         // This is called when the user press Home again while already browsing MainActivity
         // onResume() will be called right after, hiding the kissbar if any.
         // http://developer.android.com/reference/android/app/Activity.html#onNewIntent(android.content.Intent)
@@ -1342,6 +1423,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         // Close the backButton context menu
         closeContextMenu();
+        if (intent != null) {
+            final String action = intent.getAction();
+            if (ACTION_SET_DEFAULT_LAUNCHER.equals(action)) {
+                DefaultLauncherPreference.selectLauncher(this);
+                removeNotification();
+            }
+        }
     }
 
     @Override
@@ -2524,14 +2612,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     .unregisterContentObserver(samsungBadgeObserver);
         }
         instance = null;
-        if (mReceiver!=null) {
-            try {
-                unregisterReceiver(mReceiver);
-            } catch (final IllegalArgumentException unregisteredException) {
-                Log.w(TAG, "Broadcast receiver already unregistered (" + unregisteredException.getMessage() + ")");
-            }
-            mReceiver = null;
-        }
     }
 
 

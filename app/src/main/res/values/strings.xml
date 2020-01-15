@@ -348,5 +348,7 @@
     <string name="add_shortcut">Add shortcut</string>
     <string name="add_shortcut_link">Add shortcut “%1$s”</string>
     <string name="awake">Awake</string>
+    <string name="set_as_default">Set as default launcher</string>
+    <string name="set_as_default_info">Tap to set Zen Launcher as default launcher</string>
 
 </resources>

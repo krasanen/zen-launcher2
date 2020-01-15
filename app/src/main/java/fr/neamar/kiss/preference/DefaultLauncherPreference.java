@@ -4,11 +4,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.neamar.kiss.DummyActivity;
 import fr.neamar.kiss.R;
@@ -17,6 +22,17 @@ import fr.neamar.kiss.R;
  * A Dialog Preference that allows the User to change the default launcher
  */
 public class DefaultLauncherPreference extends DialogPreference {
+
+    public static boolean isZenLauncherDefault(Context context) {
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        final ResolveInfo res = context.getPackageManager().resolveActivity(intent, 0);
+        if (res.activityInfo != null && context.getPackageName()
+                .equals(res.activityInfo.packageName)) {
+            return true;
+        }
+        return false;
+    }
 
     public DefaultLauncherPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
