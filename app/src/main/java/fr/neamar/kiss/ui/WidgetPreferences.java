@@ -169,7 +169,6 @@ public class WidgetPreferences implements Serializable {
 
         private void updateWidget(){
             SeekBar seek;
-            Spinner dropDown;
 
             //Width
             seek = contentView.findViewById(R.id.seek_width);
@@ -358,7 +357,7 @@ public class WidgetPreferences implements Serializable {
                 } catch (NumberFormatException e) {
                     progress = mSeekBar.getProgress();
                 }
-                if (progress >= 0)
+
                     mSeekBar.setProgress(progress);
                 if (shown) updateWidget();
             }

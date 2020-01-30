@@ -120,7 +120,7 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
         settings.add(createPojo(context.get().getString(R.string.settings_device_info),
                 Settings.ACTION_DEVICE_INFO_SETTINGS, R.drawable.setting_info));
         settings.add(createPojo(context.get().getString(R.string.settings_applications),
-                Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS, R.drawable.setting_apps));
+                Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS, R.drawable.apps_grid));
         settings.add(createPojo(context.get().getString(R.string.settings_connectivity),
                 Settings.ACTION_WIRELESS_SETTINGS, R.drawable.setting_wifi));
         settings.add(createPojo(context.get().getString(R.string.settings_storage),
@@ -132,7 +132,7 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
         settings.add(createPojo(context.get().getString(R.string.settings_tethering), "com.android.settings",
                 "com.android.settings.TetherSettings", R.drawable.setting_tethering));
         settings.add(createPojo(context.get().getString(R.string.settings_sound),
-                Settings.ACTION_SOUND_SETTINGS, R.drawable.setting_dev));
+                Settings.ACTION_SOUND_SETTINGS, R.drawable.settings_sound));
         settings.add(createPojo(context.get().getString(R.string.settings_display),
                 Settings.ACTION_DISPLAY_SETTINGS, R.drawable.setting_dev));
 
@@ -168,6 +168,9 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
 
         settings.add(createPojo(context.get().getString(R.string.menu_wallpaper),
                 MainActivity.UPDATE_WALLPAPER, R.drawable.settings));
+
+        settings.add(createPojo(context.get().getString(R.string.barcode_reader),
+                MainActivity.BARCODE_READER, R.drawable.barcode_scan));
     }
 
     private SettingsPojo createPojo(String name, String packageName, String settingName,

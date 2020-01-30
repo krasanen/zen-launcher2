@@ -168,6 +168,8 @@ import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fi.zmengames.zen.LauncherService.ALARM_DATE_PICKER_MILLIS;
@@ -179,7 +181,9 @@ import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
 import static fr.neamar.kiss.forwarder.ExperienceTweaks.mNumericInputTypeForced;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
-public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener{
+public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener, /*ZBarScannerView.ResultHandler,*/ ZXingScannerView.ResultHandler {
+
+
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -191,10 +195,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     private DriveServiceHelper mDriveServiceHelper;
-    private String mOpenFileId;
-
-    private EditText mFileTitleEditText;
-    private EditText mDocContentEditText;
 
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
@@ -204,7 +204,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int MY_PERMISSIONS_OVERLAY = 16;
     private static final int MY_PERMISSIONS_HUAWEI = 18;
     private static final int MY_PERMISSIONS_DND = 19;
-
+    public static final int MY_PERMISSIONS_CAMERA = 20;
 
     // intent data that is the conflict id.  used when resolving a conflict.
     public static final String CONFLICT_ID = "conflictId";
@@ -227,6 +227,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String DATE_TIME_PICKER = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
     public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
     private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
+    public static final String BARCODE_READER = "com.zmengames.zenlauncher.BARCODE_READER";
+    // BAR code reader stuff
+    //private ZBarScannerView mScannerViewBar;
+    private ZXingScannerView mScannerViewXing;
+
     /**
      * Adapter to display records
      */
@@ -497,6 +502,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             return true;
         }
     }
+
+    public boolean askPermissionCamera(Activity activity) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_CAMERA);
+            Log.d(TAG,"askPermissionCamera FALSE");
+            return false;
+        } else {
+            Log.d(TAG,"askPermissionCamera TRUE");
+            return true;
+        }
+
+    }
+
     public boolean checkPermissionDoNotDisturb(Activity activity) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (!Settings.canDrawOverlays(this)) {
@@ -1299,6 +1319,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     if (this.prefs.getBoolean("exclude-favorites", false) && this.isViewingSearchResults()) {
                         this.updateSearchRecords();
                     }
+                } else if (event.getText().startsWith(BARCODE_READER)){
+                    if (askPermissionCamera(this)) {
+                        startBarCodeScan();
+                    }
                 }
         }
     }
@@ -1446,6 +1470,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // will hide history again)
             searchEditText.setText("");
         }
+        if (mScannerViewXing!=null && mScannerViewXing.isShown()){
+            if (BuildConfig.DEBUG) Log.d(TAG,"onBackPressed, mScannerViewXing");
+            mScannerViewXing.stopCamera();           // Stop camera on pause
+            ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+            contentFrame.removeView(mScannerViewXing);
+        }
         // No call to super.onBackPressed(), since this would quit the launcher.
     }
 
@@ -1540,8 +1570,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                         if (BuildConfig.DEBUG) Log.i(TAG, "files:" + fileNames);
 
-
-                        setReadOnlyMode();
                     })
                     .addOnFailureListener(exception -> {
                         Toast.makeText(getBaseContext(), "Unable to query files.",
@@ -1596,7 +1624,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER);
         startActivity(Intent.createChooser(intent, getString(R.string.menu_wallpaper)));
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (forwarderManager.onOptionsItemSelected(item)) {
@@ -1671,7 +1698,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             case R.id.nightModeOn:
                 if (BuildConfig.DEBUG) Log.i(TAG, "nightModeOn");
                 setBlueLightFilter(true);
-                return true;
+                 return true;
             case R.id.nightModeOff:
                 if (BuildConfig.DEBUG) Log.i(TAG, "nightModeOff");
                 setBlueLightFilter(false);
@@ -1682,6 +1709,23 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void startBarCodeScan() {
+        ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+
+             /*       mScannerViewBar = new ZBarScannerView(this);
+                    contentFrame.addView(mScannerViewBar);
+                    mScannerViewBar.setResultHandler(this); // Register ourselves as a handler for scan results.
+                    mScannerViewBar.startCamera();          // Start camera on resume */
+
+        //  ViewGroup contentFrameXing = (ViewGroup) findViewById(R.id.content_frameXing);
+        mScannerViewXing = new ZXingScannerView(this);   // Programmatically initialize the scanner view
+        mScannerViewXing.setResultHandler(this);
+        mScannerViewXing.setBorderColor(R.color.zenlauncher);
+        mScannerViewXing.setBorderCornerRadius(5);
+        contentFrame.addView(mScannerViewXing);
+        mScannerViewXing.startCamera();
     }
 
     private void loadFromGoogle() {
@@ -1898,32 +1942,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                         if (BuildConfig.DEBUG) Log.i(TAG, "name " + name);
                         getDataFromOpenedFile(nameAndContent.second);
-
-                        // Files opened through SAF cannot be modified, except by retrieving the
-                        // fileId from its metadata and updating it via the REST API. To modify
-                        // files not created by your app, you will need to request the Drive
-                        // Full Scope and submit your app to Google for review.
-                        setReadOnlyMode();
                     })
                     .addOnFailureListener(exception ->
                             Log.e(TAG, "Unable to open file from picker.", exception));
         }
-    }
-
-    /**
-     * Updates the UI to read-only mode.
-     */
-    private void setReadOnlyMode() {
-
-        mOpenFileId = null;
-    }
-
-    /**
-     * Updates the UI to read/write mode on the document identified by {@code fileId}.
-     */
-    private void setReadWriteMode(String fileId) {
-
-        mOpenFileId = fileId;
     }
 
     /* Creates a new file via the Drive REST API.
@@ -1957,8 +1979,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                         if (BuildConfig.DEBUG) Log.i(TAG, "name " + name);
 
-
-                        setReadWriteMode(fileId);
 
                         getDataFromOpenedFile(content);
 
@@ -2325,7 +2345,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
 
                 break;
-
         }
         forwarderManager.onActivityResult(requestCode, resultCode, data);
     }
@@ -2611,6 +2630,20 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             getContentResolver()
                     .unregisterContentObserver(samsungBadgeObserver);
         }
+        /*if (mScannerViewBar !=null) {
+            if (BuildConfig.DEBUG) Log.d(TAG,"onPause, mScannerViewBar");
+            mScannerViewBar.stopCamera();           // Stop camera on pause
+            ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+            contentFrame.removeView(mScannerViewBar);
+
+        } */
+        if (mScannerViewXing !=null) {
+            if (BuildConfig.DEBUG) Log.d(TAG,"onPause, mScannerViewXing");
+            mScannerViewXing.stopCamera();           // Stop camera on pause
+            ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+            contentFrame.removeView(mScannerViewXing);
+
+        }
         instance = null;
     }
 
@@ -2830,5 +2863,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     public void switchInputType() {
         forwarderManager.switchInputType();
+    }
+
+   /* @Override
+    public void handleResult(me.dm7.barcodescanner.zbar.Result rawResult) {
+        // Do something with the result here
+        Log.v(TAG, "handleResult zbar:"+rawResult.getContents()); // Prints scan results
+        Log.v(TAG, "handleResult zbar:"+rawResult.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
+        searchEditText.setText(rawResult.getContents());
+        mScannerViewBar.stopCamera();
+        ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+        contentFrame.removeView(mScannerViewBar);
+    }*/
+
+    @Override
+    public void handleResult(com.google.zxing.Result rawResult) {
+        // Do something with the result here
+        Log.v(TAG, "handleResult zxing:"+rawResult.getText()); // Prints scan results
+        Log.v(TAG, "handleResult zxing:"+rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+        searchEditText.setText(rawResult.getText());
+        mScannerViewXing.stopCamera();
+        ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+        contentFrame.removeView(mScannerViewXing);
     }
 }

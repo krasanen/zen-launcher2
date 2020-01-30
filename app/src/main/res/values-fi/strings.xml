@@ -313,4 +313,5 @@
     <string name="awake">Herää</string>
     <string name="set_as_default">Aseta oletus käynnistimeksi</string>
     <string name="set_as_default_info">Näpäytä tästä asettaaksesi Zen Launcher oletuskäynnistimeksi</string>
+    <string name="barcode_reader">Viivakoodinlukija</string>
 </resources>

@@ -18,6 +18,9 @@ import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
 
+import static android.app.Activity.RESULT_OK;
+import static fr.neamar.kiss.MainActivity.MY_PERMISSIONS_CAMERA;
+
 
 public class Permission extends Forwarder {
     private static final String TAG = Permission.class.getSimpleName();
@@ -128,6 +131,15 @@ public class Permission extends Forwarder {
                 Toast.makeText(mainActivity, "We Need permission to record", Toast.LENGTH_SHORT).show();
             }
             return;
-        }
+        } else if (requestCode == MY_PERMISSIONS_CAMERA)
+            if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_MY_PERMISSIONS_CAMERA");
+            if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (BuildConfig.DEBUG) Log.i(TAG, "OK");
+                mainActivity.startBarCodeScan();
+            } else {
+                if (BuildConfig.DEBUG) Log.i(TAG, "FALSE");
+            }
+
     }
 }

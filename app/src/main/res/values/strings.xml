@@ -350,5 +350,6 @@
     <string name="awake">Awake</string>
     <string name="set_as_default">Set as default launcher</string>
     <string name="set_as_default_info">Tap to set Zen Launcher as default launcher</string>
+    <string name="barcode_reader">Barcode Reader</string>
 
 </resources>
