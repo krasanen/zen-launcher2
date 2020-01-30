@@ -1,6 +1,7 @@
 package fr.neamar.kiss.db;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -11,7 +12,7 @@ class DB extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "kiss.s3db";
     private final static int DB_VERSION = 7;
-
+    private static final String TAG = DB.class.getSimpleName();
     DB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -57,11 +58,32 @@ class DB extends SQLiteOpenHelper {
                     createBadges(database);
                     // fall through
                 case 6:
-                    addTimeStamps(database);
+                    // DB version FU fix
+                    if(!isFieldExist(database, "timeStamp")) {
+                        if (BuildConfig.DEBUG) Log.d(TAG,"adding timeStamps");
+                        addTimeStamps(database);
+                    } else {
+                        if (BuildConfig.DEBUG) Log.d(TAG,"timeStamps already exist");
+                    }
                     // fall through
                 default:
                     break;
             }
         }
+    }
+
+    // This method will check if column exists in your table
+    public boolean isFieldExist(SQLiteDatabase db, String fieldName)
+    {
+        boolean isExist = false;
+        Cursor res = db.rawQuery("PRAGMA table_info(history)",null);
+        res.moveToFirst();
+        do {
+            String currentColumn = res.getString(1);
+            if (currentColumn.equals(fieldName)) {
+                isExist = true;
+            }
+        } while (res.moveToNext());
+        return isExist;
     }
 }
