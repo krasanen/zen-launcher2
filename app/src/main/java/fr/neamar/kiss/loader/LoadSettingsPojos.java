@@ -187,6 +187,7 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
     }
     private SettingsPojo createPojo(String name, String packageName, String settingName) {
         SettingsPojo pojo = new SettingsPojo(getId(settingName), settingName, packageName, R.drawable.settings);
+        Log.d(TAG,"pojo.id:"+pojo.id);
         assingName(pojo, name);
         return pojo;
     }

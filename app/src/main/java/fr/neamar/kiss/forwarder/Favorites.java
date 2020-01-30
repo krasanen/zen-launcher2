@@ -32,6 +32,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import java.util.ArrayList;
 
 import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -95,12 +96,27 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
         }
 
         if (prefs.getBoolean("firstRun", true)) {
+            if (BuildConfig.DEBUG) Log.d(TAG,"firstRun");
             // It is the first run. Make sure this is not an update by checking if history is empty
             if (DBHelper.getHistoryLength(mainActivity) == 0) {
                 addDefaultAppsToFavs();
+                checkBarCodeReaderStatus();
+            } else {
+                checkBarCodeReaderStatus();
             }
             // set flag to false
             prefs.edit().putBoolean("firstRun", false).apply();
+        }
+    }
+
+    private void checkBarCodeReaderStatus() {
+        // Zen barcode reader
+        String id = "setting://com.zmengames.zenlauncher.barcode_reader";
+        DataHandler dataHandler = KissApplication.getApplication(mainActivity).getDataHandler();
+        int pos = dataHandler.getFavoritePosition(id);
+        if (BuildConfig.DEBUG) Log.d(TAG,"pos:"+pos);
+        if (dataHandler.getFavoritePosition(id) == -1) {
+            KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites(id);
         }
     }
 
@@ -319,7 +335,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(camera, PackageManager.MATCH_DEFAULT_ONLY);
             if (resolveInfo != null) {
                 String packageName = resolveInfo.activityInfo.packageName;
-                Log.i(TAG, "Camera resolves to:" + packageName);
+                Log.i(TAG, "Camera resolves to:" + packageName + "/"+resolveInfo.activityInfo.name);
                 if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
                     String activityName = resolveInfo.activityInfo.name;
                     KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
