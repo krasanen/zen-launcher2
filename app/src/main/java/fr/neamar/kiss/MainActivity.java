@@ -9,7 +9,6 @@ import android.app.Activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,6 +19,7 @@ import android.app.WallpaperManager;
 
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,7 +33,6 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -178,7 +177,6 @@ import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.ENABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
-import static fr.neamar.kiss.forwarder.ExperienceTweaks.mNumericInputTypeForced;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener, /*ZBarScannerView.ResultHandler,*/ ZXingScannerView.ResultHandler {
@@ -187,7 +185,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final int REQUEST_CODE_SIGN_IN = 1;
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     public static final int REQUEST_DEVICE_ADMIN_LOCK = 3;
     public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN = 4;
@@ -212,7 +209,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     // intent data that is the retry count for retrying the conflict resolution.
     public static final String RETRY_COUNT = "retrycount";
     public static final int REQUEST_BIND_APPWIDGET = 17;
-    public static final int REQUEST_WRITE = 17;
 
     // app internal events
     public static String WIFI_ON = "com.zmengames.zenlauncher.WIFI_ON";
@@ -228,6 +224,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
     private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
     public static final String BARCODE_READER = "com.zmengames.zenlauncher.BARCODE_READER";
+    public static final String REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL = "com.zmengames.zenlauncher.REMOVE_DEVICE_ADMIN_UNINSTALL";
     // BAR code reader stuff
     //private ZBarScannerView mScannerViewBar;
     private ZXingScannerView mScannerViewXing;
@@ -1323,7 +1320,20 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     if (askPermissionCamera(this)) {
                         startBarCodeScan();
                     }
+                } else if (event.getText().startsWith(REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL)){
+                    disableDeviceAdminAndUninstall();
                 }
+        }
+    }
+
+    private void disableDeviceAdminAndUninstall() {
+        disableDeviceAdmin();
+        Intent intent = new Intent(Intent.ACTION_DELETE,
+                Uri.fromParts("package", this.getPackageName(), null));
+        try {
+            this.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.application_not_found, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -2879,8 +2889,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public void handleResult(com.google.zxing.Result rawResult) {
         // Do something with the result here
-        Log.v(TAG, "handleResult zxing:"+rawResult.getText()); // Prints scan results
-        Log.v(TAG, "handleResult zxing:"+rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+        if (BuildConfig.DEBUG) Log.v(TAG, "handleResult zxing:"+rawResult.getText()); // Prints scan results
+        if (BuildConfig.DEBUG) Log.v(TAG, "handleResult zxing:"+rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         searchEditText.setText(rawResult.getText());
         mScannerViewXing.stopCamera();
         ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);

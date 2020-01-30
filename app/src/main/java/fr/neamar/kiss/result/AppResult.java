@@ -16,7 +16,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
-import fi.zmengames.zen.AlarmReceiver;
 import fi.zmengames.zen.AlarmUtils;
 import fi.zmengames.zen.Utility;
 
@@ -49,7 +48,6 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.cache.MemoryCacheHelper;
-import fr.neamar.kiss.notification.NotificationListener;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.ui.GoogleCalendarIcon;
 import fr.neamar.kiss.ui.ListPopup;
@@ -59,6 +57,7 @@ import me.leolin.shortcutbadger.ShortcutBadgeException;
 import me.leolin.shortcutbadger.impl.IntentConstants;
 import me.leolin.shortcutbadger.util.BroadcastHelper;
 
+import static fr.neamar.kiss.MainActivity.REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL;
 import static org.greenrobot.eventbus.EventBus.TAG;
 
 public class AppResult extends Result {
@@ -348,12 +347,17 @@ public class AppResult extends Result {
      * Open an activity to uninstall the current package
      */
     private void launchUninstall(Context context, AppPojo app) {
-        Intent intent = new Intent(Intent.ACTION_DELETE,
-                Uri.fromParts("package", app.packageName, null));
-        try {
-            context.startActivity(intent);
-        } catch (ActivityNotFoundException e){
-            Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
+        if (app.packageName.equals(context.getPackageName())) {
+            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL);
+            EventBus.getDefault().post(event);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_DELETE,
+                    Uri.fromParts("package", app.packageName, null));
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
