@@ -2,7 +2,6 @@ package fr.neamar.kiss.cache;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -10,18 +9,29 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 
+
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.utils.UserHandle;
 
 public class MemoryCacheHelper {
 
-    private static final HashMap<AppIconHandle, Drawable> sAppIconCache = new HashMap<>();
+    // Get max available VM memory, exceeding this amount will throw an
+    // OutOfMemory exception. Stored in kilobytes as LruCache takes an
+    // int in its constructor.
+    private final static int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+    // Use 1/8th of the available memory for this memory cache.
+    private final static int cacheSize = maxMemory / 8;
+    private static final LruCache<AppIconHandle, Drawable> sAppIconCache = new LruCache<>(cacheSize);
     private static boolean sPrefNoCache = false;
+
     private static final String TAG = MemoryCacheHelper.class.getSimpleName();
+
+
     /**
      * If the app icon is not found in the cache we load it. Else return cache value. Synchronous function.
      *
@@ -44,17 +54,15 @@ public class MemoryCacheHelper {
      */
     private static Drawable getAppIconDrawable(@NonNull Context context, AppIconHandle handle) {
         Drawable drawable;
-        synchronized (sAppIconCache) {
             drawable = sAppIconCache.get(handle);
             if (drawable == null) {
-                // if the drawable cached for this app is null don't bother trying to find it again
-                if (sAppIconCache.containsKey(handle))
-                    return null;
+                if (BuildConfig.DEBUG) Log.d(TAG,"icon not in cache: "+ handle.componentName);
                 drawable = KissApplication.getApplication(context).getIconsHandler()
                         .getDrawableIconForPackage(handle.componentName, handle.userHandle);
-                if (!sPrefNoCache)
-                    sAppIconCache.put(handle, drawable);
-            }
+                if (!sPrefNoCache) {
+                        sAppIconCache.put(handle, drawable);
+                }
+
         }
         return drawable;
     }
@@ -63,13 +71,15 @@ public class MemoryCacheHelper {
         if (sPrefNoCache)
             return;
         AppIconHandle handle = new AppIconHandle(className, userHandle);
-        if (!sAppIconCache.containsKey(handle))
+        if (sAppIconCache.get(handle)==null)
             new AsyncAppIconLoad(context, handle).execute();
     }
 
     public static void trimMemory() {
         synchronized (sAppIconCache) {
-            sAppIconCache.clear();
+            if (BuildConfig.DEBUG) Log.d(TAG,"trimMemory");
+            sAppIconCache.evictAll();
+
         }
     }
 
@@ -105,7 +115,7 @@ public class MemoryCacheHelper {
         }
     }
 
-    private static class AppIconHandle implements Comparable<AppIconHandle> {
+    public static class AppIconHandle implements Comparable<AppIconHandle> {
         final ComponentName componentName;
         final UserHandle userHandle;
 

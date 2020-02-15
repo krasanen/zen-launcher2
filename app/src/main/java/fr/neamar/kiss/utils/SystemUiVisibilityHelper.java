@@ -56,9 +56,11 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
         return mKeyboardVisible;
     }
 
+
     public void onKeyboardVisibilityChanged(boolean isVisible) {
-        if (BuildConfig.DEBUG) Log.d(TAG,"onKeyboardVisibilityChanged:"+ isVisible);
+        if (mKeyboardVisible==isVisible) return;
         mKeyboardVisible = isVisible;
+        if (BuildConfig.DEBUG) Log.d(TAG,"onKeyboardVisibilityChanged:"+ isVisible);
         if (isVisible) {
             mHandler.removeCallbacks(autoApplySystemUiRunnable);
             applySystemUi(false, false);
