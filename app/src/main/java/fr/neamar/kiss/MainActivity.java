@@ -2464,7 +2464,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
+    private void printCallStack(){
+        Log.d(TAG,"Printing stack trace:");
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        for (int i = 1; i < elements.length; i++) {
+            StackTraceElement s = elements[i];
+            Log.d(TAG,"\tat " + s.getClassName() + "." + s.getMethodName() + "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
+        }
+    }
+
     public void displayLoader(Boolean display) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"displayLoader:" + display);
+        //printCallStack();
         int animationDuration = getResources().getInteger(
                 android.R.integer.config_longAnimTime);
 

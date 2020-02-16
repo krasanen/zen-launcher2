@@ -5,9 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 
+import org.greenrobot.eventbus.EventBus;
+
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.dataprovider.AppProvider;
+import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.utils.UserHandle;
+
+import static fr.neamar.kiss.MainActivity.REFRESH_UI;
 
 /**
  * This class gets called when an application is created or removed on the
@@ -20,16 +26,28 @@ import fr.neamar.kiss.utils.UserHandle;
 public class PackageAddedRemovedHandler extends BroadcastReceiver {
 
     public static void handleEvent(Context ctx, String action, String packageName, UserHandle user, boolean replacing) {
-        if (PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("enable-app-history", true)) {
-            // Insert into history new packages (not updated ones)
-            if ("android.intent.action.PACKAGE_ADDED".equals(action) && !replacing) {
-                // Add new package to history
-                Intent launchIntent = ctx.getPackageManager().getLaunchIntentForPackage(packageName);
-                if (launchIntent == null) {//for some plugin app
-                    return;
-                }
+        String className = null;
 
-                String className = launchIntent.getComponent().getClassName();
+        if ("android.intent.action.PACKAGE_ADDED".equals(action) && !replacing) {
+
+            KissApplication.getApplication(ctx).resetIconsHandler();
+            Intent launchIntent = ctx.getPackageManager().getLaunchIntentForPackage(packageName);
+            if (launchIntent == null) {//for some plugin app
+                return;
+            }
+            className = launchIntent.getComponent().getClassName();
+
+            // Reload application list
+            final AppProvider provider = KissApplication.getApplication(ctx).getDataHandler().getAppProvider();
+            if (provider != null) {
+                provider.addApp(packageName, launchIntent.getComponent().getClassName(), user, ctx);
+            }
+
+            // add to history if feature enabled
+            if (PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("enable-app-history", true)) {
+                // Insert into history new packages (not updated ones)
+                // Add new package to history
+
                 String pojoID = user.addUserSuffixToString("app://" + packageName + "/" + className, '/');
                 KissApplication.getApplication(ctx).getDataHandler().addToHistory(pojoID);
             }
@@ -39,15 +57,20 @@ public class PackageAddedRemovedHandler extends BroadcastReceiver {
             // Remove all installed shortcuts
             KissApplication.getApplication(ctx).getDataHandler().removeShortcuts(packageName);
             KissApplication.getApplication(ctx).getDataHandler().removeFromExcluded(packageName);
+            KissApplication.getApplication(ctx).resetIconsHandler();
+
+            // Reload application list
+            final AppProvider provider = KissApplication.getApplication(ctx).getDataHandler().getAppProvider();
+
+            if (provider != null) {
+                AppPojo appPojo = (AppPojo) provider.findByPackageName(packageName);
+                provider.removeApp(appPojo);
+            }
+            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+            EventBus.getDefault().post(event);
         }
 
-        KissApplication.getApplication(ctx).resetIconsHandler();
 
-        // Reload application list
-        final AppProvider provider = KissApplication.getApplication(ctx).getDataHandler().getAppProvider();
-        if (provider != null) {
-            provider.reload();
-        }
     }
 
     @Override

@@ -11,9 +11,14 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Collections;
 import java.util.List;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
@@ -30,6 +35,7 @@ public class AppsGridFragment extends GridFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (BuildConfig.DEBUG) Log.d(TAG,"onActivityCreated");
 
         setEmptyText("No Applications");
 
@@ -47,9 +53,31 @@ public class AppsGridFragment extends GridFragment {
         // till the data is loaded display a spinner
         setGridShown(true);
 
+        EventBus.getDefault().register(this);
     }
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ZEvent event) {
+        if (BuildConfig.DEBUG) Log.i(TAG, "Got message from service: " + event.getState());
 
-
+        switch (event.getState()) {
+            case LOAD_OVER:
+                Log.d(TAG, "LOAD_OVER");
+                List<Pojo> apps = KissApplication.getApplication(getContext()).getDataHandler().getApplications();
+                try {
+                    Collections.sort(apps, new PojoComparator());
+                } catch (Exception e){
+                    Log.d(TAG, "AppsGridFragment, sort exception:" +e);
+                }
+                mAdapter.setData(apps);
+                mAdapter.notifyDataSetInvalidated();
+                break;
+        }
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
     @Override
     public boolean onGridItemLongClick(GridView g, View v, int position, long id) {
         AppPojo app = (AppPojo) getGridAdapter().getItem(position);

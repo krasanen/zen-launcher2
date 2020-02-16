@@ -2,6 +2,7 @@ package fr.neamar.kiss.dataprovider;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,6 +25,7 @@ import androidx.annotation.RequiresApi;
 import fi.zmengames.zen.AlarmUtils;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.broadcast.PackageAddedRemovedHandler;
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.loader.LoadAppPojos;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.pojo.AppPojo;
@@ -142,10 +144,11 @@ public class AppProvider extends Provider<AppPojo> {
         super.onCreate();
     }
 
+    LoadAppPojos loadAppPojos;
     @Override
     public void reload() {
         super.reload();
-        this.initialize(new LoadAppPojos(this));
+        this.initialize(loadAppPojos = new LoadAppPojos(this));
     }
 
     /**
@@ -300,5 +303,10 @@ public class AppProvider extends Provider<AppPojo> {
             app.setName((String) pojoData[3]);
             pojos.add(app);
         }
+    }
+
+    public void addApp(String packageName, String className, UserHandle user, Context context) {
+        pojos.add(loadAppPojos.loadApp(packageName, user, className, context));
+        MemoryCacheHelper.cacheAppIconDrawable(context, new ComponentName(packageName, className), user);
     }
 }
