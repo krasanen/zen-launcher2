@@ -59,7 +59,7 @@ public class MemoryCacheHelper {
                 if (BuildConfig.DEBUG) Log.d(TAG,"icon not in cache: "+ handle.componentName);
                 drawable = KissApplication.getApplication(context).getIconsHandler()
                         .getDrawableIconForPackage(handle.componentName, handle.userHandle);
-                if (!sPrefNoCache && drawable!=null) {
+                if (!sPrefNoCache && drawable !=null && handle!=null) {
                         sAppIconCache.put(handle, drawable);
                 }
 
