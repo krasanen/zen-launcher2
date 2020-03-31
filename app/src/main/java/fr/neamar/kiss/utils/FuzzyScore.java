@@ -252,19 +252,21 @@ public class FuzzyScore {
             assert this.matchedIndices != null;
             // compute pair match indices
             List<Pair<Integer, Integer>> positions = new ArrayList<>(this.matchedIndices.size());
-            int start = this.matchedIndices.get(0);
-            int end = start + 1;
-            for (int i = 1; i < this.matchedIndices.size(); i += 1) {
-                if (end == this.matchedIndices.get(i)) {
-                    end += 1;
-                } else {
-                    positions.add(new Pair<>(start, end));
-                    start = this.matchedIndices.get(i);
-                    end = start + 1;
+            if (matchedIndices.size()>0) {
+                int start = this.matchedIndices.get(0);
+                int end = start + 1;
+                for (int i = 1; i < this.matchedIndices.size(); i += 1) {
+                    if (end == this.matchedIndices.get(i)) {
+                        end += 1;
+                    } else {
+                        positions.add(new Pair<>(start, end));
+                        start = this.matchedIndices.get(i);
+                        end = start + 1;
+                    }
                 }
+                positions.add(new Pair<>(start, end));
             }
-            positions.add(new Pair<>(start, end));
             return positions;
+            }
         }
     }
-}
