@@ -139,8 +139,10 @@ public class ShortcutUtil {
         String id = ShortcutsPojo.SCHEME + ShortcutsPojo.OREO_PREFIX + shortcutInfo.getId();
 
         final Drawable iconDrawable = launcherApps.getShortcutIconDrawable(shortcutInfo, 0);
+        final Bitmap iconBitmap = null; // iconDrawable == null ? null : drawableToBitmap(iconDrawable);
+
         ShortcutsPojo pojo = new ShortcutsPojo(id, shortcutInfo.getPackage(), shortcutInfo.getId(),
-                drawableToBitmap(iconDrawable));
+                iconBitmap);
 
         String appName = getAppNameFromPackageName(context, shortcutInfo.getPackage());
 
