@@ -301,7 +301,7 @@ public class IconsHandler {
     private void loadAvailableIconsPacks() {
 
         List<ResolveInfo> launcherthemes = pm.queryIntentActivities(new Intent("fr.neamar.kiss.THEMES"), PackageManager.GET_META_DATA);
-        List<ResolveInfo> adwlauncherthemes = pm.queryIntentActivities(new Intent("org.adw.launcher.THEMES"), PackageManager.GET_META_DATA);
+        List<ResolveInfo> adwlauncherthemes = new ArrayList<ResolveInfo>(pm.queryIntentActivities(new Intent("org.adw.launcher.THEMES"), PackageManager.GET_META_DATA));
 
         launcherthemes.addAll(adwlauncherthemes);
 
