@@ -1284,7 +1284,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
             case BADGE_COUNT:
                 if (BuildConfig.DEBUG) Log.v(TAG, "BADGE_COUNT update");
-                adapter.notifyDataSetChanged();
+                if (!isDisplayingKissBar) {
+                    adapter.notifyDataSetChanged();
+                }
                 onFavoriteChange();
                 break;
             case INTERNAL_EVENT:

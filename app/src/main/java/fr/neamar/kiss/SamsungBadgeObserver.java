@@ -85,10 +85,11 @@ public class SamsungBadgeObserver extends ContentObserver {
                         int badgeCount = cursor.getInt(3);
 
 
-                        if (badgeHandler.getBadgeCount(packageName) != badgeCount) {
-                            if (BuildConfig.DEBUG)
+                        if (BadgeHandler.getBadgeCount(packageName) != badgeCount) {
+                            if (BuildConfig.DEBUG) {
                                 Log.i(TAG, "loadBadges, setBadgeCount, packageName:" + packageName + " Badges:" + badgeCount);
-                                badgeHandler.setBadgeCount(packageName, badgeCount);
+                            }
+                            badgeHandler.setBadgeCount(packageName, badgeCount);
                         }
                     }
                 } finally {
