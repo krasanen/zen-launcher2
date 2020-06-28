@@ -159,7 +159,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
             ImageView image;
             TextView textView = null;
-            boolean favbarApsEnabled = prefs.getBoolean("enable-favbar-appnames", true);
+            boolean favbarAppNames = prefs.getBoolean("enable-favbar-appnames", true);
             if (favoritesViews.size() <= i) {
                 if (layoutInflater == null) {
                     layoutInflater = (LayoutInflater) mainActivity.favoritesBar.getContext()
@@ -201,10 +201,17 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 // Use a placeholder if no drawable found
                 image.setImageResource(R.drawable.ic_z);
             }
-            if (favbarApsEnabled) {
+            if (favbarAppNames) {
                 image.setPadding(15,0,15,25);
                 textView.setVisibility(View.VISIBLE);
-                textView.setText(pojo.getName());
+                if (pojo instanceof ShortcutsPojo){
+                    String name = pojo.getName().replaceFirst("https://","");
+                    name = name.replaceFirst("www.","");
+                    textView.setText(name);
+                } else {
+                    textView.setText(pojo.getName());
+                }
+
             } else {
                 image.setPadding(15,0,15,0);
                 textView.setVisibility(View.GONE);
