@@ -39,9 +39,13 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.Pojo;
+import fr.neamar.kiss.pojo.SearchPojo;
+import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.Result;
+import fr.neamar.kiss.result.SearchResult;
+import fr.neamar.kiss.result.ShortcutsResult;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.RoundedQuickContactBadge;
 
@@ -187,8 +191,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                             RoundedBitmapDrawableFactory.create(mainActivity.getResources(), iconBitmap);
                     dr.setCornerRadius(Math.max(iconBitmap.getWidth(), iconBitmap.getHeight()) / 2.0f);
                     image.setImageDrawable(dr);
-
-
+                } else if (result instanceof ShortcutsResult) {
+                        image.setImageResource(R.drawable.ic_open_in_browser_24px);
                 } else {
                     image.setImageDrawable(drawable);
                 }

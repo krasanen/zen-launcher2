@@ -201,7 +201,7 @@ public class ShortcutsResult extends Result {
         adapter.add(new ListPopup.Item(context, R.string.menu_remove));
         adapter.add(new ListPopup.Item(context, R.string.menu_favorites_remove));
         adapter.add(new ListPopup.Item(context, R.string.menu_shortcut_remove));
-
+        adapter.add(new ListPopup.Item(context, R.string.share));
         return inflatePopupMenu(adapter, context);
     }
 
@@ -215,6 +215,14 @@ public class ShortcutsResult extends Result {
                 return true;
             case R.string.menu_tags_edit:
                 launchEditTagsDialog(context, shortcutPojo);
+                return true;
+            case R.string.share:
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shortcutPojo.intentUri);
+                shareIntent.setType("text/plain");
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(shareIntent);
                 return true;
         }
         return super.popupMenuClickHandler(context, parent, stringId, parentView);

@@ -20,6 +20,10 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.searcher.Searcher;
 
+import static fr.neamar.kiss.pojo.SearchPojo.URL_QUERY;
+import static fr.neamar.kiss.pojo.SearchPojo.ZEN_ADD_LINK;
+import static fr.neamar.kiss.pojo.ShortcutsPojo.SCHEME;
+
 public class SearchProvider extends SimpleProvider {
     private static final String URL_REGEX = "^(?:[a-z]+://)?(?:[a-z0-9-]|[^\\x00-\\x7F])+(?:[.](?:[a-z0-9-]|[^\\x00-\\x7F])+)+.*$";
     public static final Pattern urlPattern = Pattern.compile(URL_REGEX);
@@ -85,13 +89,12 @@ public class SearchProvider extends SimpleProvider {
             // (tradeoff: non https URL will break, but they shouldn't exist anymore)
             guessedUrl = guessedUrl.replace("http://", "https://");
             if (URLUtil.isValidUrl(guessedUrl)) {
-                SearchPojo pojo = new SearchPojo("", guessedUrl, SearchPojo.URL_QUERY);
-                pojo.relevance = 50;
+                SearchPojo pojo = new SearchPojo(query, guessedUrl, URL_QUERY);
+                pojo.id = SCHEME+guessedUrl;
                 pojo.setName(guessedUrl, false);
                 records.add(pojo);
 
-                SearchPojo pojo2 = new SearchPojo("", guessedUrl, SearchPojo.URL_QUERY);
-                pojo2.relevance = 0;
+                SearchPojo pojo2 = new SearchPojo(query, guessedUrl, ZEN_ADD_LINK);
                 pojo2.setName(guessedUrl, false);
                 records.add(pojo2);
             }

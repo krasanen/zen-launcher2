@@ -1,6 +1,8 @@
 package fr.neamar.kiss.result;
 
 
+import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 
@@ -54,10 +56,9 @@ import static fr.neamar.kiss.MainActivity.DATE_TIME_PICKER;
 import static fr.neamar.kiss.MainActivity.LOCK_IN;
 
 public class SearchResult extends Result {
+    private static final String TAG = SearchResult.class.getSimpleName();
     private final SearchPojo searchPojo;
     private boolean zenQuery = false;
-    private boolean urlQuery = false;
-    private boolean urlAdd = false;
 
     SearchResult(SearchPojo searchPojo) {
         super(searchPojo);
@@ -70,32 +71,26 @@ public class SearchResult extends Result {
         if (v == null)
             v = inflateFromId(context, R.layout.item_search, parent);
         zenQuery = false;
-        urlQuery = false;
-        urlAdd = false;
         TextView searchText = v.findViewById(R.id.item_search_text);
         ImageView image = v.findViewById(R.id.item_search_icon);
 
         String text;
         int pos;
         int len;
+        if (BuildConfig.DEBUG)
+            Log.v(TAG, "URL_QUERY, searchPojo.relevance:" + searchPojo.relevance);
 
         if (searchPojo.type == SearchPojo.URL_QUERY) {
-            text = "";
-            pos = 0;
-            len = 0;
-            if (searchPojo.relevance == 50) {
-                urlQuery = true;
-                text = String.format(context.getString(R.string.ui_item_visit), this.pojo.getName());
-                pos = text.indexOf(this.pojo.getName());
-                len = this.pojo.getName().length();
-                image.setImageResource(R.drawable.ic_public);
-            } else if (searchPojo.relevance == 0) {
-                urlAdd = true;
-                text = String.format(context.getString(R.string.add_shortcut_link), this.pojo.getName());
-                pos = text.indexOf(this.pojo.getName());
-                len = this.pojo.getName().length();
-                image.setImageResource(R.drawable.ic_open_in_browser_24px);
-            }
+            text = String.format(context.getString(R.string.ui_item_visit), this.pojo.getName());
+            pos = text.indexOf(this.pojo.getName());
+            len = this.pojo.getName().length();
+            image.setImageResource(R.drawable.ic_public);
+        }
+        else if (searchPojo.type == SearchPojo.ZEN_ADD_LINK) {
+            text = String.format(context.getString(R.string.add_shortcut_link), this.pojo.getName());
+            pos = text.indexOf(this.pojo.getName());
+            len = this.pojo.getName().length();
+            image.setImageResource(R.drawable.ic_open_in_browser_24px);
         } else if (searchPojo.type == SearchPojo.SEARCH_QUERY) {
             text = String.format(context.getString(R.string.ui_item_search), this.pojo.getName(), searchPojo.query);
             pos = text.indexOf(searchPojo.query);
@@ -138,14 +133,13 @@ public class SearchResult extends Result {
     @Override
     public void doLaunch(Context context, View v) {
         switch (searchPojo.type) {
-            case SearchPojo.URL_QUERY:
-                if (urlAdd){
-                    DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
-                    ShortcutsPojo record = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, "zen", searchPojo.url, searchPojo.url, null);
-                    record.setName(searchPojo.url);
-                    dataHandler.addShortcut(record);
-                }
+            case SearchPojo.ZEN_ADD_LINK:
+                DataHandler dataHandler2 = KissApplication.getApplication(context).getDataHandler();
+                ShortcutsPojo record2 = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, "zen", searchPojo.url, searchPojo.url, null);
+                record2.setName(searchPojo.url);
+                dataHandler2.addShortcut(record2);
                 break;
+            case SearchPojo.URL_QUERY:
             case SearchPojo.SEARCH_QUERY:
                 String query;
                 try {
@@ -266,9 +260,6 @@ public class SearchResult extends Result {
         adapter.add(new ListPopup.Item(context, R.string.share));
         if (zenQuery) {
             adapter.add(new ListPopup.Item(context, R.string.removeAlarm));
-        }
-        if (urlQuery){
-            adapter.add(new ListPopup.Item(context, R.string.add_shortcut));
         }
         return inflatePopupMenu(adapter, context);
     }
