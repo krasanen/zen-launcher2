@@ -43,6 +43,7 @@ public class WidgetPreferences implements Serializable {
     static int MASK_GRAVITY_HORIZONTAL = Gravity.FILL_HORIZONTAL | Gravity.CLIP_HORIZONTAL;
     private static final String TAG = WidgetPreferences.class.getSimpleName();
     public int position = WidgetLayout.LayoutParams.POSITION_MIDDLE;
+    private static final long serialVersionUID = 882755531094416368L;
     public int width = 0;
     public int height = 0;
     public int offsetVertical = 0;
