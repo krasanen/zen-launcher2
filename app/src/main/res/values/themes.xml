@@ -43,6 +43,7 @@
         <item name="searchBackgroundColor">@android:color/white</item>
         <item name="searchBackgroundOutline">@android:color/transparent</item>
         <item name="dividerDrawable">@drawable/list_separator_light</item>
+        <item name="android:windowContentOverlay">@null</item>
         <item name="textShadowRadius">0</item>
     </style>
 
