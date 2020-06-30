@@ -348,8 +348,14 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 String packageName = resolveInfo.activityInfo.packageName;
                 Log.i(TAG, "Camera resolves to:" + packageName + "/"+resolveInfo.activityInfo.name);
                 if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
-                    String activityName = resolveInfo.activityInfo.name;
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
+                    Intent launchIntent = mainActivity.getPackageManager().getLaunchIntentForPackage(resolveInfo.activityInfo.packageName);
+                    if (launchIntent != null && launchIntent.getComponent()!=null) {
+                        String activityName = launchIntent.getComponent().getClassName();
+                        if (BuildConfig.DEBUG) {
+                            Log.i(TAG, "Adding camera:" + packageName + "/" + activityName);
+                        }
+                        KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
+                    }
                 }
             }
         }
