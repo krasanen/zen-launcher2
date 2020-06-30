@@ -3,6 +3,8 @@ package fi.zmengames.zen;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -113,16 +115,20 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
         @Override
         protected Drawable doInBackground(ViewHolder... params) {
             v = params[0];
-            Pojo item = getItem(mPosition);
-            this.hasNotification = item.getHasNotification();
-            final Result result = Result.fromPojo(null, item);
-            this.text = item.getName();
+            if (mPosition<getCount()) {
+                Pojo item = getItem(mPosition);
+                this.hasNotification = item.getHasNotification();
+                final Result result = Result.fromPojo(null, item);
+                this.text = item.getName();
 
-            if (item.getBadgeCount()>0){
-                this.badgeText = item.getBadgeText();
+                if (item.getBadgeCount() > 0) {
+                    this.badgeText = item.getBadgeText();
+                }
+
+                return result.getDrawable(v.context);
+            } else {
+                return new ColorDrawable(Color.TRANSPARENT);
             }
-
-            return result.getDrawable(v.context);
         }
 
         @Override
