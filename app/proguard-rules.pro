@@ -18,6 +18,10 @@
   *;
 }
 
+-keepclassmembers class * {
+  @com.google.api.client.util.Key <fields>;
+}
+
 -keepclassmembers class ** {
     public void onEvent*(**);
 }

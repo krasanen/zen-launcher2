@@ -13,6 +13,13 @@ plugins {
 }
 
 android {
+    lintOptions {
+        checkReleaseBuilds true
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
