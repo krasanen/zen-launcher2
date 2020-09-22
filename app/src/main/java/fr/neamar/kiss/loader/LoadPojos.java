@@ -32,7 +32,7 @@ public abstract class LoadPojos<T extends Pojo> extends AsyncTask<Void, Void, Ar
     @Override
     protected void onPostExecute(ArrayList<T> result) {
         super.onPostExecute(result);
-        if(provider != null) {
+        if(provider != null && provider.get() != null) {
             provider.get().loadOver(result);
         }
     }
