@@ -67,8 +67,12 @@ public class IconsHandler {
         super();
         this.ctx = ctx;
         this.pm = ctx.getPackageManager();
-        loadAvailableIconsPacks();
-        loadIconsPack();
+        try {
+            loadAvailableIconsPacks();
+            loadIconsPack();
+        } catch (UnsupportedOperationException e){
+            Log.d(TAG,"UnsupportedOperationException:" +e);
+        }
     }
 
     /**
