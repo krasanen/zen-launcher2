@@ -20,6 +20,7 @@ import java.util.List;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.pojo.AppPojo;
@@ -82,12 +83,16 @@ public class AppsGridFragment extends GridFragment {
     public boolean onGridItemLongClick(GridView g, View v, int position, long id) {
         AppPojo app = (AppPojo) getGridAdapter().getItem(position);
         Result result = Result.fromPojo(null,app);
-        ListPopup menu = result.getPopupMenu(v.getContext(), KissApplication.getApplication(v.getContext()).getMainActivity().getAdapter(), v);
-
-        //check if menu contains elements and if yes show it
-        if (menu.getAdapter().getCount() > 0) {
-            KissApplication.getApplication(v.getContext()).getMainActivity().registerPopup(menu);
-            menu.show(v);
+        MainActivity mainActivity = KissApplication.getApplication(v.getContext()).getMainActivity();
+        if (mainActivity!=null) {
+            ListPopup menu = result.getPopupMenu(v.getContext(), mainActivity.getAdapter(), v);
+            //check if menu contains elements and if yes show it
+            if (menu.getAdapter().getCount() > 0) {
+                KissApplication.getApplication(v.getContext()).getMainActivity().registerPopup(menu);
+                menu.show(v);
+            }
+        } else {
+            Log.d(TAG,"not able to show menu, mainActivity is null");
         }
         return true;
     }
