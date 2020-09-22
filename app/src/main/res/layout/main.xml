@@ -97,11 +97,9 @@
             android:id="@+id/leftHandSideButtonsWrapper"
             android:layout_width="@dimen/launcher_button_width"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/launcher_button_padding"
-            android:paddingRight="@dimen/launcher_button_padding">
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true">
 
 
             <ImageView
@@ -112,6 +110,8 @@
                 android:contentDescription="@string/main_kiss"
                 android:focusable="true"
                 android:onClick="onLauncherButtonClicked"
+                android:paddingLeft="@dimen/launcher_button_padding"
+                android:paddingRight="@dimen/launcher_button_padding"
                 android:src="@drawable/ic_z"
                 android:tag="showMenu" />
 
@@ -120,6 +120,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:indeterminate="true"
+                android:paddingLeft="@dimen/launcher_button_padding"
+                android:paddingRight="@dimen/launcher_button_padding"
                 android:visibility="invisible" />
 
         </FrameLayout>
@@ -129,11 +131,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:layout_margin="1dp"
             android:layout_toStartOf="@id/rightHandSideButtonsWrapper"
             android:layout_toLeftOf="@id/rightHandSideButtonsWrapper"
             android:layout_toEndOf="@id/leftHandSideButtonsWrapper"
             android:layout_toRightOf="@id/leftHandSideButtonsWrapper"
-            android:layout_margin="1dp"
             android:background="?attr/searchBackgroundColor"
             android:hint="@string/ui_search_hint"
             android:imeOptions="flagNoExtractUi|actionSearch"
@@ -153,9 +155,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/launcher_button_padding"
-            android:paddingRight="@dimen/launcher_button_padding">
+            android:layout_centerVertical="true">
 
             <ImageView
                 android:id="@+id/menuButton"
@@ -165,6 +165,8 @@
                 android:contentDescription="@string/main_menu"
                 android:focusable="true"
                 android:onClick="onMenuButtonClicked"
+                android:paddingLeft="@dimen/launcher_button_padding"
+                android:paddingRight="@dimen/launcher_button_padding"
                 android:src="@drawable/dots"
                 android:tint="?attr/searchColor" />
 
@@ -176,6 +178,8 @@
                 android:contentDescription="@string/main_clear"
                 android:focusable="true"
                 android:onClick="onClearButtonClicked"
+                android:paddingLeft="@dimen/launcher_button_padding"
+                android:paddingRight="@dimen/launcher_button_padding"
                 android:src="@drawable/clear_dark"
                 android:tint="?attr/searchColor"
                 android:visibility="visible" />
