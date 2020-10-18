@@ -31,17 +31,33 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfigs {
             debug {
-                keyAlias 'rasanen'
-                keyPassword '***REMOVED***'
-                storeFile file('/home/kari/AndroidStudioProjects/ANDROID_KEYSTORE')
-                storePassword '***REMOVED***'
+                signingConfig signingConfigs.debug
             }
             release {
-                keyAlias 'rasanen'
-                keyPassword '***REMOVED***'
-                storeFile file('/home/kari/AndroidStudioProjects/ANDROID_KEYSTORE')
-                storePassword '***REMOVED***'
+                signingConfig signingConfigs.release
             }
+        }
+        def Properties props = new Properties()
+        def propFile = file('../signing.properties')
+        if (propFile.canRead()){
+            props.load(new FileInputStream(propFile))
+
+            if (props!=null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                    props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+
+                android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+                android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+                android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+                android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+                android.signingConfigs.debug.storeFile = file(props['STORE_FILE'])
+                android.signingConfigs.debug.storePassword = props['STORE_PASSWORD']
+                android.signingConfigs.debug.keyAlias = props['KEY_ALIAS']
+                android.signingConfigs.debug.keyPassword = props['KEY_PASSWORD']
+            } else {
+                android.buildTypes.release.signingConfig = null
+            }
+        }else {
+            android.buildTypes.release.signingConfig = null
         }
     }
     packagingOptions {
@@ -60,6 +76,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
         sourceSets {
             main {

@@ -124,3 +124,5 @@ app/release/
 # Docs  #
 #########
 docs/_site
+
+signing.properties
