@@ -1,1 +1,0 @@
-1. Jos käy app grid menussa niin karvakolmio ei toimi ennenkuin painaa back.
