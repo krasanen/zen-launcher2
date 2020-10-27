@@ -32,6 +32,7 @@
     <dimen name="popup_title">12sp</dimen>
     <dimen name="grid_activity_horizontal_margin">16dp</dimen>
     <dimen name="grid_activity_vertical_margin">16dp</dimen>
+    <dimen name="secondary_button_vertical_margin">50dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

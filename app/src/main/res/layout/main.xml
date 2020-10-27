@@ -187,10 +187,12 @@
 
         <ImageView
             android:id="@+id/historyButton"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/launcher_button_width"
             android:layout_height="match_parent"
+            android:paddingLeft="@dimen/icon_margin_right"
+            android:paddingRight="@dimen/icon_margin_right"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/large_bar_height"
+            android:layout_marginRight="@dimen/secondary_button_vertical_margin"
             android:background="?attr/appSelectableItemBackground"
 
             android:contentDescription="@string/main_clear"
@@ -199,10 +201,12 @@
             android:tint="?attr/searchColor" />
         <ImageView
             android:id="@+id/numericButton"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/launcher_button_width"
             android:layout_height="match_parent"
+            android:paddingLeft="@dimen/icon_margin_right"
+            android:paddingRight="@dimen/icon_margin_right"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/large_bar_height"
+            android:layout_marginRight="@dimen/secondary_button_vertical_margin"
             android:background="?attr/appSelectableItemBackground"
 
             android:contentDescription="@string/main_clear"
