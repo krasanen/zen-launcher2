@@ -12,6 +12,7 @@
         android:id="@+id/whiteLauncherButton"
         android:layout_width="@dimen/launcher_button_width"
         android:layout_height="@dimen/bar_height"
+        android:layout_centerInParent="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
@@ -25,8 +26,10 @@
 
     <ImageView
         android:id="@+id/whiteContactsButton"
+        android:background="?attr/appSelectableItemBackground"
         android:layout_width="@dimen/launcher_button_width"
-        android:layout_height="@dimen/bar_height"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:layout_toStartOf="@+id/allAppsButton"
         android:layout_toLeftOf="@+id/allAppsButton"
         android:contentDescription="@string/alias_contacts"
@@ -41,8 +44,10 @@
 
     <ImageView
         android:id="@+id/webShortcutsButton"
+        android:background="?attr/appSelectableItemBackground"
         android:layout_width="@dimen/launcher_button_width"
-        android:layout_height="@dimen/bar_height"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:layout_toLeftOf="@id/whiteContactsButton"
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
@@ -56,8 +61,10 @@
 
     <ImageView
         android:id="@+id/appsWithNotifButton"
+        android:background="?attr/appSelectableItemBackground"
         android:layout_width="@dimen/launcher_button_width"
-        android:layout_height="@dimen/bar_height"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:layout_toEndOf="@+id/allAppsButton"
         android:layout_toRightOf="@+id/allAppsButton"
 
@@ -73,8 +80,10 @@
 
     <ImageView
         android:id="@+id/shortcutsButton"
+        android:background="?attr/appSelectableItemBackground"
         android:layout_width="@dimen/launcher_button_width"
-        android:layout_height="@dimen/bar_height"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:layout_toEndOf="@+id/appsWithNotifButton"
         android:layout_toRightOf="@+id/appsWithNotifButton"
         android:contentDescription="@string/alias_contacts"
@@ -89,9 +98,9 @@
 
     <ImageView
         android:id="@+id/allAppsButton"
+        android:background="?attr/appSelectableItemBackground"
         android:layout_width="@dimen/launcher_button_width"
-        android:layout_height="@dimen/bar_height"
-
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:contentDescription="@string/alias_contacts"
         android:focusable="true"
