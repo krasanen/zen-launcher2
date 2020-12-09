@@ -171,6 +171,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 image.setTag(i);
                 image.setOnDragListener(this);
                 image.setOnTouchListener(this);
+                image.setFocusable(true);
+                image.setClickable(true);
                 image.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 textView = layout.findViewById(R.id.favorite_item_text);
                 textView.setText(pojo.getName());

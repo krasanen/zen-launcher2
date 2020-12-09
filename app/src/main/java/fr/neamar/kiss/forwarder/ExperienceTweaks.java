@@ -147,7 +147,7 @@ public class ExperienceTweaks extends Forwarder {
                     if(BuildConfig.DEBUG) Log.i(TAG, "e2x:" + e2.getX());
 
                     if (!mainActivity.isViewingAllApps() && !scaling) {
-                        if (Math.abs(directionX) > width / 3) {
+                        if (Math.abs(directionX) > width / 3f) {
                             if (directionX > 0) {
                                 if(BuildConfig.DEBUG) Log.i(TAG, "swipeRight");
                                 if (prefs.getBoolean("swipe-right", false)) {
@@ -163,7 +163,7 @@ public class ExperienceTweaks extends Forwarder {
                             }
                             return true;
                         }
-                        if (Math.abs(directionY) > height / 5) {
+                        if (Math.abs(directionY) > height / 40f) {
 
                             if (directionY < 0) {
                                 if(BuildConfig.DEBUG) Log.i(TAG, "swipeUp");

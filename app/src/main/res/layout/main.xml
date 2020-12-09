@@ -76,7 +76,9 @@
         android:orientation="horizontal"
         android:importantForAccessibility="no"
         tools:ignore="UnusedAttribute"
-        tools:layout="@layout/favorite_item" />
+        tools:layout="@layout/favorite_item"
+        android:clickable="true"
+        android:focusable="true" />
 
     <RelativeLayout
         android:id="@+id/searchEditLayout"
