@@ -14,11 +14,17 @@ public class KissApplication extends Application {
      * Setting this value to 0 removes all animations
      */
     public static final int TOUCH_DELAY = 0;
+    private static Context context;
     private DataHandler dataHandler;
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;
     private MainActivity mainActivity;
     private static final String TAG = KissApplication.class.getSimpleName();
+
+    public void onCreate() {
+        super.onCreate();
+        KissApplication.context = getApplicationContext();
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -39,7 +45,7 @@ public class KissApplication extends Application {
     }
 
     public static KissApplication getApplication(Context context) {
-        return (KissApplication) context.getApplicationContext();
+        return (KissApplication) KissApplication.context;
     }
 
     public MainActivity getMainActivity() {
