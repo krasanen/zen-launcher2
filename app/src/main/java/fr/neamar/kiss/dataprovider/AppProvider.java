@@ -223,8 +223,10 @@ public class AppProvider extends Provider<AppPojo> {
     public ArrayList<Pojo> getAllApps() {
         records.clear();
         for (AppPojo pojo : pojos) {
-            pojo.relevance = 0;
-            records.add(pojo);
+            if (pojo!=null) {
+                pojo.relevance = 0;
+                records.add(pojo);
+            }
         }
         return records;
     }
@@ -234,8 +236,10 @@ public class AppProvider extends Provider<AppPojo> {
             return records;
         } else {
             for (AppPojo pojo : pojos) {
-                pojo.relevance = 0;
-                records.add(pojo);
+                if (pojo!=null) {
+                    pojo.relevance = 0;
+                    records.add(pojo);
+                }
             }
             return records;
         }
@@ -249,9 +253,11 @@ public class AppProvider extends Provider<AppPojo> {
     public List<Pojo> getAppsWithNotif() {
         records.clear();
         for (AppPojo pojo : pojos) {
-            pojo.relevance = 0;
-            if (pojo.getBadgeCount() > 0||pojo.getHasNotification()) {
-                records.add(pojo);
+            if (pojo!=null) {
+                pojo.relevance = 0;
+                if (pojo.getBadgeCount() > 0 || pojo.getHasNotification()) {
+                    records.add(pojo);
+                }
             }
         }
         for (long idAlarm : AlarmUtils.getAlarmIds(getApplicationContext())) {
