@@ -1,6 +1,7 @@
 package fr.neamar.kiss.result;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -17,13 +18,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Collections;
 
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.pojo.PhoneAddPojo;
 import fr.neamar.kiss.pojo.PhonePojo;
+import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 
@@ -69,11 +74,7 @@ public class AddPhoneResult extends Result {
         switch (stringId) {
             case R.string.menu_phone_create:
                 // Create a new contact with this phone number
-                Intent createIntent = new Intent(Intent.ACTION_INSERT);
-                createIntent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-                createIntent.putExtra(ContactsContract.Intents.Insert.PHONE, phonePojo.phone);
-                createIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(createIntent);
+                createContact(pojo,parentView.getContext());
                 return true;
             case R.string.ui_item_contact_hint_message:
                 String url = "sms:" + phonePojo.phone;
@@ -86,15 +87,23 @@ public class AddPhoneResult extends Result {
         return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public void doLaunch(Context context, View v) {
+    private void createContact(Pojo pojo, Context context) {
         // Create a new contact with this phone number
         Intent createIntent = new Intent(Intent.ACTION_INSERT);
         createIntent.setType(ContactsContract.Contacts.CONTENT_TYPE);
         createIntent.putExtra(ContactsContract.Intents.Insert.PHONE, phonePojo.phone);
         createIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(createIntent);
+        try {
+            context.startActivity(createIntent);
+        } catch ( ActivityNotFoundException e){
+            EventBus.getDefault().post(new ZEvent(ZEvent.State.SHOW_TOAST, context.getString(R.string.application_not_found)));
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void doLaunch(Context context, View v) {
+        createContact(pojo,v.getContext());
     }
 
     @Override
