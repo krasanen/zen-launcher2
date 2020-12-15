@@ -65,6 +65,7 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
             mHandler.removeCallbacks(autoApplySystemUiRunnable);
             applySystemUi(false, false);
             mMainActivity.historyButton.setVisibility(View.GONE);
+            mMainActivity.searchEditText.setCursorVisible(true);
             if (mNumericInputTypeForced) {
                 mMainActivity.numericButton.setVisibility(View.GONE);
                 mMainActivity.keyboardButton.setVisibility(View.VISIBLE);
@@ -80,6 +81,7 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
             if (mNumericInputTypeForced){
                 mMainActivity.switchInputType();
             }
+            mMainActivity.searchEditText.setCursorVisible(false);
         }
     }
 

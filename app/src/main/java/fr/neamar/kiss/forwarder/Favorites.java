@@ -17,6 +17,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,8 +50,8 @@ import fr.neamar.kiss.result.ShortcutsResult;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.RoundedQuickContactBadge;
 
-public class Favorites extends Forwarder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
-    private static final String TAG = "FavoriteForwarder";
+public class Favorites extends Forwarder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnKeyListener {
+    private static final String TAG = Favorites.class.getSimpleName();
 
     // Package used by Android when an Intent can be matched with more than one app
     public static final String DEFAULT_RESOLVER = "com.android.internal.app.ResolverActivity";
@@ -171,6 +172,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 image.setTag(i);
                 image.setOnDragListener(this);
                 image.setOnTouchListener(this);
+                image.setOnKeyListener(this);
                 image.setFocusable(true);
                 image.setClickable(true);
                 image.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -368,7 +370,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
     private Result getFavResult(int favNumber) {
         if (favNumber >= favoritesPojo.size()) {
             // Clicking on a favorite before everything is loaded.
-            Log.i(TAG, "Clicking on an uninitialized favorite.");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Clicking on an uninitialized favorite.");
             return null;
         }
 
@@ -379,7 +381,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
     @Override
     public void onClick(View v) {
-        Log.i(TAG,"onClick");
+        if (BuildConfig.DEBUG) Log.i(TAG,"onClick");
         int favNumber = (int) v.getTag();
         final Result result = getFavResult(favNumber);
         result.fastLaunch(mainActivity, v);
@@ -482,7 +484,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
                 // Sometimes we don't trigger onDrag over another app, in which case just drop.
                 if (overApp == null) {
-                    Log.i(TAG, "Wasn't dragged over an app, returning app to starting position");
+                    if (BuildConfig.DEBUG) Log.i(TAG, "Wasn't dragged over an app, returning app to starting position");
                     draggedView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -522,6 +524,15 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 break;
         }
         return true;
+    }
+
+    @Override
+    public boolean onKey(View view, int key, KeyEvent keyEvent) {
+        if (BuildConfig.DEBUG) Log.i(TAG, "onKey:"+ key);
+        if (key==KeyEvent.KEYCODE_ENTER) {
+            this.onClick(view);
+        }
+        return false;
     }
 }
 

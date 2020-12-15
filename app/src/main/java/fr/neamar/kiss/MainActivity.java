@@ -1493,6 +1493,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean onKeyDown(int keycode, @NonNull KeyEvent e) {
+        if (BuildConfig.DEBUG) Log.i(TAG, "onKeyDown: "+keycode);
         if (keycode == KeyEvent.KEYCODE_MENU) {
             // For devices with a physical menu button, we still want to display *our* contextual menu
             menuButton.showContextMenu();
@@ -2735,6 +2736,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public void hideKeyboard() {
+        if (BuildConfig.DEBUG) Log.d(TAG,"hideKeyboard");
         if (isKeyboardVisible()) {
             // Check if no view has focus:
             View view = this.getCurrentFocus();

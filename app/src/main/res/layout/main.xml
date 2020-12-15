@@ -60,7 +60,7 @@
 
     </FrameLayout>
 
-    <LinearLayout
+        <LinearLayout
         android:id="@+id/externalFavoriteBar"
         android:layout_width="match_parent"
         android:layout_height="75dp"
@@ -142,6 +142,7 @@
             android:hint="@string/ui_search_hint"
             android:imeOptions="flagNoExtractUi|actionSearch"
             android:importantForAutofill="no"
+            android:cursorVisible="false"
             android:inputType="textVisiblePassword|textNoSuggestions"
             android:singleLine="true"
             android:focusedByDefault="true"
@@ -174,7 +175,7 @@
 
             <ImageView
                 android:id="@+id/clearButton"
-                android:layout_width="match_parent"
+                android:layout_width="35dp"
                 android:layout_height="match_parent"
                 android:background="?attr/appSelectableItemBackground"
                 android:contentDescription="@string/main_clear"
