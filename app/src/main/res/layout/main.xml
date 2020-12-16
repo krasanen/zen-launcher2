@@ -60,7 +60,7 @@
 
     </FrameLayout>
 
-        <LinearLayout
+    <LinearLayout
         android:id="@+id/externalFavoriteBar"
         android:layout_width="match_parent"
         android:layout_height="75dp"
@@ -175,7 +175,7 @@
 
             <ImageView
                 android:id="@+id/clearButton"
-                android:layout_width="35dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="?attr/appSelectableItemBackground"
                 android:contentDescription="@string/main_clear"

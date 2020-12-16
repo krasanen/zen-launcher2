@@ -163,7 +163,7 @@
                 android:summary="@string/history_hide_desc"
                 android:title="@string/history_hide_name" />
             <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
+                android:defaultValue="false"
                 android:dependency="history-hide"
                 android:key="history-onclick"
                 android:title="@string/history_onclick_name" />

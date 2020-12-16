@@ -78,6 +78,15 @@ android {
             signingConfig signingConfigs.release
             signingConfig signingConfigs.debug
         }
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix "-debug"
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
+        }
         sourceSets {
             main {
                 jniLibs.srcDirs = ['libs']

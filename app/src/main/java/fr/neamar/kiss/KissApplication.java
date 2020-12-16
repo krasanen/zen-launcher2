@@ -29,7 +29,7 @@ public class KissApplication extends Application {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Log.i(TAG, "onConfigurationChanged");
+        if (BuildConfig.DEBUG) Log.i(TAG, "onConfigurationChanged");
 
         // create intent to update all instances of the widget
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, ZenWidget.class);

@@ -291,7 +291,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(phoneIntent, PackageManager.MATCH_DEFAULT_ONLY);
             if (resolveInfo != null) {
                 String packageName = resolveInfo.activityInfo.packageName;
-                Log.i(TAG, "Dialer resolves to:" + packageName + "/" + resolveInfo.activityInfo.name);
+                if (BuildConfig.DEBUG) Log.i(TAG, "Dialer resolves to:" + packageName + "/" + resolveInfo.activityInfo.name);
 
                 if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
                     String activityName = resolveInfo.activityInfo.name;
@@ -306,6 +306,26 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                         activityName = "com.google.android.dialer.extensions.GoogleDialtactsActivity";
                     }
                     KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
+                } else {
+                    ResolveInfo resolveInfoSystem = mainActivity.getPackageManager().resolveActivity(phoneIntent, PackageManager.MATCH_SYSTEM_ONLY);
+                    if (resolveInfoSystem != null) {
+                        String packageNameSystem = resolveInfoSystem.activityInfo.packageName;
+                        if (BuildConfig.DEBUG) Log.i(TAG, "Dialer (system) resolves to:" + packageNameSystem + "/" + resolveInfoSystem.activityInfo.name);
+                        if ((resolveInfoSystem.activityInfo.name != null) && (!resolveInfoSystem.activityInfo.name.equals(DEFAULT_RESOLVER))) {
+                            String activityName = resolveInfoSystem.activityInfo.name;
+                            if (packageNameSystem.equals("com.google.android.dialer")) {
+                                // Default dialer has two different activities, one when calling a phone number and one when opening the app from the launcher.
+                                // (com.google.android.apps.dialer.extensions.GoogleDialtactsActivity vs. com.google.android.dialer.extensions.GoogleDialtactsActivity)
+                                // (notice the .apps. in the middle)
+                                // The phoneIntent above resolve to the former, which isn't exposed as a Launcher activity and thus can't be displayed as a favorite
+                                // This hack uses the correct resolver when the application id is the default dialer.
+                                // In terms of maintenance, if Android was to change the name of the phone's main resolver, the favorite would simply not appear
+                                // and we would have to update the String below to the new default resolver
+                                activityName = "com.google.android.dialer.extensions.GoogleDialtactsActivity";
+                            }
+                            KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageNameSystem + "/" + activityName);
+                        }
+                    }
                 }
             }
         }
@@ -315,7 +335,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(contactsIntent, PackageManager.MATCH_DEFAULT_ONLY);
             if (resolveInfo != null) {
                 String packageName = resolveInfo.activityInfo.packageName;
-                Log.i(TAG, "Contacts resolves to:" + packageName);
+                if (BuildConfig.DEBUG) Log.i(TAG, "Contacts resolves to:" + packageName);
                 if (resolveInfo.activityInfo.name != null && !resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER)) {
                     KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + resolveInfo.activityInfo.name);
                 }
@@ -328,7 +348,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY);
             if (resolveInfo != null) {
                 String packageName = resolveInfo.activityInfo.packageName;
-                Log.i(TAG, "Browser resolves to:" + packageName);
+                if (BuildConfig.DEBUG) Log.i(TAG, "Browser resolves to:" + packageName);
 
                 if ((resolveInfo.activityInfo.name != null) && (!resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER))) {
                     String activityName = resolveInfo.activityInfo.name;
