@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
 import fi.zmengames.zen.ZEvent;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.pojo.AppPojo;
@@ -24,10 +26,10 @@ import static fr.neamar.kiss.MainActivity.REFRESH_UI;
  * @author dorvaryn
  */
 public class PackageAddedRemovedHandler extends BroadcastReceiver {
-
+    private static final String TAG = PackageAddedRemovedHandler.class.getSimpleName();
     public static void handleEvent(Context ctx, String action, String packageName, UserHandle user, boolean replacing) {
         String className = null;
-
+        if (BuildConfig.DEBUG) Log.d(TAG,"handleEvent, action:" + action);
         if ("android.intent.action.PACKAGE_ADDED".equals(action) && !replacing) {
 
             KissApplication.getApplication(ctx).resetIconsHandler();

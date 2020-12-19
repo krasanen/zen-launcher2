@@ -201,6 +201,16 @@
             android:name="fi.zmengames.zen.AlarmReceiver"
             android:process=":remote"></receiver>
 
+        <receiver android:name="fi.zmengames.zen.MediaMountListener">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_EJECT" />
+                <action android:name="android.intent.action.MEDIA_REMOVED" />
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <action android:name="android.intent.action.MEDIA_BAD_REMOVAL" />
+                <data android:scheme="file" />
+            </intent-filter>
+        </receiver>
+
         <service android:name=".dataprovider.AppProvider" />
         <service android:name=".dataprovider.ContactsProvider" />
         <service android:name=".dataprovider.SettingsProvider" />

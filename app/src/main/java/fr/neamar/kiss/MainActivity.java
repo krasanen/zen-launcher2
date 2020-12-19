@@ -142,6 +142,7 @@ import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenAdmin;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
+import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.db.DBHelper;
 
 import fr.neamar.kiss.cache.MemoryCacheHelper;
@@ -1325,6 +1326,24 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 } else if (event.getText().startsWith(REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL)){
                     disableDeviceAdminAndUninstall();
                 }
+                break;
+            case RELOAD_APPS:
+                if (BuildConfig.DEBUG) Log.v(TAG, "RELOAD_APPS:");
+                KissApplication kissApplication = KissApplication.getApplication(this);
+                if (kissApplication!=null){
+                    DataHandler dataHandler = kissApplication.getDataHandler();
+                    if (dataHandler!=null){
+                        AppProvider appProvider = dataHandler.getAppProvider();
+
+                        // if AppProvider is not initialized yet (boot phase), this event can be ignored.
+                        if (appProvider!=null){
+                            if (BuildConfig.DEBUG) Log.v(TAG, "RELOAD_APPS: appProvider.reload");
+                            appProvider.reload();
+                            onFavoriteChange();
+                        }
+                    }
+                }
+                break;
         }
     }
 
