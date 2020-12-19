@@ -178,12 +178,12 @@
                 android:defaultValue="true"
                 android:key="enable-gestures"
                 android:title="@string/enable_gestures" /> -->
-            <ListPreference
-                android:defaultValue="display-keyboard"
-                android:entries="@array/gestureEntries"
-                android:entryValues="@array/gestureValues"
-                android:key="gesture-swipe-up"
-                android:title="@string/gesture_up_name" />
+        <ListPreference
+            android:defaultValue="display-keyboard"
+            android:entries="@array/gestureEntries"
+            android:entryValues="@array/gestureValues"
+            android:key="gesture-swipe-up"
+            android:title="@string/gesture_up_name" />
          <ListPreference
              android:defaultValue="display-notifications"
              android:entries="@array/gestureEntries"
@@ -203,12 +203,11 @@
              android:key="gesture-swipe-right"
              android:title="@string/gesture_right_name" />
          <ListPreference
-             android:defaultValue="display-apps-notif"
+             android:defaultValue="do-nothing"
              android:entries="@array/gestureEntries"
              android:entryValues="@array/gestureValues"
              android:key="gesture-single-tap"
              android:title="@string/gesture_single_click" />
-
          <ListPreference
              android:defaultValue="display-apps-notif"
              android:entries="@array/gestureEntries"
@@ -216,7 +215,7 @@
              android:key="gesture-double-tap"
              android:title="@string/gesture_double_click" />
          <ListPreference
-             android:defaultValue=">start-flashlight"
+             android:defaultValue="start-flashlight"
              android:entries="@array/gestureEntries"
              android:entryValues="@array/gestureValues"
              android:key="gesture-triple-tap"

@@ -154,6 +154,7 @@ public class ExperienceTweaks extends Forwarder {
                         if (Math.abs(directionX) > width / 3f) {
                             swipeDetected = true;
                             if (directionX > 0) {
+                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeRight");
                                 onSwipeRight();
 
                             } else {
@@ -456,15 +457,11 @@ public class ExperienceTweaks extends Forwarder {
     }
 
     private void onSwipeRight() {
-        if(BuildConfig.DEBUG) Log.i(TAG, "swipeRight");
-
-        if (prefs.getBoolean("swipe-right", false)) {
-            mainActivity.displayKissBar(true);
-        }
+        doAction(prefs.getString("gesture-swipe-right", "display-contacts"));
     }
 
     public void onSingleTap() {
-        doAction(prefs.getString("gesture-single-tap", "display-history"));
+        doAction(prefs.getString("gesture-single-tap", "do-nothing"));
     }
 
     public void onDoubleTap() {
@@ -491,9 +488,7 @@ public class ExperienceTweaks extends Forwarder {
                 mainActivity.displayContacts(true);
                 break;
             case "display-apps":
-                if(mainActivity.isViewingSearchResults()) {
-                    mainActivity.displayKissBar(true);
-                }
+                mainActivity.displayKissBar(true);
                 break;
             case "display-all-apps":
                 mainActivity.startAppGridActivity();
