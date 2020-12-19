@@ -12,12 +12,11 @@ import android.view.View;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
+
 import fr.neamar.kiss.SwitchPreference;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
-import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN;
-import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_LOCK;
+import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW;
 
 public class DeviceAdminSwitch extends SwitchPreference implements SharedPreferences.OnSharedPreferenceChangeListener {
     public DeviceAdminSwitch(Context context) {
@@ -59,7 +58,7 @@ public class DeviceAdminSwitch extends SwitchPreference implements SharedPrefere
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
-        KissApplication.getApplication(getContext()).getMainActivity().startActivityForResult(intent, REQUEST_DEVICE_ADMIN_LOCK);
+        KissApplication.getApplication(getContext()).getMainActivity().startActivityForResult(intent, REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW);
 
     }
 

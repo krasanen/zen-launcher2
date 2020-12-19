@@ -13,7 +13,7 @@ import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.SwitchPreference;
 
-import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_LOCK;
+import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW;
 
 public class LockScreenSwitch extends SwitchPreference {
     public LockScreenSwitch(Context context) {
@@ -52,6 +52,6 @@ public class LockScreenSwitch extends SwitchPreference {
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
-        KissApplication.getApplication(getContext()).getMainActivity().startActivityForResult(intent, REQUEST_DEVICE_ADMIN_LOCK);
+        KissApplication.getApplication(getContext()).getMainActivity().startActivityForResult(intent, REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW);
     }
 }

@@ -1,9 +1,6 @@
 package fi.zmengames.zen;
 
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
@@ -11,11 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.SwitchPreference;
-
-import static android.content.Context.DEVICE_POLICY_SERVICE;
-import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_LOCK;
 
 public class VibrateOnAlarmSwitch extends SwitchPreference {
     public VibrateOnAlarmSwitch(Context context) {

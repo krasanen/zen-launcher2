@@ -52,4 +52,34 @@
     </string-array>
     <string-array name="toggleTagsDefault">
     </string-array>
+    <string-array name="gestureEntries">
+        <item>Do nothing</item>
+        <item>Display keyboard</item>
+        <item>Display notification shade</item>
+        <item>Display apps list</item>
+        <item>Display history</item>
+        <item>Display apps with notifications</item>
+        <item>Display contacts </item>
+        <item>Display all apps</item>
+        <item>Start bar code reader</item>
+        <item>Start flash light</item>
+        <item>Lock screen</item>
+        <item>Open keyboard</item>
+        <item>Hide keyboard</item>
+    </string-array>
+    <string-array name="gestureValues" translatable="false">
+        <item>do-nothing</item>
+        <item>display-keyboard</item>
+        <item>display-notifications</item>
+        <item>display-apps</item>
+        <item>display-history</item>
+        <item>display-apps-notif</item>
+        <item>display-contacts</item>
+        <item>display-all-apps</item>
+        <item>start-barcode-reader</item>
+        <item>start-flashlight</item>
+        <item>lock-screen</item>
+        <item>open-keyboard</item>
+        <item>hide-keyboard</item>
+    </string-array>
 </resources>

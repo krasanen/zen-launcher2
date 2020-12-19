@@ -175,7 +175,6 @@ import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fi.zmengames.zen.LauncherService.ALARM_DATE_PICKER_MILLIS;
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
-import static fi.zmengames.zen.LauncherService.ENABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
 import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
@@ -187,8 +186,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
-    public static final int REQUEST_DEVICE_ADMIN_LOCK = 3;
-    public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN = 4;
+    public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW = 3;
+    public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER = 4;
     private static final int ZEN_NOTIFICATION_ID = 73;
 
 
@@ -225,7 +224,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
     private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
     public static final String BARCODE_READER = "com.zmengames.zenlauncher.BARCODE_READER";
+    public static final String DEVICE_ADMIN = "com.zmengames.zenlauncher.DEVICE_ADMIN";
     public static final String REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL = "com.zmengames.zenlauncher.REMOVE_DEVICE_ADMIN_UNINSTALL";
+    public static final String REQUEST_DEVICE_ADMIN = "com.zmengames.zenlauncher.REQUEST_DEVICE_ADMIN";
     // BAR code reader stuff
     //private ZBarScannerView mScannerViewBar;
     private ZXingScannerView mScannerViewXing;
@@ -297,7 +298,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     /**
      * "X" button to empty the search field
      */
-    private View clearButton;
+    public View clearButton;
 
     public View numericButton;
     public View keyboardButton;
@@ -512,7 +513,36 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Log.d(TAG,"askPermissionCamera TRUE");
             return true;
         }
+    }
 
+    public boolean askPermissionDeviceAdmin(int usage) {
+        if (!isDeviceAdminActive()) {
+           if (BuildConfig.DEBUG) Log.v("DeviceAdminSwitch", "enableDeviceAdminPermission");
+            ComponentName compName = new ComponentName(this, ZenAdmin.class);
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
+            switch (usage) {
+                case REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER:
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
+                    break;
+                case REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW:
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
+                    break;
+            }
+
+            startActivityForResult(intent, usage);
+            Log.d(TAG,"askPermissionDeviceAdmin FALSE");
+            return false;
+        } else {
+            Log.d(TAG,"askPermissionDeviceAdmin TRUE");
+            return true;
+        }
+
+    }
+    private boolean isDeviceAdminActive() {
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(this, ZenAdmin.class);
+        return devicePolicyManager.isAdminActive(compName);
     }
 
     public boolean checkPermissionDoNotDisturb(Activity activity) {
@@ -1165,7 +1195,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
-    private void startAppGridActivity() {
+    public void startAppGridActivity() {
         startActivity(new Intent(this, AppGridActivity.class));
     }
 
@@ -1323,6 +1353,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     if (askPermissionCamera(this)) {
                         startBarCodeScan();
                     }
+                } else if (event.getText().startsWith(LOCK_IN)) {
+                    if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
+
+                    }
                 } else if (event.getText().startsWith(REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL)){
                     disableDeviceAdminAndUninstall();
                 }
@@ -1343,6 +1377,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }
                     }
                 }
+                break;
+            case ENABLE_DEVICE_ADMIN:
+                if (BuildConfig.DEBUG) Log.v(TAG, "ENABLE_DEVICE_ADMIN:");
+                askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER);
                 break;
         }
     }
@@ -2236,28 +2274,22 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (BuildConfig.DEBUG) Log.d(TAG, "onActivityResult,"+requestCode+ " "+resultCode);
         switch (requestCode) {
 
-            case REQUEST_DEVICE_ADMIN_LOCK:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (prefs.getBoolean("double-click-opens-apps", false)) {
-                        prefs.edit().putBoolean("double-click-opens-apps", false).apply();
-                    }
-                } else {
 
+            case REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER:
+                if (resultCode == Activity.RESULT_OK) {
+                    prefs.edit().putBoolean("device-admin-permission", true).apply();
+                } else {
+                    prefs.edit().putBoolean("device-admin-permission", false).apply();
                 }
                 break;
-            case REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN:
+            case REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW:
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.e(TAG, "REQUEST_DEVICE_ADMIN_FOR_LOCK_SCREEN, OK");
-                    if (prefs.getBoolean("proximity-switch-lock", false)) {
-                        prefs.edit().putBoolean("proximity-switch-lock", true).commit();
-                    }
-                    Intent proximity = new Intent(this, LauncherService.class);
-                    proximity.setAction(ENABLE_PROXIMITY);
-                    KissApplication.startLaucherService(proximity, this);
+                    prefs.edit().putBoolean("device-admin-permission", true).apply();
+                    lockScreen();
                 } else {
+                    prefs.edit().putBoolean("device-admin-permission", false).apply();
                 }
                 break;
-
             case REQUEST_BIND_APPWIDGET:
                 if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_BIND_APPWIDGET");
                 if (resultCode == Activity.RESULT_OK) {
@@ -2876,7 +2908,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (active) {
             devicePolicyManager.lockNow();
         } else {
-            Toast.makeText(MainActivity.this, "Device Admin features not enabled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Enable device admin to be able to lock", Toast.LENGTH_SHORT).show();
+            askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER);
         }
 
     }

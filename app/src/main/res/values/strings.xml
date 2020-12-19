@@ -254,7 +254,7 @@
     <string name="copy_confirmation">Copied to clipboard</string>
     <string name="unable_to_initialize_shortcuts">Unable to initialize shortcuts. Is Zen Launcher your default launcher?</string>
 
-    <!-- Omat -->
+    <!-- Zen Laucher specific -->
     <string name="share_tags">Share tags</string>
     <string name="share_tags_chooser">Tags data</string>
     <string name="load_replace_tags"><![CDATA[Load&replace tags]]></string>
@@ -351,5 +351,12 @@
     <string name="set_as_default">Set as default launcher</string>
     <string name="set_as_default_info">Tap to set Zen Launcher as default launcher</string>
     <string name="barcode_reader">Barcode Reader</string>
+    <string name="gesture_up_name">Action on swipe up</string>
+    <string name="gesture_down_name">Action on swipe down</string>
+    <string name="gesture_left_name">Action on swipe left</string>
+    <string name="gesture_right_name">Action on swipe right</string>
+    <string name="gesture_single_click">Action on single click</string>
+    <string name="gesture_double_click">Action on double click</string>
+    <string name="gesture_triple_click">Action on triple click</string>
 
 </resources>

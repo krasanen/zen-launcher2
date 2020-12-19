@@ -165,11 +165,6 @@
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
                 android:dependency="history-hide"
-                android:key="history-onclick"
-                android:title="@string/history_onclick_name" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:dependency="history-hide"
                 android:key="favorites-hide"
                 android:title="@string/favorites_hide" />
             <fr.neamar.kiss.SwitchPreference
@@ -177,209 +172,205 @@
                 android:key="pref-hide-navbar"
                 android:summary="@string/pref_hide_navbar_desc"
                 android:title="@string/pref_hide_navbar" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="pref-hide-statusbar"
-                android:summary="@string/pref_hide_statusbar_desc"
-                android:title="@string/pref_hide_statusbar" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/gestures" android:key="gestures-section">
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="double-click-opens-apps"
-                android:title="@string/double_click"
-                android:summary="@string/double_click_sum" />
-            <fr.neamar.kiss.SwitchPreference
+            <!--<fr.neamar.kiss.SwitchPreference
                 android:defaultValue="true"
-                android:key="double-click-numeric-kb"
-                android:title="@string/double_click_numeric_kb"
-                android:summary="@string/double_click_numeric_kb_sum"/>
-            <fi.zmengames.zen.LockScreenSwitch
-                android:defaultValue="false"
-                android:key="double-click-locks-screen"
-                android:title="@string/double_click_lock"
-                android:summary="@string/double_click_lock_sum" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="swipe-down-opens-notifications"
-                android:title="@string/swipe_down_notifications"
-                android:summary="@string/swipe_down_notifications_sum" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="swipe-up-opens-keyboard"
-                android:title="@string/swipe_up_keyboard"
-                android:summary="@string/swipe_up_keyboard_sum" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="swipe-left"
-                android:title="@string/swipe_left_gesture"
-                android:summary="@string/swipe_left_gesture_sum" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="swipe-right"
-                android:title="@string/swipe_right_opens_menu"
-                android:summary="@string/swipe_right_opens_menu_sum" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="pinch-open"
-                android:title="@string/pinch_opens_menu"
-                android:summary="@string/pinch_opens_menu_sum" />
-
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="triple_tap_flashlight"
-                android:title="@string/triple_tap_flashlight"
-                android:summary="@string/triple_tap_flashlight_sum" />
-
-        </PreferenceCategory>
-        <PreferenceCategory android:title="@string/misc">
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="enable-favbar-appnames"
-                android:title="@string/show_favbar_appnames"
-                android:summary="@string/show_favbar_appnames_sum" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="force-portrait"
-                android:title="@string/portrait_title" />
+                android:key="enable-gestures"
+                android:title="@string/enable_gestures" /> -->
             <ListPreference
-                android:defaultValue="alphabetical"
-                android:entries="@array/sortAppListEntries"
-                android:entryValues="@array/sortAppListValues"
-                android:key="sort-apps"
-                android:title="@string/order_apps_name" />
-            <ListPreference
-                android:defaultValue="alphabetical"
-                android:entries="@array/sortAppListEntries"
-                android:entryValues="@array/sortContactListValues"
-                android:key="sort-contacts"
-                android:title="@string/order_contacts_name" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="tags-visible"
-                android:title="@string/tags_visible" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="icons-hide"
-                android:summary="@string/icons_hide_desc"
-                android:title="@string/icons_hide_main" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="keep-icons-in-memory"
-                android:summary="@string/keep_icons_in_memory_desc"
-                android:title="@string/keep_icons_in_memory_title" />
-        </PreferenceCategory>
-        <PreferenceScreen
-            android:key="wallpaper-holder"
-            android:title="@string/title_wallpaper">
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:key="lwp-touch"
-                android:title="@string/lwp_touch" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="lwp-drag"
-                android:summary="@string/lwp_drag_desc"
-                android:title="@string/lwp_drag" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="wp-drag-animate"
-                android:summary="@string/wp_drag_animate_desc"
-                android:title="@string/wp_drag_animate" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
-                android:dependency="wp-drag-animate"
-                android:key="wp-animate-center"
-                android:summary="@string/wp_animate_center_desc"
-                android:title="@string/wp_animate_center" />
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:dependency="wp-drag-animate"
-                android:key="wp-animate-sides"
-                android:summary="@string/wp_animate_sides_desc"
-                android:title="@string/wp_animate_sides" />
-        </PreferenceScreen>
-        <PreferenceScreen android:title="@string/screen_toggle_tags">
-            <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="false"
-                android:key="pref-tags-menu"
-                android:title="@string/pref_tags_menu" />
-            <MultiSelectListPreference
-                android:defaultValue="@array/toggleTagsDefault"
-                android:key="pref-toggle-tags-list"
-                android:title="@string/pref_toggle_tags_select" />
-        </PreferenceScreen>
-    </PreferenceScreen>
+                android:defaultValue="display-keyboard"
+                android:entries="@array/gestureEntries"
+                android:entryValues="@array/gestureValues"
+                android:key="gesture-swipe-up"
+                android:title="@string/gesture_up_name" />
+         <ListPreference
+             android:defaultValue="display-notifications"
+             android:entries="@array/gestureEntries"
+             android:entryValues="@array/gestureValues"
+             android:key="gesture-swipe-down"
+             android:title="@string/gesture_down_name" />
+         <ListPreference
+             android:defaultValue="display-apps"
+             android:entries="@array/gestureEntries"
+             android:entryValues="@array/gestureValues"
+             android:key="gesture-swipe-left"
+             android:title="@string/gesture_left_name" />
+         <ListPreference
+             android:defaultValue="display-apps"
+             android:entries="@array/gestureEntries"
+             android:entryValues="@array/gestureValues"
+             android:key="gesture-swipe-right"
+             android:title="@string/gesture_right_name" />
+         <ListPreference
+             android:defaultValue="display-apps-notif"
+             android:entries="@array/gestureEntries"
+             android:entryValues="@array/gestureValues"
+             android:key="gesture-single-tap"
+             android:title="@string/gesture_single_click" />
 
-    <PreferenceScreen
-        android:key="providers"
-        android:summary="@string/providers_summary"
-        android:title="@string/title_providers">
-        <fr.neamar.kiss.SwitchPreference
-            android:defaultValue="true"
-            android:key="enable-contacts"
-            android:title="@string/contacts_name" />
-        <fr.neamar.kiss.SwitchPreference
-            android:defaultValue="true"
-            android:key="enable-settings"
-            android:title="@string/settings_name" />
-        <fr.neamar.kiss.SwitchPreference
-            android:defaultValue="true"
-            android:key="enable-shortcuts"
-            android:title="@string/shortcuts_name" />
-        <fr.neamar.kiss.SwitchPreference
-            android:defaultValue="true"
-            android:key="enable-search"
-            android:title="@string/search_name" />Proxi
-        <PreferenceCategory android:title="@string/search_name">
-            <fr.neamar.kiss.preference.AddSearchProviderPreference
-                android:key="custom-search-provider-add"
-                android:textColor="?attr/searchColor"
-                android:title="@string/custom_search_provider" />
-            <fr.neamar.kiss.preference.ResetSearchProvidersPreference
-                android:dialogMessage="@string/search_provider_reset_desc"
-                android:key="reset"
-                android:order="11"
-                android:title="@string/search_provider_reset" />
-        </PreferenceCategory>
-    </PreferenceScreen>
-    <PreferenceScreen android:title="@string/title_advanced">
-        <fr.neamar.kiss.preference.NotificationPreference
-            android:defaultValue="true"
-            android:key="enable-notifications"
-            android:dialogMessage="@string/notification_dialog"
-            android:title="@string/notification_support" />
-        <fr.neamar.kiss.preference.DefaultLauncherPreference
-            android:dialogMessage="@string/default_launcher_warn"
-            android:key="default-launcher"
-            android:title="@string/default_launcher_title" />
-        <fr.neamar.kiss.preference.RootModeSwitch
-            android:defaultValue="false"
-            android:key="root-mode"
-            android:summary="@string/root_mode_desc"
-            android:title="@string/root_mode_name" />
-        <fr.neamar.kiss.preference.RestartPreference
-            android:dialogMessage="@string/restart_warn"
-            android:key="restart"
-            android:summary="@string/restart_desc"
-            android:title="@string/restart_name" />
-        <fi.zmengames.zen.ProximityLockSwitch
-            android:defaultValue="false"
-            android:key="proximity-switch-lock"
-            android:summary="@string/proximity_switch_lock_summary"
-            android:title="@string/proximity_switch" />
-        <fi.zmengames.zen.DeviceAdminSwitch
-            android:defaultValue="false"
-            android:key="device-admin-switch"
-            android:summary="@string/deviceadmin_switch_text"
-            android:title="@string/deviceadmin_switch" />
-        <fi.zmengames.zen.VibrateOnAlarmSwitch
-            android:defaultValue="true"
-            android:key="vibrate-on-alarm"
-            android:summary="@string/vibrate_on_alarm"
-            android:title="@string/vibrate_on_alarm_switch" />
-    </PreferenceScreen>
-    <Preference
-        android:key="rate-app"
-        android:title="@string/rate_the_app" />
+         <ListPreference
+             android:defaultValue="display-apps-notif"
+             android:entries="@array/gestureEntries"
+             android:entryValues="@array/gestureValues"
+             android:key="gesture-double-tap"
+             android:title="@string/gesture_double_click" />
+         <ListPreference
+             android:defaultValue=">start-flashlight"
+             android:entries="@array/gestureEntries"
+             android:entryValues="@array/gestureValues"
+             android:key="gesture-triple-tap"
+             android:title="@string/gesture_triple_click" />
+
+     </PreferenceCategory>
+     <PreferenceCategory android:title="@string/misc">
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="true"
+             android:key="enable-favbar-appnames"
+             android:title="@string/show_favbar_appnames"
+             android:summary="@string/show_favbar_appnames_sum" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="false"
+             android:key="force-portrait"
+             android:title="@string/portrait_title" />
+         <ListPreference
+             android:defaultValue="alphabetical"
+             android:entries="@array/sortAppListEntries"
+             android:entryValues="@array/sortAppListValues"
+             android:key="sort-apps"
+             android:title="@string/order_apps_name" />
+         <ListPreference
+             android:defaultValue="alphabetical"
+             android:entries="@array/sortAppListEntries"
+             android:entryValues="@array/sortContactListValues"
+             android:key="sort-contacts"
+             android:title="@string/order_contacts_name" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="true"
+             android:key="tags-visible"
+             android:title="@string/tags_visible" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="false"
+             android:key="icons-hide"
+             android:summary="@string/icons_hide_desc"
+             android:title="@string/icons_hide_main" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="true"
+             android:key="keep-icons-in-memory"
+             android:summary="@string/keep_icons_in_memory_desc"
+             android:title="@string/keep_icons_in_memory_title" />
+     </PreferenceCategory>
+     <PreferenceScreen
+         android:key="wallpaper-holder"
+         android:title="@string/title_wallpaper">
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="true"
+             android:key="lwp-touch"
+             android:title="@string/lwp_touch" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="false"
+             android:key="lwp-drag"
+             android:summary="@string/lwp_drag_desc"
+             android:title="@string/lwp_drag" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="false"
+             android:key="wp-drag-animate"
+             android:summary="@string/wp_drag_animate_desc"
+             android:title="@string/wp_drag_animate" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="true"
+             android:dependency="wp-drag-animate"
+             android:key="wp-animate-center"
+             android:summary="@string/wp_animate_center_desc"
+             android:title="@string/wp_animate_center" />
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="false"
+             android:dependency="wp-drag-animate"
+             android:key="wp-animate-sides"
+             android:summary="@string/wp_animate_sides_desc"
+             android:title="@string/wp_animate_sides" />
+     </PreferenceScreen>
+     <PreferenceScreen android:title="@string/screen_toggle_tags">
+         <fr.neamar.kiss.SwitchPreference
+             android:defaultValue="false"
+             android:key="pref-tags-menu"
+             android:title="@string/pref_tags_menu" />
+         <MultiSelectListPreference
+             android:defaultValue="@array/toggleTagsDefault"
+             android:key="pref-toggle-tags-list"
+             android:title="@string/pref_toggle_tags_select" />
+     </PreferenceScreen>
+ </PreferenceScreen>
+
+ <PreferenceScreen
+     android:key="providers"
+     android:summary="@string/providers_summary"
+     android:title="@string/title_providers">
+     <fr.neamar.kiss.SwitchPreference
+         android:defaultValue="true"
+         android:key="enable-contacts"
+         android:title="@string/contacts_name" />
+     <fr.neamar.kiss.SwitchPreference
+         android:defaultValue="true"
+         android:key="enable-settings"
+         android:title="@string/settings_name" />
+     <fr.neamar.kiss.SwitchPreference
+         android:defaultValue="true"
+         android:key="enable-shortcuts"
+         android:title="@string/shortcuts_name" />
+     <fr.neamar.kiss.SwitchPreference
+         android:defaultValue="true"
+         android:key="enable-search"
+         android:title="@string/search_name" />Proxi
+     <PreferenceCategory android:title="@string/search_name">
+         <fr.neamar.kiss.preference.AddSearchProviderPreference
+             android:key="custom-search-provider-add"
+             android:textColor="?attr/searchColor"
+             android:title="@string/custom_search_provider" />
+         <fr.neamar.kiss.preference.ResetSearchProvidersPreference
+             android:dialogMessage="@string/search_provider_reset_desc"
+             android:key="reset"
+             android:order="11"
+             android:title="@string/search_provider_reset" />
+     </PreferenceCategory>
+ </PreferenceScreen>
+ <PreferenceScreen android:title="@string/title_advanced">
+     <fr.neamar.kiss.preference.NotificationPreference
+         android:defaultValue="true"
+         android:key="enable-notifications"
+         android:dialogMessage="@string/notification_dialog"
+         android:title="@string/notification_support" />
+     <fr.neamar.kiss.preference.DefaultLauncherPreference
+         android:dialogMessage="@string/default_launcher_warn"
+         android:key="default-launcher"
+         android:title="@string/default_launcher_title" />
+     <fr.neamar.kiss.preference.RootModeSwitch
+         android:defaultValue="false"
+         android:key="root-mode"
+         android:summary="@string/root_mode_desc"
+         android:title="@string/root_mode_name" />
+     <fr.neamar.kiss.preference.RestartPreference
+         android:dialogMessage="@string/restart_warn"
+         android:key="restart"
+         android:summary="@string/restart_desc"
+         android:title="@string/restart_name" />
+     <fi.zmengames.zen.ProximityLockSwitch
+         android:defaultValue="false"
+         android:key="proximity-switch-lock"
+         android:summary="@string/proximity_switch_lock_summary"
+         android:title="@string/proximity_switch" />
+     <fi.zmengames.zen.DeviceAdminSwitch
+         android:defaultValue="false"
+         android:key="device-admin-switch"
+         android:summary="@string/deviceadmin_switch_text"
+         android:title="@string/deviceadmin_switch" />
+     <fi.zmengames.zen.VibrateOnAlarmSwitch
+         android:defaultValue="true"
+         android:key="vibrate-on-alarm"
+         android:summary="@string/vibrate_on_alarm"
+         android:title="@string/vibrate_on_alarm_switch" />
+ </PreferenceScreen>
+ <Preference
+     android:key="rate-app"
+     android:title="@string/rate_the_app" />
 </PreferenceScreen>

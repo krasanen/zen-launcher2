@@ -23,18 +23,21 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.NullSearcher;
 
-import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.text.InputType.TYPE_CLASS_PHONE;
+import static fr.neamar.kiss.MainActivity.BARCODE_READER;
 import static fr.neamar.kiss.MainActivity.mDebugJson;
 
 
@@ -74,6 +77,7 @@ public class ExperienceTweaks extends Forwarder {
     private boolean scaling;
     int width, height;
     public static boolean mNumericInputTypeForced = false;
+    private boolean swipeDetected;
 
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);
@@ -148,39 +152,26 @@ public class ExperienceTweaks extends Forwarder {
 
                     if (!mainActivity.isViewingAllApps() && !scaling) {
                         if (Math.abs(directionX) > width / 3f) {
+                            swipeDetected = true;
                             if (directionX > 0) {
-                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeRight");
-                                if (prefs.getBoolean("swipe-right", false)) {
-                                    mainActivity.displayKissBar(true);
-                                }
+                                onSwipeRight();
+
                             } else {
                                 if(BuildConfig.DEBUG) Log.i(TAG, "swipeLeft");
-                                if (prefs.getBoolean("swipe-left", false)) {
-                                    mainActivity.displayContacts(true);
-                                } else {
-                                    // mainActivity.idNow(); TODO: beta feature, add or not
-                                }
+                                onSwipeLeft();
+
                             }
                             return true;
                         }
                         if (Math.abs(directionY) > height / 40f) {
-
+                            swipeDetected = true;
                             if (directionY < 0) {
                                 if(BuildConfig.DEBUG) Log.i(TAG, "swipeUp");
-                                // Fling up: display keyboard
-                                if (prefs.getBoolean("swipe-up-opens-keyboard", false)) {
-                                    mainActivity.showKeyboard();
-                                }
+                                onSwipeUp();
+
                             } else {
                                 if(BuildConfig.DEBUG) Log.i(TAG, "swipeDown");
-                                // Fling down: display notifications
-                                if (mainActivity.isKeyboardVisible()) {
-                                    mainActivity.hideKeyboard();
-                                } else {
-                                    if (prefs.getBoolean("swipe-down-opens-notifications", false)) {
-                                        displayNotificationDrawer();
-                                    }
-                                }
+                                onSwipeDown();
                             }
                         }
 
@@ -270,14 +261,10 @@ public class ExperienceTweaks extends Forwarder {
                         public void run() {
                             if (numberOfTaps == 1 )
                                 numberOfTaps = 0;
-                                if (isMinimalisticModeEnabledForFavorites()) {
-                                    mainActivity.favoritesBar.setVisibility(View.VISIBLE);
-                                }
-                                if (!onSingleTap()) {
-                                    if(BuildConfig.DEBUG) Log.i(TAG,"no action for singletap, open keyboard");
-                                    if (mainActivity.isViewingSearchResults()){
-                                        mainActivity.displayKissBar(false);
-                                    }
+                                if (swipeDetected) {
+                                    swipeDetected = false;
+                                } else {
+                                    onSingleTap();
                                 }
                             }
                         };
@@ -288,9 +275,7 @@ public class ExperienceTweaks extends Forwarder {
 
                 if (numberOfTaps == 3) {
                     if(BuildConfig.DEBUG) Log.i(TAG,"tripletap");
-                    if (prefs.getBoolean("triple_tap_flashlight", false)) {
-                        mainActivity.toggleFlashLight();
-                    }
+                    onTripleTap();
                     numberOfTaps = 0;
                     //handle triple tap
                 } else if (numberOfTaps == 2) {
@@ -310,49 +295,6 @@ public class ExperienceTweaks extends Forwarder {
         }
         return false;
     }
-
-    public boolean onSingleTap() {
-        // if minimalistic mode is enabled,
-        if (!scaling && isMinimalisticModeEnabled() && prefs.getBoolean("history-onclick", false)) {
-            // and we're currently in minimalistic mode with no results,
-            // and we're not looking at the app list
-            if ((mainActivity.isViewingSearchResults()) && (mainActivity.searchEditText.getText().toString().isEmpty())) {
-                if ((mainActivity.list.getAdapter() == null) || (mainActivity.list.getAdapter().isEmpty())) {
-                    mainActivity.runTask(new HistorySearcher(mainActivity));
-                    return true;
-                }
-            }
-        }
-
-        if (isMinimalisticModeEnabledForFavorites()) {
-            mainActivity.favoritesBar.setVisibility(View.VISIBLE);
-            return true;
-        }
-        return false;
-    }
-
-    public void onDoubleTap() {
-        if (mainActivity.isKeyboardVisible()) {
-            if (prefs.getBoolean("double-click-numeric-kb", false)) {
-                if (mainActivity.searchEditText.getInputType() != TYPE_CLASS_PHONE) {
-                    mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
-                    mNumericInputTypeForced = true;
-                } else {
-                    mNumericInputTypeForced = false;
-                    adjustInputType(mainActivity.searchEditText.getText().toString());
-                }
-            }
-        } else {
-            if (prefs.getBoolean("double-click-opens-apps", false)) {
-                mainActivity.launcherButton.performClick();
-            }
-            else if (prefs.getBoolean("double-click-locks-screen", false)) {
-                    mainActivity.lockScreen();
-                }
-
-        }
-    }
-
 
     public void toggleScreenOnOff() {
         // turn off/on screen backlight
@@ -499,5 +441,90 @@ public class ExperienceTweaks extends Forwarder {
             mNumericInputTypeForced = false;
             adjustInputType(null);
         }
+    }
+
+    private void onSwipeDown() {
+        doAction(prefs.getString("gesture-swipe-down", "display-notifications"));
+    }
+
+    private void onSwipeUp() {
+        doAction(prefs.getString("gesture-swipe-up", "open-keyboard"));
+    }
+
+    private void onSwipeLeft() {
+        doAction(prefs.getString("gesture-swipe-left", "display-contacts"));
+    }
+
+    private void onSwipeRight() {
+        if(BuildConfig.DEBUG) Log.i(TAG, "swipeRight");
+
+        if (prefs.getBoolean("swipe-right", false)) {
+            mainActivity.displayKissBar(true);
+        }
+    }
+
+    public void onSingleTap() {
+        doAction(prefs.getString("gesture-single-tap", "display-history"));
+    }
+
+    public void onDoubleTap() {
+        doAction(prefs.getString("gesture-double-tap", "display-apps-notif"));
+    }
+
+    private void onTripleTap() {
+        doAction(prefs.getString("gesture-triple-tap", "start-flashlight"));
+    }
+
+    private void doAction(String action) {
+        if(BuildConfig.DEBUG) Log.i(TAG,"doAction: "+ action);
+        if (!isGesturesEnabled()) {
+            return;
+        }
+        switch (action) {
+            case "display-notifications":
+                displayNotificationDrawer();
+                break;
+            case "display-keyboard":
+                mainActivity.showKeyboard();
+                break;
+            case "display-contacts":
+                mainActivity.displayContacts(true);
+                break;
+            case "display-apps":
+                if(mainActivity.isViewingSearchResults()) {
+                    mainActivity.displayKissBar(true);
+                }
+                break;
+            case "display-all-apps":
+                mainActivity.startAppGridActivity();
+                break;
+            case "display-apps-notif":
+                mainActivity.displayAppsWithNotif(true);
+                break;
+            case "lock-screen":
+                mainActivity.lockScreen();
+                break;
+            case "display-history":
+                // if minimalistic mode is enabled,
+                mainActivity.showHistory();
+                break;
+            case "open-keyboard":
+                if(BuildConfig.DEBUG) Log.i(TAG,"open keyboard");
+                mainActivity.showKeyboard();
+                break;
+            case "hide-keyboard":
+                if (mainActivity.isKeyboardVisible()) {
+                    mainActivity.hideKeyboard();
+                }
+            case "start-flashlight":
+                mainActivity.toggleFlashLight();
+                break;
+            case "start-barcode-reader":
+                EventBus.getDefault().post(new ZEvent(ZEvent.State.INTERNAL_EVENT, BARCODE_READER));
+                break;
+        }
+    }
+    private boolean isGesturesEnabled() {
+        return prefs.getBoolean("enable-gestures", true);
     }
 }

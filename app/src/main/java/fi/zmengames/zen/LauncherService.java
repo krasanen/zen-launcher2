@@ -204,6 +204,7 @@ public class LauncherService extends Service {
             devicePolicyManager.lockNow();
         } else {
             handleShowToast("Device Admin features not enabled");
+            sendMessage(new ZEvent(ZEvent.State.ENABLE_DEVICE_ADMIN, LOCK_IN));
         }
     }
 
@@ -319,6 +320,7 @@ public class LauncherService extends Service {
             handleShowToast(toast );
         } else {
             handleShowToast(getString(R.string.deviceadmin_switch_text));
+            sendMessage(new ZEvent(ZEvent.State.ENABLE_DEVICE_ADMIN, LOCK_IN));
         }
     }
 
