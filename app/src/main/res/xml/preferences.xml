@@ -191,7 +191,7 @@
              android:key="gesture-swipe-down"
              android:title="@string/gesture_down_name" />
          <ListPreference
-             android:defaultValue="display-apps"
+             android:defaultValue="display-contacts"
              android:entries="@array/gestureEntries"
              android:entryValues="@array/gestureValues"
              android:key="gesture-swipe-left"

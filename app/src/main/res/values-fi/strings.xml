@@ -314,4 +314,11 @@
     <string name="set_as_default">Aseta oletus käynnistimeksi</string>
     <string name="set_as_default_info">Näpäytä tästä asettaaksesi Zen Launcher oletuskäynnistimeksi</string>
     <string name="barcode_reader">Viivakoodinlukija</string>
+    <string name="gesture_up_name">Ylöspyyhkäisy</string>
+    <string name="gesture_down_name">Alaspyyhkäisy</string>
+    <string name="gesture_left_name">Pyyhkäisy vasemmalle</string>
+    <string name="gesture_right_name">Pyyhkäisy oikealle</string>
+    <string name="gesture_single_click">Toiminto yhdellä napautuksella</string>
+    <string name="gesture_double_click">Toiminto kahdella napautuksella</string>
+    <string name="gesture_triple_click">Toiminto kolmella napautuksella</string>
 </resources>

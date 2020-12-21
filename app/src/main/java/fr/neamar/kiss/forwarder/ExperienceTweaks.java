@@ -79,6 +79,11 @@ public class ExperienceTweaks extends Forwarder {
     public static boolean mNumericInputTypeForced = false;
     private boolean swipeDetected;
 
+    // divider that affects amount of pixels to be used in gesture detection
+    // screen width / SWIPE_DIVIDER
+    // screen height / SWIPE_DIVIDER
+    private float SWIPE_DIVIDER = 8f;
+
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);
 
@@ -142,16 +147,27 @@ public class ExperienceTweaks extends Forwarder {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if(BuildConfig.DEBUG) Log.i(TAG, "onFling:" +SWIPE_DIVIDER);
                 if (e1!=null&&e2!=null) {
                     float directionY = e2.getY() - e1.getY();
                     float directionX = e2.getX() - e1.getX();
                     if(BuildConfig.DEBUG) Log.i(TAG, "directionX:" + directionX);
                     if(BuildConfig.DEBUG) Log.i(TAG, "directionY:" + directionY);
-                    if(BuildConfig.DEBUG) Log.i(TAG, "e1x:" + e1.getX());
-                    if(BuildConfig.DEBUG) Log.i(TAG, "e2x:" + e2.getX());
 
                     if (!mainActivity.isViewingAllApps() && !scaling) {
-                        if (Math.abs(directionX) > width / 3f) {
+
+                        if (Math.abs(directionY) > height / SWIPE_DIVIDER) {
+                            swipeDetected = true;
+                            if (directionY < 0) {
+                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeUp");
+                                onSwipeUp();
+                            } else {
+                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeDown");
+                                onSwipeDown();
+                            }
+                            return true;
+                        }
+                        if (Math.abs(directionX) > width / SWIPE_DIVIDER) {
                             swipeDetected = true;
                             if (directionX > 0) {
                                 if(BuildConfig.DEBUG) Log.i(TAG, "swipeRight");
@@ -164,18 +180,6 @@ public class ExperienceTweaks extends Forwarder {
                             }
                             return true;
                         }
-                        if (Math.abs(directionY) > height / 40f) {
-                            swipeDetected = true;
-                            if (directionY < 0) {
-                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeUp");
-                                onSwipeUp();
-
-                            } else {
-                                if(BuildConfig.DEBUG) Log.i(TAG, "swipeDown");
-                                onSwipeDown();
-                            }
-                        }
-
 
                     }
                 }
@@ -503,14 +507,11 @@ public class ExperienceTweaks extends Forwarder {
                 // if minimalistic mode is enabled,
                 mainActivity.showHistory();
                 break;
-            case "open-keyboard":
-                if(BuildConfig.DEBUG) Log.i(TAG,"open keyboard");
-                mainActivity.showKeyboard();
-                break;
             case "hide-keyboard":
                 if (mainActivity.isKeyboardVisible()) {
                     mainActivity.hideKeyboard();
                 }
+                break;
             case "start-flashlight":
                 mainActivity.toggleFlashLight();
                 break;

@@ -64,7 +64,6 @@
         <item>Start bar code reader</item>
         <item>Start flash light</item>
         <item>Lock screen</item>
-        <item>Open keyboard</item>
         <item>Hide keyboard</item>
     </string-array>
     <string-array name="gestureValues" translatable="false">
@@ -79,7 +78,6 @@
         <item>start-barcode-reader</item>
         <item>start-flashlight</item>
         <item>lock-screen</item>
-        <item>open-keyboard</item>
         <item>hide-keyboard</item>
     </string-array>
 </resources>
