@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><string name="ui_search_hint">Hae sovelluksia, yhteystietoja, …</string>
+<resources>
+    <string name="ui_search_hint">Hae sovelluksia, yhteystietoja, …</string>
     <string name="ui_item_contact_hint_call">Soita</string>
-
     <string name="title_ui">Käyttöliittymä</string>
     <string name="title_history">Historian asetukset</string>
     <string name="title_advanced">Edistyneet asetukset</string>
     <string name="menu_settings">Laitteen asetukset</string>
-
     <string name="ui_empty_1_sub">Sovellukset, yhteystiedot, asetukset, …</string>
     <string name="ui_empty_3_sub">Zen käynnistin oppii tavoillesi</string>
-
     <string name="contacts_name">Yhteystiedot</string>
-
     <string name="search_name">Verkkohaku</string>
-
     <string name="settings_name">Laitteen asetukset</string>
-
     <string name="shortcuts_name">Pikakuvakkeet</string>
-
     <string name="main_menu">Valikko</string>
     <string name="main_clear">Tyhjennä hakupalkki</string>
     <string name="main_kiss">Näytä suosikit ja sovelluslista</string>
@@ -61,10 +55,8 @@
     <string name="menu_app_uninstall">Poista asennus</string>
     <string name="menu_app_hibernate">Horrosta</string>
     <string name="menu_shortcut_remove">Poista pikakuvake</string>
-
     <string name="menu_contact_copy_phone">Kopioi puhelinnumero</string>
     <string name="menu_phone_create">Luo yhteystieto</string>
-
     <string name="toast_favorites_added">%s lisättiin suosikeihin</string>
     <string name="app_name">Zen Launcher</string>
     <string name="activity_setting">Zen käynnistimen asetukset</string>
@@ -172,7 +164,6 @@
     <string name="number_of_display_items">Maksimimäärä tuloksia</string>
     <string name="number_of_display_items_sum">Maksimimäärä tuloksia haussa ja historianäkymässä</string>
     <string name="black_notification_icons">Mustat ilmoitusikonit</string>
-
     <string name="pref_toggle_tags">Näytä tunnisteet valikko</string>
     <string name="screen_toggle_tags">Kustomoi tunnistevalikkoa</string>
     <string name="pref_toggle_tags_select">Näytettävät tunnisteet</string>
@@ -185,8 +176,6 @@
     <string name="excluded_app_list_added">Sovellus kätketty Zen käynnnistimestä. Resetoi Zen käynnistimen asetuksista</string>
     <string name="excluded_app_history_added">Sovellus kätketty historiasta. Resetoi Zen käynnistimen asetuksista</string>
     <string name="menu_exclude">Kätke sovellus ...</string>
-
-
     <!-- Omat -->
     <string name="menu_widget_settings">Widget asetukset</string>
     <string name="menu_widget_add">Lisää widget</string>
@@ -321,4 +310,5 @@
     <string name="gesture_single_click">Toiminto yhdellä napautuksella</string>
     <string name="gesture_double_click">Toiminto kahdella napautuksella</string>
     <string name="gesture_triple_click">Toiminto kolmella napautuksella</string>
+    <string name="cant_pin_shortcut">Ei voitu lisätä pikakuvaketta, onko Zen asetettu oletuskäynnistimeksi\?</string>
 </resources>
