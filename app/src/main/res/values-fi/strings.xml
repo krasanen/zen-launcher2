@@ -196,7 +196,7 @@
     <string name="save_to_google">Tallenna asetukset Googleen</string>
     <string name="error_opening_metadata">Virhe avatessa metadataa</string>
     <string name="error_opening_filename">Virhe avatessa tiedosta</string>
-    <string name="select_conflicted_game">Select conflicted game</string>
+    <string name="select_conflicted_game"></string>
     <string name="snapshotimage_description">Zen Launcher asetukset</string>
     <string name="format_days_ago">%d päivää sitten</string>
     <string name="format_hours_ago">%d tuntia sitten</string>
