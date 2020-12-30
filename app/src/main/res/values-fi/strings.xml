@@ -311,4 +311,13 @@
     <string name="gesture_double_click">Toiminto kahdella napautuksella</string>
     <string name="gesture_triple_click">Toiminto kolmella napautuksella</string>
     <string name="cant_pin_shortcut">Ei voitu lisätä pikakuvaketta, onko Zen asetettu oletuskäynnistimeksi\?</string>
+    <string name="menu_app_rename">Nimeä uudelleen</string>
+    <string name="app_rename_confirmation">Sovelluksen nimi on nyt %s</string>
+    <string name="deviceadmin_switch_text">Laitteen lukitusominaisuus tarvitsee laitehallinta oikeuden.</string>
+    <string name="menu_custom_icon">Valitse kuvake</string>
+    <string name="app_rename_title">Oma nimi</string>
+    <string name="default_icon">oletusikoni</string>
+    <string name="custom_name_rename">Nimeä uudelleen</string>
+    <string name="custom_name_set_default">Oletusnimi</string>
+    <string name="deviceadmin_switch">Laitehallinta</string>
 </resources>
