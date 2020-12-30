@@ -46,7 +46,7 @@ import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.db.ValuedHistoryRecord;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.ShortcutUtil;
 import fr.neamar.kiss.utils.UserHandle;
@@ -312,44 +312,39 @@ public class DataHandler
      *
      * @param context        android context
      * @param itemCount      max number of items to retrieve, total number may be less (search or calls are not returned for instance)
-     * @param historyMode    Recency vs Frecency vs Frequency
-     * @param sortHistory sort history entries alphabetically
-     * @param itemsToExclude Items to exclude from history
+     * @param historyMode    Recency vs Frecency vs Frequency vs Adaptive vs Alphabetically
+     * @param itemsToExcludeById Items to exclude from history by their id
      * @return pojos in recent history
      */
-    public ArrayList<Pojo> getHistory(Context context, int itemCount, String historyMode, boolean sortHistory, ArrayList<Pojo> itemsToExclude) {
+    public ArrayList<Pojo> getHistory(Context context, int itemCount, String historyMode, Set<String> itemsToExcludeById) {
         // Pre-allocate array slots that are likely to be used based on the current maximum item
         // count
         ArrayList<Pojo> history = new ArrayList<>(Math.min(itemCount, 256));
 
         // Max sure that we get enough items, regardless of how many may be excluded
-        int extendedItemCount = itemCount + itemsToExclude.size();
+        int extendedItemCount = itemCount + itemsToExcludeById.size();
 
         // Read history
-        List<ValuedHistoryRecord> ids = DBHelper.getHistory(context, extendedItemCount, historyMode, sortHistory);
+        List<ValuedHistoryRecord> ids = DBHelper.getHistory(context, extendedItemCount, historyMode);
 
         // Find associated items
         for (int i = 0; i < ids.size(); i++) {
             // Ask all providers if they know this id
             Pojo pojo = getPojo(ids.get(i).record);
-            if (pojo != null) {
-                // Look if the pojo should get excluded
-                boolean exclude = false;
-                for (int j = 0; j < itemsToExclude.size(); j++) {
-                    if (itemsToExclude.get(j).id.equals(pojo.id)) {
-                        exclude = true;
-                        break;
-                    }
-                }
 
-                if (!exclude) {
-                    history.add(pojo);
-                }
+            if (pojo == null) {
+                continue;
+            }
 
-                // Break if maximum number of items have been retrieved
-                if (history.size() >= itemCount) {
-                    break;
-                }
+            if(itemsToExcludeById.contains(pojo.id)) {
+                continue;
+            }
+
+            history.add(pojo);
+
+            // Break if maximum number of items have been retrieved
+            if (history.size() >= itemCount) {
+                break;
             }
         }
 
@@ -373,20 +368,8 @@ public class DataHandler
         return (pojo != null) ? pojo.getName() : "???";
     }
 
-    public boolean addShortcut(ShortcutsPojo shortcut) {
-        ShortcutRecord record = new ShortcutRecord();
-        record.name = shortcut.getName();
-        record.iconResource = shortcut.resourceName;
-        record.packageName = shortcut.packageName;
-        record.intentUri = shortcut.intentUri;
-
-        if (shortcut.icon != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            shortcut.icon.compress(CompressFormat.PNG, 100, baos);
-            record.icon_blob = baos.toByteArray();
-        }
-
-        if (BuildConfig.DEBUG) Log.d(TAG, "Shortcut " + shortcut.id);
+    public boolean addShortcut(ShortcutRecord record) {
+        if (BuildConfig.DEBUG) Log.d(TAG, "Adding shortcut for " + record.packageName);
         if (DBHelper.insertShortcut(this.context, record)){
             if (this.getShortcutsProvider()!=null) {
                 this.getShortcutsProvider().reload();
@@ -398,43 +381,40 @@ public class DataHandler
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public boolean addShortcut(String packageName) {
+    public void addShortcut(String packageName) {
 
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return false;
+            return;
         }
 
         List<ShortcutInfo> shortcuts;
         try {
             shortcuts = ShortcutUtil.getShortcut(context, packageName);
-        } catch (SecurityException e) {
+        } catch (SecurityException | IllegalStateException e) {
             e.printStackTrace();
-            return false;
+            return;
         }
 
         for (ShortcutInfo shortcutInfo : shortcuts) {
             // Create Pojo
-            ShortcutsPojo pojo = ShortcutUtil.createShortcutPojo(context, shortcutInfo, true);
-            if (pojo == null) {
+            ShortcutRecord record = ShortcutUtil.createShortcutRecord(context, shortcutInfo, true);
+            if (record == null) {
                 continue;
             }
             // Add shortcut to the DataHandler
-            addShortcut(pojo);
-
-            Log.d(TAG, "Shortcut " + pojo.id + " added.");
+            addShortcut(record);
         }
 
         if (!shortcuts.isEmpty() && this.getShortcutsProvider() != null) {
             this.getShortcutsProvider().reload();
         }
-        return true;
     }
 
     public void clearHistory() {
         DBHelper.clearHistory(this.context);
     }
 
-    public void removeShortcut(ShortcutsPojo shortcut) {
+    public void removeShortcut(ShortcutPojo shortcut) {
         // Also remove shortcut from favorites
         removeFromFavorites(shortcut.id);
         DBHelper.removeShortcut(this.context, shortcut);
@@ -801,6 +781,22 @@ public class DataHandler
 
     public void resetTagsHandler() {
         tagsHandler = new TagsHandler(this.context);
+    }
+
+    public void renameApp(String componentName, String newName) {
+        DBHelper.addCustomAppName(context, componentName, newName);
+    }
+
+    public void removeRenameApp(String componentName, String defaultName) {
+        DBHelper.removeCustomAppName(context, componentName);
+    }
+
+    public long setCustomAppIcon(String componentName) {
+        return DBHelper.addCustomAppIcon(context, componentName);
+    }
+
+    public long removeCustomAppIcon(String componentName) {
+        return DBHelper.removeCustomAppIcon(context, componentName);
     }
 
     static final class ProviderEntry {

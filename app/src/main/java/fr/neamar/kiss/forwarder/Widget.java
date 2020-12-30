@@ -252,19 +252,23 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         AppWidgetProviderInfo a = ParcelableUtil.unmarshall(wp.appWidgetProviderInfo, AppWidgetProviderInfo.CREATOR);
 
                         int newId = mAppWidgetHost.allocateAppWidgetId();
-                        boolean hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
-                        if (!hasPermission) {
-                            if (BuildConfig.DEBUG)
-                                Log.w("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
-                            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
-                            mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
-                            //configureAppWidget(intent);
+                        boolean hasPermission = false;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                            hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
+
+                            if (!hasPermission) {
+                                if (BuildConfig.DEBUG)
+                                    Log.w("Widget", "!hasPermission, do ACTION_APPWIDGET_BIND");
+                                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+                                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
+                                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
+                                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+                                mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+                                //configureAppWidget(intent);
 
 
-                            return null;
+                                return null;
+                            }
                         }
                         removeAppWidget(appWidgetId);
                         SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();

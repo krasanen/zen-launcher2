@@ -1,5 +1,6 @@
 package fr.neamar.kiss.adapter;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -106,20 +107,9 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     @Override
     public @NonNull
     View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        if (convertView != null) {
-            if (!(convertView.getTag() instanceof Integer))
-                convertView = null;
-            else if ((Integer) convertView.getTag() != getItemViewType(position)) {
-                // This is happening on HTC Desire X (Android 4.1.1, API 16)
-                //throw new IllegalStateException( "can't convert view from different type" );
-                convertView = null;
-            }
-        }
-        View view = results.get(position).display(parent.getContext(), results.size() - position, convertView, parent, fuzzyScore);
-        //Log.d( "TBog", "getView pos " + position + " convertView " + ((convertView == null) ? "null" : convertView.toString()) + " will return " + view.toString() );
-        view.setTag(getItemViewType(position));
-        return view;
+        return results.get(position).display(parent.getContext(), convertView, parent, fuzzyScore);
     }
+
 
     public void onLongClick(final int pos, View v) {
         ListPopup menu = results.get(pos).getPopupMenu(v.getContext(), this, v);
@@ -167,6 +157,14 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
 
         fuzzyScore = new FuzzyScore(queryNormalized.codePoints, true);
         notifyDataSetChanged();
+    }
+
+    /**
+     * Force set transcript mode on the list.
+     * Prefer to use `parent.temporarilyDisableTranscriptMode();`
+     */
+    public void updateTranscriptMode(int transcriptMode) {
+        parent.updateTranscriptMode(transcriptMode);
     }
 
     public void clear() {
@@ -248,5 +246,8 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         // so we just return the before-last section
         // See #1005
         return sections.length - 2;
+    }
+    public void showDialog(DialogFragment dialog) {
+        parent.showDialog(dialog);
     }
 }

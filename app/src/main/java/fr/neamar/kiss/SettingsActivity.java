@@ -27,6 +27,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import androidx.annotation.NonNull;
+
+import org.greenrobot.eventbus.EventBus;
+
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
 
 import fr.neamar.kiss.cache.MemoryCacheHelper;
@@ -351,6 +355,8 @@ public class SettingsActivity extends PreferenceActivity implements
             }
         } else if (key.equalsIgnoreCase("icons-pack")) {
             KissApplication.getApplication(this).getIconsHandler().loadIconsPack(sharedPreferences.getString(key, "default"));
+            ZEvent event = new ZEvent(ZEvent.State.RELOAD_APPS);
+            EventBus.getDefault().postSticky(event);
         } else if (key.equalsIgnoreCase("enable-phone-history")) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
                     != PackageManager.PERMISSION_GRANTED) {

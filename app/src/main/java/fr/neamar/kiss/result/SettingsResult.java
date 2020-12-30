@@ -35,14 +35,15 @@ public class SettingsResult extends Result {
 
     @NonNull
     @Override
-    public View display(Context context, int position, View v, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
-        if (v == null)
-            v = inflateFromId(context, R.layout.item_setting, parent);
+    public View display(Context context, View view, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
 
-        TextView settingName = v.findViewById(R.id.item_setting_name);
+        if (view == null)
+            view = inflateFromId(context, R.layout.item_setting, parent);
+
+        TextView settingName = view.findViewById(R.id.item_setting_name);
         displayHighlighted(settingPojo.normalizedName, settingPojo.getName(), fuzzyScore, settingName, context);
 
-        ImageView settingIcon = v.findViewById(R.id.item_setting_icon);
+        ImageView settingIcon = view.findViewById(R.id.item_setting_icon);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (!prefs.getBoolean("icons-hide", false)) {
             settingIcon.setImageDrawable(getDrawable(context));
@@ -51,7 +52,7 @@ public class SettingsResult extends Result {
             settingIcon.setImageDrawable(null);
         }
 
-        return v;
+        return view;
     }
 
     @SuppressWarnings("deprecation")

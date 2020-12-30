@@ -41,7 +41,7 @@ import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.SearchPojo;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.Result;
@@ -208,7 +208,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             if (favbarAppNames) {
                 image.setPadding(15,0,15,25);
                 textView.setVisibility(View.VISIBLE);
-                if (pojo instanceof ShortcutsPojo){
+                if (pojo instanceof ShortcutPojo){
                     String name = pojo.getName().replaceFirst("https://","");
                     name = name.replaceFirst("www.","");
                     textView.setText(name);

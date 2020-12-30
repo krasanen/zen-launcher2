@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -21,6 +22,7 @@ import fi.zmengames.zen.Utility;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,7 +31,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.PopupMenu;
@@ -42,6 +46,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.CustomIconDialog;
+import fr.neamar.kiss.IconsHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -57,6 +63,7 @@ import me.leolin.shortcutbadger.ShortcutBadgeException;
 import me.leolin.shortcutbadger.impl.IntentConstants;
 import me.leolin.shortcutbadger.util.BroadcastHelper;
 
+import static fr.neamar.kiss.MainActivity.REFRESH_UI;
 import static fr.neamar.kiss.MainActivity.REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL;
 import static org.greenrobot.eventbus.EventBus.TAG;
 
@@ -75,11 +82,10 @@ public class AppResult extends Result {
 
     @NonNull
     @Override
-    public View display(final Context context, int position, View convertView, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
-        View view = convertView;
-        if (convertView == null) {
+    public View display(Context context, View view, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
+
+        if (view == null)
             view = inflateFromId(context, R.layout.item_app, parent);
-        }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -150,6 +156,10 @@ public class AppResult extends Result {
         }
         adapter.add(new ListPopup.Item(context, R.string.menu_exclude));
         adapter.add(new ListPopup.Item(context, R.string.menu_favorites_add));
+        adapter.add(new ListPopup.Item(context, R.string.menu_app_rename));
+        // only display this option if we're using a custom icon pack, as it is not useful otherwise
+        if (KissApplication.getApplication(context).getIconsHandler().getCustomIconPack() != null)
+            adapter.add(new ListPopup.Item(context, R.string.menu_custom_icon));
         adapter.add(new ListPopup.Item(context, R.string.menu_tags_edit));
         adapter.add(new ListPopup.Item(context, R.string.menu_favorites_remove));
         adapter.add(new ListPopup.Item(context, R.string.menu_app_details));
@@ -230,6 +240,12 @@ public class AppResult extends Result {
             case R.string.menu_tags_edit:
                 launchEditTagsDialog(context, appPojo);
                 return true;
+            case R.string.menu_app_rename:
+                launchRenameDialog(context, parent, appPojo);
+                return true;
+            case R.string.menu_custom_icon:
+                launchCustomIcon(context, parent);
+                return true;
             case R.string.add_badge:
 
                 try {
@@ -276,6 +292,8 @@ public class AppResult extends Result {
         KissApplication.getApplication(context).getDataHandler().getAppProvider().removeApp(appPojo);
         KissApplication.getApplication(context).getDataHandler().removeFromFavorites(appPojo.id);
         Toast.makeText(context, R.string.excluded_app_list_added, Toast.LENGTH_LONG).show();
+        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+        EventBus.getDefault().post(event);
     }
 
 
@@ -317,6 +335,101 @@ public class AppResult extends Result {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         dialog.show();
+    }
+
+    private void launchRenameDialog(final Context context, RecordAdapter parent, final AppPojo app) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getResources().getString(R.string.app_rename_title));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setView(R.layout.rename_dialog);
+        } else {
+            builder.setView(View.inflate(context, R.layout.rename_dialog, null));
+        }
+
+        builder.setPositiveButton(R.string.custom_name_rename, (dialog, which) -> {
+            EditText input = ((AlertDialog) dialog).findViewById(R.id.rename);
+            dialog.dismiss();
+
+            // Set new name
+            String newName = input.getText().toString().trim();
+            app.setName(newName);
+            KissApplication.getApplication(context).getDataHandler().renameApp(app.getComponentName(), newName);
+
+            // Show toast message
+            String msg = context.getResources().getString(R.string.app_rename_confirmation, app.getName());
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+
+            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+            EventBus.getDefault().post(event);
+        });
+        builder.setNegativeButton(R.string.custom_name_set_default, (dialog, which) -> {
+            dialog.dismiss();
+
+            // Get initial name
+            String name = null;
+            PackageManager pm = context.getPackageManager();
+            try {
+                ApplicationInfo applicationInfo = pm.getApplicationInfo(app.packageName, 0);
+                name = applicationInfo.loadLabel(pm).toString();
+            } catch (NameNotFoundException ignored) {
+            }
+
+            // Set name
+            if (name != null) {
+                app.setName(name);
+                KissApplication.getApplication(context).getDataHandler().removeRenameApp(getComponentName(), name);
+
+                // Show toast message
+                String msg = context.getResources().getString(R.string.app_rename_confirmation, appPojo.getName());
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+
+                // Refresh UI to reflect new name
+                ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+                EventBus.getDefault().post(event);
+            }
+
+            final Handler handler = new Handler();
+            handler.postDelayed(() -> parent.updateTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL), 500);
+        });
+        builder.setNeutralButton(android.R.string.cancel, (dialog, which) -> {
+            dialog.cancel();
+
+            final Handler handler = new Handler();
+            handler.postDelayed(() -> parent.updateTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL), 500);
+        });
+
+        parent.updateTranscriptMode(AbsListView.TRANSCRIPT_MODE_DISABLED);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        // call after dialog got inflated (show call)
+        ((TextView) dialog.findViewById(R.id.rename)).setText(app.getName());
+    }
+
+    private void launchCustomIcon(Context context, RecordAdapter parent) {
+        //TODO: launch a DialogFragment or Activity
+        CustomIconDialog dialog = new CustomIconDialog();
+
+        // set args
+        {
+            Bundle args = new Bundle();
+            args.putString("className", className.flattenToString()); // will be converted back with ComponentName.unflattenFromString()
+            args.putParcelable("userHandle", appPojo.userHandle);
+            args.putString("componentName", appPojo.getComponentName());
+            args.putLong("customIcon", appPojo.getCustomIconId());
+            dialog.setArguments(args);
+        }
+
+        dialog.setOnConfirmListener(drawable -> {
+            if (drawable == null)
+                KissApplication.getApplication(context).getIconsHandler().restoreAppIcon(this);
+            else
+                KissApplication.getApplication(context).getIconsHandler().changeAppIcon(this, drawable);
+            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+            EventBus.getDefault().post(event);
+        });
+
+        parent.showDialog(dialog);
     }
 
     /**
@@ -378,7 +491,8 @@ public class AppResult extends Result {
                 // Google Calendar has a special treatment and displays a custom icon every day
                 icon = GoogleCalendarIcon.getDrawable(context, appPojo.activityName);
             }
-
+            IconsHandler iconsHandler = KissApplication.getApplication(context).getIconsHandler();
+            icon = iconsHandler.getCustomIcon(appPojo.getComponentName(), appPojo.getCustomIconId());
             if (icon == null) {
                 icon = MemoryCacheHelper.getAppIconDrawable(context, className, this.appPojo.userHandle);
             }
@@ -447,5 +561,23 @@ public class AppResult extends Result {
         int[] l = new int[2];
         v.getLocationOnScreen(l);
         return new Rect(l[0], l[1], l[0] + v.getWidth(), l[1] + v.getHeight());
+    }
+
+    public void setCustomIcon(long dbId, Drawable drawable) {
+        appPojo.setCustomIconId(dbId);
+        setDrawableCache(drawable);
+    }
+
+    public void clearCustomIcon() {
+        appPojo.setCustomIconId(0);
+        setDrawableCache(null);
+    }
+
+    public long getCustomIcon() {
+        return appPojo.getCustomIconId();
+    }
+
+    public String getComponentName() {
+        return appPojo.getComponentName();
     }
 }

@@ -27,7 +27,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 29
         versionName = buildTimeStamp() + "@" + gitLastCommit()
-        versionCode = gitVersion()
+        versionCode = gitVersion()+1
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfigs {
             debug {

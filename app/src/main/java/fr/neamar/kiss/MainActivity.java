@@ -9,6 +9,7 @@ import android.app.Activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -72,6 +73,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 
 import android.widget.DatePicker;
@@ -1372,6 +1374,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         // if AppProvider is not initialized yet (boot phase), this event can be ignored.
                         if (appProvider!=null){
                             if (BuildConfig.DEBUG) Log.v(TAG, "RELOAD_APPS: appProvider.reload");
+                            MemoryCacheHelper.trimMemory();
                             appProvider.reload();
                             onFavoriteChange();
                         }
@@ -1784,12 +1787,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void startBarCodeScan() {
         ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
 
-             /*       mScannerViewBar = new ZBarScannerView(this);
-                    contentFrame.addView(mScannerViewBar);
-                    mScannerViewBar.setResultHandler(this); // Register ourselves as a handler for scan results.
-                    mScannerViewBar.startCamera();          // Start camera on resume */
-
-        //  ViewGroup contentFrameXing = (ViewGroup) findViewById(R.id.content_frameXing);
+        if (mScannerViewXing !=null) {
+            if (BuildConfig.DEBUG) Log.d(TAG,"startBarCodeScan, remove existing mScannerViewXing");
+            mScannerViewXing.stopCamera();           // Stop camera on pause
+            contentFrame.removeView(mScannerViewXing);
+        }
         mScannerViewXing = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         mScannerViewXing.setResultHandler(this);
         mScannerViewXing.setBorderColor(R.color.zenlauncher);
@@ -2723,6 +2725,45 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
 
+    /**
+     * transcriptMode on the listView decides when to scroll back to the first item.
+     * The value we have by default, TRANSCRIPT_MODE_ALWAYS_SCROLL, means that on every new search,
+     * (actually, on any change to the listview's adapter items)
+     * scroll is reset to the bottom, which makes sense as we want the most relevant search results
+     * to be visible first (searching for "ab" after "a" should reset the scroll).
+     * However, when updating an existing result set (for instance to remove a record, add a tag,
+     * etc.), we don't want the scroll to be reset. When this happens, we temporarily disable
+     * the scroll mode.
+     * However, we need to be careful here: the PullView system we use actually relies on
+     * TRANSCRIPT_MODE_ALWAYS_SCROLL being active. So we add a new message in the queue to change
+     * back the transcript mode once we've rendered the change.
+     * <p>
+     * (why is PullView dependent on this? When you show the keyboard, no event is being dispatched
+     * to our application, but if we don't reset the scroll when the keyboard appears then you
+     * could be looking at an element that isn't the latest one as you start scrolling down
+     * [which will hide the keyboard] and start a very ugly animation revealing items currently
+     * hidden. Fairly easy to test, remove the transcript mode from the XML and the .post() here,
+     * then scroll in your history, display the keyboard and scroll again on your history)
+     */
+    @Override
+    public void temporarilyDisableTranscriptMode() {
+        list.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_DISABLED);
+        // Add a message to be processed after all current messages, to reset transcript mode to default
+        list.post(() -> list.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL));
+    }
+
+    /**
+     * Force  set transcript mode.
+     * Be careful when using this, it's almost always better to use temporarilyDisableTranscriptMode()
+     * unless you need to deal with the keyboard appearing for something else than a search.
+     * Always make sure you call this function twice, once to disable, and once to re-enable
+     *
+     * @param transcriptMode new transcript mode to set on the list
+     */
+    @Override
+    public void updateTranscriptMode(int transcriptMode) {
+        list.setTranscriptMode(transcriptMode);
+    }
 
     /**
      * Call this function when we're leaving the activity after clicking a search result
@@ -2755,6 +2796,21 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
         });
         hider.fixScroll();
+    }
+
+    @Override
+    public void showDialog(DialogFragment dialog) {
+        final View resultLayout = findViewById(R.id.resultLayout);
+        if (dialog instanceof CustomIconDialog) {
+            // We assume the mResultLayout was visible
+            resultLayout.setVisibility(View.GONE);
+            ((CustomIconDialog) dialog).setOnDismissListener(dlg -> {
+                resultLayout.setVisibility(View.VISIBLE);
+                // force icon reload by searching again; is there any better way?
+                updateSearchRecords();
+            });
+        }
+        dialog.show(getFragmentManager(), "dialog");
     }
 
     public void refreshWidget(int appWidgetId) {

@@ -79,7 +79,6 @@ public class MemoryCacheHelper {
         synchronized (sAppIconCache) {
             if (BuildConfig.DEBUG) Log.d(TAG,"trimMemory");
             sAppIconCache.evictAll();
-
         }
     }
 

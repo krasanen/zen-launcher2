@@ -140,6 +140,8 @@
     <string name="menu_app_details">App info</string>
     <string name="menu_app_uninstall">Uninstall</string>
     <string name="menu_app_hibernate">Hibernate</string>
+    <string name="menu_app_rename">Rename</string>
+    <string name="menu_custom_icon">Custom icon</string>
     <string name="menu_shortcut_remove">Remove shortcut</string>
 
     <string name="toast_hibernate_completed">%s hibernated, relaunch to awake.</string>
@@ -253,6 +255,26 @@
     <string name="cant_pin_shortcut">Could not add shortcut. Is ZEN your default launcher\?</string>
     <string name="copy_confirmation">Copied to clipboard</string>
     <string name="unable_to_initialize_shortcuts">Unable to initialize shortcuts. Is Zen Launcher your default launcher?</string>
+    <!-- custom icon dialog -->
+    <string name="custom_icon_hint">Filter by name</string>
+    <string name="default_icon">default icon</string>
+    <string name="custom_icon_application">application</string>
+    <string name="custom_icon_application_with_pack">application with pack</string>
+    <string name="custom_icon_application_adaptive">application adaptive</string>
+    <string name="custom_icon_application_adaptive_fill">application adaptive fill</string>
+    <string name="custom_icon_activity">activity</string>
+    <string name="custom_icon_activity_with_pack">activity with pack</string>
+    <string name="custom_icon_activity_adaptive">activity adaptive</string>
+    <string name="custom_icon_activity_adaptive_fill">activity adaptive fill</string>
+    <string name="custom_icon_badged">badged</string>
+    <string name="custom_icon_badged_with_pack">badged with pack</string>
+    <string name="custom_icon_badged_adaptive">badged adaptive</string>
+    <string name="custom_icon_badged_adaptive_fill">badged adaptive fill</string>
+    <string name="custom_icon_preview">Preview</string>
+    <string name="custom_name_rename">Rename</string>
+    <string name="custom_name_set_default">Default name</string>
+    <string name="app_rename_confirmation">App name is now %s</string>
+    <string name="app_rename_title">Custom name</string>
 
     <!-- Zen Laucher specific -->
     <string name="share_tags">Share tags</string>

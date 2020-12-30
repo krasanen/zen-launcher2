@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,6 +25,7 @@ import java.util.TimeZone;
 import androidx.annotation.RequiresApi;
 
 import fi.zmengames.zen.AlarmUtils;
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.broadcast.PackageAddedRemovedHandler;
 import fr.neamar.kiss.cache.MemoryCacheHelper;
@@ -41,6 +44,7 @@ import static fr.neamar.kiss.notification.NotificationListener.NOTIFICATION_PREF
 
 public class AppProvider extends Provider<AppPojo> {
     private SharedPreferences prefs;
+    private static final String TAG = AppProvider.class.getSimpleName();
 
     @Override
     @SuppressLint("NewApi")
@@ -224,6 +228,8 @@ public class AppProvider extends Provider<AppPojo> {
         records.clear();
         for (AppPojo pojo : pojos) {
             if (pojo!=null) {
+                if (BuildConfig.DEBUG) Log.d(TAG,"getAllApps4:" + pojo.activityName);
+                if(pojo.isExcluded()) continue;
                 pojo.relevance = 0;
                 records.add(pojo);
             }
@@ -237,6 +243,7 @@ public class AppProvider extends Provider<AppPojo> {
         } else {
             for (AppPojo pojo : pojos) {
                 if (pojo!=null) {
+                    if(pojo.isExcluded()) continue;
                     pojo.relevance = 0;
                     records.add(pojo);
                 }
@@ -256,6 +263,7 @@ public class AppProvider extends Provider<AppPojo> {
             if (pojo!=null) {
                 pojo.relevance = 0;
                 if (pojo.getBadgeCount() > 0 || pojo.getHasNotification()) {
+                    if(pojo.isExcluded()) continue;
                     records.add(pojo);
                 }
             }

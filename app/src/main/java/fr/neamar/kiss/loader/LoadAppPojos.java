@@ -13,11 +13,14 @@ import android.os.UserManager;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.TagsHandler;
 import fr.neamar.kiss.cache.MemoryCacheHelper;
+import fr.neamar.kiss.db.AppRecord;
+import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.utils.UserHandle;
 
@@ -78,7 +81,21 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
             for (android.os.UserHandle profile : manager.getUserProfiles()) {
                 UserHandle user = new UserHandle(manager.getSerialNumberForUser(profile), profile);
                 for (LauncherActivityInfo activityInfo : launcher.getActivityList(null, profile)) {
-                    apps.add(appAppLollipop(activityInfo, user, excludedAppList, excludedFromHistoryAppList, excludedAppList));
+                    ApplicationInfo appInfo = activityInfo.getApplicationInfo();
+
+                    String id = user.addUserSuffixToString(pojoScheme + appInfo.packageName + "/" + activityInfo.getName(), '/');
+
+                    boolean isExcluded = excludedAppList.contains(AppPojo.getComponentName(appInfo.packageName, activityInfo.getName(), user));
+                    boolean isExcludedFromHistory = excludedFromHistoryAppList.contains(id);
+
+                    AppPojo app = new AppPojo(id, appInfo.packageName, activityInfo.getName(), user,
+                            isExcluded, isExcludedFromHistory);
+
+                    app.setName(activityInfo.getLabel().toString());
+
+                    app.setTags(tagsHandler.getTags(app.id));
+
+                    apps.add(app);
                 }
             }
         } else {
@@ -88,18 +105,37 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
             for (ResolveInfo info : manager.queryIntentActivities(mainIntent, 0)) {
-                    apps.add(appAppPreLollipop(info, manager, excludedAppList,excludedFromHistoryAppList));
+                ApplicationInfo appInfo = info.activityInfo.applicationInfo;
+                String id = pojoScheme + appInfo.packageName + "/" + info.activityInfo.name;
+                boolean isExcluded = excludedAppList.contains(
+                        AppPojo.getComponentName(appInfo.packageName, info.activityInfo.name, new UserHandle())
+                );
+                boolean isExcludedFromHistory = excludedFromHistoryAppList.contains(id);
+
+                AppPojo app = new AppPojo(id, appInfo.packageName, info.activityInfo.name, new UserHandle(),
+                        isExcluded, isExcludedFromHistory);
+
+                app.setName(info.loadLabel(manager).toString());
+
+                app.setTags(tagsHandler.getTags(app.id));
+
+                apps.add(app);
             }
+        }
+
+        HashMap<String, AppRecord> customApps = DBHelper.getCustomAppData(ctx);
+        for (AppPojo app : apps) {
+            AppRecord customApp = customApps.get(app.getComponentName());
+            if (customApp == null)
+                continue;
+            if (customApp.hasCustomName())
+                app.setName(customApp.name);
+            if (customApp.hasCustomIcon())
+                app.setCustomIconId(customApp.dbId);
         }
 
         long end = System.nanoTime();
         Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list apps");
-
-        // cache all app icons
-        for ( AppPojo app : apps )
-        {
-            MemoryCacheHelper.cacheAppIconDrawable(ctx, new ComponentName(app.packageName, app.activityName), app.userHandle);
-        }
 
         return apps;
     }

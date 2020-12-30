@@ -11,7 +11,7 @@ import fr.neamar.kiss.BuildConfig;
 class DB extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "kiss.s3db";
-    private final static int DB_VERSION = 7;
+    private final static int DB_VERSION = 8;
     private static final String TAG = DB.class.getSimpleName();
     DB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -25,6 +25,7 @@ class DB extends SQLiteOpenHelper {
         createTags(database);
         createBadges(database);
         addTimeStamps(database);
+        addAppsTable(database);
     }
 
     private void createTags(SQLiteDatabase database) {
@@ -38,6 +39,12 @@ class DB extends SQLiteOpenHelper {
     private void addTimeStamps(SQLiteDatabase database) {
         database.execSQL("ALTER TABLE history ADD COLUMN timeStamp INTEGER DEFAULT 0  NOT NULL");
     }
+
+    private void addAppsTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE custom_apps ( _id INTEGER PRIMARY KEY AUTOINCREMENT, custom_flags INTEGER DEFAULT 0, component_name TEXT NOT NULL UNIQUE, name TEXT NOT NULL DEFAULT '' )");
+        db.execSQL("CREATE INDEX index_component ON custom_apps(component_name);");
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         if(BuildConfig.DEBUG) Log.w("onUpgrade", "Updating database from version " + oldVersion + " to version " + newVersion);
@@ -65,6 +72,9 @@ class DB extends SQLiteOpenHelper {
                     } else {
                         if (BuildConfig.DEBUG) Log.d(TAG,"timeStamps already exist");
                     }
+                    // fall through
+                case 7:
+                    addAppsTable(database);
                     // fall through
                 default:
                     break;

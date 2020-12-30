@@ -22,7 +22,7 @@ import fr.neamar.kiss.searcher.Searcher;
 
 import static fr.neamar.kiss.pojo.SearchPojo.URL_QUERY;
 import static fr.neamar.kiss.pojo.SearchPojo.ZEN_ADD_LINK;
-import static fr.neamar.kiss.pojo.ShortcutsPojo.SCHEME;
+import static fr.neamar.kiss.pojo.ShortcutPojo.SCHEME;
 
 public class SearchProvider extends SimpleProvider {
     private static final String URL_REGEX = "^(?:[a-z]+://)?(?:[a-z0-9-]|[^\\x00-\\x7F])+(?:[.](?:[a-z0-9-]|[^\\x00-\\x7F])+)+.*$";

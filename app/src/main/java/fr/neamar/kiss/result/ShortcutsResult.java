@@ -12,12 +12,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -37,8 +37,8 @@ import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
-import fr.neamar.kiss.preference.DefaultLauncherPreference;
+import fr.neamar.kiss.icons.IconPack;
+import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 import fr.neamar.kiss.utils.SpaceTokenizer;
@@ -48,9 +48,9 @@ import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST;
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED;
 
 public class ShortcutsResult extends Result {
-    private final ShortcutsPojo shortcutPojo;
-    private static final String TAG = ShortcutsPojo.class.getSimpleName();
-    ShortcutsResult(ShortcutsPojo shortcutPojo) {
+    private final ShortcutPojo shortcutPojo;
+
+    ShortcutsResult(ShortcutPojo shortcutPojo) {
         super(shortcutPojo);
         this.shortcutPojo = shortcutPojo;
     }
@@ -58,17 +58,17 @@ public class ShortcutsResult extends Result {
     @NonNull
     @Override
     @SuppressWarnings("CatchAndPrintStackTrace")
-    public View display(final Context context, int position, View v, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
-        if (v == null)
-            v = inflateFromId(context, R.layout.item_shortcut, parent);
+    public View display(final Context context, View view, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
+        if (view == null)
+            view = inflateFromId(context, R.layout.item_shortcut, parent);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        TextView shortcutName = v.findViewById(R.id.item_app_name);
+        TextView shortcutName = view.findViewById(R.id.item_app_name);
 
         displayHighlighted(shortcutPojo.normalizedName, shortcutPojo.getName(), fuzzyScore, shortcutName, context);
 
-        TextView tagsView = v.findViewById(R.id.item_app_tag);
+        TextView tagsView = view.findViewById(R.id.item_app_tag);
 
         // Hide tags view if tags are empty
         if (shortcutPojo.getTags().isEmpty()) {
@@ -80,8 +80,8 @@ public class ShortcutsResult extends Result {
             tagsView.setVisibility(View.GONE);
         }
 
-        final ImageView shortcutIcon = v.findViewById(R.id.item_shortcut_icon);
-        final ImageView appIcon = v.findViewById(R.id.item_app_icon);
+        final ImageView shortcutIcon = view.findViewById(R.id.item_shortcut_icon);
+        final ImageView appIcon = view.findViewById(R.id.item_app_icon);
 
         // Retrieve package icon for this shortcut
         final PackageManager packageManager = context.getPackageManager();
@@ -106,35 +106,68 @@ public class ShortcutsResult extends Result {
             }
         } catch (NameNotFoundException e) {
             e.printStackTrace();
-            return v;
+            return view;
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            return v;
+            return view;
         }
 
         if (!prefs.getBoolean("icons-hide", false)) {
+            Drawable shortcutDrawable = getDrawable(context);
+            IconPack iconPack = KissApplication.getApplication(context).getIconsHandler().getIconPack();
 
-            if (shortcutPojo.icon != null) {
-                BitmapDrawable drawable = new BitmapDrawable(context.getResources(), shortcutPojo.icon);
-                shortcutIcon.setImageDrawable(drawable);
+            if (appDrawable != null)
+                appDrawable = iconPack.applyBackgroundAndMask(context, appDrawable, true);
+            if (shortcutDrawable != null)
+                shortcutDrawable = iconPack.applyBackgroundAndMask(context, shortcutDrawable, true);
+
+            if (shortcutDrawable != null) {
+                shortcutIcon.setImageDrawable(shortcutDrawable);
                 appIcon.setImageDrawable(appDrawable);
             } else {
                 // No icon for this shortcut, use app icon
                 shortcutIcon.setImageDrawable(appDrawable);
                 appIcon.setImageResource(android.R.drawable.ic_menu_send);
             }
-
-        }
-        else {
+            if (!prefs.getBoolean("subicon-visible", true)) {
+                appIcon.setVisibility(View.GONE);
+            }
+        } else {
             appIcon.setImageDrawable(null);
             shortcutIcon.setImageDrawable(null);
         }
 
-        return v;
+        return view;
     }
 
     public Drawable getDrawable(Context context) {
-        return new BitmapDrawable(context.getResources(), shortcutPojo.icon);
+        Drawable shortcutDrawable = null;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+            UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
+            assert launcherApps != null;
+
+            if (launcherApps.hasShortcutHostPermission() && !TextUtils.isEmpty(shortcutPojo.packageName)) {
+                LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();
+                query.setPackage(shortcutPojo.packageName);
+                query.setShortcutIds(Collections.singletonList(shortcutPojo.getOreoId()));
+                query.setQueryFlags(FLAG_MATCH_DYNAMIC | FLAG_MATCH_MANIFEST | FLAG_MATCH_PINNED);
+
+                List<UserHandle> userHandles = launcherApps.getProfiles();
+
+                // Find the correct UserHandle, and retrieve the icon.
+                for (UserHandle userHandle : userHandles) {
+                    if (userManager.isUserRunning(userHandle)) {
+                        List<ShortcutInfo> shortcuts = launcherApps.getShortcuts(query, userHandle);
+                        if (shortcuts != null && shortcuts.size() > 0) {
+                            shortcutDrawable = launcherApps.getShortcutIconDrawable(shortcuts.get(0), 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        return shortcutDrawable;
     }
 
 
@@ -158,35 +191,36 @@ public class ShortcutsResult extends Result {
             }
         }
     }
-    private void launchAppChooser(Context context) {
-        Log.d(TAG, "launchAppChooser()");
-        DefaultLauncherPreference.selectLauncher(context);
-    }
+
     @TargetApi(Build.VERSION_CODES.O)
     private void doOreoLaunch(Context context, View v) {
         final LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+        UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         assert launcherApps != null;
 
         // Only the default launcher is allowed to start shortcuts
         if (!launcherApps.hasShortcutHostPermission()) {
             Toast.makeText(context, context.getString(R.string.shortcuts_no_host_permission), Toast.LENGTH_LONG).show();
-            launchAppChooser(context);
             return;
         }
 
-        LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();
-        query.setPackage(shortcutPojo.packageName);
-        query.setShortcutIds(Collections.singletonList(shortcutPojo.getOreoId()));
-        query.setQueryFlags(FLAG_MATCH_DYNAMIC | FLAG_MATCH_MANIFEST | FLAG_MATCH_PINNED);
+        if (!TextUtils.isEmpty(shortcutPojo.packageName)) {
+            LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();
+            query.setPackage(shortcutPojo.packageName);
+            query.setShortcutIds(Collections.singletonList(shortcutPojo.getOreoId()));
+            query.setQueryFlags(FLAG_MATCH_DYNAMIC | FLAG_MATCH_MANIFEST | FLAG_MATCH_PINNED);
 
-        List<UserHandle> userHandles = launcherApps.getProfiles();
+            List<UserHandle> userHandles = launcherApps.getProfiles();
 
-        // Find the correct UserHandle, and launch the shortcut.
-        for (UserHandle userHandle : userHandles) {
-            List<ShortcutInfo> shortcuts = launcherApps.getShortcuts(query, userHandle);
-            if (shortcuts != null && shortcuts.size() > 0 && shortcuts.get(0).isEnabled()) {
-                launcherApps.startShortcut(shortcuts.get(0), v.getClipBounds(), null);
-                return;
+            // Find the correct UserHandle, and launch the shortcut.
+            for (UserHandle userHandle : userHandles) {
+                if (userManager.isUserRunning(userHandle)) {
+                    List<ShortcutInfo> shortcuts = launcherApps.getShortcuts(query, userHandle);
+                    if (shortcuts != null && shortcuts.size() > 0 && shortcuts.get(0).isEnabled()) {
+                        launcherApps.startShortcut(shortcuts.get(0), v.getClipBounds(), null);
+                        return;
+                    }
+                }
             }
         }
 
@@ -228,7 +262,7 @@ public class ShortcutsResult extends Result {
         return super.popupMenuClickHandler(context, parent, stringId, parentView);
     }
 
-    private void launchEditTagsDialog(final Context context, final ShortcutsPojo pojo) {
+    private void launchEditTagsDialog(final Context context, final ShortcutPojo pojo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getResources().getString(R.string.tags_add_title));
 
@@ -268,7 +302,7 @@ public class ShortcutsResult extends Result {
         dialog.show();
     }
 
-    private void launchUninstall(Context context, ShortcutsPojo shortcutPojo) {
+    private void launchUninstall(Context context, ShortcutPojo shortcutPojo) {
         DataHandler dh = KissApplication.getApplication(context).getDataHandler();
         if (dh != null) {
             dh.removeShortcut(shortcutPojo);

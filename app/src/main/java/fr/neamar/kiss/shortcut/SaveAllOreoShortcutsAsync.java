@@ -2,7 +2,6 @@ package fr.neamar.kiss.shortcut;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.os.AsyncTask;
@@ -21,8 +20,9 @@ import java.util.Set;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
+import fr.neamar.kiss.dataprovider.ShortcutsProvider;
+import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.pojo.AppPojo;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
 import fr.neamar.kiss.utils.ShortcutUtil;
 import fr.neamar.kiss.utils.UserHandle;
 
@@ -87,13 +87,13 @@ public class SaveAllOreoShortcutsAsync extends AsyncTask<Void, Integer, Boolean>
             }
 
             // Create Pojo
-            ShortcutsPojo pojo = ShortcutUtil.createShortcutPojo(context, shortcutInfo, !shortcutInfo.isPinned());
-            if (pojo == null) {
+            ShortcutRecord record = ShortcutUtil.createShortcutRecord(context, shortcutInfo, !shortcutInfo.isPinned());
+            if (record == null) {
                 continue;
             }
 
             // Add shortcut to the DataHandler
-            dataHandler.addShortcut(pojo);
+            dataHandler.addShortcut(record);
         }
 
         return true;
@@ -102,7 +102,7 @@ public class SaveAllOreoShortcutsAsync extends AsyncTask<Void, Integer, Boolean>
     @Override
     protected void onProgressUpdate(Integer... progress) {
         if (progress[0] == -1) {
-            Toast.makeText(context.get(), R.string.cant_save_shortcuts, Toast.LENGTH_LONG).show();
+            Toast.makeText(context.get(), R.string.cant_pin_shortcut, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -111,8 +111,9 @@ public class SaveAllOreoShortcutsAsync extends AsyncTask<Void, Integer, Boolean>
         if (success) {
             Log.i(TAG, "Shortcuts added to KISS");
 
-            if (this.dataHandler.get().getShortcutsProvider() != null) {
-                this.dataHandler.get().getShortcutsProvider().reload();
+            ShortcutsProvider provider = this.dataHandler.get().getShortcutsProvider();
+            if (provider != null) {
+                provider.reload();
             }
         }
     }

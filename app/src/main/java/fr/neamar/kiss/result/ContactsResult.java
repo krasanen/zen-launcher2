@@ -198,10 +198,9 @@ public class ContactsResult extends Result {
 
     @NonNull
     @Override
-    public View display(Context context, int position, View convertView, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
+    public View display(Context context, View view, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
 
-        View view = convertView;
-        if (convertView == null)
+        if (view == null)
             view = inflateFromId(context, R.layout.item_contact, parent);
 
         // Contact name

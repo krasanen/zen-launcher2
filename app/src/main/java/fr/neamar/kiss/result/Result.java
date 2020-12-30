@@ -46,7 +46,7 @@ import fr.neamar.kiss.pojo.PhonePojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.pojo.SettingsPojo;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -78,8 +78,8 @@ public abstract class Result {
             return new AddPhoneResult((PhoneAddPojo) pojo);
         else if (pojo instanceof PhonePojo)
             return new PhoneResult((PhonePojo) pojo);
-        else if (pojo instanceof ShortcutsPojo)
-            return new ShortcutsResult((ShortcutsPojo) pojo);
+        else if (pojo instanceof ShortcutPojo)
+            return new ShortcutsResult((ShortcutPojo) pojo);
 
         throw new RuntimeException("Unable to create a result from POJO");
     }
@@ -103,7 +103,7 @@ public abstract class Result {
      * @return a view to display as item
      */
     @NonNull
-    public abstract View display(Context context, int position, View convertView, @NonNull ViewGroup parent, FuzzyScore fuzzyScore);
+    public abstract View display(Context context, View convertView, @NonNull ViewGroup parent, FuzzyScore fuzzyScore);
 
     @NonNull
     public View inflateFavorite(@NonNull Context context, @Nullable View favoriteView, @NonNull ViewGroup parent) {
@@ -119,7 +119,7 @@ public abstract class Result {
         return favoriteView;
     }
 
-    public void displayHighlighted(String text, List<Pair<Integer, Integer>> positions, TextView view, Context context) {
+    void displayHighlighted(String text, List<Pair<Integer, Integer>> positions, TextView view, Context context) {
         SpannableString enriched = new SpannableString(text);
         int primaryColor = UIColors.getPrimaryColor(context);
 

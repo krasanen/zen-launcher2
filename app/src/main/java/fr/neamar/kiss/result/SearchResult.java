@@ -43,8 +43,9 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
+import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.pojo.SearchPojo;
-import fr.neamar.kiss.pojo.ShortcutsPojo;
+import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.ClipboardUtils;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -67,12 +68,14 @@ public class SearchResult extends Result {
 
     @NonNull
     @Override
-    public View display(Context context, int position, View v, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
-        if (v == null)
-            v = inflateFromId(context, R.layout.item_search, parent);
+    public View display(Context context, View view, @NonNull ViewGroup parent, FuzzyScore fuzzyScore) {
+
+        if (view == null)
+            view = inflateFromId(context, R.layout.item_search, parent);
+
         zenQuery = false;
-        TextView searchText = v.findViewById(R.id.item_search_text);
-        ImageView image = v.findViewById(R.id.item_search_icon);
+        TextView searchText = view.findViewById(R.id.item_search_text);
+        ImageView image = view.findViewById(R.id.item_search_icon);
 
         String text;
         int pos;
@@ -127,17 +130,20 @@ public class SearchResult extends Result {
         displayHighlighted(text, Collections.singletonList(new Pair<>(pos, pos + len)), searchText, context);
 
         image.setColorFilter(getThemeFillColor(context), PorterDuff.Mode.SRC_IN);
-        return v;
+        return view;
     }
 
     @Override
     public void doLaunch(Context context, View v) {
         switch (searchPojo.type) {
             case SearchPojo.ZEN_ADD_LINK:
+                if (BuildConfig.DEBUG) Log.d(TAG,"ZEN_ADD_LINK");
                 DataHandler dataHandler2 = KissApplication.getApplication(context).getDataHandler();
-                ShortcutsPojo record2 = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, "zen", searchPojo.url, searchPojo.url, null);
-                record2.setName(searchPojo.url);
-                dataHandler2.addShortcut(record2);
+                ShortcutRecord record = new ShortcutRecord();
+                record.name = searchPojo.url;
+                record.packageName = "zen";
+                record.intentUri = searchPojo.url;
+                dataHandler2.addShortcut(record);
                 break;
             case SearchPojo.URL_QUERY:
             case SearchPojo.SEARCH_QUERY:
@@ -285,8 +291,10 @@ public class SearchResult extends Result {
                 return true;
             case R.string.add_shortcut:
                 DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
-                ShortcutsPojo record = new ShortcutsPojo(ShortcutsPojo.SCHEME + searchPojo.url, "zen", searchPojo.url, searchPojo.url, null);
-                record.setName(searchPojo.url);
+                ShortcutRecord record = new ShortcutRecord();
+                record.name = searchPojo.url;
+                record.packageName = "zen";
+                record.intentUri = searchPojo.url;
                 dataHandler.addShortcut(record);
                 return true;
 

@@ -2,7 +2,7 @@ package fr.neamar.kiss.pojo;
 
 import fr.neamar.kiss.utils.UserHandle;
 
-public class AppPojo extends PojoWithTags {
+public final class AppPojo extends PojoWithTags {
 
     public static String getComponentName(String packageName, String activityName,
                                           UserHandle userHandle) {
@@ -15,6 +15,7 @@ public class AppPojo extends PojoWithTags {
 
     private boolean excluded;
     private boolean excludedFromHistory;
+    private long customIconId = 0;
 
     public AppPojo(String id, String packageName, String activityName, UserHandle userHandle,
                    boolean isExcluded, boolean isExcludedFromHistory) {
@@ -46,5 +47,14 @@ public class AppPojo extends PojoWithTags {
 
     public void setExcludedFromHistory(boolean excludedFromHistory) {
         this.excludedFromHistory = excludedFromHistory;
+    }
+
+    public void setCustomIconId(long iconId) {
+        customIconId = iconId;
+    }
+
+    public long getCustomIconId()
+    {
+        return customIconId;
     }
 }
