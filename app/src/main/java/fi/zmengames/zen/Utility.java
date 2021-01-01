@@ -1,26 +1,26 @@
 package fi.zmengames.zen;
 
-        import android.annotation.SuppressLint;
-        import android.annotation.TargetApi;
-        import android.app.Activity;
-        import android.app.AppOpsManager;
-        import android.content.ActivityNotFoundException;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.res.Resources;
-        import android.graphics.Color;
-        import android.net.Uri;
-        import android.os.Build;
-        import android.util.DisplayMetrics;
-        import android.util.Log;
-        import android.util.TypedValue;
-        import android.view.Display;
-        import android.view.View;
-        import android.view.Window;
-        import android.view.WindowManager;
-        import android.widget.PopupMenu;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AppOpsManager;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.PopupMenu;
 
-        import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.BuildConfig;
 
 /**
  * @author Fung Gwo (fython) fython@163.com
@@ -28,7 +28,7 @@ package fi.zmengames.zen;
 public final class Utility {
     private static final String TAG = Utility.class.getSimpleName();
 
-    private static boolean sFontInitialized = false;
+    private static final boolean sFontInitialized = false;
 
     private static final int CM_TILE_CODE = 1001;
 

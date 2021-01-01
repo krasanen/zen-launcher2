@@ -148,7 +148,7 @@ public class TagsHandler {
 
         // Known clock implementations
         // See http://stackoverflow.com/questions/3590955/intent-to-launch-the-clock-application-on-android
-        String clockImpls[][] = {
+        String[][] clockImpls = {
                 // Nexus
                 {"com.android.deskclock", "com.android.deskclock.DeskClock"},
                 // Samsung

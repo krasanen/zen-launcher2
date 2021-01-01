@@ -6,7 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -17,14 +16,12 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.app.UiModeManager;
 import android.app.WallpaperManager;
-
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -45,21 +42,15 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.os.IBinder;
-
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-
-import androidx.annotation.NonNull;
-
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,44 +60,37 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-
-import android.view.ViewTreeObserver;
-
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
-
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -130,11 +114,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.util.Pair;
-
 import fi.zmengames.zen.AppGridActivity;
 import fi.zmengames.zen.DriveServiceHelper;
 import fi.zmengames.zen.LauncherService;
@@ -144,18 +123,16 @@ import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenAdmin;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.broadcast.IncomingCallHandler;
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.db.DBHelper;
-
-import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.forwarder.Widget;
 import fr.neamar.kiss.preference.DefaultLauncherPreference;
-import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
 import fr.neamar.kiss.searcher.AppsWithNotifSearcher;
-import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.ContactSearcher;
+import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.searcher.QuerySearcher;
 import fr.neamar.kiss.searcher.Searcher;
@@ -163,15 +140,12 @@ import fr.neamar.kiss.searcher.ShortcutsSearcher;
 import fr.neamar.kiss.searcher.TagsSearcher;
 import fr.neamar.kiss.searcher.UntaggedSearcher;
 import fr.neamar.kiss.ui.AnimatedListView;
-import fr.neamar.kiss.ui.BottomPullEffectView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
 import fr.neamar.kiss.utils.PackageManagerUtils;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
-
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static fi.zmengames.zen.LauncherService.ALARM_DATE_PICKER_MILLIS;
@@ -183,18 +157,11 @@ import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener, /*ZBarScannerView.ResultHandler,*/ ZXingScannerView.ResultHandler {
 
-
-
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW = 3;
     public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER = 4;
     private static final int ZEN_NOTIFICATION_ID = 73;
-
-
     private DriveServiceHelper mDriveServiceHelper;
-
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME = 13;
@@ -204,12 +171,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int MY_PERMISSIONS_HUAWEI = 18;
     private static final int MY_PERMISSIONS_DND = 19;
     public static final int MY_PERMISSIONS_CAMERA = 20;
-
-    // intent data that is the conflict id.  used when resolving a conflict.
-    public static final String CONFLICT_ID = "conflictId";
-
-    // intent data that is the retry count for retrying the conflict resolution.
-    public static final String RETRY_COUNT = "retrycount";
     public static final int REQUEST_BIND_APPWIDGET = 17;
 
     // app internal events
@@ -226,11 +187,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
     private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
     public static final String BARCODE_READER = "com.zmengames.zenlauncher.BARCODE_READER";
-    public static final String DEVICE_ADMIN = "com.zmengames.zenlauncher.DEVICE_ADMIN";
     public static final String REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL = "com.zmengames.zenlauncher.REMOVE_DEVICE_ADMIN_UNINSTALL";
     public static final String REQUEST_DEVICE_ADMIN = "com.zmengames.zenlauncher.REQUEST_DEVICE_ADMIN";
+
     // BAR code reader stuff
-    //private ZBarScannerView mScannerViewBar;
     private ZXingScannerView mScannerViewXing;
 
     /**
@@ -356,29 +316,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void signOut() {
         if (BuildConfig.DEBUG) Log.i(TAG, "signOut");
         mGoogleSignInClient.signOut();
-
         mSignedIn = false;
     }
 
-    private static final int RC_SAVED_GAMES = 9009;
-
-    private void openFilePicker() {
-        if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.i(TAG, "Opening file picker.");
-
-            Intent pickerIntent = mDriveServiceHelper.createFilePickerIntent();
-
-            // The result of the SAF Intent is handled in onActivityResult.
-            startActivityForResult(pickerIntent, REQUEST_CODE_OPEN_DOCUMENT);
-        }
-    }
-
-
-    public static byte[] objToByte(SaveGame tcpPacket) throws IOException {
+    public static byte[] objToByte(ZenLayout tcpPacket) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
         objStream.writeObject(tcpPacket);
-
         return byteStream.toByteArray();
     }
 
@@ -388,32 +332,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return objStream.readObject();
     }
 
-    // current save game - serializable to and from the saved game
-    private SaveGame mSaveGame;
-
-
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if (bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
+    // current Zen Launcher layout - serializable
+    private ZenLayout mZenLayout;
     private Bitmap overlay(Bitmap bmp1, Bitmap bmp2) {
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
@@ -472,14 +392,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             } else {
 
                 // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_READ_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    ActivityCompat.requestPermissions(activity,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_READ_STORAGE);
+                }
             }
         } else {
             return true;
@@ -487,7 +404,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return false;
     }
 
-    public boolean checkPermissionOverlay(Activity activity) {
+    public boolean checkPermissionOverlay() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -504,7 +421,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    public boolean askPermissionCamera(Activity activity) {
+    public boolean askPermissionCamera() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -525,8 +442,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
             switch (usage) {
                 case REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER:
-                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
-                    break;
                 case REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW:
                     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
                     break;
@@ -544,7 +459,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private boolean isDeviceAdminActive() {
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         ComponentName compName = new ComponentName(this, ZenAdmin.class);
-        return devicePolicyManager.isAdminActive(compName);
+        if (devicePolicyManager != null) {
+            return devicePolicyManager.isAdminActive(compName);
+        } else {
+            return false;
+        }
     }
 
     public boolean checkPermissionDoNotDisturb(Activity activity) {
@@ -566,70 +485,32 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     public void checkPermissionHuawei(Activity activity) {
-        if (BuildConfig.DEBUG)
-            Log.i(TAG, "checkPermissionHuawei");
-        // Should we show an explanation?
+        if (BuildConfig.DEBUG) Log.i(TAG, "checkPermissionHuawei");
 
+            // Should we show an explanation?
             ActivityCompat.requestPermissions(activity,
                     new String[]{"com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER"},
                     MY_PERMISSIONS_HUAWEI);
-
-            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-            // app-defined int constant. The callback method gets the
-            // result of the request.
-
     }
 
     public RecordAdapter getAdapter(){
         return adapter;
     }
 
-    public static void checkPermissionRecordAudio(Activity activity) {
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.RECORD_AUDIO)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.RECORD_AUDIO},
-                        MY_PERMISSIONS_RECORD_AUDIO);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-    }
-
-
-
     Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
-    static IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-    static BroadcastReceiver mReceiver;
+    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+    BroadcastReceiver mReceiver = new ScreenReceiver(this);
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate");
         instance = this;
+        super.onCreate(savedInstanceState);
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
-        if (mReceiver==null) {
-            mReceiver = new ScreenReceiver(this);
-            KissApplication.getApplication(this).setMainActivity(this);
-            filter.addAction(Intent.ACTION_SCREEN_OFF);
-            registerReceiver(mReceiver, filter);
-        }
+        mReceiver = new ScreenReceiver(this);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mReceiver, filter);
 
         /*
          * Initialize preferences
@@ -647,13 +528,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 .build();
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-// Build the api client.
 
         /*
          * Initialize all forwarders
          */
         forwarderManager = new ForwarderManager(this);
-
 
         /*
          * Set the view and store all useful components
@@ -677,19 +556,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.historyButton = findViewById(R.id.historyButton);
         this.resultsLayout = findViewById(R.id.resultLayout);
         this.resultsLayout.setTag(this.resultsLayout.getVisibility());
-        this.resultsLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int newVis = resultsLayout.getVisibility();
-                if((int)resultsLayout.getTag() != newVis)
-                {
-                    resultsLayout.setTag(resultsLayout.getVisibility());
-                    if (newVis == View.GONE){
-                        resultsVisible = false;
-                    } else {
-                        resultsVisible = true;
-                    }
-                }
+        this.resultsLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            int newVis = resultsLayout.getVisibility();
+            if((int)resultsLayout.getTag() != newVis)
+            {
+                resultsLayout.setTag(resultsLayout.getVisibility());
+                resultsVisible = newVis != View.GONE;
             }
         });
 
@@ -698,12 +570,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
          * Note that a lot of behaviors are also initialized through the forwarderManager.onCreate() call.
          */
         displayLoader(true);
-        loaderSpinner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launcherButton.callOnClick();
-            }
-        });
+        loaderSpinner.setOnClickListener(v -> launcherButton.callOnClick());
 
         // Add touch listener for history popup to root view
         findViewById(android.R.id.content).setOnTouchListener(this);
@@ -713,22 +580,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.emptyListView.setOnTouchListener(this);
 
         // Create adapter for records
-        this.adapter = new RecordAdapter(this, this, new ArrayList<Result>());
+        this.adapter = new RecordAdapter(this, this, new ArrayList<>());
         this.list.setAdapter(this.adapter);
 
-        this.list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                adapter.onClick(position, v);
-            }
-        });
+        this.list.setOnItemClickListener((parent, v, position, id) -> adapter.onClick(position, v));
 
         this.list.setLongClickable(true);
-        this.list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View v, int pos, long id) {
-                ((RecordAdapter) parent.getAdapter()).onLongClick(pos, v);
-                return true;
-            }
+        this.list.setOnItemLongClickListener((parent, v, pos, id) -> {
+            ((RecordAdapter) parent.getAdapter()).onLongClick(pos, v);
+            return true;
         });
 
         // Display empty list view when having no results
@@ -783,33 +643,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Fixes bug when dropping onto a textEdit widget which can cause a NPE
         // This fix should be on ALL TextEdit Widgets !!!
         // See : https://stackoverflow.com/a/23483957
-        searchEditText.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                if (BuildConfig.DEBUG) Log.d(TAG,"searchEditText, onDrag()");
-                return true;
-            }
+        searchEditText.setOnDragListener((v, event) -> {
+            if (BuildConfig.DEBUG) Log.d(TAG,"searchEditText, onDrag()");
+            return true;
         });
 
 
         // On validate, launch first record
-        searchEditText.setOnEditorActionListener(new OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == android.R.id.closeButton) {
-                    if (mPopup != null) {
-                        mPopup.dismiss();
-                        return true;
-                    }
-                    hider.fixScroll();
-                    return false;
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == android.R.id.closeButton) {
+                if (mPopup != null) {
+                    mPopup.dismiss();
+                    return true;
                 }
-                RecordAdapter adapter = ((RecordAdapter) list.getAdapter());
-
-                adapter.onClick(adapter.getCount() - 1, v);
-
-                return true;
+                hider.fixScroll();
+                return false;
             }
+            RecordAdapter adapter = ((RecordAdapter) list.getAdapter());
+
+            adapter.onClick(adapter.getCount() - 1, v);
+
+            return true;
         });
 
         registerForContextMenu(menuButton);
@@ -818,7 +672,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Hide the keyboard.
         this.hider = new KeyboardScrollHider(this,
                 this.list,
-                (BottomPullEffectView) this.findViewById(R.id.listEdgeEffect)
+                this.findViewById(R.id.listEdgeEffect)
         );
         this.hider.start();
 
@@ -854,7 +708,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     // Remove notification
     private void removeNotification() {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(ZEN_NOTIFICATION_ID);
+        if (manager != null) {
+            manager.cancel(ZEN_NOTIFICATION_ID);
+        }
     }
 
     public void defaultLauncherNotification(View view) {
@@ -872,13 +728,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         String description = "Zen Launcher notifications";
 
         int importance = NotificationManager.IMPORTANCE_LOW;
-        NotificationCompat.Builder mBuilder =
-                null;
+        NotificationCompat.Builder mBuilder;
         // Configure the notification channel.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(id, name,importance);
             mChannel.setDescription(description);
-            mNotificationManager.createNotificationChannel(mChannel);
+            if (mNotificationManager != null) {
+                mNotificationManager.createNotificationChannel(mChannel);
+            }
             mBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.ic_z)
                     .setContentTitle(getResources().getString(R.string.set_as_default))
@@ -907,9 +764,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // If the previous notification is still visible, the system will update this existing notification,
         // rather than create a new one. In this example, the notification’s ID is 001//
 
-        mNotificationManager.notify(ZEN_NOTIFICATION_ID, mBuilder.build());
+        if (mNotificationManager != null) {
+            mNotificationManager.notify(ZEN_NOTIFICATION_ID, mBuilder.build());
+        }
     }
-    private void buildWidgetPopupMenu(final View view) {
+    private void buildWidgetPopupMenu() {
         checkPermissionHuawei(this);
         widgetAddY = y;
         widgetAddX = x;
@@ -925,7 +784,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         final int TOGGLE_WIFI = 3;
         final int AIRPLANE_MODE = 4;
 
-        final ViewGroup root = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        final ViewGroup root = activity.getWindow().getDecorView().findViewById(android.R.id.content);
 
         final View view = new View(activity.getApplicationContext());
         view.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
@@ -941,10 +800,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         popupExcludeMenu.getMenu().add(ADD_WIDGET, Menu.NONE, Menu.NONE, R.string.menu_widget_add);
         popupExcludeMenu.getMenu().add(WIDGET_SETTINGS, Menu.NONE, Menu.NONE, R.string.menu_widget_settings);
         popupExcludeMenu.getMenu().add(UPDATE_WALLPAPER, Menu.NONE, Menu.NONE, R.string.menu_wallpaper);
-        if (wifiManager.isWifiEnabled()) {
-            popupExcludeMenu.getMenu().add(TOGGLE_WIFI, Menu.NONE, Menu.NONE, R.string.wifi_off);
-        } else {
-            popupExcludeMenu.getMenu().add(TOGGLE_WIFI, Menu.NONE, Menu.NONE, R.string.wifi_on);
+        if (wifiManager != null) {
+            if (wifiManager.isWifiEnabled()) {
+                popupExcludeMenu.getMenu().add(TOGGLE_WIFI, Menu.NONE, Menu.NONE, R.string.wifi_off);
+            } else {
+                popupExcludeMenu.getMenu().add(TOGGLE_WIFI, Menu.NONE, Menu.NONE, R.string.wifi_on);
+            }
         }
         popupExcludeMenu.getMenu().add(AIRPLANE_MODE, Menu.NONE, Menu.NONE, R.string.settings_airplane);
 
@@ -967,11 +828,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         startActivity(Intent.createChooser(intent2, getString(R.string.menu_wallpaper)));
                         break;
                     case TOGGLE_WIFI:
-                        if (item.getTitle().equals(getString(R.string.wifi_off)))
-                            toggleWifiState(false);
-                        else {
-                            toggleWifiState(true);
-                        }
+                        toggleWifiState(!item.getTitle().equals(getString(R.string.wifi_off)));
                         break;
                     case AIRPLANE_MODE:
                         Intent intent3 = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
@@ -983,21 +840,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         });
 
 
-        popupExcludeMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-            @Override
-            public void onDismiss(PopupMenu menu) {
-                root.removeView(view);
-            }
-        });
+        popupExcludeMenu.setOnDismissListener(menu -> root.removeView(view));
         Utility.showPopup(popupExcludeMenu, this);
     }
 
     private void toggleWifiState(boolean state) {
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (state && wifiManager.isWifiEnabled()) {
+        if (wifiManager != null && state && wifiManager.isWifiEnabled()) {
             Toast.makeText(this, getString(R.string.wifi_on), Toast.LENGTH_LONG).show();
         }
-        wifiManager.setWifiEnabled(state);
+        if (wifiManager != null) {
+            wifiManager.setWifiEnabled(state);
+        }
 
     }
 
@@ -1028,8 +882,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public int getWidgetAddX() {
         return widgetAddX;
     }
-
-
     public void resetWidgetAddY() {
         widgetAddY = 0;
     }
@@ -1037,26 +889,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         widgetAddX = 0;
     }
 
-
     Rect r = new Rect();
-
     private void initializeKeyboardListener() {
-        emptyListView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                emptyListView.getWindowVisibleDisplayFrame(r);
-                int screenHeight = emptyListView.getRootView().getHeight();
+        emptyListView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            emptyListView.getWindowVisibleDisplayFrame(r);
+            int screenHeight = emptyListView.getRootView().getHeight();
 
-                // r.bottom is the position above soft keypad or device button.
-                // if keypad is shown, the r.bottom is smaller than that before.
-                int keypadHeight = screenHeight - r.bottom;
+            // r.bottom is the position above soft keypad or device button.
+            // if keypad is shown, the r.bottom is smaller than that before.
+            int keypadHeight = screenHeight - r.bottom;
 
-                if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
-                    systemUiVisibilityHelper.onKeyboardVisibilityChanged(true);
-                } else {
-                    systemUiVisibilityHelper.onKeyboardVisibilityChanged(false);
-                }
-            }
+            // 0.15 ratio is perhaps enough to determine keypad height.
+            systemUiVisibilityHelper.onKeyboardVisibilityChanged(keypadHeight > screenHeight * 0.15);
         });
 
 
@@ -1066,14 +910,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreateContextMenu");
-
-        /*ImageView image;
-
-        image = (ImageView) findViewById(R.id.imageView);
-        image.setImageResource(R.drawable.call);*/
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
-
         forwarderManager.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -1131,10 +969,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
                 CameraManager cameraManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
-                for (String id : cameraManager.getCameraIdList()) {
-                    // Turn on the flash if camera has one
-                    if (cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.FLASH_INFO_AVAILABLE)) {
-                        cameraManager.setTorchMode(id, flashToggle);
+                if (cameraManager != null) {
+                    for (String id : cameraManager.getCameraIdList()) {
+                        // Turn on the flash if camera has one
+                        if (cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.FLASH_INFO_AVAILABLE)) {
+                            cameraManager.setTorchMode(id, flashToggle);
+                        }
                     }
                 }
             } catch (Exception e2) {
@@ -1172,29 +1012,23 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void setNightMode(Context target, boolean state) {
-
-
         UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
+        if (uiManager!=null) {
+            if (state) {
+                if (checkPermissionOverlay()) {
+                    uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+                    Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
 
-        if (state) {
-            if (checkPermissionOverlay(this)) {
-                uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
-                Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
-                //setTheme(R.style.AppThemeDark);
-                //setContentView(R.layout.main);
-
+                } else {
+                    Toast.makeText(getBaseContext(), "Retry after accepting permission",
+                            Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(getBaseContext(), "Retry after accepting permission",
-                        Toast.LENGTH_SHORT).show();
+                setContentView(R.layout.main);
+                uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+                Toast.makeText(this, "Night mode off", Toast.LENGTH_SHORT).show();
             }
-
-        } else {
-            // uiManager.disableCarMode(0);
-            setContentView(R.layout.main);
-            uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
-            Toast.makeText(this, "Night mode off", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void startAppGridActivity() {
@@ -1214,9 +1048,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             //Content Resolver has content, so, register for updates and load its actual content
             samsungBadgeObserver = new SamsungBadgeObserver(new Handler(), this);
-
             getContentResolver()
-                    .registerContentObserver(samsungBadgeUri, false, new SamsungBadgeObserver(new Handler(), this));
+                    .registerContentObserver(samsungBadgeUri, false,
+                            new SamsungBadgeObserver(new Handler(), this));
             SamsungBadgeObserver.loadBadges(this);
         }
 
@@ -1225,7 +1059,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 toggleFlashLightPreM(flashToggle);
             }
         }
-
 
         if (mDebugJson) {
             try {
@@ -1244,7 +1077,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             this.recreate();
             return;
         }
-
 
         dismissPopup();
 
@@ -1280,8 +1112,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             mReceiver = null;
         }
     }
-
-    private boolean fullLoadOver = false;
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ZEvent event) {
@@ -1352,7 +1182,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         this.updateSearchRecords();
                     }
                 } else if (event.getText().startsWith(BARCODE_READER)){
-                    if (askPermissionCamera(this)) {
+                    if (askPermissionCamera()) {
                         startBarCodeScan();
                     }
                 } else if (event.getText().startsWith(LOCK_IN)) {
@@ -1407,7 +1237,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     String alarmText;
     Calendar calAlarm = Calendar.getInstance();
     int year,month,date;
-    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
+    private final DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker arg0, int y, int m, int d) {
             year = y;
@@ -1421,7 +1251,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             showDialog(1000);
         }
     };
-    private TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
+    private final TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
             calAlarm.set(year,month, date, hours,minutes,0);
@@ -1482,18 +1312,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         input.selectAll();
 
 // Set up the buttons
-        builder.setPositiveButton(R.string.alarmAt, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton(R.string.alarmAt, (dialog, which) -> {
 
-            }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
 
@@ -1545,7 +1367,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (mScannerViewXing!=null && mScannerViewXing.isShown()){
             if (BuildConfig.DEBUG) Log.d(TAG,"onBackPressed, mScannerViewXing");
             mScannerViewXing.stopCamera();           // Stop camera on pause
-            ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+            ViewGroup contentFrame = findViewById(R.id.content_frame);
             contentFrame.removeView(mScannerViewXing);
         }
         // No call to super.onBackPressed(), since this would quit the launcher.
@@ -1564,23 +1386,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return super.onKeyDown(keycode, e);
     }
 
-    private void query() {
+    private void queryDriveFiles() {
         if (mDriveServiceHelper != null) {
             if (BuildConfig.DEBUG) Log.i(TAG, "Querying for files.");
             showSpinner(R.string.loading_from_cloud);
             mDriveServiceHelper.queryFiles()
                     .addOnSuccessListener(fileList -> {
                         dismissSpinner();
-                        final ViewGroup root = (ViewGroup) this.getWindow().getDecorView().findViewById(android.R.id.content);
+                        final ViewGroup root = this.getWindow().getDecorView().findViewById(android.R.id.content);
 
                         final View view = new View(MainActivity.this);
                         view.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
-
-
                         root.addView(view);
-
-
-                        StringBuilder builder = new StringBuilder();
                         PopupMenu popupExcludeMenu = new PopupMenu(MainActivity.this, view);
                         int i = 0;
                         for (File file : fileList.getFiles()) {
@@ -1639,9 +1456,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                 return true;
                             }
                         }); */
-                        String fileNames = builder.toString();
-
-                        if (BuildConfig.DEBUG) Log.i(TAG, "files:" + fileNames);
 
                     })
                     .addOnFailureListener(exception -> {
@@ -1669,23 +1483,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         input.selectAll();
 
 // Set up the buttons
-        builder.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mDriveServiceHelper.renameFile(fileLocal, String.valueOf(input.getText())).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (BuildConfig.DEBUG) Log.i(TAG, "Rename Failed exception:" + e);
-                    }
-                });
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setPositiveButton("Rename", (dialog, which) -> mDriveServiceHelper.renameFile(fileLocal, String.valueOf(input.getText())).addOnFailureListener(e -> {
+            if (BuildConfig.DEBUG) Log.i(TAG, "Rename Failed exception:" + e);
+        }));
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
 
@@ -1785,7 +1586,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public void startBarCodeScan() {
-        ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+        ViewGroup contentFrame = findViewById(R.id.content_frame);
 
         if (mScannerViewXing !=null) {
             if (BuildConfig.DEBUG) Log.d(TAG,"startBarCodeScan, remove existing mScannerViewXing");
@@ -1802,8 +1603,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     private void loadFromGoogle() {
         if (mSignedIn) {
-            query();
-            // openFilePicker();
+            queryDriveFiles();
         } else {
             Toast.makeText(getBaseContext(), "Not signed in to Google",
                     Toast.LENGTH_SHORT).show();
@@ -1813,7 +1613,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void saveToGoogle() {
         if (checkPermissionReadStorage(this)) {
             if (mSignedIn) {
-                createFile("" + String.valueOf(Calendar.getInstance().getTime()));
+                createFile("" + Calendar.getInstance().getTime());
             } else {
                 Toast.makeText(getBaseContext(), "Not signed in to Google",
                         Toast.LENGTH_SHORT).show();
@@ -1911,7 +1711,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             } else if (classValue.equals(hashsetClassname)) {
                 if (BuildConfig.DEBUG) Log.i(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
-                Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
+                Set<String> hs = new HashSet<>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
                 if (BuildConfig.DEBUG) Log.i(TAG, "value:" + value);
@@ -1919,9 +1719,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 if (BuildConfig.DEBUG) Log.i(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
-                    for (int i = 0; i < values2.length; i++) {
-                        if (BuildConfig.DEBUG) Log.i(TAG, "values2:" + values2[i]);
-                        String[] app = values2[i].split("=");
+                    for (String s : values2) {
+                        if (BuildConfig.DEBUG) Log.i(TAG, "values2:" + s);
+                        String[] app = s.split("=");
                         if (BuildConfig.DEBUG) Log.i(TAG, "appId:" + app[0]);
                         if (BuildConfig.DEBUG) Log.i(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
@@ -1946,7 +1746,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         Iterator<String> iter = json.keys();
         SharedPreferences prefsWidget = this.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefsWidget.edit();
-        editor.clear().commit();
+        editor.clear().apply();
         String booleanClassname = "Boolean";
         String stringClassname = "String";
         String hashsetClassname = "HashSet";
@@ -1968,7 +1768,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             } else if (classValue.equals(hashsetClassname)) {
                 if (BuildConfig.DEBUG) Log.i(TAG, "putStringSet:" + value);
                 String[] hsets = value.substring(1, value.length() - 1).split(", ");
-                Set<String> hs = new HashSet<String>(Arrays.asList(hsets));
+                Set<String> hs = new HashSet<>(Arrays.asList(hsets));
                 editor.putStringSet(key, hs);
             } else if (key.equals("tags")) {
                 if (BuildConfig.DEBUG) Log.i(TAG, "value:" + value);
@@ -1976,9 +1776,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 if (BuildConfig.DEBUG) Log.i(TAG, "toparse:" + toparse);
                 if (!toparse.isEmpty()) {
                     String[] values2 = toparse.split(", ");
-                    for (int i = 0; i < values2.length; i++) {
-                        if (BuildConfig.DEBUG) Log.i(TAG, "values2:" + values2[i]);
-                        String[] app = values2[i].split("=");
+                    for (String s : values2) {
+                        if (BuildConfig.DEBUG) Log.i(TAG, "values2:" + s);
+                        String[] app = s.split("=");
                         if (BuildConfig.DEBUG) Log.i(TAG, "appId:" + app[0]);
                         if (BuildConfig.DEBUG) Log.i(TAG, "tagsForApp:" + app[1]);
                         tagsHandler.setTags(app[0], app[1]);
@@ -1997,28 +1797,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
 
     private boolean mSignedIn = false;
-
-
-    /**
-     * Opens a file from its {@code uri} returned from the Storage Access Framework file picker
-     * initiated by
-     */
-    private void openFileFromFilePicker(Uri uri) {
-        if (mDriveServiceHelper != null) {
-            if (BuildConfig.DEBUG) Log.i(TAG, "Opening " + uri.getPath());
-
-            mDriveServiceHelper.openFileUsingStorageAccessFramework(getContentResolver(), uri)
-                    .addOnSuccessListener(nameAndContent -> {
-                        String name = nameAndContent.first;
-
-
-                        if (BuildConfig.DEBUG) Log.i(TAG, "name " + name);
-                        getDataFromOpenedFile(nameAndContent.second);
-                    })
-                    .addOnFailureListener(exception ->
-                            Log.e(TAG, "Unable to open file from picker.", exception));
-        }
-    }
 
     /* Creates a new file via the Drive REST API.
      */
@@ -2047,20 +1825,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     .addOnSuccessListener(nameAndContent -> {
                         String name = nameAndContent.first;
                         byte[] content = nameAndContent.second;
-
-
                         if (BuildConfig.DEBUG) Log.i(TAG, "name " + name);
-
-
                         getDataFromOpenedFile(content);
-
                     })
-                    .addOnSuccessListener(new OnSuccessListener<Pair<String, byte[]>>() {
-                        @Override
-                        public void onSuccess(Pair<String, byte[]> stringPair) {
-                            dismissSpinner();
-                        }
-                    })
+                    .addOnSuccessListener(stringPair -> dismissSpinner())
                     .addOnFailureListener(exception -> {
                         Toast.makeText(this, "Couldn't read file.", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Couldn't read file.", exception);
@@ -2073,18 +1841,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private void getDataFromOpenedFile(byte[] content) {
         try {
             forwarderManager.removeWidgets();
-            mSaveGame = (SaveGame) byteToObj(content);
-            DBHelper.writeDatabase(mSaveGame.getDataBase(), this);
+            mZenLayout = (ZenLayout) byteToObj(content);
+            DBHelper.writeDatabase(mZenLayout.getDataBase(), this);
             int count = 0;
             try {
-                count = loadJson(mSaveGame.getSavedSettings());
+                count = loadJson(mZenLayout.getSavedSettings());
             } catch (Exception e) {
                 Log.e(TAG, "can't load tags", e);
                 Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
             }
             Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_SHORT).show();
             try {
-                count = loadWidgetJson(mSaveGame.getSavedWidgets());
+                count = loadWidgetJson(mZenLayout.getSavedWidgets());
             } catch (Exception e) {
                 Log.e(TAG, "can't load widgets", e);
                 Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
@@ -2099,38 +1867,32 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Log.e(TAG, "IOException", e);
             e.printStackTrace();
         }
-        if (mSaveGame != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Bitmap bMap = BitmapFactory.decodeByteArray(mSaveGame.getData(), 0, mSaveGame.getData().length);
-                    try {
-                        getApplicationContext().setWallpaper(bMap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                    System.exit(0);
+        if (mZenLayout != null) {
+            new Thread(() -> {
+                Bitmap bMap = BitmapFactory.decodeByteArray(mZenLayout.getData(), 0, mZenLayout.getData().length);
+                try {
+                    getApplicationContext().setWallpaper(bMap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
                 }
+                System.exit(0);
             }).start();
         }
     }
 
     /**
-     * Saves the currently opened file created via {@link #createFile()} if one exists.
+     * Saves the currently opened file
      *
-     * @param fileId
-     * @param unique
      */
-    private void saveFile(String fileId, String unique) {
+    private void saveFile(String fileId, String fileName) {
         if (mDriveServiceHelper != null) {
             if (BuildConfig.DEBUG) Log.i(TAG, "Saving " + fileId);
-            String fileName = unique;
             byte[] fileContent = null;
             try {
-                mSaveGame = new SaveGame(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
-                fileContent = objToByte(mSaveGame);
+                mZenLayout = new ZenLayout(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
+                fileContent = objToByte(mZenLayout);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -2160,26 +1922,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         JSONObject json = new JSONObject(tags);
         return json.toString(1);
     }
-
-    String getSerializedSettings() throws JSONException {
-        Map<String, ?> tags;
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        tags = prefs.getAll();
-        JSONObject json = new JSONObject(tags);
-        for (Map.Entry<String, ?> entry : tags.entrySet()) {
-            Object v = entry.getValue();
-            String key = entry.getKey();
-          /*  if (key.equals("favorite-apps-list")){
-                json.putOpt(key, v + "_!_" + "java.util.HashSet");
-            } else { */
-            json.putOpt(key, v + "_!_" + v.getClass().getSimpleName());
-            //}
-        }
-        Map<String, String> tags2 = DBHelper.loadTags(this);
-        json.putOpt("tags", tags2 + "_!_" + "tags");
-        return json.toString(1);
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -2231,19 +1973,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                     .build();
                     updateUI(true);
 
-
                     // The DriveServiceHelper encapsulates all REST API and SAF functionality.
                     mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
-                    /*mDriveServiceHelper.createFolder("Zen Launcher")
-                            .addOnSuccessListener(fileId -> {
-                                updateUI(true);
-
-                            })
-                            .addOnFailureListener(exception -> {
-                                Log.e(TAG, "Couldn't create file.", exception);
-                                updateUI(false);
-                            }); */
-
                     if (action > 0) {
                         switch (action) {
                             case R.id.saveToGoogle:
@@ -2253,10 +1984,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                                 loadFromGoogle();
                                 break;
                         }
-
-
                     }
-
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Unable to sign in.", e);
@@ -2265,8 +1993,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     Toast.makeText(this, error, Toast.LENGTH_LONG).show();
                     updateUI(false);
                 });
-
-
     }
 
 
@@ -2275,8 +2001,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (BuildConfig.DEBUG) Log.d(TAG, "onActivityResult,"+requestCode+ " "+resultCode);
         switch (requestCode) {
-
-
             case REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER:
                 if (resultCode == Activity.RESULT_OK) {
                     prefs.edit().putBoolean("device-admin-permission", true).apply();
@@ -2299,16 +2023,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     addWidget(appWidgetId);
                 }
-            /*    appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(newWidgetId);
-                LauncherAppWidgetHostView hostView = mAppWidgetHost.createView(mainActivity, newWidgetId, appWidgetInfo);
-                hostView.setMinimumHeight(appWidgetInfo.minHeight);
-                hostView.setAppWidget(newWidgetId, appWidgetInfo);
-                addWidgetHostView(hostView);
-                SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
-                widgetPrefsEditor.remove(String.valueOf(appWidgetId));
-                widgetPrefsEditor.putString(String.valueOf(newWidgetId), WidgetPreferences.serialize(wp));
-                widgetPrefsEditor.apply();
-                refreshWidget(newWidgetId);*/
                 break;
             case MY_PERMISSIONS_OVERLAY:
                 if (BuildConfig.DEBUG) Log.i(TAG, "MY_PERMISSIONS_OVERLAY:" + resultCode);
@@ -2327,15 +2041,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 break;
             case RC_SIGN_IN:
                 handleSignInResult(data);
-                break;
-            case REQUEST_CODE_OPEN_DOCUMENT:
-                if (BuildConfig.DEBUG) Log.i(TAG, "RC_LIST_SAVED_GAMES");
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    Uri uri = data.getData();
-                    if (uri != null) {
-                        openFileFromFilePicker(uri);
-                    }
-                }
                 break;
 
             case REQUEST_LOAD_REPLACE_TAGS:
@@ -2416,7 +2121,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void setBlueLightFilter(boolean b) {
-        if (checkPermissionOverlay(this)) {
+        if (checkPermissionOverlay()) {
             if (b) {
                 prefs.edit().putBoolean("bluelightfilter", true).apply();
                 Intent nighton = new Intent(this, LauncherService.class);
@@ -2449,7 +2154,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         forwarderManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -2472,7 +2177,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     @Override
     public boolean onLongClick(View view) {
         if (BuildConfig.DEBUG) Log.i(TAG, "onLongClick");
-        buildWidgetPopupMenu(view);
+        buildWidgetPopupMenu();
         return true;
     }
 
@@ -2619,13 +2324,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
             // Display the alphabet on the scrollbar (#926)
             list.setFastScrollEnabled(true);
-            if (searchTask.getClass().equals(ContactSearcher.class)) {
-                //list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
-                list.setFastScrollAlwaysVisible(false);
-            } else {
-                //list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_RIGHT);
-                list.setFastScrollAlwaysVisible(true);
-            }
+            //list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
+            //list.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_RIGHT);
+            list.setFastScrollAlwaysVisible(!searchTask.getClass().equals(ContactSearcher.class));
 
         } else {
             isDisplayingKissBar = false;
@@ -2717,7 +2418,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (mScannerViewXing !=null) {
             if (BuildConfig.DEBUG) Log.d(TAG,"onPause, mScannerViewXing");
             mScannerViewXing.stopCamera();           // Stop camera on pause
-            ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+            ViewGroup contentFrame = findViewById(R.id.content_frame);
             contentFrame.removeView(mScannerViewXing);
 
         }
@@ -2792,7 +2493,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                MainActivity.this.mPopup = null;
+                mPopup = null;
             }
         });
         hider.fixScroll();
@@ -2889,11 +2590,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             mPopup.dismiss();
     }
     public static boolean isShowingPopup(){
-        if (mPopup != null && mPopup.isShowing()){
-            return true;
-        } else {
-            return false;
-        }
+        return mPopup != null && mPopup.isShowing();
     }
 
     public void showMatchingTags(String tag) {
@@ -2927,7 +2624,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     boolean mServiceBound = false;
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -2998,17 +2695,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         forwarderManager.switchInputType();
     }
 
-   /* @Override
-    public void handleResult(me.dm7.barcodescanner.zbar.Result rawResult) {
-        // Do something with the result here
-        Log.v(TAG, "handleResult zbar:"+rawResult.getContents()); // Prints scan results
-        Log.v(TAG, "handleResult zbar:"+rawResult.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
-        searchEditText.setText(rawResult.getContents());
-        mScannerViewBar.stopCamera();
-        ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
-        contentFrame.removeView(mScannerViewBar);
-    }*/
-
     @Override
     public void handleResult(com.google.zxing.Result rawResult) {
         // Do something with the result here
@@ -3016,7 +2702,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (BuildConfig.DEBUG) Log.v(TAG, "handleResult zxing:"+rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         searchEditText.setText(rawResult.getText());
         mScannerViewXing.stopCamera();
-        ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
+        ViewGroup contentFrame = findViewById(R.id.content_frame);
         contentFrame.removeView(mScannerViewXing);
     }
 }

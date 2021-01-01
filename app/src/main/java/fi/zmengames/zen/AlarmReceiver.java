@@ -5,10 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import fr.neamar.kiss.KissApplication;
-
-import static fi.zmengames.zen.LauncherService.SCREEN_ON;
-
 public class AlarmReceiver extends BroadcastReceiver {
 
     @Override

@@ -97,7 +97,7 @@ public class UserHandle implements Parcelable {
     public boolean hasStringUserSuffix(String string, char separator) {
         long serial = 0;
 
-        int index = string.lastIndexOf((int) separator);
+        int index = string.lastIndexOf(separator);
         if (index > -1) {
             String serialText = string.substring(index);
             try {

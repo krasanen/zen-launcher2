@@ -1,8 +1,6 @@
 package fr.neamar.kiss.preference;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.PowerManager;
 import android.preference.SwitchPreference;
 import android.util.AttributeSet;

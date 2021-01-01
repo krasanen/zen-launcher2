@@ -1,26 +1,30 @@
 package fr.neamar.kiss.forwarder;
 
 import android.app.Activity;
-
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.*;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import java.util.Map;
 
 import fi.zmengames.zen.LauncherAppWidgetHost;
 import fi.zmengames.zen.LauncherAppWidgetHostView;
@@ -35,11 +39,8 @@ import fr.neamar.kiss.ui.WidgetLayout;
 import fr.neamar.kiss.ui.WidgetMenu;
 import fr.neamar.kiss.ui.WidgetPreferences;
 
-import java.util.Map;
-
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_OPTIONS;
 import static fr.neamar.kiss.MainActivity.REQUEST_BIND_APPWIDGET;
-import static fr.neamar.kiss.MainActivity.RETRY_COUNT;
 
 public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     public static final int REQUEST_REFRESH_APPWIDGET = 10;
@@ -181,7 +182,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         return true;
     }
 
-    void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    void onCreateContextMenu(ContextMenu menu) {
         if (prefs.getBoolean("history-hide", true)) {
             if (getWidgetHostViewCount() == 0) {
                 if (canAddWidget())
@@ -213,15 +214,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             addWidgetToLauncher(Integer.parseInt(appWidgetId));
         }
     }
-    public boolean isPackageExisted(String targetPackage){
-        PackageManager pm=mainActivity.getPackageManager();
-        try {
-            PackageInfo info=pm.getPackageInfo(targetPackage,PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-        return true;
-    }
+
     /**
      * Adds a widget to the widget area on the MainActivity
      *
@@ -252,8 +245,8 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                         AppWidgetProviderInfo a = ParcelableUtil.unmarshall(wp.appWidgetProviderInfo, AppWidgetProviderInfo.CREATOR);
 
                         int newId = mAppWidgetHost.allocateAppWidgetId();
-                        boolean hasPermission = false;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        boolean hasPermission;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                             hasPermission = mAppWidgetManager.bindAppWidgetIdIfAllowed(newId, a.provider, options);
 
                             if (!hasPermission) {
@@ -262,7 +255,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
                                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, a.provider);
-                                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+                                intent.putExtra(EXTRA_APPWIDGET_OPTIONS, options);
                                 mainActivity.startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
                                 //configureAppWidget(intent);
 
@@ -277,7 +270,9 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
                         if (a.configure != null) {
                             Intent configIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-                            configIntent.putExtra(EXTRA_APPWIDGET_OPTIONS, options);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                configIntent.putExtra(EXTRA_APPWIDGET_OPTIONS, options);
+                            }
                             configIntent.setComponent(a.configure);
                             configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
                             mainActivity.startActivityForResult(configIntent, REQUEST_CREATE_APPWIDGET);
@@ -295,19 +290,17 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 hostView.setMinimumWidth(appWidgetInfo.minWidth);
                 hostView.setAppWidget(appWidgetId, appWidgetInfo);
                 addListener(hostView);
-                WidgetPreferences wp = addWidgetHostView(hostView, appWidgetInfo, mAppWidgetManager.getAppWidgetOptions(appWidgetId));
-                //refreshAppWidget(appWidgetId);
-                if (Build.VERSION.SDK_INT > 15) {
-                    if (options != null) {
-                        hostView.updateAppWidgetSize(options, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
-                    } else {
-                        hostView.updateAppWidgetSize(null, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
-                    }
+                WidgetPreferences wp = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    wp = addWidgetHostView(hostView, appWidgetInfo, mAppWidgetManager.getAppWidgetOptions(appWidgetId));
+                    hostView.updateAppWidgetSize(options, appWidgetInfo.minWidth, appWidgetInfo.minHeight, appWidgetInfo.minWidth, appWidgetInfo.minHeight);
                 }
                 if (BuildConfig.DEBUG)
                     Log.i(TAG, "appWidgetInfo.updatePeriodMillis:" + appWidgetInfo.updatePeriodMillis);
                 if (BuildConfig.DEBUG)
-                    Log.i(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
+                    if (wp != null) {
+                        Log.i(TAG, "addAppWidget: offsetVertical" + wp.offsetVertical);
+                    }
                 return wp;
             }
             return null;
@@ -336,39 +329,26 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
 
         //registering popup with OnMenuItemClickListener
-        popupExcludeMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                Context context = view.getContext();
-                switch (item.getGroupId()) {
-                    case RESIZE:
-                        resizeView(view);
-                        break;
-                    case REMOVE:
-                        //show dialog
-                        new AlertDialog.Builder(view.getContext()).setMessage(R.string.remove_widget_warn)
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        removeAppWidget(view);
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // does nothing
-                                    }
-                                }).show();
+        popupExcludeMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getGroupId()) {
+                case RESIZE:
+                    resizeView(view);
+                    break;
+                case REMOVE:
+                    //show dialog
+                    new AlertDialog.Builder(view.getContext()).setMessage(R.string.remove_widget_warn)
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> removeAppWidget(view))
+                            .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                                // does nothing
+                            }).show();
 
 
-                        break;
-                    case SETTINGS:
-                        configureAppWidget(view);
-                        break;
-                }
-                return true;
+                    break;
+                case SETTINGS:
+                    configureAppWidget(view);
+                    break;
             }
+            return true;
         });
 
         Utility.showPopup(popupExcludeMenu, KissApplication.getApplication(context).getMainActivity());
@@ -380,14 +360,9 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
         int viewCount = hostView.getChildCount();
         if (BuildConfig.DEBUG) Log.i(TAG, "addListener,viewCount: "+viewCount);
-        hostView.getRootView().setOnLongClickListener(new LauncherAppWidgetHostView.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                buildWidgetPopupMenu(hostView);
-                return true;
-            }
-
-
+        hostView.getRootView().setOnLongClickListener(view -> {
+            buildWidgetPopupMenu(hostView);
+            return true;
         });
 
 
@@ -405,8 +380,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         // since it seems the onUpdate() is only fired on that:
         AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
         int[] ids = widgetManager.getAppWidgetIds(new ComponentName(context, MainActivity.class));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            widgetManager.notifyAppWidgetViewDataChanged(ids, android.R.id.list);
+        widgetManager.notifyAppWidgetViewDataChanged(ids, android.R.id.list);
 
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         context.sendBroadcast(intent);
@@ -451,16 +425,13 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
         }
         //hostView.setBackgroundColor(0x3F7f0000);
 
-        widgetArea.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    widgetArea.addView(hostView);
-                } catch (Exception e) {
-                    if (BuildConfig.DEBUG) Log.i(TAG, "addWidgetHostView, exception:" + e);
-                    Toast.makeText(hostView.getContext(), hostView.getContext().getString(R.string.application_not_found) , Toast.LENGTH_SHORT).show();
-                    removeAppWidget(hostView);
-                }
+        widgetArea.post(() -> {
+            try {
+                widgetArea.addView(hostView);
+            } catch (Exception e) {
+                if (BuildConfig.DEBUG) Log.i(TAG, "addWidgetHostView, exception:" + e);
+                Toast.makeText(hostView.getContext(), hostView.getContext().getString(R.string.application_not_found) , Toast.LENGTH_SHORT).show();
+                removeAppWidget(hostView);
             }
         });
         return wp;
@@ -480,10 +451,6 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     private LauncherAppWidgetHostView getWidgetHostView(int index) {
         if (BuildConfig.DEBUG) Log.i(TAG,"getWidgetHostView:"+index);
         return (LauncherAppWidgetHostView) widgetArea.getChildAt(index);
-    }
-
-    private LauncherAppWidgetHostView getWidgetHostView(View view) {
-        return (LauncherAppWidgetHostView) view;
     }
 
     private int getWidgetHostViewCount() {
@@ -620,25 +587,6 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 break;
             }
         }
-        //updateWidgets(mainActivity.getApplicationContext());
-    }
-
-    private void refreshAppWidget(int appWidgetId) {
-        if (BuildConfig.DEBUG) Log.i(TAG, "refreshAppWidget2: appWidgetId" + appWidgetId);
-        String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
-        WidgetPreferences wp = WidgetPreferences.unserialize(data);
-        if (wp == null)
-            return;
-        for (int i = 0; i < getWidgetHostViewCount(); i += 1) {
-            LauncherAppWidgetHostView hostView = getWidgetHostView(i);
-            if (hostView.getAppWidgetId() == appWidgetId) {
-                WidgetLayout.LayoutParams layoutParams = (WidgetLayout.LayoutParams) hostView.getLayoutParams();
-                wp.apply(layoutParams);
-                hostView.setLayoutParams(layoutParams);
-                break;
-            }
-        }
-        //updateWidgets(mainActivity.getApplicationContext());
     }
 
     public void onWallpaperScroll(float fCurrent) {
@@ -683,17 +631,6 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 break;
             }
         }
-    }
-
-    public void onWidgetAdd(int x, int y) {
-        if (BuildConfig.DEBUG) Log.i(TAG, "onWidgetAdd, x:"+x+ "y:"+y);
-        // request widget picker, a selection will lead to a call of onActivityResult
-        int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
-        Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
-        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        pickIntent.putExtra("X",x);
-        pickIntent.putExtra("Y",y);
-        mainActivity.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
     }
 
     public void onShowWidgetSettings() {

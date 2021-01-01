@@ -15,33 +15,23 @@
 
 package fr.neamar.kiss;
 
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Represents the player's progress in the game. The player's progress is how many stars
  * they got on each level.
  *
  */
-public class SaveGame implements Serializable {
+public class ZenLayout implements Serializable {
 
     private static final String TAG = "SaveGame";
 
     // serialization format version
     private static final long serialVersionUID = 1L;
     private static final String SERIAL_VERSION = "1.1";
-    private String json;
-    private String jsonWidgets;
+    private final String json;
+    private final String jsonWidgets;
     private byte[] data = null;
     private byte[] database = null;
 
@@ -50,7 +40,7 @@ public class SaveGame implements Serializable {
         return data;
     }
 
-    public SaveGame(String serializedSettings, String serializedWidgetSettings,  ByteArrayOutputStream screenShotWallPaper, ByteArrayOutputStream database) {
+    public ZenLayout(String serializedSettings, String serializedWidgetSettings, ByteArrayOutputStream screenShotWallPaper, ByteArrayOutputStream database) {
         this.json = serializedSettings;
         this.jsonWidgets = serializedWidgetSettings;
         this.data = screenShotWallPaper.toByteArray();

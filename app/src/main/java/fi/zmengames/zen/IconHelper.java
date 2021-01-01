@@ -15,8 +15,8 @@ import android.graphics.drawable.LayerDrawable;
 
 public class IconHelper {
 
-    private PackageManager packageManager;
-    private Context context;
+    private final PackageManager packageManager;
+    private final Context context;
 
     public IconHelper(PackageManager packageManager, Context context) {
         this.context = context;

@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.EditText;
+
 import fr.neamar.kiss.BuildConfig;
 
 public class SearchEditText extends EditText {

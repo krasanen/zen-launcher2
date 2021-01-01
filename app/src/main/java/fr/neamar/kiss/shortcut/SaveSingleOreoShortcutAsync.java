@@ -24,10 +24,10 @@ import fr.neamar.kiss.utils.ShortcutUtil;
 @TargetApi(Build.VERSION_CODES.O)
 public class SaveSingleOreoShortcutAsync extends AsyncTask<Void, Integer, Boolean> {
 
-    private static String TAG = "SaveAllOreoShortcutsAsync";
+    private static final String TAG = "SaveAllOreoShortcutsAsync";
     private final WeakReference<Context> context;
     private final WeakReference<DataHandler> dataHandler;
-    private Intent intent;
+    private final Intent intent;
 
     public SaveSingleOreoShortcutAsync(@NonNull Context context, @NonNull Intent intent) {
         this.context = new WeakReference<>(context);

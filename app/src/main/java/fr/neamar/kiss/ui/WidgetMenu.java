@@ -13,10 +13,10 @@ import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.StringRes;
-import fr.neamar.kiss.R;
-
 
 import java.util.ArrayList;
+
+import fr.neamar.kiss.R;
 
 /**
  * ListPopup wrapper for widget managing

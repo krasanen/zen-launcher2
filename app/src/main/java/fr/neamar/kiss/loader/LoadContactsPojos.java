@@ -30,7 +30,7 @@ import static fr.neamar.kiss.notification.NotificationListener.NOTIFICATION_PREF
 
 public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
     private static final String TAG = LoadPojos.class.getSimpleName();
-    private SharedPreferences prefs;
+    private final SharedPreferences prefs;
     public LoadContactsPojos(Context context) {
         super(context, "contact://");
         prefs = context.getSharedPreferences(NOTIFICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -303,11 +303,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             // Find primary phone and add this one.
             Boolean hasPrimary = false;
             for (ContactsPojo contact : phones) {
-                if (notificationKeys.contains(contact.getName())){
-                    contact.setHasNotification(true);
-                } else {
-                    contact.setHasNotification(false);
-                }
+                contact.setHasNotification(notificationKeys.contains(contact.getName()));
                 if (contact.primary) {
                     contacts.add(contact);
                     hasPrimary = true;
@@ -328,7 +324,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
         }
 
         long end = System.nanoTime();
-        if (BuildConfig.DEBUG) Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list contacts");
+        if (BuildConfig.DEBUG) Log.i("time", (end - start) / 1000000 + " milliseconds to list contacts");
         return contacts;
     }
 

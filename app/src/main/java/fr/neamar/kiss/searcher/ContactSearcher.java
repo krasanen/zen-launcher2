@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;

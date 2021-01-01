@@ -5,12 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import java.util.Objects;
-
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
 
 public class BadgeCountHandler extends BroadcastReceiver {
     private static final String TAG = BadgeCountHandler.class.getSimpleName();

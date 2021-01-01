@@ -31,7 +31,7 @@ public class AddSearchProviderPreference extends DialogPreference {
     private final EditText providerName = new EditText(this.getContext());
     private final EditText providerUrl = new EditText(this.getContext());
 
-    private SharedPreferences prefs;
+    private final SharedPreferences prefs;
 
     //Called when addPreferencesFromResource() is called. Initializes basic parameters
     public AddSearchProviderPreference(Context context, AttributeSet attrs) {

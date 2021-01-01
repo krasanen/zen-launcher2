@@ -21,13 +21,12 @@ android {
     }
 
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId 'com.zmengames.zenlauncher'
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 29
         versionName = buildTimeStamp() + "@" + gitLastCommit()
-        versionCode = gitVersion()+1
+        versionCode = gitVersion()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfigs {
             debug {
@@ -37,7 +36,7 @@ android {
                 signingConfig signingConfigs.release
             }
         }
-        def Properties props = new Properties()
+        Properties props = new Properties()
         def propFile = file('../signing.properties')
         if (propFile.canRead()){
             props.load(new FileInputStream(propFile))
@@ -77,6 +76,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             signingConfig signingConfigs.debug
+            resValue "string", "app_version", "${defaultConfig.versionName}.${defaultConfig.versionCode}"
         }
         debug {
             applicationIdSuffix '.debug'
@@ -86,6 +86,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             signingConfig signingConfigs.debug
+            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}.${defaultConfig.versionCode}"
+
         }
         sourceSets {
             main {
@@ -101,14 +103,14 @@ android {
 
 dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
     implementation 'androidx.annotation:annotation:1.1.0'
 
 
-    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.apis:google-api-services-drive:v3-rev197-1.25.0'
     implementation 'com.google.http-client:google-http-client-gson:1.30.1'
     implementation('com.google.api-client:google-api-client-android:1.30.1') {

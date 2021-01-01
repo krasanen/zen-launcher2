@@ -16,10 +16,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-
-import fi.zmengames.zen.AlarmUtils;
-import fi.zmengames.zen.Utility;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,6 +40,8 @@ import androidx.annotation.NonNull;
 
 import org.greenrobot.eventbus.EventBus;
 
+import fi.zmengames.zen.AlarmUtils;
+import fi.zmengames.zen.Utility;
 import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.CustomIconDialog;
@@ -121,7 +119,7 @@ public class AppResult extends Result {
         notificationView.setColorFilter(primaryColor);
 
 
-        TextView badgeView = (TextView) view.findViewById(R.id.item_badge_count);
+        TextView badgeView = view.findViewById(R.id.item_badge_count);
         if (pojo.getBadgeCount() > 0) {
             badgeView.setText(String.valueOf(pojo.getBadgeText()));
             badgeView.setVisibility(View.VISIBLE);

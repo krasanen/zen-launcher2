@@ -16,7 +16,6 @@
 package fi.zmengames.zen;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -24,11 +23,9 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 
 import androidx.core.util.Pair;
-import fr.neamar.kiss.MainActivity;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;

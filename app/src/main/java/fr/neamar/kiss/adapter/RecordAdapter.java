@@ -5,13 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,13 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import fr.neamar.kiss.BadgeHandler;
-import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.normalizer.StringNormalizer;
-import fr.neamar.kiss.pojo.AppPojo;
-import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.PhoneResult;
@@ -48,7 +42,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     private List<Result> results;
 
     // Mapping from letter to a position (only used for fast scroll, when viewing app list)
-    private HashMap<String, Integer> alphaIndexer = new HashMap<>();
+    private final HashMap<String, Integer> alphaIndexer = new HashMap<>();
     // List of available sections (only used for fast scroll)
     private String[] sections = new String[0];
 

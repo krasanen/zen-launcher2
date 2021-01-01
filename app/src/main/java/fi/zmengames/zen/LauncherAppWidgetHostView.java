@@ -18,13 +18,11 @@ package fi.zmengames.zen;
  */
 
 
-
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -33,7 +31,6 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import java.util.Arrays;
-import java.util.List;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.R;
@@ -44,8 +41,8 @@ import fr.neamar.kiss.R;
 public class LauncherAppWidgetHostView extends AppWidgetHostView {
     private boolean mHasPerformedLongPress;
     private CheckForLongPress mPendingCheckForLongPress;
-    private LayoutInflater mInflater;
-    private Context context;
+    private final LayoutInflater mInflater;
+    private final Context context;
     private static final String TAG = LauncherAppWidgetHostView.class.getSimpleName();
     public LauncherAppWidgetHostView(Context context) {
         super(context);

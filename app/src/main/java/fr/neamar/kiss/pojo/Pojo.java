@@ -1,10 +1,6 @@
 package fr.neamar.kiss.pojo;
 
 import android.util.Log;
-import android.util.Pair;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.BuildConfig;

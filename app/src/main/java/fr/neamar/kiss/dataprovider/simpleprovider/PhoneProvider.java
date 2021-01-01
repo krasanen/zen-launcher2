@@ -12,8 +12,8 @@ import fr.neamar.kiss.searcher.Searcher;
 
 public class PhoneProvider extends SimpleProvider {
     public static final String PHONE_SCHEME = "phone://";
-    private boolean deviceIsPhone;
-    private Pattern phonePattern = Pattern.compile("^[*+0-9# ]{3,}$");
+    private final boolean deviceIsPhone;
+    private final Pattern phonePattern = Pattern.compile("^[*+0-9# ]{3,}$");
 
     public PhoneProvider(Context context) {
         PackageManager pm = context.getPackageManager();

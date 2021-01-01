@@ -29,7 +29,7 @@ import fr.neamar.kiss.utils.UserHandle;
 @TargetApi(Build.VERSION_CODES.O)
 public class SaveAllOreoShortcutsAsync extends AsyncTask<Void, Integer, Boolean> {
 
-    private static String TAG = "SaveAllOreoShortcutsAsync";
+    private static final String TAG = "SaveAllOreoShortcutsAsync";
     private final WeakReference<Context> context;
     private final WeakReference<DataHandler> dataHandler;
 

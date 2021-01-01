@@ -2,14 +2,11 @@ package fr.neamar.kiss;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
-
-import com.google.android.gms.tasks.Tasks;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,12 +14,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import fi.zmengames.zen.ZEvent;
-import fr.neamar.kiss.BadgeHandler;
-import fr.neamar.kiss.KissApplication;
 
 public class SamsungBadgeObserver extends ContentObserver {
     private static final String TAG = SamsungBadgeObserver.class.getSimpleName();
-    private Context context;
+    private final Context context;
 
     public SamsungBadgeObserver(Handler handler, Context context) {
         super(handler);

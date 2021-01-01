@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import java.util.HashSet;
 
-import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 
 public class ResetExcludedFromHistoryAppsPreference extends DialogPreference {

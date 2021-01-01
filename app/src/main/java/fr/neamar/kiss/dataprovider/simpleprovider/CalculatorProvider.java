@@ -16,7 +16,7 @@ import fr.neamar.kiss.searcher.Searcher;
 
 public class CalculatorProvider extends SimpleProvider {
     private static final String TAG = CalculatorProvider.class.getSimpleName();
-    private Pattern p;
+    private final Pattern p;
 
     public CalculatorProvider() {
         p = Pattern.compile("(-?)([0-9.]+)\\s?([+\\-*/×x÷])\\s?(-?)([0-9.]+)");

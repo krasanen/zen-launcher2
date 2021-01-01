@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import androidx.annotation.NonNull;
-
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 
@@ -18,7 +18,6 @@ import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
 
-import static android.app.Activity.RESULT_OK;
 import static fr.neamar.kiss.MainActivity.MY_PERMISSIONS_CAMERA;
 
 
@@ -80,7 +79,7 @@ public class Permission extends Forwarder {
         currentMainActivity = new WeakReference<>(mainActivity);
     }
 
-    void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length == 0) {
             return;
         }

@@ -24,7 +24,7 @@ public class Base64Serialize {
 
     public static Object[] decode(String text) {
         try {
-            byte b[] = Base64.decode(text.getBytes(), Base64.NO_WRAP);
+            byte[] b = Base64.decode(text.getBytes(), Base64.NO_WRAP);
             ByteArrayInputStream bi = new ByteArrayInputStream(b);
             ObjectInputStream si = new ObjectInputStream(bi);
             return (Object[])si.readObject();

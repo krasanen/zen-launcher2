@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import org.greenrobot.eventbus.EventBus;
 
 import fi.zmengames.zen.LauncherService;
@@ -23,7 +25,6 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;
 import fr.neamar.kiss.utils.FuzzyScore;
-import androidx.annotation.NonNull;
 
 public class SettingsResult extends Result {
     private final SettingsPojo settingPojo;

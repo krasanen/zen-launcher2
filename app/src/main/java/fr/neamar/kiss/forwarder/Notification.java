@@ -20,7 +20,7 @@ class Notification extends Forwarder {
     private static final String TAG = Notification.class.getSimpleName();
     private final SharedPreferences notificationPreferences;
 
-    private SharedPreferences.OnSharedPreferenceChangeListener onNotificationDisplayed = new SharedPreferences.OnSharedPreferenceChangeListener() {
+    private final SharedPreferences.OnSharedPreferenceChangeListener onNotificationDisplayed = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String packageAndTitle) {
             if (BuildConfig.DEBUG) Log.d(TAG,"onSharedPreferenceChanged:"+packageAndTitle);

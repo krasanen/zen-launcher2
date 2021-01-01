@@ -1,7 +1,6 @@
 package fi.zmengames.zen;
 
 import android.app.Activity;
-
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +12,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,17 +22,14 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.R;
-
-import android.os.Vibrator;
-
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.R;
 
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
@@ -210,7 +206,6 @@ public class AlarmActivity extends Activity {
         });
 
         String snoozeButtonText = getText(R.string.snooze) + " " + seekBar.getProgress() + " " + getText(R.string.minutes);
-        ;
         snooze.setText(snoozeButtonText);
         String finalAlarmText = alarmText;
         snooze.setOnClickListener(new View.OnClickListener() {

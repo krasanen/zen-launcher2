@@ -10,17 +10,15 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.annotation.DrawableRes;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.DrawableRes;
-
 import fi.zmengames.zen.LauncherService;
 import fr.neamar.kiss.BuildConfig;
-
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;

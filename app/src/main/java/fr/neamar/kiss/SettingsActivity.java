@@ -1,45 +1,43 @@
  package fr.neamar.kiss;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.MultiSelectListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceGroup;
-import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
+ import android.Manifest;
+ import android.content.Intent;
+ import android.content.SharedPreferences;
+ import android.content.pm.ActivityInfo;
+ import android.content.pm.PackageManager;
+ import android.net.Uri;
+ import android.os.Build;
+ import android.os.Bundle;
+ import android.preference.ListPreference;
+ import android.preference.MultiSelectListPreference;
+ import android.preference.Preference;
+ import android.preference.PreferenceActivity;
+ import android.preference.PreferenceCategory;
+ import android.preference.PreferenceGroup;
+ import android.preference.PreferenceManager;
+ import android.view.Menu;
+ import android.view.MenuInflater;
+ import android.view.MenuItem;
+ import android.widget.Toast;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+ import androidx.annotation.NonNull;
 
-import androidx.annotation.NonNull;
+ import org.greenrobot.eventbus.EventBus;
 
-import org.greenrobot.eventbus.EventBus;
+ import java.util.Arrays;
+ import java.util.Collections;
+ import java.util.HashSet;
+ import java.util.Set;
+ import java.util.TreeSet;
 
-import fi.zmengames.zen.ZEvent;
-import fr.neamar.kiss.broadcast.IncomingCallHandler;
-
-import fr.neamar.kiss.cache.MemoryCacheHelper;
-
-import fr.neamar.kiss.dataprovider.AppProvider;
-import fr.neamar.kiss.dataprovider.SearchProvider;
-import fr.neamar.kiss.forwarder.TagsMenu;
-import fr.neamar.kiss.searcher.QuerySearcher;
-import fr.neamar.kiss.utils.PackageManagerUtils;
+ import fi.zmengames.zen.ZEvent;
+ import fr.neamar.kiss.broadcast.IncomingCallHandler;
+ import fr.neamar.kiss.cache.MemoryCacheHelper;
+ import fr.neamar.kiss.dataprovider.AppProvider;
+ import fr.neamar.kiss.dataprovider.SearchProvider;
+ import fr.neamar.kiss.forwarder.TagsMenu;
+ import fr.neamar.kiss.searcher.QuerySearcher;
+ import fr.neamar.kiss.utils.PackageManagerUtils;
 
 @SuppressWarnings("FragmentInjection")
 public class SettingsActivity extends PreferenceActivity implements

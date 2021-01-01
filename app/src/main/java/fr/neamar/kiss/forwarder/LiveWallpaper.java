@@ -147,7 +147,7 @@ class LiveWallpaper extends Forwarder {
 
     private void sendTouchEvent(View view, MotionEvent event) {
         int pointerCount = event.getPointerCount();
-        int viewOffset[] = {0, 0};
+        int[] viewOffset = {0, 0};
         // this will not account for a rotated view
         view.getLocationOnScreen(viewOffset);
 

@@ -3,17 +3,11 @@ package fi.zmengames.zen;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.util.Log;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
 
-import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
-import static fi.zmengames.zen.LauncherService.ENABLE_PROXIMITY;
 import static fi.zmengames.zen.LauncherService.SCREEN_OFF;
 import static fi.zmengames.zen.LauncherService.SCREEN_ON;
 

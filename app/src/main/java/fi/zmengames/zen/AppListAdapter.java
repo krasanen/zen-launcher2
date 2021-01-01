@@ -2,7 +2,6 @@ package fi.zmengames.zen;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,7 +21,6 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
-import fr.neamar.kiss.notification.NotificationListener;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.result.Result;
 
@@ -47,16 +45,9 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void addAll(Collection<? extends Pojo> items) {
         //If the platform supports it, use addAll, otherwise add in loop
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            super.addAll(items);
-        } else {
-            for (Pojo item : items) {
-                super.add(item);
-            }
-        }
+        super.addAll(items);
     }
 
 
@@ -72,13 +63,13 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
         if (convertView == null) {
             view = mInflater.inflate(R.layout.list_item_icon_text, parent, false);
             holder = new ViewHolder();
-            holder.icon = (ImageView) view.findViewById(R.id.icon);
+            holder.icon = view.findViewById(R.id.icon);
             holder.icon.setVisibility(View.GONE);
-            holder.text = (TextView) view.findViewById(R.id.text);
+            holder.text = view.findViewById(R.id.text);
             holder.text.setVisibility(View.GONE);
             holder.context = getContext();
-            holder.badge = (TextView) view.findViewById(R.id.zen_badge_count);
-            holder.notification = (ImageView) view.findViewById(R.id.zen_item_notification_dot);
+            holder.badge = view.findViewById(R.id.zen_badge_count);
+            holder.notification = view.findViewById(R.id.zen_item_notification_dot);
             // initialize views
             view.setTag(holder);  // set tag on view
         } else {

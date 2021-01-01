@@ -1,11 +1,9 @@
 package fr.neamar.kiss.preference;
 
 import android.content.Context;
-
 import android.content.Intent;
 import android.util.AttributeSet;
 import android.util.Log;
-
 
 import fi.zmengames.zen.LauncherService;
 import fr.neamar.kiss.BuildConfig;

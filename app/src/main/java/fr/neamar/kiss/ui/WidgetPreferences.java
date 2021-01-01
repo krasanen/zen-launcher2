@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
@@ -24,14 +23,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 
 import fi.zmengames.zen.LauncherAppWidgetHostView;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 
-import static fr.neamar.kiss.ui.WidgetLayout.LayoutParams.POSITION_LEFT;
 import static fr.neamar.kiss.ui.WidgetLayout.LayoutParams.POSITION_MIDDLE;
 
 
@@ -141,7 +139,7 @@ public class WidgetPreferences implements Serializable {
             return null;
         ObjectInputStream objectInputStream;
         try {
-            objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data.getBytes("ISO-8859-1")));
+            objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data.getBytes(StandardCharsets.ISO_8859_1)));
             WidgetPreferences wp = (WidgetPreferences) objectInputStream.readObject();
             return wp;
         } catch (Exception e) {

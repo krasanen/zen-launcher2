@@ -49,7 +49,7 @@ public class KissApplication extends Application {
     }
 
     public MainActivity getMainActivity() {
-        return mainActivity;
+        return MainActivity.getInstance();
     }
 
     public DataHandler getDataHandler() {
@@ -61,9 +61,6 @@ public class KissApplication extends Application {
 
     public void setDataHandler(DataHandler newDataHandler) {
         dataHandler = newDataHandler;
-    }
-    public void setMainActivity(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
     }
 
     public RootHandler getRootHandler() {

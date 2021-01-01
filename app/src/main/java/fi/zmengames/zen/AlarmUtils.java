@@ -17,9 +17,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import fr.neamar.kiss.BuildConfig;
-import me.leolin.shortcutbadger.ShortcutBadgeException;
-
-import static fr.neamar.kiss.result.AppResult.executeBadge;
 
 public class AlarmUtils {
 

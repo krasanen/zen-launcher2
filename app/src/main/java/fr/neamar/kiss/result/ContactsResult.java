@@ -28,7 +28,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

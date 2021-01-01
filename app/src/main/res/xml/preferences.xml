@@ -368,6 +368,11 @@
          android:key="vibrate-on-alarm"
          android:summary="@string/vibrate_on_alarm"
          android:title="@string/vibrate_on_alarm_switch" />
+     <Preference
+         android:selectable="false"
+         android:key="app-version"
+         android:title="@string/app_name"
+         android:summary="@string/app_version" />
  </PreferenceScreen>
  <Preference
      android:key="rate-app"

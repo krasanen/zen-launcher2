@@ -2,8 +2,10 @@ package fr.neamar.kiss;
 
 import android.content.Context;
 import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import fr.neamar.kiss.db.DBHelper;
 
 

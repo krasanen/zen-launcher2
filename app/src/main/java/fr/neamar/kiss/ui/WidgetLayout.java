@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 
 import fr.neamar.kiss.R;
-import fr.neamar.kiss.forwarder.Widget;
 
 /**
  * Example of writing a custom layout manager.  This is a fairly full-featured

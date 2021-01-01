@@ -13,7 +13,6 @@ import androidx.collection.LruCache;
 
 import java.lang.ref.WeakReference;
 
-
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.utils.UserHandle;

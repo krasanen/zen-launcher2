@@ -46,7 +46,7 @@ public class IconsHandler {
     private final PackageManager pm;
     private final Context ctx;
     private IconPackXML mIconPack = null;
-    private SystemIconPack mSystemPack = new SystemIconPack();
+    private final SystemIconPack mSystemPack = new SystemIconPack();
     private boolean mForceAdaptive = false;
     private boolean mContactPackMask = false;
     private int mContactsShape = DrawableUtils.SHAPE_SYSTEM;

@@ -11,18 +11,18 @@ import android.content.pm.LauncherApps;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserManager;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
-
-import androidx.annotation.RequiresApi;
 
 import fi.zmengames.zen.AlarmUtils;
 import fr.neamar.kiss.BuildConfig;
@@ -293,11 +293,7 @@ public class AppProvider extends Provider<AppPojo> {
         for (AppPojo appPojo : pojos) {
             String serializedPojo = Base64Serialize.encode(appPojo.id, appPojo.packageName, appPojo.activityName, appPojo.getName(), appPojo.isExcluded(), appPojo.isExcludedFromHistory());
             appSet.add(serializedPojo);
-            if (allKeys.contains(appPojo.packageName)){
-                appPojo.setHasNotification(true);
-            } else {
-                appPojo.setHasNotification(false);
-            }
+            appPojo.setHasNotification(allKeys.contains(appPojo.packageName));
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit().putStringSet("AppProviderCache", appSet).apply();

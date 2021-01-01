@@ -3,22 +3,18 @@ package fr.neamar.kiss.dataprovider;
 import android.database.ContentObserver;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.dataprovider.simpleprovider.PhoneProvider;
 import fr.neamar.kiss.forwarder.Permission;
 import fr.neamar.kiss.loader.LoadContactsPojos;
 import fr.neamar.kiss.normalizer.PhoneNormalizer;
 import fr.neamar.kiss.normalizer.StringNormalizer;
-import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.ContactsPojo;
 import fr.neamar.kiss.pojo.PhoneAddPojo;
 import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.result.AddPhoneResult;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.FuzzyScore;
 

@@ -4,10 +4,11 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
+import androidx.test.rule.ActivityTestRule;
+
 import org.junit.Before;
 import org.junit.Rule;
 
-import androidx.test.rule.ActivityTestRule;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;

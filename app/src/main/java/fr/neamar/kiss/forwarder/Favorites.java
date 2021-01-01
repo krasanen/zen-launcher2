@@ -8,11 +8,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Rect;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.LinkAddress;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.DragEvent;
@@ -23,7 +23,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,15 +39,12 @@ import fr.neamar.kiss.R;
 import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.Pojo;
-import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.Result;
-import fr.neamar.kiss.result.SearchResult;
 import fr.neamar.kiss.result.ShortcutsResult;
 import fr.neamar.kiss.ui.ListPopup;
-import fr.neamar.kiss.ui.RoundedQuickContactBadge;
 
 public class Favorites extends Forwarder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnKeyListener {
     private static final String TAG = Favorites.class.getSimpleName();
@@ -59,7 +55,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
     /**
      * IDs for the favorites buttons
      */
-    private ArrayList<RelativeLayout> favoritesViews = new ArrayList<RelativeLayout>();
+    private final ArrayList<RelativeLayout> favoritesViews = new ArrayList<RelativeLayout>();
 
     /**
      * Currently displayed favorites
@@ -167,7 +163,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 }
                 assert layoutInflater != null;
-                RelativeLayout layout = (RelativeLayout) layoutInflater.inflate(R.layout.favorite_item, (ViewGroup) mainActivity.favoritesBar, false);
+                RelativeLayout layout = (RelativeLayout) layoutInflater.inflate(R.layout.favorite_item, mainActivity.favoritesBar, false);
                 image = layout.findViewById(R.id.favorite_item_image);
                 image.setTag(i);
                 image.setOnDragListener(this);
@@ -178,7 +174,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 image.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 textView = layout.findViewById(R.id.favorite_item_text);
                 textView.setText(pojo.getName());
-                ((ViewGroup) mainActivity.favoritesBar).addView(layout);
+                mainActivity.favoritesBar.addView(layout);
                 favoritesViews.add(layout);
              } else {
                 image =  favoritesViews.get(i).findViewById(R.id.favorite_item_image);
@@ -195,15 +191,20 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                             RoundedBitmapDrawableFactory.create(mainActivity.getResources(), iconBitmap);
                     dr.setCornerRadius(Math.max(iconBitmap.getWidth(), iconBitmap.getHeight()) / 2.0f);
                     image.setImageDrawable(dr);
-                } else if (result instanceof ShortcutsResult) {
-                        image.setImageResource(R.drawable.ic_open_in_browser_24px);
                 } else {
                     image.setImageDrawable(drawable);
                 }
 
             } else {
-                // Use a placeholder if no drawable found
-                image.setImageResource(R.drawable.ic_z);
+                if (result instanceof ShortcutsResult) {
+                    image.setImageResource(R.drawable.ic_open_in_browser_24px);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        image.setColorFilter(mainActivity.getColor(R.color.zenlauncher));
+                    }
+                } else {
+                    // Use a placeholder if no drawable found
+                    image.setImageResource(R.drawable.ic_z);
+                }
             }
             if (favbarAppNames) {
                 image.setPadding(15,0,15,25);
@@ -457,7 +458,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
         if (hasMoved && mDragEnabled) {
             mDragEnabled = false;
-            mainActivity.dismissPopup();
+            MainActivity.dismissPopup();
             mainActivity.closeContextMenu();
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
             view.startDrag(null, shadowBuilder, view, 0);

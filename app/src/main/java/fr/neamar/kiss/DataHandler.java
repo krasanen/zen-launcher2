@@ -7,19 +7,17 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
-import android.graphics.Bitmap.CompressFormat;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import java.io.ByteArrayOutputStream;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,9 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenProvider;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
@@ -50,8 +46,6 @@ import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.ShortcutUtil;
 import fr.neamar.kiss.utils.UserHandle;
-import fi.zmengames.zen.LauncherService;
-import fi.zmengames.zen.ZEvent;
 
 public class DataHandler
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -73,7 +67,7 @@ public class DataHandler
     private String currentQuery;
     private final Map<String, ProviderEntry> providers = new HashMap<>();
     public boolean allProvidersHaveLoaded = false;
-    private long start;
+    private final long start;
 
 
     public BadgeHandler getBadgeHandler() {

@@ -1,7 +1,6 @@
 package fi.zmengames.zen;
 
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import androidx.annotation.RequiresApi;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -23,13 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.dataprovider.simpleprovider.SimpleProvider;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.searcher.Searcher;
-
-import static fi.zmengames.zen.AlarmActivity.ALARM_TIME;
 
 
 public class ZenProvider extends SimpleProvider {

@@ -1,13 +1,10 @@
 package fr.neamar.kiss.normalizer;
 
 import androidx.annotation.NonNull;
-import android.util.Log;
 
 import java.nio.CharBuffer;
 import java.text.Normalizer;
 import java.util.Arrays;
-
-import fr.neamar.kiss.BuildConfig;
 
 /**
  * String utils to handle accented characters for search and highlighting

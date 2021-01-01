@@ -15,10 +15,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+
 import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.TagsHandler;
-import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.db.AppRecord;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.AppPojo;
@@ -27,7 +27,7 @@ import fr.neamar.kiss.utils.UserHandle;
 public class LoadAppPojos extends LoadPojos<AppPojo> {
 
     private final TagsHandler tagsHandler;
-    private BadgeHandler badgeHandler;
+    private final BadgeHandler badgeHandler;
     private static final String TAG = LoadAppPojos.class.getSimpleName();
     public LoadAppPojos(Context context) {
         super(context, "app://");
@@ -135,7 +135,7 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
         }
 
         long end = System.nanoTime();
-        Log.i("time", Long.toString((end - start) / 1000000) + " milliseconds to list apps");
+        Log.i("time", (end - start) / 1000000 + " milliseconds to list apps");
 
         return apps;
     }

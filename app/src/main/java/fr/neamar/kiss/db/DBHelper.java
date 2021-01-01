@@ -3,10 +3,8 @@ package fr.neamar.kiss.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import androidx.annotation.Nullable;

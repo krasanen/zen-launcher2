@@ -21,27 +21,27 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Display notification drawer -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" /> <!-- Display notification drawer -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" /> <!-- Ability to uninstall an app from KISS -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- for Zen Alarm -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- for blue light filter -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- for Google Drive API. Used when saving&loading launcher layout to users own google drive -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- for Zen Flashlight, needed to be able to enable camera flash -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" /> <!-- for storing to google drive -->
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" /> <!-- for storing to google drive -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" /> <!-- for storing to google drive -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- for wifi toggle -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- for wifi toggle -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- for Google Drive API. Used when saving&loading launcher layout to users own google drive -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- for Zen Alarm -->
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/> <!-- for Zen Alarm -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/> <!-- for Zen Alarm -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/> <!-- for Zen Alarm -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- for Zen Flashlight, needed to be able to enable camera flash -->
 
-    <uses-permission android:name="com.sec.android.provider.badge.permission.READ" />
-    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" /> <!-- for Huawei widgets -->
-    <uses-permission android:name="com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER" />
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ" /> <!-- for badge support -->
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" /> <!-- for badge support -->
+    <uses-permission android:name="com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER" /> <!-- for Huawei widgets -->
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -177,20 +177,6 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver> <!-- Intents received used to install/uninstall shortcuts from other applications -->
-        <receiver
-            android:name=".shortcut.InstallShortcutHandler"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
-            <intent-filter>
-                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".shortcut.UninstallShortcutHandler"
-            android:permission="com.android.launcher.permission.UNINSTALL_SHORTCUT">
-            <intent-filter>
-                <action android:name="com.android.launcher.action.UNINSTALL_SHORTCUT" />
-            </intent-filter>
-        </receiver>
         <receiver android:name="fi.zmengames.zen.ScreenReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_OFF" />

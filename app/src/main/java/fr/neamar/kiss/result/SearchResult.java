@@ -1,11 +1,8 @@
 package fr.neamar.kiss.result;
 
 
-import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.util.Log;
@@ -40,19 +37,16 @@ import fi.zmengames.zen.ZenProvider;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
-import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.pojo.SearchPojo;
-import fr.neamar.kiss.pojo.ShortcutPojo;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.ClipboardUtils;
 import fr.neamar.kiss.utils.FuzzyScore;
 
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
-import static fr.neamar.kiss.MainActivity.ALARM_PICKER;
 import static fr.neamar.kiss.MainActivity.DATE_TIME_PICKER;
 import static fr.neamar.kiss.MainActivity.LOCK_IN;
 

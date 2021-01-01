@@ -1,13 +1,8 @@
 package fr.neamar.kiss.forwarder;
 
 import android.annotation.SuppressLint;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
@@ -21,7 +16,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -82,7 +76,7 @@ public class ExperienceTweaks extends Forwarder {
     // divider that affects amount of pixels to be used in gesture detection
     // screen width / SWIPE_DIVIDER
     // screen height / SWIPE_DIVIDER
-    private float SWIPE_DIVIDER = 8f;
+    private final float SWIPE_DIVIDER = 8f;
 
     ExperienceTweaks(final MainActivity mainActivity) {
         super(mainActivity);

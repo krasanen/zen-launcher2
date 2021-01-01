@@ -1,10 +1,8 @@
 package fi.zmengames.zen;
 
 import android.animation.Animator;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -18,7 +16,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
-import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -33,8 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.Toast;
-
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -43,18 +38,12 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.DataHandler;
-import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
-
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.broadcast.BadgeCountHandler;
 
-import static android.provider.Settings.ACTION_VOICE_CONTROL_BATTERY_SAVER_MODE;
-import static android.provider.Settings.EXTRA_BATTERY_SAVER_MODE_ENABLED;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
@@ -81,8 +70,8 @@ public class LauncherService extends Service {
     public static final String SCREEN_OFF = "com.zmengames.zenlauncher.SCREEN_OFF";
     public static final String ALARM_ENTERED_TEXT = "com.zmengames.zenlauncher.ALARM_ENTERED_TEXT";
     public static final String ALARM_DATE_PICKER_MILLIS = "com.zmengames.zenlauncher.ALARM_DATE_PICKER_MILLIS";
-    private IBinder mBinder = new MyBinder();
-    private ExecutorService serviceExecutor = Executors.newCachedThreadPool();
+    private final IBinder mBinder = new MyBinder();
+    private final ExecutorService serviceExecutor = Executors.newCachedThreadPool();
 
 
     // System Services
@@ -101,9 +90,9 @@ public class LauncherService extends Service {
     private boolean isShowing = true;
 
     // Options
-    private int mBrightness = 100;
-    private int mAdvancedMode = Constants.AdvancedMode.NONE;
-    private int mYellowFilterAlpha = 100;
+    private final int mBrightness = 100;
+    private final int mAdvancedMode = Constants.AdvancedMode.NONE;
+    private final int mYellowFilterAlpha = 100;
 
     // Constants
     private static final int ANIMATE_DURATION_MILES = 250;
@@ -114,11 +103,7 @@ public class LauncherService extends Service {
     private static final int SENSOR_SENSITIVITY = 4;
     public static boolean isProximityLockEnabled(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefs.getBoolean("proximity-switch-lock", false)) {
-            return true;
-        } else {
-            return false;
-        }
+        return prefs.getBoolean("proximity-switch-lock", false);
     }
 
     public class MyBinder extends Binder {
@@ -161,13 +146,9 @@ public class LauncherService extends Service {
                     if (thisValue != lastValue && sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
                         if (BuildConfig.DEBUG) Log.d(TAG, "sensorEvent.values[0]:" + thisValue);
                         lastValue = thisValue;
-                        if (sensorEvent.values[0] < sensorEvent.sensor.getMaximumRange()) {
-                            //far
-                            lockScreenStartTimer(true);
-                        } else {
-                            //near
-                            lockScreenStartTimer(false);
-                        }
+                        //far
+                        //near
+                        lockScreenStartTimer(sensorEvent.values[0] < sensorEvent.sensor.getMaximumRange());
                     }
                 }
 
@@ -620,7 +601,7 @@ public class LauncherService extends Service {
                             .alpha(0f)
                             .setDuration(ANIMATE_DURATION_MILES)
                             .setListener(new Animator.AnimatorListener() {
-                                private View readyToRemoveView = mLayout;
+                                private final View readyToRemoveView = mLayout;
 
                                 @Override
                                 public void onAnimationStart(Animator animator) {

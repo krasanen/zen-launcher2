@@ -12,7 +12,6 @@ import android.view.View;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
-
 import fr.neamar.kiss.SwitchPreference;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
@@ -66,11 +65,7 @@ public class DeviceAdminSwitch extends SwitchPreference implements SharedPrefere
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (BuildConfig.DEBUG) Log.v("DeviceAdminSwitch", "onSharedPreferenceChanged:"+s);
         if (s.equals("device-admin-permission")){
-            if (sharedPreferences.getBoolean("device-admin-permission", false)) {
-                    this.setChecked(true);
-                } else {
-                    this.setChecked(false);
-                }
+            this.setChecked(sharedPreferences.getBoolean("device-admin-permission", false));
             }
         else if (s.equals("proximity-switch-lock")){
             if (sharedPreferences.getBoolean("proximity-switch-lock", false)) {

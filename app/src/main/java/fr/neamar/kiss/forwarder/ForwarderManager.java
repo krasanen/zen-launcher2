@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+
 import fr.neamar.kiss.MainActivity;
 
 public class ForwarderManager extends Forwarder {
@@ -68,7 +69,7 @@ public class ForwarderManager extends Forwarder {
         widgetForwarder.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         permissionForwarder.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -77,7 +78,7 @@ public class ForwarderManager extends Forwarder {
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        widgetForwarder.onCreateContextMenu(menu, v, menuInfo);
+        widgetForwarder.onCreateContextMenu(menu);
     }
 
     public boolean onTouch(View view, MotionEvent event) {

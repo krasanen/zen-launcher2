@@ -1,6 +1,5 @@
 package fi.zmengames.zen;
 
-import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,7 +8,6 @@ import android.view.MotionEvent;
 import androidx.fragment.app.FragmentActivity;
 
 import fr.neamar.kiss.BuildConfig;
-import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 

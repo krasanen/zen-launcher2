@@ -6,10 +6,11 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class RootHandler {
 
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     private Boolean isRootAvailable = null;
     private Boolean isRootActivated = null;

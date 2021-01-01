@@ -10,7 +10,6 @@ import android.view.View;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
-import fr.neamar.kiss.R;
 
 import static fr.neamar.kiss.forwarder.ExperienceTweaks.mNumericInputTypeForced;
 
