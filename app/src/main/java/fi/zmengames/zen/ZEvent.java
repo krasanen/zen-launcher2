@@ -23,8 +23,7 @@ public class ZEvent {
         BADGE_COUNT,
         HANDLE_PENDING_EVENTS,
         INTERNAL_EVENT,
-        RELOAD_APPS,
-        ENABLE_DEVICE_ADMIN
+        RELOAD_APPS;
     }
 
     public ZEvent(@NonNull State state)

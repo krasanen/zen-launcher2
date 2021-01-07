@@ -48,7 +48,7 @@ import fr.neamar.kiss.utils.FuzzyScore;
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
 import static fr.neamar.kiss.MainActivity.DATE_TIME_PICKER;
-import static fr.neamar.kiss.MainActivity.LOCK_IN;
+import static fr.neamar.kiss.MainActivity.DEV_ADMIN_LOCK_AFTER;
 
 public class SearchResult extends Result {
     private static final String TAG = SearchResult.class.getSimpleName();
@@ -244,7 +244,7 @@ public class SearchResult extends Result {
                                 context.getString(R.string.hours), Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    lockin.setAction(LOCK_IN);
+                    lockin.setAction(DEV_ADMIN_LOCK_AFTER);
                     KissApplication.startLaucherService(lockin, context);
                 }
                 break;

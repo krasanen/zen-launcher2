@@ -34,14 +34,6 @@ public class AlarmUtils {
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
         saveAlarmId(context, notificationId, intent);
-
-        /*
-        try {
-            executeBadge(context, context.getPackageName(), "AlarmUtils", getAlarmIds(context).size());
-        } catch (ShortcutBadgeException e) {
-            e.printStackTrace();
-        }*/
-
     }
 
     public static void cancelAlarm(Context context, long notificationId) {

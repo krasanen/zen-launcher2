@@ -185,13 +185,6 @@ public final class Utility {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
 
-    /**
-     * Create a tiles on the status bar through CyanogenMod SDK -- Fung Jichun
-     * You can learn more from: https://cyngn.com/developer-blog/introducing-the-cyanogen-platform-sdk
-     * @param nowStatus Now
-     * @param context Context
-     */
-
     public static void showPopup(PopupMenu menu, Activity activity){
         if (BuildConfig.DEBUG) Log.i(TAG, "showPopup");
         if (!activity.isFinishing()){

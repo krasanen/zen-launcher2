@@ -50,5 +50,5 @@ public class ProximityLockSwitch extends SwitchPreference {
         if (BuildConfig.DEBUG) Log.v("ProximityLockSwitch", "enableProximityLock");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         prefs.edit().putBoolean("device-admin-switch", true).commit();
-            }
+    }
 }

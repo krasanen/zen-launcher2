@@ -115,21 +115,6 @@ public class Permission extends Forwarder {
                 Toast.makeText(mainActivity, "We Need permission Storage", Toast.LENGTH_SHORT).show();
             }
             return;
-        }else if (requestCode == MainActivity.MY_PERMISSIONS_RECORD_AUDIO) {
-            //premission to read storage
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //mainActivity.checkAudio();
-                // permission was granted, yay! Do the
-                // contacts-related task you need to do.
-
-            } else {
-
-                // permission denied, boo! Disable the
-                // functionality that depends on this permission.
-                Toast.makeText(mainActivity, "We Need permission to record", Toast.LENGTH_SHORT).show();
-            }
-            return;
         } else if (requestCode == MY_PERMISSIONS_CAMERA)
             if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_MY_PERMISSIONS_CAMERA");
             if (grantResults.length > 0

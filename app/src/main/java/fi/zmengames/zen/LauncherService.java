@@ -1,7 +1,6 @@
 package fi.zmengames.zen;
 
 import android.animation.Animator;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
@@ -54,7 +53,7 @@ import static fi.zmengames.zen.AlarmActivity.ALARM_TIME;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
 import static fr.neamar.kiss.MainActivity.ALARM_PICKER;
-import static fr.neamar.kiss.MainActivity.LOCK_IN;
+import static fr.neamar.kiss.MainActivity.DEV_ADMIN_LOCK_AFTER;
 
 public class LauncherService extends Service {
     private static final String TAG = LauncherService.class.getSimpleName();
@@ -79,15 +78,9 @@ public class LauncherService extends Service {
     private NotificationManager mNotificationManager;
     private AccessibilityManager mAccessibilityManager;
 
-    // Notification
-    private Notification mNotification;
-
     // Floating Window
     private View mLayout;
     private WindowManager.LayoutParams mLayoutParams;
-
-    // If floating window is showing
-    private boolean isShowing = true;
 
     // Options
     private final int mBrightness = 100;
@@ -100,7 +93,6 @@ public class LauncherService extends Service {
     private static SensorManager mSensorManager;
     private static Sensor mProximity;
     private static SensorEventListener sensorEventListener;
-    private static final int SENSOR_SENSITIVITY = 4;
     public static boolean isProximityLockEnabled(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean("proximity-switch-lock", false);
@@ -114,7 +106,7 @@ public class LauncherService extends Service {
     }
     public void stopListeningProximitySensor(){
         if (mSensorManager!=null){
-            handler.removeCallbacks(lockRunnable);
+            handler.removeCallbacks(lockProximityRunnable);
             if (sensorEventListener!=null) {
                 mSensorManager.unregisterListener(sensorEventListener);
             }
@@ -123,13 +115,23 @@ public class LauncherService extends Service {
     }
     public static boolean running = true;
     public static float lastValue=-1f;
-    final Runnable lockRunnable = new Runnable() {
+    final Runnable lockAfterRunnable = new Runnable() {
         public void run() {
             running = false;
             if (sensorEventListener!=null) {
                 mSensorManager.unregisterListener(sensorEventListener);
             }
             lockScreen();
+        }
+    };
+
+    final Runnable lockProximityRunnable = new Runnable() {
+        public void run() {
+            running = false;
+            if (sensorEventListener!=null) {
+                mSensorManager.unregisterListener(sensorEventListener);
+            }
+            lockScreenProximity();
         }
     };
     Handler handler = new Handler(Looper.getMainLooper());
@@ -152,16 +154,13 @@ public class LauncherService extends Service {
                     }
                 }
 
-
-
-
                 private void lockScreenStartTimer(boolean run) {
                     if (BuildConfig.DEBUG) Log.d(TAG, "lockScreenStartTimer: " + run);
                     if (run) {
                         if (!running)
-                            handler.postDelayed(lockRunnable, 2000);
+                            handler.postDelayed(lockProximityRunnable, 2000);
                     } else {
-                        handler.removeCallbacks(lockRunnable);
+                        handler.removeCallbacks(lockProximityRunnable);
                         running = false;
                     }
                 }
@@ -184,8 +183,16 @@ public class LauncherService extends Service {
         if (isDeviceAdminActive()) {
             devicePolicyManager.lockNow();
         } else {
-            handleShowToast("Device Admin features not enabled");
-            sendMessage(new ZEvent(ZEvent.State.ENABLE_DEVICE_ADMIN, LOCK_IN));
+            handleShowToast(getResources().getString(R.string.cannot_lock));
+        }
+    }
+
+    public void lockScreenProximity() {
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        if (isDeviceAdminActive()) {
+            devicePolicyManager.lockNow();
+        } else {
+            handleShowToast(getResources().getString(R.string.cannot_lock));
         }
     }
 
@@ -226,7 +233,7 @@ public class LauncherService extends Service {
         if (isProximityLockEnabled(this)) {
             stopListeningProximitySensor();
         }
-        destroyMaskView();
+        stopNightMode();
     }
 
     @Override
@@ -264,15 +271,15 @@ public class LauncherService extends Service {
                 if (intent.getAction().equals(GOOGLE_SIGN_IN)) handleGoogleSignIn(intent);
                 else if (intent.getAction().equals(GOOGLE_SIGN_OUT)) handleGoogleSignOut(intent);
 
-                else if (intent.getAction().equals(NIGHTMODE_ON)) createMaskView();
-                else if (intent.getAction().equals(NIGHTMODE_OFF)) destroyMaskView();
+                else if (intent.getAction().equals(NIGHTMODE_ON)) startNightMode();
+                else if (intent.getAction().equals(NIGHTMODE_OFF)) stopNightMode();
                 else if (intent.getAction().equals(LAUNCH_INTENT)) launchIntent(intent);
                 else if (intent.getAction().equals(SET_BADGE_COUNT)) setBadgeCount(intent);
                 else if (intent.getAction().equals(ENABLE_PROXIMITY)) startListeningProximitySensor();
                 else if (intent.getAction().equals(DISABLE_PROXIMITY)) stopListeningProximitySensor();
                 else if (intent.getAction().equals(SCREEN_ON)) screenOn();
                 else if (intent.getAction().equals(SCREEN_OFF)) screenOff();
-                else if (intent.getAction().equals(LOCK_IN)) lockScreenTimer(intent);
+                else if (intent.getAction().equals(DEV_ADMIN_LOCK_AFTER)) lockScreenAfter(intent);
                 else if (intent.getAction().equals(ALARM_IN_ACTION)) alarmIn(intent);
                 else if (intent.getAction().equals(ALARM_PICKER)) alarmAtPicker(intent);
             }
@@ -292,16 +299,16 @@ public class LauncherService extends Service {
         setAlarm(calAlarm, enteredText);
     }
 
-    private void lockScreenTimer(Intent intent) {
+    private void lockScreenAfter(Intent intent) {
+        int minutes = intent.getIntExtra(ZenProvider.mMinutes, 0);
+        if (BuildConfig.DEBUG) Log.d(TAG, "lockScreenTimer: " + minutes);
+        handler.postDelayed(lockAfterRunnable, minutes * 60000);
         if (isDeviceAdminActive()) {
-            int minutes = intent.getIntExtra(ZenProvider.mMinutes, 0);
-            if (BuildConfig.DEBUG) Log.d(TAG, "lockScreenTimer: " + minutes);
-            handler.postDelayed(lockRunnable, minutes * 60000);
             String toast = getString(R.string.lockIn) +" "+ getString(R.string.after)+ " " + minutes + " "+ getString(R.string.minutes);
             handleShowToast(toast );
         } else {
             handleShowToast(getString(R.string.deviceadmin_switch_text));
-            sendMessage(new ZEvent(ZEvent.State.ENABLE_DEVICE_ADMIN, LOCK_IN));
+            sendMessage(new ZEvent(ZEvent.State.INTERNAL_EVENT, DEV_ADMIN_LOCK_AFTER));
         }
     }
 
@@ -323,15 +330,15 @@ public class LauncherService extends Service {
             Intent intent = new Intent();
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                handleShowToast("Zen needs to ignore battery opt to be able to wake up for alarm.");
+            if (pm!=null && !pm.isIgnoringBatteryOptimizations(packageName)) {
+                handleShowToast(getResources().getString(R.string.alarm_battery_optimization));
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse("package:" + packageName));
                 try {
                     startActivity(intent);
                 } catch (RuntimeException e){
-                    handleShowToast("Zen needs to ignore battery opt to be able to wake up for alarm.");
+                    handleShowToast(getResources().getString(R.string.alarm_battery_optimization));
                 }
             }
         }
@@ -343,49 +350,25 @@ public class LauncherService extends Service {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         checkBatteryOptimizations();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // If api level minimum 23
-            /*
-                boolean isNotificationPolicyAccessGranted ()
-                    Checks the ability to read/modify notification policy for the calling package.
-                    Returns true if the calling package can read/modify notification policy.
-                    Request policy access by sending the user to the activity that matches the
-                    system intent action ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS.
-
-                    Use ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED to listen for
-                    user grant or denial of this access.
-
-                Returns
-                    boolean
-
-            */
 
             // If notification policy access granted for this package
-            if (mNotificationManager.isNotificationPolicyAccessGranted()) {
+            if (mNotificationManager != null && mNotificationManager.isNotificationPolicyAccessGranted()) {
             } else {
-                handleShowToast("Zen Alarm needs notification policy access for do not disturb control");
-                /*
-                    String ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
-                        Activity Action : Show Do Not Disturb access settings.
-                        Users can grant and deny access to Do Not Disturb configuration from here.
-
-                    Input : Nothing.
-                    Output : Nothing.
-                    Constant Value : "android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS"
-                */
-                // If notification policy access not granted for this package
+                handleShowToast(getResources().getString(R.string.notification_access));
                 Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
                     startActivity(intent);
                 } catch (RuntimeException e){
-                    handleShowToast("Zen Alarm needs notification policy access for do not disturb control");
+                    handleShowToast(getResources().getString(R.string.notification_access));
                 }
             }
         }
     }
     private void setAlarm(Calendar targetCal, String query) {
         checkDnd();
-        handleShowToast("\n\n***\n" + "Alarm is set "
-                + targetCal.getTime() + "\n" + query + "\n" + "***\n");
+        handleShowToast(getResources().getString(R.string.alarm_is_set_at)
+                + " " + targetCal.getTime());
         if (BuildConfig.DEBUG) Log.d(TAG,"targetCal.getTimeInMillis():"+targetCal.getTimeInMillis());
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         long notificationId = targetCal.getTimeInMillis();
@@ -396,13 +379,13 @@ public class LauncherService extends Service {
 
     }
     private void screenOn() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "SCREEN_ON");
+        if (BuildConfig.DEBUG) Log.d(TAG, "screenOn");
         if (isProximityLockEnabled(this)) {
             startListeningProximitySensor();
         }
     }
     private void screenOff() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "SCREEN_OFF");
+        if (BuildConfig.DEBUG) Log.d(TAG, "screenOff");
         if (isProximityLockEnabled(this)) {
             stopListeningProximitySensor();
         }
@@ -427,17 +410,6 @@ public class LauncherService extends Service {
             e.printStackTrace();
             handleShowToast(e.getMessage());
         }
-
-    }
-
-    private void handleProviderFullLoadOver(Intent intent) {
-        if(BuildConfig.DEBUG) Log.i(TAG, "handleProviderFullLoadOver");
-        sendMessage(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
-    }
-
-    private void handleProviderLoadOver(Intent intent) {
-        if(BuildConfig.DEBUG) Log.i(TAG, "handleProviderLoadOver");
-        sendMessageSticky2(new ZEvent(ZEvent.State.LOAD_OVER));
     }
 
     private void handleGoogleSignIn(Intent intent) {
@@ -454,16 +426,9 @@ public class LauncherService extends Service {
         sendMessage(new ZEvent(SHOW_TOAST, text));
     }
 
-    /// Helper Methods
+    private void startNightMode() {
 
-    private boolean isAllowed(Intent intent) {
-        return true;
-    }
-
-
-    private void createMaskView() {
-
-        if(BuildConfig.DEBUG) Log.i(TAG, "createMaskView");
+        if(BuildConfig.DEBUG) Log.i(TAG, "startNightMode");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             public void run() {
                 if (mLayout == null) {
@@ -480,9 +445,10 @@ public class LauncherService extends Service {
                 updateLayoutParams(-1);
                 try {
                     mWindowManager.addView(mLayout, mLayoutParams);
+                    handleShowToast(getResources().getString(R.string.nightmodeOn));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(BuildConfig.DEBUG) Log.i(TAG, "createMaskView CANNOT_START");
+                    if(BuildConfig.DEBUG) Log.i(TAG, "startNightMode CANNOT_START");
                     Intent broadcastIntent = new Intent();
                     broadcastIntent.setAction(MainActivity.class.getCanonicalName());
                     broadcastIntent.putExtra(Constants.Extra.EVENT_ID, Constants.Event.CANNOT_START);
@@ -588,15 +554,13 @@ public class LauncherService extends Service {
         }
     }
 
-    private void destroyMaskView() {
-        if(BuildConfig.DEBUG) Log.i(TAG, "destroyMaskView");
+    private void stopNightMode() {
+        if(BuildConfig.DEBUG) Log.i(TAG, "stopNightMode");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             public void run() {
-
-                isShowing = false;
-                //Utility.createStatusBarTiles(this, false);
                 cancelNotification();
                 if (mLayout != null) {
+                    handleShowToast(getResources().getString(R.string.nightmodeOff));
                     mLayout.animate()
                             .alpha(0f)
                             .setDuration(ANIMATE_DURATION_MILES)

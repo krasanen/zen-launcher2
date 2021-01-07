@@ -127,7 +127,6 @@ import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
-import fr.neamar.kiss.forwarder.Widget;
 import fr.neamar.kiss.preference.DefaultLauncherPreference;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
 import fr.neamar.kiss.searcher.AppsWithNotifSearcher;
@@ -158,20 +157,31 @@ import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener, /*ZBarScannerView.ResultHandler,*/ ZXingScannerView.ResultHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    // for device admin
     public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW = 3;
     public static final int REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER = 4;
-    private static final int ZEN_NOTIFICATION_ID = 73;
-    private DriveServiceHelper mDriveServiceHelper;
+    public static final int REQUEST_DEVICE_ADMIN_FROM_PREFERENCES = 5;
+
+    // for widgets
+    public static final int REQUEST_CREATE_APPWIDGET = 6;
+    public static final int REQUEST_CONFIGURE_APPWIDGET = 7;
+    public static final int REQUEST_PICK_APPWIDGET = 8;
+    public static final int REQUEST_REFRESH_APPWIDGET = 9;
+    public static final int REQUEST_BIND_APPWIDGET = 10;
+
+    // storing and loading layout
     private static final int REQUEST_LOAD_REPLACE_TAGS = 11;
     private static final int REQUEST_LOAD_REPLACE_SETTINGS = 12;
-    private static final int REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME = 13;
-    public static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 14;
-    public static final int MY_PERMISSIONS_RECORD_AUDIO = 15;
-    private static final int MY_PERMISSIONS_OVERLAY = 16;
-    private static final int MY_PERMISSIONS_HUAWEI = 18;
-    private static final int MY_PERMISSIONS_DND = 19;
-    public static final int MY_PERMISSIONS_CAMERA = 20;
-    public static final int REQUEST_BIND_APPWIDGET = 17;
+    public static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 13;
+    private static final int RC_SIGN_IN = 14;
+
+    // other purposes
+    private static final int MY_PERMISSIONS_OVERLAY = 15;
+    private static final int MY_PERMISSIONS_HUAWEI = 16;
+    private static final int MY_PERMISSIONS_DND = 17;
+    public static final int MY_PERMISSIONS_CAMERA = 18;
+    private static final int ZEN_NOTIFICATION_ID = 19;
 
     // app internal events
     public static String WIFI_ON = "com.zmengames.zenlauncher.WIFI_ON";
@@ -182,13 +192,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public static final String ALARM_IN_ACTION = "com.zmengames.zenlauncher.ALARM_IN_ACTION";
     public static final String ALARM_AT = "com.zmengames.zenlauncher.ALARM_AT";
     public static final String ALARM_PICKER = "com.zmengames.zenlauncher.ALARM_AT_PICKER";
-    public static final String LOCK_IN = "com.zmengames.zenlauncher.LOCK_IN";
+    public static final String DEV_ADMIN_LOCK_AFTER = "com.zmengames.zenlauncher.LOCK_AFTER";
+    public static final String DEV_ADMIN_LOCK_PROXIMITY = "com.zmengames.zenlauncher.PROXIMITY";
     public static final String DATE_TIME_PICKER = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
     public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
     private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
     public static final String BARCODE_READER = "com.zmengames.zenlauncher.BARCODE_READER";
     public static final String REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL = "com.zmengames.zenlauncher.REMOVE_DEVICE_ADMIN_UNINSTALL";
-    public static final String REQUEST_DEVICE_ADMIN = "com.zmengames.zenlauncher.REQUEST_DEVICE_ADMIN";
+
+    // Google Drive helper
+    private DriveServiceHelper mDriveServiceHelper;
 
     // BAR code reader stuff
     private ZXingScannerView mScannerViewXing;
@@ -289,7 +302,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private ForwarderManager forwarderManager;
     public static boolean mDebugJson = false;
     GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 54;
     private int widgetAddY,widgetAddX;
     public int action;
 
@@ -436,13 +448,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     public boolean askPermissionDeviceAdmin(int usage) {
         if (!isDeviceAdminActive()) {
-           if (BuildConfig.DEBUG) Log.v("DeviceAdminSwitch", "enableDeviceAdminPermission");
+           if (BuildConfig.DEBUG) Log.v("DeviceAdminSwitch", "askPermissionDeviceAdmin");
             ComponentName compName = new ComponentName(this, ZenAdmin.class);
             Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
             switch (usage) {
+                case REQUEST_DEVICE_ADMIN_FROM_PREFERENCES:
                 case REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER:
                 case REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW:
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
+                    break;
+                default:
                     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
                     break;
             }
@@ -509,6 +525,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onCreate(savedInstanceState);
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
         mReceiver = new ScreenReceiver(this);
+        KissApplication.getApplication(this).setMainActivity(this);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mReceiver, filter);
 
@@ -1011,26 +1028,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    public void setNightMode(Context target, boolean state) {
-        UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
-        if (uiManager!=null) {
-            if (state) {
-                if (checkPermissionOverlay()) {
-                    uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
-                    Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    Toast.makeText(getBaseContext(), "Retry after accepting permission",
-                            Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                setContentView(R.layout.main);
-                uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
-                Toast.makeText(this, "Night mode off", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     public void startAppGridActivity() {
         startActivity(new Intent(this, AppGridActivity.class));
     }
@@ -1185,12 +1182,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     if (askPermissionCamera()) {
                         startBarCodeScan();
                     }
-                } else if (event.getText().startsWith(LOCK_IN)) {
+                } else if (event.getText().startsWith(DEV_ADMIN_LOCK_AFTER)) {
                     if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
 
                     }
-                } else if (event.getText().startsWith(REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL)){
-                    disableDeviceAdminAndUninstall();
+                } else if (event.getText().startsWith(DEV_ADMIN_LOCK_PROXIMITY)) {
+                    if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
+
+                    }
                 }
                 break;
             case RELOAD_APPS:
@@ -1210,10 +1209,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }
                     }
                 }
-                break;
-            case ENABLE_DEVICE_ADMIN:
-                if (BuildConfig.DEBUG) Log.v(TAG, "ENABLE_DEVICE_ADMIN:");
-                askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER);
                 break;
         }
     }
@@ -2002,18 +1997,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (BuildConfig.DEBUG) Log.d(TAG, "onActivityResult,"+requestCode+ " "+resultCode);
         switch (requestCode) {
             case REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER:
-                if (resultCode == Activity.RESULT_OK) {
-                    prefs.edit().putBoolean("device-admin-permission", true).apply();
-                } else {
-                    prefs.edit().putBoolean("device-admin-permission", false).apply();
-                }
-                break;
             case REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW:
+            case REQUEST_DEVICE_ADMIN_FROM_PREFERENCES:
                 if (resultCode == Activity.RESULT_OK) {
-                    prefs.edit().putBoolean("device-admin-permission", true).apply();
-                    lockScreen();
+                    prefs.edit().putBoolean("device-admin-switch", true).apply();
                 } else {
-                    prefs.edit().putBoolean("device-admin-permission", false).apply();
+                    prefs.edit().putBoolean("device-admin-switch", false).apply();
+                    EventBus.getDefault().removeAllStickyEvents();
                 }
                 break;
             case REQUEST_BIND_APPWIDGET:
@@ -2101,19 +2091,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }
                     }
                 }
-
-                break;
-
-            case REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME:
-                if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_LOAD_REPLACE_SETTINGS_SAVEGAME");
-                int count = 0;
-                try {
-                    count = loadJson(data.getStringExtra("json"));
-                } catch (Exception e) {
-                    Log.e(TAG, "can't load tags", e);
-                    Toast.makeText(this, "can't load tags", Toast.LENGTH_LONG).show();
-                }
-                Toast.makeText(this, "loaded tags for " + count + " app(s)", Toast.LENGTH_LONG).show();
 
                 break;
         }
@@ -2517,13 +2494,13 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public void refreshWidget(int appWidgetId) {
         Intent intent = new Intent();
         intent.putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        forwarderManager.onActivityResult(Widget.REQUEST_REFRESH_APPWIDGET, RESULT_OK, intent);
+        forwarderManager.onActivityResult(REQUEST_REFRESH_APPWIDGET, RESULT_OK, intent);
     }
 
     public void addWidget(int appWidgetId) {
         Intent intent = new Intent();
         intent.putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        forwarderManager.onActivityResult(Widget.REQUEST_CREATE_APPWIDGET, RESULT_OK, intent);
+        forwarderManager.onActivityResult(REQUEST_CREATE_APPWIDGET, RESULT_OK, intent);
     }
 
     @Override

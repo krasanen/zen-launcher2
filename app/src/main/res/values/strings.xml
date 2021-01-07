@@ -380,5 +380,10 @@
     <string name="gesture_single_click">Action on single click</string>
     <string name="gesture_double_click">Action on double click</string>
     <string name="gesture_triple_click">Action on triple click</string>
+    <string name="cannot_lock">Cannot lock screen, device admin rights needed</string>
+    <string name="alarm_battery_optimization">Zen needs to ignore battery optimization to be able to show alarm</string>
+    <string name="notification_access">Zen Alarm needs notification policy access for do not disturb control</string>
+    <string name="alarm_is_set_at">Alarm is set at</string>
+    />
 
 </resources>

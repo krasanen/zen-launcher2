@@ -41,15 +41,16 @@ import fr.neamar.kiss.ui.WidgetPreferences;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_OPTIONS;
 import static fr.neamar.kiss.MainActivity.REQUEST_BIND_APPWIDGET;
+import static fr.neamar.kiss.MainActivity.REQUEST_CONFIGURE_APPWIDGET;
+import static fr.neamar.kiss.MainActivity.REQUEST_CREATE_APPWIDGET;
+import static fr.neamar.kiss.MainActivity.REQUEST_PICK_APPWIDGET;
+import static fr.neamar.kiss.MainActivity.REQUEST_REFRESH_APPWIDGET;
 
 public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
-    public static final int REQUEST_REFRESH_APPWIDGET = 10;
-    private static final int REQUEST_PICK_APPWIDGET = 9;
-    public static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final String TAG = Widget.class.getSimpleName();
     private static final int APPWIDGET_HOST_ID = 442;
     public static final String WIDGET_PREFERENCE_ID = "widgetprefs";
-    private static final int REQUEST_CONFIGURE_APPWIDGET = 8;
+
 
     private SharedPreferences widgetPrefs;
 
