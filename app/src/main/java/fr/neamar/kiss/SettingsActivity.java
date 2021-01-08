@@ -15,6 +15,7 @@
  import android.preference.PreferenceCategory;
  import android.preference.PreferenceGroup;
  import android.preference.PreferenceManager;
+ import android.util.Log;
  import android.view.Menu;
  import android.view.MenuInflater;
  import android.view.MenuItem;
@@ -30,6 +31,7 @@
  import java.util.Set;
  import java.util.TreeSet;
 
+ import fi.zmengames.zen.LauncherService;
  import fi.zmengames.zen.ZEvent;
  import fr.neamar.kiss.broadcast.IncomingCallHandler;
  import fr.neamar.kiss.cache.MemoryCacheHelper;
@@ -42,7 +44,7 @@
 @SuppressWarnings("FragmentInjection")
 public class SettingsActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
-
+    private static final String TAG = SettingsActivity.class.getSimpleName();
     private static final int PERMISSION_READ_PHONE_STATE = 1;
 
     // Those settings require the app to restart
@@ -123,6 +125,7 @@ public class SettingsActivity extends PreferenceActivity implements
     }
 
     private void removePreference(String parent, String category) {
+        if (BuildConfig.DEBUG) Log.d(TAG, "removePreference()"+parent+ "catecory:" + category);
         PreferenceCategory p = (PreferenceCategory) findPreference(parent);
         Preference c = findPreference(category);
         p.removePreference(c);

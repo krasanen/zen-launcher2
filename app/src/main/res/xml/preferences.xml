@@ -172,6 +172,11 @@
                 android:key="pref-hide-navbar"
                 android:summary="@string/pref_hide_navbar_desc"
                 android:title="@string/pref_hide_navbar" />
+            <fr.neamar.kiss.SwitchPreference
+                android:defaultValue="false"
+                android:key="pref-hide-statusbar"
+                android:summary="@string/pref_hide_statusbar_desc"
+                android:title="@string/pref_hide_statusbar" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/gestures" android:key="gestures-section">
             <!--<fr.neamar.kiss.SwitchPreference
