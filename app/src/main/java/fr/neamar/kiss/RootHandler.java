@@ -6,16 +6,15 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 public class RootHandler {
 
-    private static final Charset UTF_8 = StandardCharsets.UTF_8;
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private Boolean isRootAvailable = null;
     private Boolean isRootActivated = null;
 
-    public RootHandler(Context ctx) {
+    RootHandler(Context ctx) {
         resetRootHandler(ctx);
     }
 
@@ -23,7 +22,7 @@ public class RootHandler {
         return this.isRootActivated;
     }
 
-    public void resetRootHandler(Context ctx) {
+    void resetRootHandler(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         isRootActivated = prefs.getBoolean("root-mode", false);
     }
@@ -58,7 +57,7 @@ public class RootHandler {
                 p.getOutputStream().write((command + "\n").getBytes(UTF_8));
             }
             //exit from su command
-            p.getOutputStream().write(("exit\n").getBytes(UTF_8));
+            p.getOutputStream().write("exit\n".getBytes(UTF_8));
             p.getOutputStream().flush();
             p.getOutputStream().close();
             int result = p.waitFor();
@@ -66,7 +65,7 @@ public class RootHandler {
                 throw new Exception("Command execution failed " + result);
             return true;
         } catch (Exception e) {
-            Log.e("simpleExecuteCommand", " " + e);
+            Log.e("RootHandler", " " + e);
         } finally {
             if (p != null) {
                 p.destroy();
