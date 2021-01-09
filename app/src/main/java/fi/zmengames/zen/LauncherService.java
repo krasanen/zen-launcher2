@@ -442,7 +442,7 @@ public class LauncherService extends Service {
                     mLayout.setBackgroundColor(Color.BLACK);
                     mLayout.setAlpha(0.1f);
                 }
-                updateLayoutParams(-1);
+                updateLayoutParams();
                 try {
                     mWindowManager.addView(mLayout, mLayoutParams);
                     handleShowToast(getResources().getString(R.string.nightmodeOn));
@@ -489,60 +489,31 @@ public class LauncherService extends Service {
         return result;
     }
 
-    private void updateLayoutParams(int paramInt) {
+    private void updateLayoutParams() {
         if (mLayoutParams == null) {
             mLayoutParams = new WindowManager.LayoutParams();
         }
-
-        // Hacky method. However, I don't know how it works.
-        mAccessibilityManager.isEnabled();
 
         // Apply layout params type & gravity
         mLayoutParams.type = getWindowType();
         mLayoutParams.gravity = Gravity.CENTER;
 
         // Apply layout params attributes
-        if (getWindowType() == TYPE_SYSTEM_ERROR) {
-            // This is the reason why it will not affect users' application installation.
-            // Mask window won't cover any views.
-            mLayoutParams.width = 0;
-            mLayoutParams.height = 0;
-            mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-            mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-            mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-            // I haven't found what this two value mean. :p (I got them from another screen filter app)
-            mLayoutParams.flags &= 0xFFDFFFFF;
-            mLayoutParams.flags &= 0xFFFFFF7F;
-            mLayoutParams.format = PixelFormat.OPAQUE;
-            // Screen is dimmed by system.
-            mLayoutParams.dimAmount = constrain((100 - paramInt) / 100.0F, 0.0F, 0.9F);
-        } else {
-            // A dirty fix to deal with screen rotation.
-            int max = Math.max(
-                    Utility.getRealScreenWidth(this),
-                    Utility.getRealScreenHeight(this)
-            );
-            mLayoutParams.height = mLayoutParams.width = max + 200;
-
-            mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-            mLayoutParams.format = PixelFormat.TRANSPARENT;
-
-
-        }
-
+        mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+        mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;
+        mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+        mLayoutParams.format = PixelFormat.TRANSLUCENT;
         if (mLayout != null) {
             int color = Color.YELLOW;
             if (mYellowFilterAlpha > 0) {
                 Log.i(TAG, "Alpha: " + mYellowFilterAlpha);
                 float ratio = ((float) mYellowFilterAlpha) / 100F;
                 color = ColorUtil.blendColors(Color.YELLOW, Color.TRANSPARENT, ratio);
-
             }
             mLayout.setBackgroundColor(color);
-
-
         }
     }
 
