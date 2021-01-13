@@ -44,7 +44,7 @@ public class AddPhoneResult extends Result {
             view = inflateFromId(context, R.layout.item_phone, parent);
 
         TextView phoneText = view.findViewById(R.id.item_phone_text);
-        String text = String.format(context.getString(R.string.ui_item_phone), phonePojo.phone);
+        String text = String.format(context.getString(R.string.ui_item_new_contact), phonePojo.phone);
         int pos = text.indexOf(phonePojo.phone);
         int len = phonePojo.phone.length();
         displayHighlighted(text, Collections.singletonList(new Pair<Integer, Integer>(pos, pos + len)), phoneText, context);
