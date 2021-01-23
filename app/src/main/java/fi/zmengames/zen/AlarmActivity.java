@@ -275,10 +275,6 @@ public class AlarmActivity extends Activity {
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         am.setStreamVolume(AudioManager.STREAM_RING, originalVolume, 0);
         AlarmUtils.cancelAlarm(getApplicationContext(), getIntent().getLongExtra(ALARM_ID,0));
-        Intent startMain = new Intent(Intent.ACTION_MAIN);
-        startMain.addCategory(Intent.CATEGORY_HOME);
-        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(startMain);
         finish();
     }
 
