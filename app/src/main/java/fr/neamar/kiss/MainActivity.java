@@ -525,7 +525,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         super.onCreate(savedInstanceState);
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreate()");
         mReceiver = new ScreenReceiver(this);
-        KissApplication.getApplication(this).setMainActivity(this);
+        KissApplication.setMainActivity(this);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mReceiver, filter);
 

@@ -184,7 +184,7 @@
                 android:key="enable-gestures"
                 android:title="@string/enable_gestures" /> -->
         <ListPreference
-            android:defaultValue="display-keyboard"
+            android:defaultValue="display-all-apps"
             android:entries="@array/gestureEntries"
             android:entryValues="@array/gestureValues"
             android:key="gesture-swipe-up"

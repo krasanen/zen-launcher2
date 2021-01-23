@@ -18,7 +18,7 @@ public class KissApplication extends Application {
     private DataHandler dataHandler;
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;
-    private MainActivity mainActivity;
+    private static MainActivity mainActivity;
     private static final String TAG = KissApplication.class.getSimpleName();
 
     public void onCreate() {
@@ -62,8 +62,8 @@ public class KissApplication extends Application {
     public void setDataHandler(DataHandler newDataHandler) {
         dataHandler = newDataHandler;
     }
-    public void setMainActivity(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public static void setMainActivity(MainActivity mainActivity) {
+        KissApplication.mainActivity = mainActivity;
     }
 
     public RootHandler getRootHandler() {
