@@ -166,17 +166,10 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="Cancel" />
-
-        <Button
             android:id="@+id/btn_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Apply" />
+            android:text="@android:string/ok" />
     </LinearLayout>
 </LinearLayout>

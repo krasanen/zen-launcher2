@@ -211,13 +211,6 @@ public class WidgetPreferences implements Serializable {
 
                 }
             });
-            contentView.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                    updateWidget();
-                }
-            });
 
             String label;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

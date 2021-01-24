@@ -14,7 +14,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.app.UiModeManager;
 import android.app.WallpaperManager;
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
@@ -787,9 +786,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
     private void buildWidgetPopupMenu() {
         checkPermissionHuawei(this);
-        widgetAddY = y;
-        widgetAddX = x;
-        show(this, x, y);
+        widgetAddY = lastTouchY;
+        widgetAddX = lastTouchX;
+        show(this, lastTouchX, lastTouchY);
     }
 
     public void show(Activity activity, final float x, final float y) {
@@ -2138,6 +2137,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            lastTouchX = (int) event.getX();
+            lastTouchY = (int) event.getY();
+        }
         if (forwarderManager.onTouch(view, event)) {
             return true;
         }
@@ -2179,7 +2182,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         displayContacts(contactsButton.getTag().equals("showMenu"));
     }
 
-    public int x, y;
+    public int lastTouchX, lastTouchY;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
