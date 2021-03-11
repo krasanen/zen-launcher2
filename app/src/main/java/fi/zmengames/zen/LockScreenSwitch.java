@@ -11,11 +11,13 @@ import android.util.Log;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.SwitchPreference;
 
 import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_FOR_LOCK_NOW;
 
 public class LockScreenSwitch extends SwitchPreference {
+    private Context context;
     public LockScreenSwitch(Context context) {
         super(context);
     }
@@ -25,6 +27,7 @@ public class LockScreenSwitch extends SwitchPreference {
     }
     public LockScreenSwitch(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        this.context = context;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class LockScreenSwitch extends SwitchPreference {
         if (BuildConfig.DEBUG) Log.v("LockScreenSwitch", "removeDeviceAdmin");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (!prefs.getBoolean("proximity-switch-lock", false)) {
-            KissApplication.getApplication(getContext()).getMainActivity().disableDeviceAdmin();
+            MainActivity.disableDeviceAdmin(context);
         }
     }
 

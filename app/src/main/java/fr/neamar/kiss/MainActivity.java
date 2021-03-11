@@ -1212,17 +1212,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
-    private void disableDeviceAdminAndUninstall() {
-        disableDeviceAdmin();
-        Intent intent = new Intent(Intent.ACTION_DELETE,
-                Uri.fromParts("package", this.getPackageName(), null));
-        try {
-            this.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.application_not_found, Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void dateTimePicker(String text) {
         alarmText = text.replace(DATE_TIME_PICKER, "");
         showDialog(999);
@@ -2647,14 +2636,15 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
-    public void disableDeviceAdmin() {
-        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        ComponentName compName = new ComponentName(this, ZenAdmin.class);
+    public static void disableDeviceAdmin(Context context) {
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) context.getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(context, ZenAdmin.class);
         devicePolicyManager.removeActiveAdmin(compName);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putBoolean("proximity-switch-lock", false).commit();
-        Intent proximity = new Intent(this, LauncherService.class);
+        Intent proximity = new Intent(context, LauncherService.class);
         proximity.setAction(DISABLE_PROXIMITY);
-        KissApplication.startLaucherService(proximity, this);
+        KissApplication.startLaucherService(proximity, context);
     }
 
     public void onShortcutsButtonClicked(View view) {

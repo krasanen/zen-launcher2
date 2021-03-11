@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.SwitchPreference;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
@@ -18,6 +19,7 @@ import static fr.neamar.kiss.MainActivity.REQUEST_DEVICE_ADMIN_FROM_PREFERENCES;
 
 public class DeviceAdminSwitch extends SwitchPreference implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = DeviceAdminSwitch.class.getSimpleName();
+    private Context context;
     public DeviceAdminSwitch(Context context) {
         super(context);
     }
@@ -27,7 +29,7 @@ public class DeviceAdminSwitch extends SwitchPreference implements SharedPrefere
     }
     public DeviceAdminSwitch(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
+        this.context = context;
     }
 
     protected void onBindView(View view) {
@@ -61,7 +63,7 @@ public class DeviceAdminSwitch extends SwitchPreference implements SharedPrefere
     }
     private void disableDeviceAdminPermission() {
         if (BuildConfig.DEBUG) Log.v(TAG, "disableDeviceAdminPermission");
-        KissApplication.getApplication(getContext()).getMainActivity().disableDeviceAdmin();
+        MainActivity.disableDeviceAdmin(context);
     }
 
     @Override

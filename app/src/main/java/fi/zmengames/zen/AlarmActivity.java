@@ -72,16 +72,15 @@ public class AlarmActivity extends Activity {
         AudioManager am;
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         originalVolume = am.getStreamVolume(AudioManager.STREAM_RING);
-        // TODO: smart ringer, rising volume
 
-        if (originalVolume == 0) {
-         /*   SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            if (!prefs.getBoolean("vibrate-on-alarm", false)) {
-                am.setStreamVolume(AudioManager.STREAM_RING, am.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
-            }*/
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mNotificationManager != null && mNotificationManager.isNotificationPolicyAccessGranted()) {
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+            }
+        } else {
+            am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
         }
-        //For Normal mode
-        am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
      }
     Timer risingVolumeTimer;
     private void risingVolume(){

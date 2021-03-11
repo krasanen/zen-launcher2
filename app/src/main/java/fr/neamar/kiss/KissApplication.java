@@ -45,7 +45,7 @@ public class KissApplication extends Application {
     }
 
     public static KissApplication getApplication(Context context) {
-        return (KissApplication) KissApplication.context;
+        return (KissApplication) context.getApplicationContext();
     }
 
     public MainActivity getMainActivity() {
