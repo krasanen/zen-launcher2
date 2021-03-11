@@ -2,6 +2,7 @@ package fr.neamar.kiss.result;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,10 +30,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
@@ -217,7 +221,11 @@ public class ShortcutsResult extends Result {
                 if (userManager.isUserRunning(userHandle)) {
                     List<ShortcutInfo> shortcuts = launcherApps.getShortcuts(query, userHandle);
                     if (shortcuts != null && shortcuts.size() > 0 && shortcuts.get(0).isEnabled()) {
-                        launcherApps.startShortcut(shortcuts.get(0), v.getClipBounds(), null);
+                        try {
+                            launcherApps.startShortcut(shortcuts.get(0), v.getClipBounds(), null);
+                        } catch (ActivityNotFoundException e){
+                            Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
+                        }
                         return;
                     }
                 }
