@@ -76,7 +76,11 @@ public class SystemUiVisibilityHelper implements View.OnSystemUiVisibilityChange
             autoApplySystemUiRunnable.run();
             mMainActivity.numericButton.setVisibility(View.GONE);
             mMainActivity.keyboardButton.setVisibility(View.GONE);
-            mMainActivity.historyButton.setVisibility(View.VISIBLE);
+            if (prefs.getBoolean("enable-historybutton", true)) {
+                mMainActivity.historyButton.setVisibility(View.VISIBLE);
+            } else {
+                mMainActivity.historyButton.setVisibility(View.GONE);
+            }
             if (mNumericInputTypeForced){
                 mMainActivity.switchInputType();
             }

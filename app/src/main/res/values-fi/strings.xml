@@ -321,4 +321,6 @@
     <string name="custom_name_rename">Nimeä uudelleen</string>
     <string name="custom_name_set_default">Oletusnimi</string>
     <string name="deviceadmin_switch">Laitehallinta</string>
+    <string name="show_historybutton">Historianappi</string>
+    <string name="show_historybutton_sum">Näytä erillinen historianappi hakukentässä</string>
 </resources>

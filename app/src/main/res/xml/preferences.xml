@@ -233,6 +233,11 @@
              android:key="enable-favbar-appnames"
              android:title="@string/show_favbar_appnames"
              android:summary="@string/show_favbar_appnames_sum" />
+         <fi.zmengames.zen.ShowHistoryButtonSwitch
+             android:defaultValue="true"
+             android:key="enable-historybutton"
+             android:title="@string/show_historybutton"
+             android:summary="@string/show_historybutton_sum" />
          <fr.neamar.kiss.SwitchPreference
              android:defaultValue="false"
              android:key="force-portrait"

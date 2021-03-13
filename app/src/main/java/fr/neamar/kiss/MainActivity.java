@@ -198,6 +198,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
     public static final String BARCODE_READER = "com.zmengames.zenlauncher.BARCODE_READER";
     public static final String REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL = "com.zmengames.zenlauncher.REMOVE_DEVICE_ADMIN_UNINSTALL";
+    public static final String SHOW_HISTORYBUTTON = "com.zmengames.zenlauncher.SHOW_HISTORYBUTTON";
+    public static final String HIDE_HISTORYBUTTON = "com.zmengames.zenlauncher.HIDE_HISTORYBUTTON";
 
     // Google Drive helper
     private DriveServiceHelper mDriveServiceHelper;
@@ -570,6 +572,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.numericButton = findViewById(R.id.numericButton);
         this.keyboardButton = findViewById(R.id.keyboardButton);
         this.historyButton = findViewById(R.id.historyButton);
+        if (prefs.getBoolean("enable-historybutton", true)) {
+            this.historyButton.setVisibility(View.VISIBLE);
+        }
         this.resultsLayout = findViewById(R.id.resultLayout);
         this.resultsLayout.setTag(this.resultsLayout.getVisibility());
         this.resultsLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
@@ -881,7 +886,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             }
             numericButton.setVisibility(View.GONE);
             keyboardButton.setVisibility(View.GONE);
-            historyButton.setVisibility(View.VISIBLE);
+            if (prefs.getBoolean("enable-historybutton", true)) {
+                historyButton.setVisibility(View.VISIBLE);
+            } else {
+                historyButton.setVisibility(View.GONE);
+            }
             if (!resultsVisible) {
                 showHistory();
             } else {
@@ -1189,6 +1198,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
 
                     }
+                } else if (event.getText().startsWith(SHOW_HISTORYBUTTON)){
+                    historyButton.setVisibility(View.VISIBLE);
+                    EventBus.getDefault().removeStickyEvent(event);
+                } else if (event.getText().startsWith(HIDE_HISTORYBUTTON)){
+                    historyButton.setVisibility(View.GONE);
+                    EventBus.getDefault().removeStickyEvent(event);
+                } else if (event.getText().startsWith(REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL)){
+                    disableDeviceAdminAndUninstall();
                 }
                 break;
             case RELOAD_APPS:
@@ -1209,6 +1226,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     }
                 }
                 break;
+        }
+    }
+
+    private void disableDeviceAdminAndUninstall() {
+        disableDeviceAdmin(this);
+        Intent intent = new Intent(Intent.ACTION_DELETE,
+                Uri.fromParts("package", this.getPackageName(), null));
+        try {
+            this.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.application_not_found, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -385,6 +385,8 @@
     <string name="alarm_battery_optimization">Zen needs to ignore battery optimization to be able to show alarm</string>
     <string name="notification_access">Zen Alarm needs notification policy access for do not disturb control</string>
     <string name="alarm_is_set_at">Alarm is set at</string>
+    <string name="show_historybutton">History button </string>
+    <string name="show_historybutton_sum">Show separate history button in search bar</string>
     />
 
 </resources>

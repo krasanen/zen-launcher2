@@ -197,7 +197,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/secondary_button_vertical_margin"
             android:background="?attr/appSelectableItemBackground"
-
+            android:visibility="gone"
             android:contentDescription="@string/main_clear"
             android:onClick="onMainbarButtonclicked"
             android:src="@drawable/ic_history_24px"
