@@ -74,10 +74,14 @@
     <string name="icons_hide_main">Hide app icons</string>
     <string name="icons_hide_desc">Useful on slow devices</string>
     <string name="search_providers_title">Select web search providers</string>
-    <string name="search_providers_delete">Delete search providers</string>
-    <string name="custom_search_provider">Add search provider</string>
-    <string name="search_provider_reset">Reset search providers</string>
+    <string name="regenerate_shortcuts">Regenerate all app shortcuts</string>
+    <string name="search_providers_delete">Delete web search providers</string>
+    <string name="custom_search_provider">Add web search provider</string>
+    <string name="search_provider_reset">Reset web search providers</string>
+    <string name="search_provider_default">Default web search provider on enter</string>
     <string name="search_provider_reset_desc">Would you like to reset the list of search providers?</string>
+    <string name="regenerate_shortcuts_desc">Would you like to regenerate the list of shortcuts?</string>
+    <string name="regenerate_shortcuts_done">Shortcuts have been regenerated</string>
     <string name="search_provider_reset_done_desc">The search providers have been reset</string>
     <string name="search_provider_name">Provider name</string>
     <string name="search_provider_url" translatable="false">https://p.com/?q={q}</string>
@@ -160,6 +164,8 @@
     <string name="enable_app">Show newly installed apps in history</string>
     <string name="enable_favorites_bar">Show favorites above search bar</string>
     <string name="exclude_favorites">Exclude favorites from history</string>
+    <string name="exclude_favorites_apps">Exclude favorites from apps list</string>
+    <string name="exclude_favorites_history">Exclude favorites from history</string>
     <string name="favorites_hide">Hide Favorites Bar</string>
     <string name="pref_hide_navbar">Hide navbar</string>
     <string name="pref_hide_navbar_desc">Hide navigation bar and turn on immersive mode</string>
@@ -237,6 +243,7 @@
     <string name="pref_toggle_tags">Show hide-tags bar</string>
     <string name="screen_toggle_tags">Customize tags bar</string>
     <string name="pref_toggle_tags_select">Tags to show on bar</string>
+    <string name="pref_fav_tags_select">Tags to show in fav bar</string>
     <string name="ctx_menu">Zen Menu</string>
     <string name="pref_tags_menu">Enable tags menu</string>
     <string name="show_matching">Show all matching</string>
@@ -256,6 +263,8 @@
     <string name="cant_pin_shortcut">Could not add shortcut. Is ZEN your default launcher\?</string>
     <string name="copy_confirmation">Copied to clipboard</string>
     <string name="unable_to_initialize_shortcuts">Unable to initialize shortcuts. Is Zen Launcher your default launcher?</string>
+    <string name="large_favorites_bar">Use bigger favorites</string>
+
     <!-- custom icon dialog -->
     <string name="custom_icon_hint">Filter by name</string>
     <string name="default_icon">default icon</string>
@@ -272,10 +281,51 @@
     <string name="custom_icon_badged_adaptive">badged adaptive</string>
     <string name="custom_icon_badged_adaptive_fill">badged adaptive fill</string>
     <string name="custom_icon_preview">Preview</string>
+    <!-- Customize theme -->
+    <string name="theme_customisation">Advanced theme customisation</string>
+    <string name="theme_shadow">Text outline (shadow)</string>
+    <string name="theme_customize_default">Theme default</string>
+    <string name="theme_customize_disabled">Disabled</string>
+    <string name="theme_customize_enabled">Enabled</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light_transparent">Transparent</string>
+    <string name="theme_dark_transparent">Dark transparent</string>
+    <string name="theme_semi_light">Semi-transparent</string>
+    <string name="theme_semi_dark">Dark semi-transparent</string>
+    <string name="theme_amoled">AMOLED dark</string>
+    <string name="theme_separator">Result separator</string>
+    <string name="theme_result_color">Text color for results</string>
+    <string name="history_recency">Accessed recently first</string>
+    <string name="history_frecency">Accessed frequently recently</string>
+    <string name="history_frequency">Accessed frequently</string>
+    <string name="history_adaptive">Adapted to user usage</string>
+    <string name="history_alphabetically">Alphabetically</string>
+    <string name="gesture_do_nothing">Do nothing</string>
+    <string name="gesture_keyboard">Display keyboard</string>
+    <string name="gesture_notifications">Display notification shade</string>
+    <string name="gesture_apps">Display apps list</string>
+    <string name="gesture_history">Display history</string>
+    <string name="small_results">Display smaller results</string>
+    <string name="theme_wallpaper">Wallpaper</string>
+    <string name="show_subicons">Show app icon on shortcuts</string>
     <string name="custom_name_rename">Rename</string>
     <string name="custom_name_set_default">Default name</string>
+    <string name="contacts_shape">Contacts shape</string>
+    <string name="contacts_shape_summary">Shape of contacts icon</string>
     <string name="app_rename_confirmation">App name is now %s</string>
     <string name="app_rename_title">Custom name</string>
+    <string name="theme_bar_color">Favorites bar and Search bar color</string>
+    <string name="adaptive_shape_name">Background shape for icons</string>
+    <string name="force_adaptive">Force icon background</string>
+    <string name="force_adaptive_summary">For non-adaptive icons, reduce scale and place on a white background</string>
+    <string name="force_shape">Force background shape</string>
+    <string name="force_shape_summary">Use adaptive mask on non-adaptive icons</string>
+    <string name="contact_pack_mask_summary">Use icon pack mask for contacts</string>
+    <string name="contact_pack_mask">Shape contact icons</string>
+    <string name="icons_category">Icons</string>
+    <string name="loading">Loading…</string>
+    <string name="clipboard_warning_dialog">This will overwrite your clipboard content.</string>
 
     <!-- Zen Laucher specific -->
     <string name="share_tags">Share tags</string>

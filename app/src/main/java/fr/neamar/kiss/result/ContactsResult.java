@@ -47,6 +47,7 @@ import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ImprovedQuickContactBadge;
 import fr.neamar.kiss.ui.ListPopup;
+import fr.neamar.kiss.ui.ShapedContactBadge;
 import fr.neamar.kiss.utils.FuzzyScore;
 
 public class ContactsResult extends Result {
@@ -531,12 +532,6 @@ public class ContactsResult extends Result {
                             .openInputStream(contactPojo.icon);
                     return icon = Drawable.createFromStream(inputStream, null);
                 } catch (FileNotFoundException ignored) {
-                    if (BuildConfig.DEBUG)
-                        Log.i(TAG, "getDrawable FileNotFoundException" + contactPojo.icon);
-                    //inputStream = getPhotoInputStream(contactPojo.icon, context);
-                    //return icon = Drawable.createFromStream(inputStream, null);
-
-                    // loadDisplayPhoto(getWhatsappPhotoUri(context), context);
                 } finally {
                     if (inputStream != null) {
                         try {

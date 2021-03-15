@@ -69,7 +69,7 @@ public class PackageAddedRemovedHandler extends BroadcastReceiver {
                 provider.removeApp(appPojo);
             }
             ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
-            EventBus.getDefault().post(event);
+            EventBus.getDefault().postSticky(event);
         }
 
 

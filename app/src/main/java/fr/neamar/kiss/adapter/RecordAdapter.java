@@ -42,7 +42,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     private List<Result> results;
 
     // Mapping from letter to a position (only used for fast scroll, when viewing app list)
-    private final HashMap<String, Integer> alphaIndexer = new HashMap<>();
+    private HashMap<String, Integer> alphaIndexer = new HashMap<>();
     // List of available sections (only used for fast scroll)
     private String[] sections = new String[0];
 

@@ -37,6 +37,7 @@ import fr.neamar.kiss.dataprovider.SearchProvider;
 import fr.neamar.kiss.dataprovider.ShortcutsProvider;
 import fr.neamar.kiss.dataprovider.simpleprovider.CalculatorProvider;
 import fr.neamar.kiss.dataprovider.simpleprovider.PhoneProvider;
+import fr.neamar.kiss.dataprovider.simpleprovider.TagsProvider;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.db.ValuedHistoryRecord;
@@ -119,6 +120,9 @@ public class DataHandler
         ProviderEntry zenEntry = new ProviderEntry();
         zenEntry.provider = new ZenProvider(context);
         this.providers.put("zen", zenEntry);
+        ProviderEntry tagsEntry = new ProviderEntry();
+        tagsEntry.provider = new TagsProvider();
+        this.providers.put("tags", tagsEntry);
     }
 
     @Override
@@ -457,6 +461,22 @@ public class DataHandler
         return excluded;
     }
 
+    /**
+     * Get ids that should be excluded from apps
+     *
+     * @return set of favorite ids
+     */
+    @NonNull
+    public Set<String> getExcludedFavorites() {
+        Set<String> excludedFavorites = new HashSet<>();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (prefs.getBoolean("exclude-favorites-apps", false)) {
+            String favApps = prefs.getString("favorite-apps-list", "");
+            excludedFavorites.addAll(Arrays.asList(favApps.split(";")));
+        }
+        return excludedFavorites;
+    }
+
     public void addToExcludedFromHistory(AppPojo app) {
         // The set needs to be cloned and then edited,
         // modifying in place is not supported by putStringSet()
@@ -557,7 +577,7 @@ public class DataHandler
     }
 
     /**
-     * Return all applications
+     * Return all applications (including excluded)
      *
      * @return pojos for all applications
      */

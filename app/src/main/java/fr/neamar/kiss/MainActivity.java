@@ -1180,12 +1180,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 } else if (event.getText().startsWith(DATE_TIME_PICKER)){
                     dateTimePicker(event.getText());
                 } else if (event.getText().startsWith(REFRESH_UI)){
+                    if (BuildConfig.DEBUG) Log.d(TAG,"REFRESH_UI");
                     //Update favorite bar
                     this.onFavoriteChange();
                     //Update Search to reflect favorite add, if the "exclude favorites" option is active
                     if (this.prefs.getBoolean("exclude-favorites", false) && this.isViewingSearchResults()) {
                         this.updateSearchRecords();
                     }
+                    EventBus.getDefault().removeStickyEvent(event);
                 } else if (event.getText().startsWith(BARCODE_READER)){
                     if (askPermissionCamera()) {
                         startBarCodeScan();
@@ -1212,6 +1214,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 if (BuildConfig.DEBUG) Log.v(TAG, "RELOAD_APPS:");
                 KissApplication kissApplication = KissApplication.getApplication(this);
                 if (kissApplication!=null){
+                    if (BuildConfig.DEBUG) Log.v(TAG, "RELOAD_APPS2:");
                     DataHandler dataHandler = kissApplication.getDataHandler();
                     if (dataHandler!=null){
                         AppProvider appProvider = dataHandler.getAppProvider();
@@ -1225,6 +1228,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                         }
                     }
                 }
+                EventBus.getDefault().removeStickyEvent(event);
                 break;
         }
     }

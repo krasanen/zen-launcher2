@@ -6,12 +6,14 @@
     <dimen name="icon_margin_bottom">5dp</dimen>
 
     <dimen name="result_icon_size">48dp</dimen>
+    <dimen name="result_icon_size_grid">50dp</dimen>
     <dimen name="result_subicon_size">20dp</dimen>
     <dimen name="result_title_size">18sp</dimen>
     <dimen name="result_subtitle_size">14sp</dimen>
     <dimen name="result_button_height">56dp</dimen>
 
     <dimen name="result_icon_size_small">24dp</dimen>
+    <dimen name="result_icon_size_grid_small">40dp</dimen>
     <dimen name="result_subicon_size_small">10dp</dimen>
     <dimen name="result_title_size_small">15sp</dimen>
     <dimen name="result_subtitle_size_small">10sp</dimen>
@@ -39,7 +41,7 @@
 
     <dimen name="favorite_padding">5dp</dimen>
     <dimen name="favorite_height">58dp</dimen>
-    <dimen name="large_favorite_height">68dp</dimen>
+    <dimen name="large_favorite_height">90dp</dimen>
 
     <dimen name="popup_title">12sp</dimen>
 

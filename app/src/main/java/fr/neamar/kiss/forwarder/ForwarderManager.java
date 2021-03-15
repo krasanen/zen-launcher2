@@ -10,6 +10,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
+import fr.neamar.kiss.UIColors;
 
 public class ForwarderManager extends Forwarder {
     private final Widget widgetForwarder;
@@ -35,6 +37,32 @@ public class ForwarderManager extends Forwarder {
         this.shortcutsForwarder = new OreoShortcuts(mainActivity);
         this.notificationForwarder = new Notification(mainActivity);
         this.tagsMenu = new TagsMenu(mainActivity);
+        // Setting the theme needs to be done before setContentView()
+        String theme = prefs.getString("theme", "transparent");
+        switch (theme) {
+            case "dark":
+                mainActivity.setTheme(R.style.AppThemeDark);
+                break;
+            case "transparent":
+                mainActivity.setTheme(R.style.AppThemeTransparent);
+                break;
+            case "semi-transparent":
+                mainActivity.setTheme(R.style.AppThemeSemiTransparent);
+                break;
+            case "semi-transparent-dark":
+                mainActivity.setTheme(R.style.AppThemeSemiTransparentDark);
+                break;
+            case "transparent-dark":
+                mainActivity.setTheme(R.style.AppThemeTransparentDark);
+                break;
+            case "amoled-dark":
+                mainActivity.setTheme(R.style.AppThemeAmoledDark);
+                break;
+        }
+
+        UIColors.applyOverlay(mainActivity, prefs);
+
+        mainActivity.getTheme().applyStyle(prefs.getBoolean("small-results", false) ? R.style.OverlayResultSizeSmall : R.style.OverlayResultSizeStandard, true);
     }
 
     public void onCreate() {

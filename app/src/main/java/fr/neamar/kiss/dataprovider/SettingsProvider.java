@@ -1,5 +1,9 @@
 package fr.neamar.kiss.dataprovider;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import java.util.Locale;
 
 import fr.neamar.kiss.R;
@@ -11,17 +15,22 @@ import fr.neamar.kiss.utils.FuzzyScore;
 
 public class SettingsProvider extends Provider<SettingsPojo> {
     private String settingName;
+    private SharedPreferences prefs;
 
     @Override
     public void reload() {
         super.reload();
         this.initialize(new LoadSettingsPojos(this));
-
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         settingName = this.getString(R.string.settings_prefix).toLowerCase(Locale.ROOT);
     }
 
     @Override
     public void requestResults(String query, Searcher searcher) {
+        if (!prefs.getBoolean("enable-settings", true)) {
+            return;
+        }
+
         StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, true);
 
         if (queryNormalized.codePoints.length == 0) {

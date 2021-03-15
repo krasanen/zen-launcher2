@@ -87,4 +87,20 @@ public abstract class Pojo {
     public String getNotificationPackage(){
         return notificationPackage;
     }
+
+    /**
+     * ID to use in the history
+     * (may be different from the one used in the adapter for display)
+     */
+    public String getHistoryId() {
+        return this.id;
+    }
+
+    /**
+     * ID to use for favorites
+     * (may be different from the one used in the adapter for display, or for history)
+     */
+    public String getFavoriteId() {
+        return getHistoryId();
+    }
 }

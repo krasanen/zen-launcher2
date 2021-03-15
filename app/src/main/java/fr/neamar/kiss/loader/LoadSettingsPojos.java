@@ -23,10 +23,10 @@ import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.pojo.SettingsPojo;
 
-import static fr.neamar.kiss.forwarder.Favorites.DEFAULT_RESOLVER;
 
 
 public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
+    private static final String DEFAULT_RESOLVER = "com.android.internal.app.ResolverActivity";
     private static final String TAG = LoadSettingsPojos.class.getSimpleName();
 
     public LoadSettingsPojos(Context context) {

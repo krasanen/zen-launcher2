@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="kiss_green">#4caf50</color>
+    <color name="zen_green">#03DAC5</color>
     <color name="kiss_text_on_dark">#c3c3c3</color>
     <color name="kiss_text_on_semi_dark">#dbdbdb</color>
     <color name="kiss_text_on_light">#f8f8f8</color>

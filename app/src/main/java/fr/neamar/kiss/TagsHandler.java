@@ -20,7 +20,7 @@ import static fr.neamar.kiss.MainActivity.mDebugJson;
 
 public class TagsHandler {
     private final Context context;
-    //cached tags
+    // cached tags
     private final Map<String, String> tagsCache;
     private static final String TAG = TagsHandler.class.getCanonicalName();
     TagsHandler(Context context) {
@@ -33,11 +33,11 @@ public class TagsHandler {
         if (mDebugJson) {
             if(BuildConfig.DEBUG) Log.i(TAG, "setTags, id:" + id + " tags:" + tags);
         }
-        //remove existing tags for id
+        // remove existing tags for id
         DBHelper.deleteTagsForId(this.context, id);
-        //add to db
+        // add to db
         DBHelper.insertTagsForId(this.context, tags, id);
-        //add to cache
+        // add to cache
         tagsCache.put(id, tags);
     }
 
@@ -54,7 +54,7 @@ public class TagsHandler {
 
     public String[] getAllTagsAsArray() {
         Set<String> tags = getAllTagsAsSet();
-        return tags.toArray(new String[tags.size()]);
+        return tags.toArray(new String[0]);
     }
 
     public Set<String> getAllTagsAsSet() {
@@ -64,6 +64,15 @@ public class TagsHandler {
         }
         tags.remove("");
         return tags;
+    }
+
+    public Map<String, String> getTags() {
+        return tagsCache;
+    }
+
+    public void clearTags() {
+        tagsCache.clear();
+        DBHelper.deleteTags(this.context);
     }
 
     private void addDefaultAliases() {
@@ -116,7 +125,7 @@ public class TagsHandler {
     }
 
     private void addAliasesPojo(String aliases, String app) {
-        //add aliases only if they haven't overridden by the user (not in db)
+        // add aliases only if they haven't overridden by the user (not in db)
         if (!tagsCache.containsKey(app)) {
             tagsCache.put(app, aliases.replace(",", " "));
         }
@@ -148,7 +157,7 @@ public class TagsHandler {
 
         // Known clock implementations
         // See http://stackoverflow.com/questions/3590955/intent-to-launch-the-clock-application-on-android
-        String[][] clockImpls = {
+        String clockImpls[][] = {
                 // Nexus
                 {"com.android.deskclock", "com.android.deskclock.DeskClock"},
                 // Samsung

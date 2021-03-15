@@ -10,25 +10,6 @@
         <item name="appSelectableItemBackground">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="BaseThemeGrace" parent="@android:style/Theme.Holo">
-        <item name="appSelectableItemBackground">?android:attr/selectableItemBackground</item>
-    </style>
-
-    <style name="AppThemeDarkGrace" parent="BaseThemeGrace">
-        <item name="android:windowShowWallpaper">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:textColor">@color/kiss_text_on_dark</item>
-        <item name="android:textColorSecondary">#7f7f7f</item>
-
-        <item name="searchColor">@color/kiss_text_on_dark</item>
-        <item name="resultColor">@color/kiss_text_on_dark</item>
-        <item name="resultShadowColor">@android:color/black</item>
-        <item name="listBackgroundColor">@color/kiss_list_background_inverse</item>
-        <item name="searchBackgroundColor">@color/kiss_list_background_inverse</item>
-        <item name="dividerDrawable">@drawable/list_separator_dark</item>
-        <item name="textShadowRadius">0</item>
-    </style>
-
     <style name="AppThemeLight" parent="BaseThemeLight">
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -71,16 +52,23 @@
         <item name="android:textColor">@color/kiss_text_on_dark</item>
         <item name="android:textColorSecondary">#7f7f7f</item>
 
-        <item name="searchColor">@color/kiss_text_on_dark</item>
-        <item name="resultColor">@color/kiss_text_on_dark</item>
+        <item name="searchColor">@android:color/white</item>
+        <item name="resultColor">@android:color/white</item>
         <item name="resultShadowColor">@android:color/black</item>
         <item name="listBackgroundColor">@android:color/black</item>
-        <item name="searchBackgroundOutline">@color/kiss_list_background_inverse</item>
+        <item name="searchBackgroundOutline">@color/zen_green</item>
         <item name="searchBackgroundColor">@android:color/black</item>
-        <item name="dividerDrawable">@android:color/transparent</item>
+
+        <item name="dividerDrawable">@null</item>
         <item name="textShadowRadius">0</item>
     </style>
 
+    <style name="SettingThemeAmoledDark" parent="SettingThemeDark">
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:textColor">@color/kiss_text_on_dark</item>
+        <item name="android:textColorSecondary">#7f7f7f</item>
+    </style>
 
     <style name="AppThemeTransparent" parent="AppThemeLight">
         <item name="resultColor">@color/kiss_text_on_light</item>
@@ -95,6 +83,7 @@
         <item name="resultShadowColor">@color/kiss_background_light_transparent</item>
         <item name="dividerDrawable">@null</item>
         <item name="listBackgroundColor">@color/kiss_background_light_transparent</item>
+        <item name="searchBackgroundColor">@color/kiss_background_light_transparent</item>
         <item name="textShadowRadius">3</item>
     </style>
 
@@ -103,8 +92,9 @@
         <item name="android:textColorSecondary">@color/kiss_text_on_dark</item>
         <item name="dividerDrawable">@null</item>
         <item name="listBackgroundColor">@color/kiss_background_dark_transparent</item>
+        <item name="searchBackgroundColor">@color/kiss_background_dark_transparent</item>
         <item name="textShadowRadius">3</item>
-s    </style>
+    </style>
 
     <style name="AppThemeTransparentDark" parent="AppThemeDark">
         <item name="listBackgroundColor">@android:color/transparent</item>
@@ -123,5 +113,82 @@ s    </style>
         <item name="android:windowActionBar">true</item>
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowBackground">@color/kiss_list_background_inverse</item>
+    </style>
+
+    <style name="OverlayShadowDisabled">
+        <item name="textShadowRadius">30</item>
+    </style>
+    <style name="OverlayShadowEnabled">
+        <item name="textShadowRadius">3</item>
+    </style>
+
+    <style name="OverlaySeparatorDisabled">
+        <item name="dividerDrawable">@null</item>
+    </style>
+    <style name="OverlaySeparatorLight">
+        <item name="dividerDrawable">@drawable/list_separator_light</item>
+    </style>
+    <style name="OverlaySeparatorDark">
+        <item name="dividerDrawable">@drawable/list_separator_dark</item>
+    </style>
+
+    <style name="OverlayResultColorLight">
+        <item name="resultColor">@android:color/black</item>
+    </style>
+    <style name="OverlayResultColorSemiLight">
+        <item name="resultColor">@android:color/black</item>
+    </style>
+    <style name="OverlayResultColorDark">
+        <item name="resultColor">@color/kiss_text_on_dark</item>
+    </style>
+    <style name="OverlayResultColorSemiDark">
+        <item name="resultColor">@color/kiss_text_on_semi_dark</item>
+    </style>
+    <style name="OverlayResultColorBlack">
+        <item name="resultColor">@android:color/white</item>
+    </style>
+
+
+    <style name="OverlayWallpaperEnabled">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
+    <style name="OverlayWallpaperDisabled">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowShowWallpaper">false</item>
+    </style>
+
+    <style name="OverlayResultSizeStandard">
+        <item name="resultIconSize">@dimen/result_icon_size</item>
+        <item name="resultIconSizeGrid">@dimen/result_icon_size_grid</item>
+        <item name="resultSubIconSize">@dimen/result_subicon_size</item>
+        <item name="resultTitleSize">@dimen/result_title_size</item>
+        <item name="resultSubtitleSize">@dimen/result_subtitle_size</item>
+        <item name="resultButtonHeight">@dimen/result_button_height</item>
+    </style>
+
+    <style name="OverlayResultSizeSmall">
+        <item name="resultIconSize">@dimen/result_icon_size_small</item>
+        <item name="resultIconSizeGrid">@dimen/result_icon_size_grid_small</item>
+        <item name="resultSubIconSize">@dimen/result_subicon_size_small</item>
+        <item name="resultTitleSize">@dimen/result_title_size_small</item>
+        <item name="resultSubtitleSize">@dimen/result_subtitle_size_small</item>
+        <item name="resultButtonHeight">@dimen/result_button_height_small</item>
+    </style>
+
+    <style name="OverlayBarColorLight">
+        <item name="searchBackgroundColor">@android:color/white</item>
+    </style>
+    <style name="OverlayBarColorSemiLight">
+        <item name="searchBackgroundColor">@color/kiss_background_light_transparent</item>
+    </style>
+    <style name="OverlayBarColorDark">
+        <item name="searchBackgroundColor">@color/kiss_list_background_inverse</item>
+    </style>
+    <style name="OverlayBarColorSemiDark">
+        <item name="searchBackgroundColor">@color/kiss_background_dark_transparent</item>
+    </style>
+    <style name="OverlayBarColorBlack">
+        <item name="searchBackgroundColor">@android:color/black</item>
     </style>
 </resources>

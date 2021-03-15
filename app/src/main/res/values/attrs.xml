@@ -10,6 +10,13 @@
     <attr name="appSelectableItemBackground" format="reference" />
     <attr name="textShadowRadius" format="reference|float" />
 
+    <attr name="resultIconSize" format="reference|dimension" />
+    <attr name="resultIconSizeGrid" format="reference|dimension" />
+    <attr name="resultSubIconSize" format="reference|dimension" />
+    <attr name="resultTitleSize" format="reference|dimension" />
+    <attr name="resultSubtitleSize" format="reference|dimension" />
+    <attr name="resultButtonHeight" format="reference|dimension" />
+
     <declare-styleable name="WidgetLayoutLP">
         <attr name="android:layout_gravity" />
         <attr name="layout_position">
@@ -18,4 +25,5 @@
             <enum name="right" value="2" />
         </attr>
     </declare-styleable>
+
 </resources>

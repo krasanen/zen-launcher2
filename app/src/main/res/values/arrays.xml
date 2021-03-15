@@ -52,6 +52,8 @@
     </string-array>
     <string-array name="toggleTagsDefault">
     </string-array>
+    <string-array name="favTagsDefault">
+    </string-array>
     <string-array name="gestureEntries">
         <item>Do nothing</item>
         <item>Display keyboard</item>
@@ -80,4 +82,102 @@
         <item>lock-screen</item>
         <item>hide-keyboard</item>
     </string-array>
+
+    <string-array name="shadowEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_customize_enabled</item>
+        <item>@string/theme_customize_disabled</item>
+    </string-array>
+    <string-array name="shadowValues" translatable="false">
+        <item>default</item>
+        <item>enabled</item>
+        <item>disabled</item>
+    </string-array>
+    <string-array name="separatorEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_customize_disabled</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+    </string-array>
+    <string-array name="separatorValues" translatable="false">
+        <item>default</item>
+        <item>disabled</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+    <string-array name="resultColorEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_semi_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_semi_dark</item>
+        <item>@string/theme_amoled</item>
+    </string-array>
+    <string-array name="resultColorValues" translatable="false">
+        <item>default</item>
+        <item>light</item>
+        <item>semi-light</item>
+        <item>dark</item>
+        <item>semi-dark</item>
+        <item>black</item>
+    </string-array>
+    <string-array name="wallpaperEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_customize_enabled</item>
+        <item>@string/theme_customize_disabled</item>
+    </string-array>
+    <string-array name="wallpaperValues" translatable="false">
+        <item>default</item>
+        <item>enabled</item>
+        <item>disabled</item>
+    </string-array>
+    <!-- Names for DrawableUtils.SHAPE_*    -->
+    <string-array name="adaptiveEntries">
+        <item>System default</item>
+        <item>Circle</item>
+        <item>Square</item>
+        <item>Squircle</item>
+        <item>Rounded rectangle</item>
+        <item>Teardrop bottom-right</item>
+        <item>Teardrop bottom-left</item>
+        <item>Teardrop top-left</item>
+        <item>Teardrop top-right</item>
+        <item>Teardrop random</item>
+        <item>Hexagon</item>
+        <item>Octagon</item>
+    </string-array>
+
+    <!-- Values come from DrawableUtils.SHAPE_*    -->
+    <string-array name="adaptiveValues" translatable="false">
+        <item>0</item>  <!-- SHAPE_SYSTEM -->
+        <item>1</item>  <!-- SHAPE_CIRCLE -->
+        <item>2</item>  <!-- SHAPE_SQUARE -->
+        <item>3</item>  <!-- SHAPE_SQUIRCLE -->
+        <item>4</item>  <!-- SHAPE_ROUND_RECT -->
+        <item>5</item>  <!-- SHAPE_TEARDROP_BR -->
+        <item>6</item>  <!-- SHAPE_TEARDROP_BL -->
+        <item>7</item>  <!-- SHAPE_TEARDROP_TL -->
+        <item>8</item>  <!-- SHAPE_TEARDROP_TR -->
+        <item>9</item>  <!-- SHAPE_TEARDROP_RND -->
+        <item>10</item> <!-- SHAPE_HEXAGON -->
+        <item>11</item> <!-- SHAPE_OCTAGON -->
+    </string-array>
+
+    <string-array name="barColorEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_semi_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_semi_dark</item>
+        <item>@string/theme_amoled</item>
+    </string-array>
+    <string-array name="barColorValues" translatable="false">
+        <item>default</item>
+        <item>light</item>
+        <item>semi-light</item>
+        <item>dark</item>
+        <item>semi-dark</item>
+        <item>black</item>
+    </string-array>
+
 </resources>

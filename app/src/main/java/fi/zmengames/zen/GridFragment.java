@@ -18,10 +18,12 @@ package fi.zmengames.zen;
  */
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -132,14 +134,23 @@ public class GridFragment extends Fragment {
         lframe.addView(tv, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean small_results = prefs.getBoolean("small-results", false);
         GridView lv = new GridView(getActivity());
         lv.setId(android.R.id.list);
         lv.setDrawSelectorOnTop(false);
-        lv.setColumnWidth(convertDpToPixels(60, getActivity()));
+        if (!small_results) {
+            lv.setColumnWidth(convertDpToPixels(60, getActivity()));
+            lv.setHorizontalSpacing(convertDpToPixels(10, getActivity()));
+            lv.setVerticalSpacing(convertDpToPixels(20, getActivity()));
+        } else {
+            lv.setColumnWidth(convertDpToPixels(50, getActivity()));
+            lv.setHorizontalSpacing(convertDpToPixels(5, getActivity()));
+            lv.setVerticalSpacing(convertDpToPixels(10, getActivity()));
+        }
         lv.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
         lv.setNumColumns(GridView.AUTO_FIT);
-        lv.setHorizontalSpacing(convertDpToPixels(10, getActivity()));
-        lv.setVerticalSpacing(convertDpToPixels(20, getActivity()));
+
         lv.setSmoothScrollbarEnabled(true);
 
         // disable overscroll

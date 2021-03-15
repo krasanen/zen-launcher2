@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
+import fr.neamar.kiss.utils.IconPackCache;
 
 public class KissApplication extends Application {
     /**
@@ -19,6 +20,11 @@ public class KissApplication extends Application {
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;
     private static MainActivity mainActivity;
+    private final IconPackCache mIconPackCache = new IconPackCache();;
+    public static IconPackCache iconPackCache(Context ctx) {
+        return getApplication(ctx).mIconPackCache;
+    }
+
     private static final String TAG = KissApplication.class.getSimpleName();
 
     public void onCreate() {

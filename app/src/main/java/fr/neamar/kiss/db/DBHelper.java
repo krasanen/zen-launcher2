@@ -567,16 +567,25 @@ public class DBHelper {
     }
 
 
-    /* Delete
+    /** Delete
      *
      * @param context android context
-     * @param tag   query to insert
-     * @param record  record to insert
+     * @param record  record to delete
      */
     public static void deleteTagsForId(Context context, String record) {
         SQLiteDatabase db = getDatabase(context);
 
         db.delete("tags", "record = ?", new String[]{record});
+    }
+
+    /* Delete all tags
+     *
+     * @param context android context
+     */
+    public static void deleteTags(Context context) {
+        SQLiteDatabase db = getDatabase(context);
+
+        db.execSQL("DELETE FROM tags;");
     }
 
     public static Map<String, String> loadTags(Context context) {

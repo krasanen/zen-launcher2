@@ -45,6 +45,7 @@ import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.result.ShortcutsResult;
 import fr.neamar.kiss.ui.ListPopup;
+import fr.neamar.kiss.ui.ShapedContactBadge;
 
 public class Favorites extends Forwarder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnKeyListener {
     private static final String TAG = Favorites.class.getSimpleName();
@@ -185,16 +186,9 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             Drawable drawable = result.getDrawable(mainActivity);
             if (drawable != null) {
                 if (result instanceof ContactsResult) {
-
-                    Bitmap iconBitmap = drawableToBitmap(drawable);
-                    RoundedBitmapDrawable dr =
-                            RoundedBitmapDrawableFactory.create(mainActivity.getResources(), iconBitmap);
-                    dr.setCornerRadius(Math.max(iconBitmap.getWidth(), iconBitmap.getHeight()) / 2.0f);
-                    image.setImageDrawable(dr);
-                } else {
-                    image.setImageDrawable(drawable);
+                    drawable = ShapedContactBadge.getShapedDrawable(mainActivity, drawable);
                 }
-
+                image.setImageDrawable(drawable);
             } else {
                 if (result instanceof ShortcutsResult) {
                     image.setImageResource(R.drawable.ic_open_in_browser_24px);
@@ -527,8 +521,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
 
                 final int pos = KissApplication.getApplication(mainActivity).getDataHandler().getFavoritePosition(overApp.id);
                 draggedView.post(new Runnable() {
-                     @Override
-                     public void run() {
+                    @Override
+                    public void run() {
                         // Signals to a View that the drag and drop operation has concluded.
                         // If event result is set, this means the dragged view was dropped in target
                         if (event.getResult()) {

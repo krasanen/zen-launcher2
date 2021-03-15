@@ -291,7 +291,7 @@ public class AppResult extends Result {
         KissApplication.getApplication(context).getDataHandler().removeFromFavorites(appPojo.id);
         Toast.makeText(context, R.string.excluded_app_list_added, Toast.LENGTH_LONG).show();
         ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
-        EventBus.getDefault().post(event);
+        EventBus.getDefault().postSticky(event);
     }
 
 
@@ -359,7 +359,7 @@ public class AppResult extends Result {
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 
             ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
-            EventBus.getDefault().post(event);
+            EventBus.getDefault().postSticky(event);
         });
         builder.setNegativeButton(R.string.custom_name_set_default, (dialog, which) -> {
             dialog.dismiss();
@@ -384,7 +384,7 @@ public class AppResult extends Result {
 
                 // Refresh UI to reflect new name
                 ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
-                EventBus.getDefault().post(event);
+                EventBus.getDefault().postSticky(event);
             }
 
             final Handler handler = new Handler();
@@ -424,7 +424,7 @@ public class AppResult extends Result {
             else
                 KissApplication.getApplication(context).getIconsHandler().changeAppIcon(this, drawable);
             ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
-            EventBus.getDefault().post(event);
+            EventBus.getDefault().postSticky(event);
         });
 
         parent.showDialog(dialog);
@@ -489,14 +489,22 @@ public class AppResult extends Result {
                 // Google Calendar has a special treatment and displays a custom icon every day
                 icon = GoogleCalendarIcon.getDrawable(context, appPojo.activityName);
             }
-            IconsHandler iconsHandler = KissApplication.getApplication(context).getIconsHandler();
-            icon = iconsHandler.getCustomIcon(appPojo.getComponentName(), appPojo.getCustomIconId());
             if (icon == null) {
-                icon = MemoryCacheHelper.getAppIconDrawable(context, className, this.appPojo.userHandle);
+                IconsHandler iconsHandler = KissApplication.getApplication(context).getIconsHandler();
+                icon = iconsHandler.getCustomIcon(appPojo.getComponentName(), appPojo.getCustomIconId());
+                if (icon == null)
+                    icon = MemoryCacheHelper.getAppIconDrawable(context, className, this.appPojo.userHandle);
             }
 
             return icon;
         }
+    }
+
+
+    @Override
+    public boolean isDrawableDynamic() {
+        // The only dynamic icon is from Google Calendar
+        return GoogleCalendarIcon.GOOGLE_CALENDAR.equals(appPojo.packageName);
     }
 
     @Override

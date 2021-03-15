@@ -11,7 +11,7 @@
                 <solid android:color="@android:color/transparent" />
                 <stroke
                     android:width="2dp"
-                    android:color="@color/kiss_green" />
+                    android:color="@color/zen_green" />
                 <corners android:radius="24dp" />
             </shape>
         </item>

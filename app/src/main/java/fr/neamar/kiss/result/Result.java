@@ -46,6 +46,7 @@ import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.SearchPojo;
 import fr.neamar.kiss.pojo.SettingsPojo;
 import fr.neamar.kiss.pojo.ShortcutPojo;
+import fr.neamar.kiss.pojo.TagDummyPojo;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
@@ -79,6 +80,9 @@ public abstract class Result {
             return new PhoneResult((PhonePojo) pojo);
         else if (pojo instanceof ShortcutPojo)
             return new ShortcutsResult((ShortcutPojo) pojo);
+        else if (pojo instanceof TagDummyPojo)
+            return new TagDummyResult((TagDummyPojo)pojo);
+
 
         throw new RuntimeException("Unable to create a result from POJO");
     }
@@ -105,9 +109,8 @@ public abstract class Result {
     public abstract View display(Context context, View convertView, @NonNull ViewGroup parent, FuzzyScore fuzzyScore);
 
     @NonNull
-    public View inflateFavorite(@NonNull Context context, @Nullable View favoriteView, @NonNull ViewGroup parent) {
-        if (favoriteView == null)
-            favoriteView = LayoutInflater.from(context).inflate(R.layout.favorite_item, parent, false);
+    public View inflateFavorite(@NonNull Context context, @NonNull ViewGroup parent) {
+        View favoriteView = LayoutInflater.from(context).inflate(R.layout.favorite_item, parent, false);
         Drawable drawable = getDrawable(context);
         ImageView favoriteImage = favoriteView.findViewById(R.id.favorite_item_image);
         if (drawable == null)
@@ -253,7 +256,7 @@ public abstract class Result {
                 break;
         }
         ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
-        EventBus.getDefault().post(event);
+        EventBus.getDefault().postSticky(event);
 
         return false;
     }
@@ -315,6 +318,15 @@ public abstract class Result {
      */
     public Drawable getDrawable(Context context) {
         return null;
+    }
+
+    /**
+     * Does the drawable changes regularly?
+     * If so, it can't be kept in cache for long.
+     * @return true when dynamic
+     */
+    public boolean isDrawableDynamic() {
+        return false;
     }
 
     boolean isDrawableCached() {

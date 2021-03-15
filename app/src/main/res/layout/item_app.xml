@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/item_app_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="?attr/resultIconSize"
+        android:layout_height="?attr/resultIconSize"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/icon_margin_left"
         android:layout_marginLeft="@dimen/icon_margin_left"
@@ -36,7 +36,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:visibility="gone"
-        android:textSize="10sp" />
+        android:textSize="?attr/resultSubtitleSize" />
     <ImageView
         android:id="@+id/item_notification_dot"
         android:layout_alignBottom="@id/item_app_icon"

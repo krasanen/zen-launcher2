@@ -25,8 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <ImageView android:id="@+id/icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="?attr/resultIconSizeGrid"
+            android:layout_height="?attr/resultIconSizeGrid"
             android:gravity="center"/>
         <TextView
             android:id="@+id/zen_badge_count"
@@ -39,7 +39,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:visibility="gone"
-            android:textSize="10sp" />
+            android:textSize="?attr/resultSubtitleSize" />
         <ImageView
             android:id="@+id/zen_item_notification_dot"
             android:layout_alignBottom="@id/icon"
@@ -62,6 +62,7 @@
         android:layout_gravity="center_horizontal"
         android:textColor="@color/kiss_text_on_light"
         android:singleLine="true"
+        android:textSize="?attr/resultSubtitleSize"
         android:gravity="center"/>
 
 

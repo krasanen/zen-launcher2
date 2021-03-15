@@ -1,5 +1,7 @@
 package fr.neamar.kiss;
 
+import static fr.neamar.kiss.MainActivity.REFRESH_UI;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,18 +22,24 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
+import fi.zmengames.zen.ZEvent;
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.icons.IconPack;
 import fr.neamar.kiss.icons.IconPackXML;
 import fr.neamar.kiss.icons.SystemIconPack;
+import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.utils.DrawableUtils;
 import fr.neamar.kiss.utils.UserHandle;
+import fr.neamar.kiss.utils.Utilities;
 
 /**
  * Inspired from http://stackoverflow.com/questions/31490630/how-to-load-icon-from-icon-pack
@@ -46,12 +54,12 @@ public class IconsHandler {
     private final PackageManager pm;
     private final Context ctx;
     private IconPackXML mIconPack = null;
-    private final SystemIconPack mSystemPack = new SystemIconPack();
+    private SystemIconPack mSystemPack = new SystemIconPack();
     private boolean mForceAdaptive = false;
     private boolean mContactPackMask = false;
     private int mContactsShape = DrawableUtils.SHAPE_SYSTEM;
     private boolean mForceShape = false;
-
+    private Utilities.AsyncRun mLoadIconsPackTask = null;
 
     public IconsHandler(Context ctx) {
         super();
@@ -76,6 +84,7 @@ public class IconsHandler {
      * Set values from preferences
      */
     public void onPrefChanged(SharedPreferences pref) {
+        Log.d(TAG,"onPrefChanged");
         loadIconsPack(pref.getString("icons-pack", null));
         mSystemPack.setAdaptiveShape(getAdaptiveShape(pref, "adaptive-shape"));
         mForceAdaptive = pref.getBoolean("force-adaptive", true);
@@ -88,6 +97,7 @@ public class IconsHandler {
         //mShortcutsShape = getAdaptiveShape(pref, "shortcut-shape");
 
         //mShortcutBadgePackMask = pref.getBoolean("shortcut-pack-badge-mask", true);
+        MemoryCacheHelper.trimMemory();
     }
 
     private static int getAdaptiveShape(SharedPreferences pref, String key) {
@@ -104,18 +114,31 @@ public class IconsHandler {
      * @param packageName Android package ID of the package to parse
      */
     void loadIconsPack(String packageName) {
-
-        //clear icons pack
-        mIconPack = null;
-        cacheClear();
-
         // system icons, nothing to do
         if (packageName == null || packageName.equalsIgnoreCase("default")) {
+            cacheClear();
+            mIconPack = null;
             return;
         }
 
-        mIconPack = new IconPackXML(packageName);
-        mIconPack.load(ctx.getPackageManager());
+        // don't reload the icon pack
+        if (mIconPack == null || !mIconPack.getPackPackageName().equals(packageName)) {
+            cacheClear();
+            if (mLoadIconsPackTask != null)
+                mLoadIconsPackTask.cancel();
+            final IconPackXML iconPack = KissApplication.iconPackCache(ctx).getIconPack(packageName);
+            // set the current icon pack
+            mIconPack = iconPack;
+            // start async loading
+            mLoadIconsPackTask = Utilities.runAsync((task) -> {
+                if (task == mLoadIconsPackTask)
+                    iconPack.load(ctx.getPackageManager());
+            }, (task) -> {
+                if (!task.isCancelled() && task == mLoadIconsPackTask) {
+                    mLoadIconsPackTask = null;
+                }
+            });
+        }
     }
 
 
@@ -125,16 +148,17 @@ public class IconsHandler {
     @SuppressWarnings("CatchAndPrintStackTrace")
     public Drawable getDrawableIconForPackage(ComponentName componentName, UserHandle userHandle) {
         final String componentString = componentName.toString();
+        final String cacheKey = AppPojo.getComponentName(componentName.getPackageName(), componentName.getClassName(), userHandle);
 
         // Search in cache
         {
-            Drawable cacheIcon = cacheGetDrawable(componentString);
+            Drawable cacheIcon = cacheGetDrawable(cacheKey);
             if (cacheIcon != null)
                 return cacheIcon;
         }
 
         // check the icon pack for a resource
-        if (mIconPack != null) {
+        if (mIconPack != null && userHandle.isCurrentUser()) {
             // just checking will make this thread wait for the icon pack to load
             if (!mIconPack.isLoaded())
                 return null;
@@ -147,7 +171,7 @@ public class IconsHandler {
                     drawable = DrawableUtils.applyIconMaskShape(ctx, iconPackDrawable, shape, true);
                 } else
                     drawable = mIconPack.applyBackgroundAndMask(ctx, iconPackDrawable, false);
-                storeDrawable(cacheGetFileName(componentString), drawable);
+                storeDrawable(cacheGetFileName(cacheKey), drawable);
                 return drawable;
             }
         }
@@ -158,9 +182,9 @@ public class IconsHandler {
             return null;
 
         // if the icon pack has a mask, use that instead of the adaptive shape
-        if (mIconPack != null && mIconPack.hasMask()) {
+        if (mIconPack != null && mIconPack.hasMask() && userHandle.isCurrentUser()) {
             Drawable drawable = mIconPack.applyBackgroundAndMask(ctx, systemIcon, false);
-            storeDrawable(cacheGetFileName(componentString), drawable);
+            storeDrawable(cacheGetFileName(cacheKey), drawable);
             return drawable;
         }
 
@@ -173,7 +197,7 @@ public class IconsHandler {
         else
             drawable = systemIcon;
 
-        storeDrawable(cacheGetFileName(componentString), drawable);
+        storeDrawable(cacheGetFileName(cacheKey), drawable);
         return drawable;
     }
 
@@ -374,5 +398,4 @@ public class IconsHandler {
         removeStoredDrawable(customIconFileName(appResult.getComponentName(), customIconId));
         appResult.clearCustomIcon();
     }
-
 }

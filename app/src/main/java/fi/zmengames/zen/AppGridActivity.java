@@ -1,6 +1,8 @@
 package fi.zmengames.zen;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -16,6 +18,30 @@ public class AppGridActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Setting the theme needs to be done before setContentView()
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = prefs.getString("theme", "light");
+        switch (theme) {
+            case "dark":
+                this.setTheme(R.style.AppThemeDark);
+                break;
+            case "transparent":
+                this.setTheme(R.style.AppThemeTransparent);
+                break;
+            case "semi-transparent":
+                this.setTheme(R.style.AppThemeSemiTransparent);
+                break;
+            case "semi-transparent-dark":
+                this.setTheme(R.style.AppThemeSemiTransparentDark);
+                break;
+            case "transparent-dark":
+                this.setTheme(R.style.AppThemeTransparentDark);
+                break;
+            case "amoled-dark":
+                this.setTheme(R.style.AppThemeAmoledDark);
+                break;
+        }
+        this.getTheme().applyStyle(prefs.getBoolean("small-results", false) ? R.style.OverlayResultSizeSmall : R.style.OverlayResultSizeStandard, true);
         setContentView(R.layout.appgripscreen);
     }
 

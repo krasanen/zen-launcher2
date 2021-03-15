@@ -3,6 +3,7 @@ package fr.neamar.kiss;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -23,9 +24,127 @@ public class UIColors {
             0xFFE64A19, 0xFF5D4037, 0xFF616161, 0xFF455A64,
             0xFF000000
     };
+
+    private static final int[] OVERLAY_LIST = new int[]{
+            -1,
+            R.style.OverlayAccentD32F2F,
+            R.style.OverlayAccentC2185B,
+            R.style.OverlayAccent7B1FA2,
+            R.style.OverlayAccent512DA8,
+            R.style.OverlayAccent303F9F,
+            R.style.OverlayAccent1976D2,
+            R.style.OverlayAccent0288D1,
+            R.style.OverlayAccent0097A7,
+            R.style.OverlayAccent00796B,
+            R.style.OverlayAccent388E3C,
+            R.style.OverlayAccent689F38,
+            R.style.OverlayAccentAFB42B,
+            R.style.OverlayAccentFBC02D,
+            R.style.OverlayAccentFFA000,
+            R.style.OverlayAccentF57C00,
+            R.style.OverlayAccentE64A19,
+            R.style.OverlayAccent5D4037,
+            R.style.OverlayAccent616161,
+            R.style.OverlayAccent455A64,
+            -1,
+    };
+
     private static final String COLOR_DEFAULT_STR = String.format("#%06X", COLOR_DEFAULT & 0xFFFFFF);
 
     private static int primaryColor = -1;
+
+    // https://stackoverflow.com/questions/25815769/how-to-really-programmatically-change-primary-and-accent-color-in-android-loll
+    public static void applyOverlay(Activity activity, SharedPreferences prefs) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+
+        // We want to update the accent color for the theme.
+        // Each possible accent color is defined as a custom overlay, we need to find the matching one and apply it
+        int primaryColor = getPrimaryColor(activity);
+
+        for (int i = 0; i < COLOR_LIST.length; i++) {
+            if (COLOR_LIST[i] == primaryColor) {
+                int resId = OVERLAY_LIST[i];
+                if(resId != -1) {
+                    activity.getTheme().applyStyle(resId, true);
+                }
+                break;
+            }
+        }
+
+
+        String shadowStyle = prefs.getString("theme-shadow", "default");
+        switch (shadowStyle) {
+            case "enabled":
+                activity.getTheme().applyStyle(R.style.OverlayShadowEnabled, true);
+                break;
+            case "disabled":
+                activity.getTheme().applyStyle(R.style.OverlayShadowDisabled, true);
+                break;
+        }
+
+        String separatorStyle = prefs.getString("theme-separator", "default");
+        switch (separatorStyle) {
+            case "disabled":
+                activity.getTheme().applyStyle(R.style.OverlaySeparatorDisabled, true);
+                break;
+            case "light":
+                activity.getTheme().applyStyle(R.style.OverlaySeparatorLight, true);
+                break;
+            case "dark":
+                activity.getTheme().applyStyle(R.style.OverlaySeparatorDark, true);
+                break;
+        }
+
+        String resultColorStyle = prefs.getString("theme-result-color", "default");
+        switch (resultColorStyle) {
+            case "light":
+                activity.getTheme().applyStyle(R.style.OverlayResultColorLight, true);
+                break;
+            case "dark":
+                activity.getTheme().applyStyle(R.style.OverlayResultColorDark, true);
+                break;
+            case "semi-light":
+                activity.getTheme().applyStyle(R.style.OverlayResultColorSemiLight, true);
+                break;
+            case "semi-dark":
+                activity.getTheme().applyStyle(R.style.OverlayResultColorSemiDark, true);
+                break;
+            case "black":
+                activity.getTheme().applyStyle(R.style.OverlayResultColorBlack, true);
+                break;
+        }
+
+        String wallpaperStyle = prefs.getString("theme-wallpaper", "default");
+        switch (wallpaperStyle) {
+            case "enabled":
+                activity.getTheme().applyStyle(R.style.OverlayWallpaperEnabled, true);
+                break;
+            case "disabled":
+                activity.getTheme().applyStyle(R.style.OverlayWallpaperDisabled, true);
+                break;
+        }
+
+        String barColor = prefs.getString("theme-bar-color", "default");
+        switch (barColor) {
+            case "light":
+                activity.getTheme().applyStyle(R.style.OverlayBarColorLight, true);
+                break;
+            case "dark":
+                activity.getTheme().applyStyle(R.style.OverlayBarColorDark, true);
+                break;
+            case "semi-light":
+                activity.getTheme().applyStyle(R.style.OverlayBarColorSemiLight, true);
+                break;
+            case "semi-dark":
+                activity.getTheme().applyStyle(R.style.OverlayBarColorSemiDark, true);
+                break;
+            case "black":
+                activity.getTheme().applyStyle(R.style.OverlayBarColorBlack, true);
+                break;
+        }
+    }
 
     public static void updateThemePrimaryColor(Activity activity) {
         int notificationBarColorOverride = getNotificationBarColor(activity);
@@ -64,10 +183,9 @@ public class UIColors {
             String primaryColorStr = PreferenceManager.getDefaultSharedPreferences(context).getString("primary-color", COLOR_DEFAULT_STR);
 
             // Transparent can't be displayed for text color, replace with light gray.
-            if (primaryColorStr.equals("#00000000") || primaryColorStr.equals(("#AAFFFFFF"))) {
+            if (primaryColorStr.equals("#00000000") || primaryColorStr.equals("#AAFFFFFF")) {
                 primaryColor = 0xFFBDBDBD;
-            }
-            else {
+            } else {
                 primaryColor = Color.parseColor(primaryColorStr);
             }
         }
@@ -75,7 +193,11 @@ public class UIColors {
         return primaryColor;
     }
 
-    public static void clearPrimaryColorCache(Context context) {
+    static void clearPrimaryColorCache(Context context) {
         primaryColor = -1;
+    }
+
+    public static int[] getColorList() {
+        return COLOR_LIST;
     }
 }
