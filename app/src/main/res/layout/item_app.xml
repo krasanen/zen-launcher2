@@ -33,10 +33,10 @@
         android:background="@drawable/badge_background"
         android:gravity="center"
         android:textColor="@android:color/white"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="?attr/resultBadgeSize"
+        android:layout_height="?attr/resultBadgeSize"
         android:visibility="gone"
-        android:textSize="?attr/resultSubtitleSize" />
+        android:textSize="?attr/resultBadgeTextSize" />
     <ImageView
         android:id="@+id/item_notification_dot"
         android:layout_alignBottom="@id/item_app_icon"

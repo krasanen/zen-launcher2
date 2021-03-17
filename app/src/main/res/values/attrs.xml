@@ -16,6 +16,8 @@
     <attr name="resultTitleSize" format="reference|dimension" />
     <attr name="resultSubtitleSize" format="reference|dimension" />
     <attr name="resultButtonHeight" format="reference|dimension" />
+    <attr name="resultBadgeSize" format="reference|dimension" />
+    <attr name="resultBadgeTextSize" format="reference|dimension" />
 
     <declare-styleable name="WidgetLayoutLP">
         <attr name="android:layout_gravity" />

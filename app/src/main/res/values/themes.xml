@@ -165,6 +165,8 @@
         <item name="resultTitleSize">@dimen/result_title_size</item>
         <item name="resultSubtitleSize">@dimen/result_subtitle_size</item>
         <item name="resultButtonHeight">@dimen/result_button_height</item>
+        <item name="resultBadgeSize">@dimen/result_badge_size</item>
+        <item name="resultBadgeTextSize">@dimen/result_badge_text_size</item>
     </style>
 
     <style name="OverlayResultSizeSmall">
@@ -174,6 +176,8 @@
         <item name="resultTitleSize">@dimen/result_title_size_small</item>
         <item name="resultSubtitleSize">@dimen/result_subtitle_size_small</item>
         <item name="resultButtonHeight">@dimen/result_button_height_small</item>
+        <item name="resultBadgeSize">@dimen/result_badge_size_small</item>
+        <item name="resultBadgeTextSize">@dimen/result_badge_text_size_small</item>
     </style>
 
     <style name="OverlayBarColorLight">

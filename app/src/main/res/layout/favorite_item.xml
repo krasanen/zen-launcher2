@@ -52,9 +52,9 @@ android:layout_height="match_parent">
         android:layout_gravity="center"
         android:singleLine="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:textColor="@color/kiss_text_on_light"
+        android:textSize="@dimen/favorite_text_size"
         android:gravity="center"/>
 
 

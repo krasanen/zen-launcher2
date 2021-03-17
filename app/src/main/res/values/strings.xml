@@ -393,8 +393,8 @@
     <string name="wifi_off">Wifi Off</string>
     <string name="wifi_on">Wifi On</string>
     <string name="network_internet"><![CDATA[Network & Internet]]></string>
-    <string name="show_favbar_appnames">App names</string>
-    <string name="show_favbar_appnames_sum">Show app names in favorite bar</string>
+    <string name="show_favbar_appnames">Show favorite item name</string>
+    <string name="show_favbar_appnames_sum">Show app and contact names in favorite bar</string>
     <string name="remove_widget_warn">Are you sure you want to remove this widget?</string>
     <string name="gestures">Gestures</string>
     <string name="double_click_lock">Double click lock</string>
@@ -437,6 +437,8 @@
     <string name="alarm_is_set_at">Alarm is set at</string>
     <string name="show_historybutton">History button </string>
     <string name="show_historybutton_sum">Show separate history button in search bar</string>
+    <string name="favorite_text_size">Favorite item text size</string>
+    <string name="favorite_text_size_sum">Set font size for favorite item text</string>
     />
 
 </resources>
