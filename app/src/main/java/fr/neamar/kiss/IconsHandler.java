@@ -57,6 +57,8 @@ public class IconsHandler {
     private SystemIconPack mSystemPack = new SystemIconPack();
     private boolean mForceAdaptive = false;
     private boolean mContactPackMask = false;
+    private boolean mContactMasks = false;
+    private boolean mMemoryCacheEnabled = false;
     private int mContactsShape = DrawableUtils.SHAPE_SYSTEM;
     private boolean mForceShape = false;
     private Utilities.AsyncRun mLoadIconsPackTask = null;
@@ -93,11 +95,15 @@ public class IconsHandler {
         mContactPackMask = pref.getBoolean("contact-pack-mask", true);
         mContactsShape = getAdaptiveShape(pref, "contacts-shape");
 
+        mContactMasks = pref.getBoolean("contact-masks", true);
+
+        mMemoryCacheEnabled = pref.getBoolean("keep-icons-in-memory",true);
+
         //mShortcutPackMask = pref.getBoolean("shortcut-pack-mask", true);
         //mShortcutsShape = getAdaptiveShape(pref, "shortcut-shape");
 
         //mShortcutBadgePackMask = pref.getBoolean("shortcut-pack-badge-mask", true);
-        MemoryCacheHelper.trimMemory();
+
     }
 
     private static int getAdaptiveShape(SharedPreferences pref, String key) {
@@ -202,6 +208,9 @@ public class IconsHandler {
     }
 
     public Drawable applyContactMask(@NonNull Context ctx, @NonNull Drawable drawable) {
+        if (!mContactMasks) {
+            return drawable;
+        }
         if (!mContactPackMask)
             return DrawableUtils.applyIconMaskShape(ctx, drawable, mContactsShape, false);
         if (mIconPack != null && mIconPack.hasMask())
@@ -331,6 +340,9 @@ public class IconsHandler {
      * Clear cache
      */
     private void cacheClear() {
+        if(mMemoryCacheEnabled) {
+            MemoryCacheHelper.trimMemory();
+        }
         File cacheDir = this.getIconsCacheDir();
 
         File[] fileList = cacheDir.listFiles();

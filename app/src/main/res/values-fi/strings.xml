@@ -323,6 +323,8 @@
     <string name="deviceadmin_switch">Laitehallinta</string>
     <string name="show_historybutton">Historianappi</string>
     <string name="show_historybutton_sum">Näytä erillinen historianappi hakukentässä</string>
-    <string name="favorite_text_size">Favorite item text size</string>
-    <string name="favorite_text_size_sum">Set font size for favorite item text</string>
+    <string name="favorite_text_size">Suosikkien tekstin koko</string>
+    <string name="favorite_text_size_sum">Aseta haluttu tekstin koko suosikkisovelluksien nimille</string>
+    <string name="contact_masks">Kontaktien taustat</string>
+    <string name="contact_masks_summary">Aseta ikonipaketin oletusmuoto tai valittu taustan muoto kontaktille</string>
 </resources>

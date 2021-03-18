@@ -316,7 +316,7 @@
     <string name="app_rename_confirmation">App name is now %s</string>
     <string name="app_rename_title">Custom name</string>
     <string name="theme_bar_color">Favorites bar and Search bar color</string>
-    <string name="adaptive_shape_name">Background shape for icons</string>
+    <string name="adaptive_shape_name">Background shape for app icons</string>
     <string name="force_adaptive">Force icon background</string>
     <string name="force_adaptive_summary">For non-adaptive icons, reduce scale and place on a white background</string>
     <string name="force_shape">Force background shape</string>
@@ -435,10 +435,12 @@
     <string name="alarm_battery_optimization">Zen needs to ignore battery optimization to be able to show alarm</string>
     <string name="notification_access">Zen Alarm needs notification policy access for do not disturb control</string>
     <string name="alarm_is_set_at">Alarm is set at</string>
-    <string name="show_historybutton">History button </string>
+    <string name="show_historybutton">History button</string>
     <string name="show_historybutton_sum">Show separate history button in search bar</string>
     <string name="favorite_text_size">Favorite item text size</string>
     <string name="favorite_text_size_sum">Set font size for favorite item text</string>
+    <string name="contact_masks">Enable contact shapes</string>
+    <string name="contact_masks_summary">Apply icon pack or selected shape for contact icons</string>
     />
 
 </resources>
