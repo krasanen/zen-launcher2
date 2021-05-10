@@ -29,6 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import fr.neamar.kiss.BuildConfig;
+import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
 
 import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
@@ -274,7 +275,9 @@ public class AlarmActivity extends Activity {
         am= (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
         am.setStreamVolume(AudioManager.STREAM_RING, originalVolume, 0);
         AlarmUtils.cancelAlarm(getApplicationContext(), getIntent().getLongExtra(ALARM_ID,0));
-        finish();
+        Intent startIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(startIntent);
     }
 
     private void stopSound() {

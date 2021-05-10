@@ -2512,7 +2512,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 updateSearchRecords();
             });
         }
-        dialog.show(getFragmentManager(), "dialog");
+        try {
+            dialog.show(getFragmentManager(), "dialog");
+        } catch (IllegalStateException e){ // activity onSaveInstanceState called?
+            Log.d(TAG,"showDialog, IllegalStateException:" +e);
+        }
     }
 
     public void refreshWidget(int appWidgetId) {
