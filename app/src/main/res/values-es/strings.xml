@@ -412,4 +412,5 @@
     <string name="favorite_text_size_sum">Establecer el tamaño de fuente para el texto del elemento favorito</string>
     <string name="contact_masks">Activar formas de contacto</string>
     <string name="contact_masks_summary">Aplicar el paquete de iconos o la forma seleccionada para los iconos de contacto</string>
+    <string name="alarm_received">¡Alarma recibida!</string>
 </resources>

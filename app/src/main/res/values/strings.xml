@@ -441,6 +441,11 @@
     <string name="favorite_text_size_sum">Set font size for favorite item text</string>
     <string name="contact_masks">Enable contact shapes</string>
     <string name="contact_masks_summary">Apply icon pack or selected shape for contact icons</string>
+    <string name="offset_horizontal">Offset horizontal</string>
+    <string name="offset_top">Offset top</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="alarm_received">Zen Alarm received!</string>
     />
 
 </resources>

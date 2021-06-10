@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Width" />
+        android:text="@string/width" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Height" />
+        android:text="@string/height" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,7 +79,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Offset horizontal" />
+        android:text="@string/offset_horizontal" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -110,7 +110,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Offset top" />
+        android:text="@string/offset_top" />
 
     <LinearLayout
         android:layout_width="match_parent"

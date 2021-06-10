@@ -2,11 +2,182 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string-array name="themesEntries">
         <item>Tema claro</item>
-        <item>Tema semi-transparente</item>
+        <item>Tema semitransparente</item>
         <item>Tema transparente</item>
         <item>Tema oscuro</item>
-        <item>Tema semi-transparente oscuro</item>
-        <item>Tema transparente oscuro</item>
-        <item>AMOLED dark theme</item>
+        <item>Tema oscuro semitransparente</item>
+        <item>Tema oscuro transparente</item>
+        <item>Tema oscuro AMOLED</item>
     </string-array>
+    <string-array name="themesValues" translatable="false">
+        <item>light</item>
+        <item>semi-transparent</item>
+        <item>transparent</item>
+        <item>dark</item>
+        <item>semi-transparent-dark</item>
+        <item>transparent-dark</item>
+        <item>amoled-dark</item>
+    </string-array>
+    <string-array name="sortAppListEntries">
+        <item>De la A a la Z</item>
+        <item>De la Z a la A</item>
+    </string-array>
+    <string-array name="sortAppListValues" translatable="false">
+        <item>alphabetical</item>
+        <item>invertedAlphabetical</item>
+    </string-array>
+    <string-array name="sortContactListValues" translatable="false">
+        <item>alphabetical</item>
+        <item>invertedAlphabetical</item>
+    </string-array>
+    <string-array name="historyModeEntries">
+        <item>Accedido recientemente primero</item>
+        <item>Accedido con frecuencia recientemente</item>
+        <item>Accedido con frecuencia</item>
+    </string-array>
+    <string-array name="historyModeValues" translatable="false">
+        <item>recency</item>
+        <item>frecency</item>
+        <item>frequency</item>
+    </string-array>
+    <string-array name="defaultSearchProviders" tools:ignore="InconsistentArrays">
+        <item>Yahoo|https://search.yahoo.com/search?p={q}</item>
+        <item>Bing|https://www.bing.com/search?q=%s</item>
+        <item>Ecosia|https://www.ecosia.org/search?q=%s</item>
+        <item>DuckDuckGo|https://start.duckduckgo.com/?q=%s</item>
+        <item>Google|https://encrypted.google.com/search?q=%s</item>
+        <item>Google Maps|https://www.google.com/maps/search/?api=1&amp;query=%s</item>
+        <item>Google Play Store|https://play.google.com/store/search?q=%s</item>
+        <item>YouTube|https://www.youtube.com/results?search_query=%s</item>
+    </string-array>
+    <string-array name="toggleTagsDefault">
+    </string-array>
+    <string-array name="favTagsDefault">
+    </string-array>
+    <string-array name="gestureEntries">
+        <item>No hacer nada</item>
+        <item>Mostrar teclado</item>
+        <item>Mostrar sombra de notificación</item>
+        <item>Mostrar lista de apps</item>
+        <item>Mostrar historial</item>
+        <item>Mostrar apps con notificaciones</item>
+        <item>Mostrar contactos</item>
+        <item>Mostrar todas las apps</item>
+        <item>Iniciar lector de códigos de barras</item>
+        <item>Iniciar linterna</item>
+        <item>Bloquear pantalla</item>
+        <item>Ocultar teclado</item>
+    </string-array>
+    <string-array name="gestureValues" translatable="false">
+        <item>do-nothing</item>
+        <item>display-keyboard</item>
+        <item>display-notifications</item>
+        <item>display-apps</item>
+        <item>display-history</item>
+        <item>display-apps-notif</item>
+        <item>display-contacts</item>
+        <item>display-all-apps</item>
+        <item>start-barcode-reader</item>
+        <item>start-flashlight</item>
+        <item>lock-screen</item>
+        <item>hide-keyboard</item>
+    </string-array>
+
+    <string-array name="shadowEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_customize_enabled</item>
+        <item>@string/theme_customize_disabled</item>
+    </string-array>
+    <string-array name="shadowValues" translatable="false">
+        <item>default</item>
+        <item>enabled</item>
+        <item>disabled</item>
+    </string-array>
+    <string-array name="separatorEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_customize_disabled</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+    </string-array>
+    <string-array name="separatorValues" translatable="false">
+        <item>default</item>
+        <item>disabled</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+    <string-array name="resultColorEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_semi_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_semi_dark</item>
+        <item>@string/theme_amoled</item>
+    </string-array>
+    <string-array name="resultColorValues" translatable="false">
+        <item>default</item>
+        <item>light</item>
+        <item>semi-light</item>
+        <item>dark</item>
+        <item>semi-dark</item>
+        <item>black</item>
+    </string-array>
+    <string-array name="wallpaperEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_customize_enabled</item>
+        <item>@string/theme_customize_disabled</item>
+    </string-array>
+    <string-array name="wallpaperValues" translatable="false">
+        <item>default</item>
+        <item>enabled</item>
+        <item>disabled</item>
+    </string-array>
+    <!-- Names for DrawableUtils.SHAPE_*    -->
+    <string-array name="adaptiveEntries">
+        <item>Predeterminado del sistema</item>
+        <item>Círculo</item>
+        <item>Cuadrado</item>
+        <item>Ardilla</item>
+        <item>Rectángulo redondeado</item>
+        <item>Lágrima inferior derecha</item>
+        <item>Lágrima inferior izquierda</item>
+        <item>Lágrima superior izquierda</item>
+        <item>Lágrima superior derecha</item>
+        <item>Lágrima aleatoria</item>
+        <item>Hexágono</item>
+        <item>Octógono</item>
+    </string-array>
+
+    <!-- Values come from DrawableUtils.SHAPE_*    -->
+    <string-array name="adaptiveValues" translatable="false">
+        <item>0</item>  <!-- SHAPE_SYSTEM -->
+        <item>1</item>  <!-- SHAPE_CIRCLE -->
+        <item>2</item>  <!-- SHAPE_SQUARE -->
+        <item>3</item>  <!-- SHAPE_SQUIRCLE -->
+        <item>4</item>  <!-- SHAPE_ROUND_RECT -->
+        <item>5</item>  <!-- SHAPE_TEARDROP_BR -->
+        <item>6</item>  <!-- SHAPE_TEARDROP_BL -->
+        <item>7</item>  <!-- SHAPE_TEARDROP_TL -->
+        <item>8</item>  <!-- SHAPE_TEARDROP_TR -->
+        <item>9</item>  <!-- SHAPE_TEARDROP_RND -->
+        <item>10</item> <!-- SHAPE_HEXAGON -->
+        <item>11</item> <!-- SHAPE_OCTAGON -->
+    </string-array>
+
+    <string-array name="barColorEntries">
+        <item>@string/theme_customize_default</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_semi_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_semi_dark</item>
+        <item>@string/theme_amoled</item>
+    </string-array>
+    <string-array name="barColorValues" translatable="false">
+        <item>default</item>
+        <item>light</item>
+        <item>semi-light</item>
+        <item>dark</item>
+        <item>semi-dark</item>
+        <item>black</item>
+    </string-array>
+
 </resources>
