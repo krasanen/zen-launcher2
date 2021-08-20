@@ -203,7 +203,12 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             if (favbarAppNames) {
                 image.setPadding(15,0,15,25);
                 textView.setVisibility(View.VISIBLE);
-                int size = Integer.parseInt(prefs.getString("favorite-text-size","12"));
+                int size;
+                try {
+                    size = Integer.parseInt(prefs.getString("favorite-text-size", "12"));
+                } catch (NumberFormatException e){
+                    size = 12;
+                }
                 textView.setTextSize(size);
                 textView.setHeight(size);
                 if (pojo instanceof ShortcutPojo){
