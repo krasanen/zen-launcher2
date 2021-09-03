@@ -307,9 +307,9 @@ public class AppProvider extends Provider<AppPojo> {
         pojos.clear();
         for (String serializedPojo : appSet) {
             Object[] pojoData = Base64Serialize.decode(serializedPojo);
-            if (pojoData == null || pojoData.length != 5)
+            if (pojoData == null || pojoData.length != 6)
                 continue;
-            AppPojo app = new AppPojo((String) pojoData[0], (String) pojoData[1], (String) pojoData[2], new UserHandle(),(Boolean) pojoData[3],(Boolean) pojoData[4]);
+            AppPojo app = new AppPojo((String) pojoData[0], (String) pojoData[1], (String) pojoData[2], new UserHandle(),(Boolean) pojoData[4],(Boolean) pojoData[5]);
             app.setName((String) pojoData[3]);
             pojos.add(app);
         }

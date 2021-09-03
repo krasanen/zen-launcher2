@@ -19,6 +19,7 @@ import java.util.Set;
 import fr.neamar.kiss.BadgeHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.TagsHandler;
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.db.AppRecord;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.AppPojo;
@@ -96,6 +97,8 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
                     app.setTags(tagsHandler.getTags(app.id));
 
                     apps.add(app);
+
+                    MemoryCacheHelper.cacheAppIconDrawable(ctx, new ComponentName(app.packageName, app.activityName), app.userHandle);
                 }
             }
         } else {
@@ -120,6 +123,8 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
                 app.setTags(tagsHandler.getTags(app.id));
 
                 apps.add(app);
+
+                MemoryCacheHelper.cacheAppIconDrawable(ctx, new ComponentName(app.packageName, app.activityName), app.userHandle);
             }
         }
 

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
+import fr.neamar.kiss.UIColors;
 
 public class AppGridActivity extends FragmentActivity {
     private static final String TAG = AppGridActivity.class.getSimpleName();
@@ -41,6 +42,7 @@ public class AppGridActivity extends FragmentActivity {
                 this.setTheme(R.style.AppThemeAmoledDark);
                 break;
         }
+        UIColors.updateThemePrimaryColor(this);
         this.getTheme().applyStyle(prefs.getBoolean("small-results", false) ? R.style.OverlayResultSizeSmall : R.style.OverlayResultSizeStandard, true);
         setContentView(R.layout.appgripscreen);
     }

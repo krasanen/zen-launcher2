@@ -1,0 +1,849 @@
+Index: app/src/main/java/fr/neamar/kiss/forwarder/ForwarderManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fr/neamar/kiss/forwarder/ForwarderManager.java b/app/src/main/java/fr/neamar/kiss/forwarder/ForwarderManager.java
+--- a/app/src/main/java/fr/neamar/kiss/forwarder/ForwarderManager.java	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/java/fr/neamar/kiss/forwarder/ForwarderManager.java	(date 1617881244922)
+@@ -174,4 +174,9 @@
+     public void showWidgetSettings() {
+         widgetForwarder.onShowWidgetSettings();
+     }
++
++    public void addAppWidget(String packageName, String activityName) {
++        widgetForwarder.onWidgetAdd();
++        //widgetForwarder.onAppWidgetAdd(packageName, activityName);
++    }
+ }
+Index: app/src/main/java/fr/neamar/kiss/forwarder/Widget.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fr/neamar/kiss/forwarder/Widget.java b/app/src/main/java/fr/neamar/kiss/forwarder/Widget.java
+--- a/app/src/main/java/fr/neamar/kiss/forwarder/Widget.java	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/java/fr/neamar/kiss/forwarder/Widget.java	(date 1617882743605)
+@@ -3,6 +3,7 @@
+ import android.app.Activity;
+ import android.app.AlertDialog;
+ import android.appwidget.AppWidgetManager;
++import android.appwidget.AppWidgetProvider;
+ import android.appwidget.AppWidgetProviderInfo;
+ import android.content.ComponentName;
+ import android.content.Context;
+@@ -26,9 +27,12 @@
+ 
+ import java.util.Map;
+ 
++import fi.zmengames.zen.AlarmActivity;
+ import fi.zmengames.zen.LauncherAppWidgetHost;
+ import fi.zmengames.zen.LauncherAppWidgetHostView;
+ import fi.zmengames.zen.ParcelableUtil;
++import fi.zmengames.zen.ShortcutWidget;
++import fi.zmengames.zen.ShortcutWidgetConfActivity;
+ import fi.zmengames.zen.Utility;
+ import fr.neamar.kiss.BuildConfig;
+ import fr.neamar.kiss.KissApplication;
+@@ -40,17 +44,20 @@
+ import fr.neamar.kiss.ui.WidgetPreferences;
+ 
+ import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_OPTIONS;
++import static android.appwidget.AppWidgetManager.EXTRA_CUSTOM_EXTRAS;
+ import static fr.neamar.kiss.MainActivity.REQUEST_BIND_APPWIDGET;
+ import static fr.neamar.kiss.MainActivity.REQUEST_CONFIGURE_APPWIDGET;
+ import static fr.neamar.kiss.MainActivity.REQUEST_CREATE_APPWIDGET;
+ import static fr.neamar.kiss.MainActivity.REQUEST_PICK_APPWIDGET;
+ import static fr.neamar.kiss.MainActivity.REQUEST_REFRESH_APPWIDGET;
++import static fr.neamar.kiss.MainActivity.getInstance;
+ 
+ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
+     private static final String TAG = Widget.class.getSimpleName();
+     private static final int APPWIDGET_HOST_ID = 442;
+     public static final String WIDGET_PREFERENCE_ID = "widgetprefs";
+-
++    public static final String EXTRA_ZEN_PACKAGE_NAME = "packageName";
++    public static final String EXTRA_ZEN_ACTIVITY_NAME = "activityName";
+ 
+     private SharedPreferences widgetPrefs;
+ 
+@@ -111,7 +118,7 @@
+     }
+ 
+     void onActivityResult(int requestCode, int resultCode, Intent data) {
+-        if (BuildConfig.DEBUG) Log.i(TAG, "onActivityResult, requestCode:" + requestCode);
++        if (BuildConfig.DEBUG) Log.i(TAG, "onActivityResult, requestCode:" + requestCode + " resultCode:"+resultCode);
+         if (resultCode == Activity.RESULT_OK) {
+             switch (requestCode) {
+                 case REQUEST_CREATE_APPWIDGET:
+@@ -124,7 +131,7 @@
+                     refreshAppWidget(data);
+                     break;
+                 case REQUEST_CONFIGURE_APPWIDGET:
+-                    //refreshAppWidget(data);
++                    configureAppWidget(data);
+                     break;
+             }
+         } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
+@@ -212,7 +219,8 @@
+         Map<String, ?> widgetIds = widgetPrefs.getAll();
+         for (String appWidgetId : widgetIds.keySet()) {
+             if (BuildConfig.DEBUG) Log.w("Widget", "appWidgetId" + appWidgetId);
+-            addWidgetToLauncher(Integer.parseInt(appWidgetId));
++            if (!appWidgetId.startsWith("extra"))
++                addWidgetToLauncher(Integer.parseInt(appWidgetId));
+         }
+     }
+ 
+@@ -393,7 +401,8 @@
+         WidgetPreferences wp = WidgetPreferences.unserialize(data);
+         int w = ViewGroup.LayoutParams.WRAP_CONTENT;
+         int h = ViewGroup.LayoutParams.WRAP_CONTENT;
+-        if (appWidgetInfo.provider.getClassName().contains(ZenWidget.class.getSimpleName())) {
++        if (appWidgetInfo.provider.getClassName().contains(ZenWidget.class.getSimpleName())
++                || appWidgetInfo.provider.getClassName().contains(ShortcutWidget.class.getSimpleName())) {
+             w = appWidgetInfo.minWidth;
+             h = appWidgetInfo.minHeight;
+         }
+@@ -516,7 +525,10 @@
+         if (BuildConfig.DEBUG) Log.i(TAG, "addAppWidget: appWidgetId" + appWidgetId);
+         //add widget
+         WidgetPreferences wp = addWidgetToLauncher(appWidgetId);
+-
++        if (wp!=null) {
++            wp.packageName = data.getStringExtra(EXTRA_ZEN_PACKAGE_NAME);
++            wp.activityName = data.getStringExtra(EXTRA_ZEN_ACTIVITY_NAME);
++        }
+         // Save widget in preferences
+ 
+         SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
+@@ -842,4 +854,44 @@
+             }
+         });
+     }
++
++    public void onAppWidgetAdd(String packageName, String activityName) {
++        if (BuildConfig.DEBUG) Log.i(TAG, "onWidgetAdd");
++        // request widget picker, a selection will lead to a call of onActivityResult
++        int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
++
++        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
++    //   ComponentName componentName = new ComponentName(mainActivity, ShortcutWidgetConfActivity.class);
++    //    intent.setComponent(componentName);
++   //     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, ShortcutWidgetConfActivity.class);
++        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
++        intent.putExtra(EXTRA_ZEN_PACKAGE_NAME, packageName);
++        intent.putExtra(EXTRA_ZEN_ACTIVITY_NAME, activityName);
++
++        mainActivity.startActivityForResult(intent, REQUEST_PICK_APPWIDGET);
++
++/*
++        Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
++        pickIntent.putExtra(EXTRA_ZEN_PACKAGE_NAME, packageName);
++        pickIntent.putExtra(EXTRA_ZEN_ACTIVITY_NAME, activityName);
++        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
++        mainActivity.startActivityForResult(pickIntent, REQUEST_REFRESH_APPWIDGET);
++
++/*
++        Intent configIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
++        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
++            configIntent.putExtra(EXTRA_APPWIDGET_OPTIONS, options);
++        }
++        configIntent.setComponent(a.configure);
++        configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, newId);
++        mainActivity.startActivityForResult(configIntent, REQUEST_CREATE_APPWIDGET); */
++/*
++        if (BuildConfig.DEBUG) Log.i(TAG, "onWidgetAdd");
++        // request widget picker, a selection will lead to a call of onActivityResult
++        int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
++        Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
++        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
++        mainActivity.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
++      */
++    }
+ }
+Index: app/src/main/java/fr/neamar/kiss/ui/WidgetPreferences.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fr/neamar/kiss/ui/WidgetPreferences.java b/app/src/main/java/fr/neamar/kiss/ui/WidgetPreferences.java
+--- a/app/src/main/java/fr/neamar/kiss/ui/WidgetPreferences.java	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/java/fr/neamar/kiss/ui/WidgetPreferences.java	(date 1617869967358)
+@@ -49,6 +49,8 @@
+     public int gravity = Gravity.TOP | Gravity.START;
+     public byte[] appWidgetProviderInfo;
+     public byte[] appWidgetOptions;
++    public String activityName;
++    public String packageName;
+ 
+ 
+     private boolean isValid() {
+@@ -74,6 +76,8 @@
+         this.gravity = wp.gravity;
+         this.appWidgetProviderInfo = appWidgetProviderInfo;
+         this.appWidgetOptions = appWidgetOptions;
++        this.activityName = wp.activityName;
++        this.packageName = wp.packageName;
+     }
+ 
+     public void load(WidgetLayout.LayoutParams layoutParams, byte[] appWidgetProviderInfo, byte[] appWidgetOptions) {
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/AndroidManifest.xml	(date 1617876661756)
+@@ -42,6 +42,7 @@
+     <uses-permission android:name="com.sec.android.provider.badge.permission.READ" /> <!-- for badge support -->
+     <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" /> <!-- for badge support -->
+     <uses-permission android:name="com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER" /> <!-- for Huawei widgets -->
++    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+ 
+     <uses-feature
+         android:name="android.hardware.telephony"
+@@ -83,6 +84,25 @@
+                 android:name="android.appwidget.provider"
+                 android:resource="@xml/zen_widget_info" />
+         </receiver>
++
++        <activity android:name="fi.zmengames.zen.ShortcutWidgetConfActivity">
++            <intent-filter>
++                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
++            </intent-filter>
++        </activity>
++
++        <receiver
++            android:name="fi.zmengames.zen.ShortcutWidget"
++            android:label="Zen ShortcutWidget">
++            <intent-filter>
++                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
++            </intent-filter>
++
++            <meta-data
++                android:name="android.appwidget.provider"
++                android:resource="@xml/shortcut_widget_info" />
++        </receiver>
++
+         <receiver android:name=".broadcast.BadgeCountHandler">
+             <intent-filter>
+                 <action android:name="android.intent.action.BADGE_COUNT_UPDATE" />
+@@ -212,6 +232,13 @@
+                 <action android:name="android.service.notification.NotificationListenerService" />
+             </intent-filter>
+         </service>
++        <receiver android:name="fi.zmengames.zen.ZenBootReceiver"
++            android:exported="false">
++            <intent-filter>
++                <action android:name="android.intent.action.BOOT_COMPLETED"/>
++            </intent-filter>
++        </receiver>
++
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: app/src/main/res/layout/shortcut_widget.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/shortcut_widget.xml b/app/src/main/res/layout/shortcut_widget.xml
+new file mode 100644
+--- /dev/null	(date 1617882502091)
++++ b/app/src/main/res/layout/shortcut_widget.xml	(date 1617882502091)
+@@ -0,0 +1,17 @@
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:id="@+id/shortcutWidget"
++    android:layout_width="wrap_content"
++    android:layout_height="wrap_content"
++    android:background="#000000FF"
++    android:padding="@dimen/widget_margin">
++
++
++    <ImageButton
++        android:id="@+id/shortcutWidgetbButton"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:background="@android:color/transparent"
++        android:scaleType="fitXY"
++        android:resizeMode="horizontal|vertical"
++        android:contentDescription="@string/flashlight_on" />
++</RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/java/fi/zmengames/zen/ShortcutWidgetConfActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fi/zmengames/zen/ShortcutWidgetConfActivity.java b/app/src/main/java/fi/zmengames/zen/ShortcutWidgetConfActivity.java
+new file mode 100644
+--- /dev/null	(date 1617881230806)
++++ b/app/src/main/java/fi/zmengames/zen/ShortcutWidgetConfActivity.java	(date 1617881230806)
+@@ -0,0 +1,93 @@
++package fi.zmengames.zen;
++
++
++import static fr.neamar.kiss.forwarder.Widget.EXTRA_ZEN_ACTIVITY_NAME;
++import static fr.neamar.kiss.forwarder.Widget.EXTRA_ZEN_PACKAGE_NAME;
++
++import android.app.Activity;
++import android.appwidget.AppWidgetManager;
++import android.appwidget.AppWidgetProvider;
++import android.appwidget.AppWidgetProviderInfo;
++import android.os.Bundle;
++import android.os.Parcel;
++import android.os.Parcelable;
++import android.util.Log;
++import android.widget.Button;
++import android.content.Intent;
++import android.view.View;
++import android.view.View.OnClickListener;
++
++import fr.neamar.kiss.R;
++import fr.neamar.kiss.forwarder.ExperienceTweaks;
++
++public class ShortcutWidgetConfActivity extends Activity {
++
++    public static String packageName;
++    public static String activityName;
++
++    private static final String TAG = ShortcutWidgetConfActivity.class.getSimpleName();
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.shortcutwidgetconf);
++        setResult(RESULT_CANCELED);
++        Button setupWidget = (Button) findViewById(R.id.setupWidget);
++        setupWidget.setOnClickListener(new OnClickListener() {
++
++            @Override
++            public void onClick(View v) {
++                handleSetupWidget();
++            }
++        });
++       handleSetupWidget();
++    }
++
++    private void handleSetupWidget() {
++        showAppWidget();
++
++    }
++
++    int appWidgetId;
++    private void showAppWidget() {
++        appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
++
++        //Retrieve the App Widget ID from the Intent that launched the Activity//
++
++        Intent intent = getIntent();
++        Bundle extras = intent.getExtras();
++        if (extras != null) {
++            appWidgetId = extras.getInt(
++                    AppWidgetManager.EXTRA_APPWIDGET_ID,
++                    AppWidgetManager.INVALID_APPWIDGET_ID);
++
++            //If the intent doesn’t have a widget ID, then call finish()//
++
++            if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
++                finish();
++            }
++
++            //TO DO, Perform the configuration and get an instance of the AppWidgetManager//
++
++
++//Create the return intent//
++
++            Intent resultValue = new Intent();
++
++//Pass the original appWidgetId//
++
++            resultValue.putExtra(EXTRA_ZEN_PACKAGE_NAME, packageName);
++            resultValue.putExtra(EXTRA_ZEN_ACTIVITY_NAME, activityName);
++            resultValue.putExtra(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 10);
++            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
++
++
++//Set the results from the configuration Activity//
++
++            setResult(RESULT_OK, resultValue);
++
++//Finish the Activity//
++            Log.d(TAG,"appWidgetId:"+appWidgetId);
++            finish();
++        }
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/fi/zmengames/zen/ShortcutWidget.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fi/zmengames/zen/ShortcutWidget.java b/app/src/main/java/fi/zmengames/zen/ShortcutWidget.java
+new file mode 100644
+--- /dev/null	(date 1617882045337)
++++ b/app/src/main/java/fi/zmengames/zen/ShortcutWidget.java	(date 1617882045337)
+@@ -0,0 +1,180 @@
++package fi.zmengames.zen;
++
++import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
++import static android.appwidget.AppWidgetManager.EXTRA_CUSTOM_EXTRAS;
++
++import static fr.neamar.kiss.forwarder.Widget.EXTRA_ZEN_ACTIVITY_NAME;
++import static fr.neamar.kiss.forwarder.Widget.EXTRA_ZEN_PACKAGE_NAME;
++import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
++
++import android.app.PendingIntent;
++import android.appwidget.AppWidgetManager;
++import android.appwidget.AppWidgetProvider;
++import android.appwidget.AppWidgetProviderInfo;
++import android.content.ComponentName;
++import android.content.Context;
++import android.content.Intent;
++import android.content.SharedPreferences;
++import android.os.Bundle;
++import android.util.Log;
++import android.widget.RemoteViews;
++
++import java.util.Arrays;
++
++import fr.neamar.kiss.BuildConfig;
++import fr.neamar.kiss.KissApplication;
++import fr.neamar.kiss.MainActivity;
++import fr.neamar.kiss.R;
++import fr.neamar.kiss.ui.WidgetPreferences;
++
++
++/**
++ * Implementation of App Widget functionality.
++ */
++public class ShortcutWidget extends AppWidgetProvider {
++
++    private String MyOnClick = "ShortcutWidgetTag";
++    private RemoteViews remoteViews;
++    private ComponentName shortcutWidget;
++    public static final String TAG = ShortcutWidget.class.getSimpleName();
++    private String packageName;
++    private String activityName;
++
++    void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
++                         int appWidgetId) {
++        if (BuildConfig.DEBUG) Log.i(TAG,"updateAppWidget:"+appWidgetId);
++
++        // Construct the RemoteViews object
++        remoteViews = new RemoteViews(context.getPackageName(), R.layout.shortcut_widget);
++        shortcutWidget = new ComponentName( context, ShortcutWidget.class );
++        remoteViews.setOnClickPendingIntent( R.id.shortcutWidgetbButton, getPendingSelfIntent(context, MyOnClick, appWidgetId));
++        SharedPreferences widgetPrefs = context.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
++        String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
++        WidgetPreferences wp = WidgetPreferences.unserialize(data);
++        if (wp!=null) {
++            Log.d(TAG, "activityName:" + wp.activityName);
++            Log.d(TAG, "packageName:" + wp.packageName);
++            IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
++            remoteViews.setImageViewBitmap(R.id.shortcutWidgetbButton, iconHelper.getAppIcon(wp.packageName));
++            this.activityName = wp.activityName;
++            this.packageName = wp.packageName;
++        }
++
++        Log.d(TAG,"info:"+ appWidgetManager.getAppWidgetInfo(appWidgetId));
++        AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(appWidgetId);
++        Bundle bundle = appWidgetManager.getAppWidgetOptions(appWidgetId);
++        Log.d(TAG,"extra:"+bundle.get(EXTRA_CUSTOM_EXTRAS));
++        Log.d(TAG,"info2:"+ info);
++        // Instruct the widget manager to update the widget
++        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
++    }
++    private PendingIntent getPendingSelfIntent(Context context, String action, int appWidgetId) {
++        if (BuildConfig.DEBUG) Log.i(TAG,"getPendingSelfIntent:"+action);
++        Intent intent = new Intent(context, getClass());
++        intent.putExtra(EXTRA_APPWIDGET_ID, appWidgetId);
++        intent.putExtra(EXTRA_ZEN_ACTIVITY_NAME, activityName);
++        intent.putExtra(EXTRA_ZEN_PACKAGE_NAME, packageName);
++        intent.setAction(action);
++        return PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
++    }
++    @Override
++    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
++        if (BuildConfig.DEBUG) Log.i(TAG,"onUpdate:"+ Arrays.toString(appWidgetIds));
++        // There may be multiple widgets active, so update all of them
++        for (int appWidgetId : appWidgetIds) {
++            if (BuildConfig.DEBUG) Log.i(TAG,"updateAppWidget:"+appWidgetId);
++            updateAppWidget(context, appWidgetManager, appWidgetId);
++        }
++        super.onUpdate(context, appWidgetManager, appWidgetIds);
++    }
++
++    @Override
++    public void onReceive(Context context, Intent intent) {
++        super.onReceive(context, intent);
++
++        // TODO: identify widget by bounds
++        //onReceive Intent { act=ShortcutWidgetTag flg=0x10000010 cmp=com.zmengames.zenlauncher.debug/fi.zmengames.zen.ShortcutWidget bnds=[84,396][513,879]
++
++        int appWidgetId = intent.getIntExtra(EXTRA_APPWIDGET_ID, -1);
++        if (BuildConfig.DEBUG) Log.i(TAG, "onReceive " + intent + " appWidgetId:" + appWidgetId);
++
++
++        if (appWidgetId != -1){
++            // Construct the RemoteViews object
++            remoteViews = new RemoteViews(context.getPackageName(), R.layout.shortcut_widget);
++            shortcutWidget = new ComponentName( context, ShortcutWidget.class );
++            remoteViews.setOnClickPendingIntent( R.id.shortcutWidgetbButton, getPendingSelfIntent(context, MyOnClick, appWidgetId));
++
++
++            MainActivity mainActivity = KissApplication.getApplication(context).getMainActivity();
++            SharedPreferences widgetPrefs = context.getSharedPreferences(WIDGET_PREFERENCE_ID, Context.MODE_PRIVATE);
++            String data = widgetPrefs.getString(String.valueOf(appWidgetId), null);
++            WidgetPreferences wp = WidgetPreferences.unserialize(data);
++            if (wp != null) {
++                Log.d(TAG, "activityName:" + wp.activityName);
++                Log.d(TAG, "packageName:" + wp.packageName);
++                IconHelper iconHelper = new IconHelper(context.getPackageManager(), context);
++                remoteViews.setImageViewBitmap(R.id.shortcutWidgetbButton, iconHelper.getAppIcon(wp.packageName));
++                activityName = wp.activityName;
++                packageName = wp.packageName;
++            }
++
++            if (mainActivity != null && MyOnClick.contains(intent.getAction())) {
++
++                Intent startIntent = new Intent(Intent.ACTION_MAIN);
++                startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
++                startIntent.setComponent(new ComponentName(packageName, activityName));
++                startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
++
++                Log.d(TAG, "activityName:" + activityName);
++                Log.d(TAG, "packageName:" + packageName);
++
++                context.startActivity(startIntent);
++            }
++
++            updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId);
++        }
++    }
++
++    private int identifyWidget(Intent intent) {
++        //onReceive Intent { act=ShortcutWidgetTag flg=0x10000010 cmp=com.zmengames.zenlauncher.debug/fi.zmengames.zen.ShortcutWidget bnds=[84,396][513,879]
++        Log.d(TAG, "identifyWidget, intent:" + intent.toString());
++        Log.d(TAG, "identifyWidget, intent getType:" + intent.getType());
++        Bundle bundle = intent.getBundleExtra("act");
++        String getAction = intent.getDataString();
++        Log.d(TAG, "identifyWidget, getAction:" + getAction);
++        Log.d(TAG, "identifyWidget, bundle:" + bundle);
++        if (bundle != null) {
++            for (String key : bundle.keySet()) {
++                Log.e(TAG, key + " : " + (bundle.get(key) != null ? bundle.get(key) : "NULL"));
++            }
++        }
++        return -1;
++    }
++
++    @Override
++    public void onEnabled(Context context) {
++
++        super.onEnabled(context);
++
++        if (BuildConfig.DEBUG) Log.i(TAG,"onEnabled");
++    }
++
++    @Override
++    public void onDisabled(Context context) {
++        super.onDisabled(context);
++        if (BuildConfig.DEBUG) Log.i(TAG,"onDisabled");
++    }
++
++    @Override
++    public void onDeleted(Context context, int[] appWidgetIds) {
++        super.onDeleted(context, appWidgetIds);
++        if (BuildConfig.DEBUG) Log.i(TAG,"onDeleted");
++    }
++    @Override
++    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
++        super.onRestored(context, oldWidgetIds, newWidgetIds);
++        if (BuildConfig.DEBUG) Log.i(TAG,"onRestored: "+ newWidgetIds);
++    }
++}
++
+Index: app/src/main/java/fi/zmengames/zen/LauncherAppWidgetHostView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fi/zmengames/zen/LauncherAppWidgetHostView.java b/app/src/main/java/fi/zmengames/zen/LauncherAppWidgetHostView.java
+--- a/app/src/main/java/fi/zmengames/zen/LauncherAppWidgetHostView.java	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/java/fi/zmengames/zen/LauncherAppWidgetHostView.java	(date 1617909621610)
+@@ -19,16 +19,20 @@
+ 
+ 
+ import android.appwidget.AppWidgetHostView;
++import android.appwidget.AppWidgetManager;
+ import android.content.Context;
+ import android.content.Intent;
+ import android.content.pm.PackageInfo;
+ import android.content.pm.PackageManager;
++import android.graphics.Rect;
++import android.os.Bundle;
+ import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.MotionEvent;
+ import android.view.View;
+ import android.view.ViewConfiguration;
+ import android.view.ViewGroup;
++import android.widget.RelativeLayout;
+ 
+ import java.util.Arrays;
+ 
+@@ -69,7 +73,7 @@
+             e.printStackTrace();
+         }
+     }
+-
++    float dX=0, dY=0;
+     public boolean onInterceptTouchEvent(MotionEvent ev) {
+         if (BuildConfig.DEBUG) Log.d(TAG,"onInterceptTouchEvent"+ ev);
+         if (this.getAppWidgetInfo().provider.getPackageName().startsWith("com.huawei")){
+@@ -83,10 +87,13 @@
+             return true;
+         }
+ 
++
+         // Watch for longpress events at this level to make sure
+         // users can always pick up this widget
+         switch (ev.getAction()) {
+             case MotionEvent.ACTION_DOWN: {
++                dX = this.getX() - ev.getRawX();
++                dY = this.getY() - ev.getRawY();
+                 postCheckForLongClick();
+                 break;
+             }
+@@ -98,6 +105,17 @@
+                     removeCallbacks(mPendingCheckForLongPress);
+                 }
+                 break;
++            case MotionEvent.ACTION_MOVE:
++                cancelLongPress();
++                this.animate()
++                        .x(ev.getRawX() + dX)
++                        .y(ev.getRawY() + dY)
++                        .setDuration(0)
++                        .start();
++                this.updateAppWidgetOptions(getDefaultOptionsForWidget(getContext()));
++                //this.setTranslationX(ev.getX());
++                //this.setTranslationY(ev.getY());
++                break;
+         }
+ 
+         // Otherwise continue letting touch events fall through to children
+@@ -116,7 +134,6 @@
+                 }
+             }
+         }
+-
+         public void rememberWindowAttachCount() {
+             mOriginalWindowAttachCount = getWindowAttachCount();
+         }
+@@ -146,4 +163,24 @@
+     public int getDescendantFocusability() {
+         return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+     }
++
++    // not working yet, need to update widget positions to options
++    public Bundle getDefaultOptionsForWidget(Context context) {
++        Rect rect = new Rect();
++
++        float density = context.getResources().getDisplayMetrics().density;
++        int xPaddingDips = (int) ((this.getLeft() + this.getRight()) / density);
++        int yPaddingDips = (int) ((this.getTop() + this.getBottom()) / density);
++
++        Bundle options = new Bundle();
++        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
++                rect.left - xPaddingDips);
++        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
++                rect.top - yPaddingDips);
++        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
++                rect.right - xPaddingDips);
++        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
++                rect.bottom - yPaddingDips);
++        return options;
++    }
+ }
+Index: app/src/main/res/xml/shortcut_widget_info.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/xml/shortcut_widget_info.xml b/app/src/main/res/xml/shortcut_widget_info.xml
+new file mode 100644
+--- /dev/null	(date 1617881684408)
++++ b/app/src/main/res/xml/shortcut_widget_info.xml	(date 1617881684408)
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
++    android:initialKeyguardLayout="@layout/shortcut_widget"
++    android:initialLayout="@layout/shortcut_widget"
++    android:minWidth="50dp"
++    android:minHeight="50dp"
++    android:minResizeWidth="50dp"
++    android:minResizeHeight="50dp"
++    android:previewImage="@drawable/example_appwidget_preview"
++    android:resizeMode="horizontal|vertical"
++    android:updatePeriodMillis="86400000"
++    android:configure="fi.zmengames.zen.ShortcutWidgetConfActivity">
++    android:widgetCategory="home_screen"></appwidget-provider>
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+--- a/app/src/main/res/values/strings.xml	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/res/values/strings.xml	(date 1617869967358)
+@@ -441,6 +441,9 @@
+     <string name="favorite_text_size_sum">Set font size for favorite item text</string>
+     <string name="contact_masks">Enable contact shapes</string>
+     <string name="contact_masks_summary">Apply icon pack or selected shape for contact icons</string>
++    <string name="add_app_widget">Add app widget</string>
++    <string name="hint_create_shortcutwidge">Now create Zen Shortcut widget</string>
++    <string name="set_as_startup_app">Set as startup app</string>
+     />
+ 
+ </resources>
+Index: app/src/main/java/fr/neamar/kiss/result/AppResult.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fr/neamar/kiss/result/AppResult.java b/app/src/main/java/fr/neamar/kiss/result/AppResult.java
+--- a/app/src/main/java/fr/neamar/kiss/result/AppResult.java	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/java/fr/neamar/kiss/result/AppResult.java	(date 1617881244934)
+@@ -41,6 +41,7 @@
+ import org.greenrobot.eventbus.EventBus;
+ 
+ import fi.zmengames.zen.AlarmUtils;
++import fi.zmengames.zen.ShortcutWidgetConfActivity;
+ import fi.zmengames.zen.Utility;
+ import fi.zmengames.zen.ZEvent;
+ import fr.neamar.kiss.BuildConfig;
+@@ -162,6 +163,8 @@
+         adapter.add(new ListPopup.Item(context, R.string.menu_favorites_remove));
+         adapter.add(new ListPopup.Item(context, R.string.menu_app_details));
+         adapter.add(new ListPopup.Item(context, R.string.add_badge));
++        adapter.add(new ListPopup.Item(context, R.string.add_app_widget));
++        adapter.add(new ListPopup.Item(context, R.string.set_as_startup_app));
+         if (appPojo.getBadgeCount()>0) {
+             adapter.add(new ListPopup.Item(context, R.string.removeBadge));
+         }
+@@ -265,6 +268,21 @@
+                     e.printStackTrace();
+                 }
+ 
++                return true;
++
++            case R.string.add_app_widget:
++                ShortcutWidgetConfActivity.packageName = appPojo.packageName;
++                ShortcutWidgetConfActivity.activityName = appPojo.activityName;
++                Toast.makeText(context, R.string.hint_create_shortcutwidge, Toast.LENGTH_LONG).show();
++                KissApplication.getApplication(context).getMainActivity().hideKeyboard();
++
++                KissApplication.getApplication(context).getMainActivity().forwarderManager.addAppWidget(appPojo.packageName, appPojo.activityName);
++                return true;
++            case R.string.set_as_startup_app:
++                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
++                prefs.edit().putString("bootPackage",appPojo.packageName).apply();
++                prefs.edit().putString("bootActivity",appPojo.activityName).apply();
++                Toast.makeText(context, R.string.set_as_startup_app +":"+appPojo.packageName, Toast.LENGTH_LONG).show();
+                 return true;
+         }
+ 
+Index: app/src/main/java/fi/zmengames/zen/ZenBootReceiver.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fi/zmengames/zen/ZenBootReceiver.java b/app/src/main/java/fi/zmengames/zen/ZenBootReceiver.java
+new file mode 100644
+--- /dev/null	(date 1617869967358)
++++ b/app/src/main/java/fi/zmengames/zen/ZenBootReceiver.java	(date 1617869967358)
+@@ -0,0 +1,25 @@
++package fi.zmengames.zen;
++import android.content.BroadcastReceiver;
++import android.content.ComponentName;
++import android.content.Context;
++import android.content.Intent;
++import android.content.SharedPreferences;
++import android.preference.PreferenceManager;
++import android.util.Log;
++
++
++public class ZenBootReceiver extends BroadcastReceiver {
++    private static final String TAG = ZenBootReceiver.class.getSimpleName();
++    @Override
++    public void onReceive(Context context, Intent intent) {
++        Log.d(TAG,"onReceive");
++        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
++        String bootPackage = prefs.getString("bootPackage",null);
++        String bootActivity = prefs.getString("bootActivity",null);
++        if (bootActivity!=null&&bootPackage!=null) {
++            intent.setComponent(new ComponentName(bootPackage,bootActivity));
++            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
++            context.startActivity(intent);
++        }
++    }
++}
+Index: app/src/main/res/layout/shortcutwidgetconf.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/shortcutwidgetconf.xml b/app/src/main/res/layout/shortcutwidgetconf.xml
+new file mode 100644
+--- /dev/null	(date 1617869967358)
++++ b/app/src/main/res/layout/shortcutwidgetconf.xml	(date 1617869967358)
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <Button
++        android:id="@+id/setupWidget"
++        android:layout_width="fill_parent"
++        android:layout_height="wrap_content"
++        android:layout_alignParentLeft="true"
++        android:layout_marginTop="175dp"
++        android:text="Create widget"
++        android:textColor="#FFFFFF" />
++
++    <TextView
++        android:layout_width="fill_parent"
++        android:layout_height="wrap_content"
++        android:layout_alignBottom="@+id/setupWidget"
++        android:layout_alignParentLeft="true"
++        android:layout_marginBottom="67dp"
++        android:text="Configuration options go here!" />
++
++
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/fr/neamar/kiss/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/fr/neamar/kiss/MainActivity.java b/app/src/main/java/fr/neamar/kiss/MainActivity.java
+--- a/app/src/main/java/fr/neamar/kiss/MainActivity.java	(revision 4e26e194cbbc33b95e3a0522a83f3544e7659733)
++++ b/app/src/main/java/fr/neamar/kiss/MainActivity.java	(date 1617869967358)
+@@ -300,7 +300,7 @@
+ 
+     public static PopupWindow mPopup;
+ 
+-    private ForwarderManager forwarderManager;
++    public ForwarderManager forwarderManager;
+     public static boolean mDebugJson = false;
+     GoogleSignInClient mGoogleSignInClient;
+     private int widgetAddY,widgetAddX;
