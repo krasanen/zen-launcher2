@@ -5,11 +5,14 @@ buildscript {
         }
         mavenCentral()
     }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-errorprone-plugin:2.0.2"
+    }
 }
 
 plugins {
     id 'com.android.application'
-    id 'net.ltgt.errorprone' version '0.7.1'
+    id 'net.ltgt.errorprone' version '2.0.2'
 }
 
 android {
@@ -20,11 +23,11 @@ android {
         abortOnError false
     }
 
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId 'com.zmengames.zenlauncher'
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionName = buildTimeStamp() + "@" + gitLastCommit()
         versionCode = gitVersion()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -126,8 +129,8 @@ dependencies {
 }
 
 tasks.withType(JavaCompile) {
-    options.errorprone.errorproneArgs << '-Xep:MissingOverride:OFF'
-    options.errorprone.disableAllChecks = true
+    options.errorprone.enabled = false
+    options.errorprone.disableWarningsInGeneratedCode = true
 
 }
 
