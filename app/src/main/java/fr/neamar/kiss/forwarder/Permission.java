@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
@@ -83,7 +84,7 @@ public class Permission extends Forwarder {
         if (grantResults.length == 0) {
             return;
         }
-        if (BuildConfig.DEBUG) Log.d(TAG,"permissions:"+permissions);
+        if (BuildConfig.DEBUG) Log.d(TAG,"permissions:"+ Arrays.toString(permissions));
         if (requestCode == PERMISSION_READ_CONTACTS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // Great! Reload the contact provider. We're done :)
             ContactsProvider contactsProvider = KissApplication.getApplication(mainActivity).getDataHandler().getContactsProvider();

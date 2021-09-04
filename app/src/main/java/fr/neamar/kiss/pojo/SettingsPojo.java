@@ -25,6 +25,7 @@ public class SettingsPojo extends Pojo {
         this.icon = icon;
     }
     @Override
+    @SuppressWarnings("EqualsHashCode")
     public boolean equals (Object object) {
         boolean result = false;
         if (object == null || object.getClass() != getClass()) {
