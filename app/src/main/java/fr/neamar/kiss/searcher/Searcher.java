@@ -26,9 +26,14 @@ public abstract class Searcher extends AsyncTask<Void, Result, Void> {
     // define a different thread than the default AsyncTask thread or else we will block everything else that uses AsyncTask while we search
     public static final ExecutorService SEARCH_THREAD = Executors.newSingleThreadExecutor();
     static final int DEFAULT_MAX_RESULTS = 50;
-    public final WeakReference<MainActivity> activityWeakReference;
+    final WeakReference<MainActivity> activityWeakReference;
     private final PriorityQueue<Pojo> processedPojos;
     private long start;
+    /**
+     * Set to true when we are simply refreshing current results (scroll will not be reset)
+     * When false, we reset the scroll back to the last item in the list
+     */
+    private boolean isRefresh = false;
     protected final String query;
 
     public Searcher(MainActivity activity, String query) {
@@ -101,9 +106,10 @@ public abstract class Searcher extends AsyncTask<Void, Result, Void> {
             while (queue.peek() != null) {
                 results.add(Result.fromPojo(activity, queue.poll()));
             }
+
             activity.beforeListChange();
 
-            activity.adapter.updateResults(results, query);
+            activity.adapter.updateResults(results, isRefresh, query);
 
             activity.afterListChange();
         }
@@ -119,4 +125,9 @@ public abstract class Searcher extends AsyncTask<Void, Result, Void> {
 
         void afterListChange();
     }
+
+    public void setRefresh(boolean refresh) {
+        isRefresh = refresh;
+    }
+
 }

@@ -221,7 +221,7 @@ public class AppResult extends Result {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getGroupId()) {
                             case EXCLUDE_HISTORY_ID:
-                                excludeFromHistory(context, appPojo, parent);
+                                excludeFromHistory(context, appPojo);
                                 return true;
                             case EXCLUDE_KISS_ID:
                                 // remove item since it will be hidden
@@ -273,16 +273,15 @@ public class AppResult extends Result {
 
     static int badgecount = 0;
 
-    private void excludeFromHistory(Context context, AppPojo appPojo, final RecordAdapter parent) {
-        //add to excluded from history app list
+    private void excludeFromHistory(Context context, AppPojo appPojo) {
+        // add to excluded from history app list
         KissApplication.getApplication(context).getDataHandler().addToExcludedFromHistory(appPojo);
-        //remove from history
-        deleteRecord(context);
-        //refresh current history
-        parent.removeResult(context, AppResult.this);
-        //inform user
+        // remove from history
+        removeFromHistory(context);
+        // inform user
         Toast.makeText(context, R.string.excluded_app_history_added, Toast.LENGTH_LONG).show();
     }
+
 
     private void excludeFromKiss(Context context, AppPojo appPojo) {
         KissApplication.getApplication(context).getDataHandler().addToExcluded(appPojo);

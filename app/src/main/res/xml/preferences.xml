@@ -187,7 +187,7 @@
                 android:title="@string/adaptive_shape_name" />
 
             <fr.neamar.kiss.SwitchPreference
-                android:defaultValue="true"
+                android:defaultValue="false"
                 android:disableDependentsState="true"
                 android:key="force-adaptive"
                 android:summary="@string/force_adaptive_summary"

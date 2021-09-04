@@ -272,7 +272,7 @@ public class ContactsResult extends Result {
 
             @Override
             public void onClick(View v) {
-                recordLaunch(v.getContext());
+                recordLaunch(v.getContext(), queryInterface);
             }
         });
 
@@ -300,6 +300,7 @@ public class ContactsResult extends Result {
                 @Override
                 public void onClick(View v) {
                     launchCall(v.getContext());
+                    recordLaunch(context, queryInterface);
                 }
             });
             phoneButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -594,7 +595,7 @@ public class ContactsResult extends Result {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                recordLaunch(context);
+                recordLaunch(context, queryInterface);
             }
         }, KissApplication.TOUCH_DELAY);
 
@@ -618,7 +619,7 @@ public class ContactsResult extends Result {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    recordLaunch(context);
+                    recordLaunch(context, queryInterface);
                 }
             }, KissApplication.TOUCH_DELAY);
         }
@@ -663,7 +664,7 @@ public class ContactsResult extends Result {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    recordLaunch(context);
+                    recordLaunch(context, queryInterface);
                 }
             }, KissApplication.TOUCH_DELAY);
 
@@ -699,7 +700,7 @@ public class ContactsResult extends Result {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    recordLaunch(context);
+                    recordLaunch(context, queryInterface);
                 }
             }, KissApplication.TOUCH_DELAY);
         }

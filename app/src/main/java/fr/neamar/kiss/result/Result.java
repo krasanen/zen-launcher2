@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -136,7 +137,7 @@ public abstract class Result {
         view.setText(enriched);
     }
 
-    public boolean displayHighlighted(StringNormalizer.Result normalized, String text, FuzzyScore fuzzyScore,
+    boolean displayHighlighted(StringNormalizer.Result normalized, String text, FuzzyScore fuzzyScore,
                                       TextView view, Context context) {
         FuzzyScore.MatchInfo matchInfo = fuzzyScore.match(normalized.codePoints);
 
@@ -246,7 +247,7 @@ public abstract class Result {
     boolean popupMenuClickHandler(Context context, RecordAdapter parent, @StringRes int stringId, View parentView) {
         switch (stringId) {
             case R.string.menu_remove:
-                removeItem(context, parent);
+                removeFromResultsAndHistory(context, parent);
                 return true;
             case R.string.menu_favorites_add:
                 launchAddToFavorites(context, pojo);
@@ -261,16 +262,16 @@ public abstract class Result {
         return false;
     }
 
-    private void launchAddToFavorites(Context context, Pojo app) {
+    private void launchAddToFavorites(Context context, Pojo pojo) {
         String msg = context.getResources().getString(R.string.toast_favorites_added);
-        KissApplication.getApplication(context).getDataHandler().addToFavorites(app.id);
-        Toast.makeText(context, String.format(msg, app.getName()), Toast.LENGTH_SHORT).show();
+        KissApplication.getApplication(context).getDataHandler().addToFavorites(pojo.getFavoriteId());
+        Toast.makeText(context, String.format(msg, pojo.getName()), Toast.LENGTH_SHORT).show();
     }
 
-    private void launchRemoveFromFavorites(Context context, Pojo app) {
+    private void launchRemoveFromFavorites(Context context, Pojo pojo) {
         String msg = context.getResources().getString(R.string.toast_favorites_removed);
-        KissApplication.getApplication(context).getDataHandler().removeFromFavorites(app.id);
-        Toast.makeText(context, String.format(msg, app.getName()), Toast.LENGTH_SHORT).show();
+        KissApplication.getApplication(context).getDataHandler().removeFromFavorites(pojo.getFavoriteId());
+        Toast.makeText(context, String.format(msg, pojo.getName()), Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -279,23 +280,42 @@ public abstract class Result {
      * @param context android context
      * @param parent  adapter on which to remove the item
      */
-    private void removeItem(Context context, RecordAdapter parent) {
+    private void removeFromResultsAndHistory(Context context, RecordAdapter parent) {
+        removeFromHistory(context);
         Toast.makeText(context, R.string.removed_item, Toast.LENGTH_SHORT).show();
         parent.removeResult(context, this);
     }
 
-    public final void launch(Context context, View v) {
-        if (BuildConfig.DEBUG) Log.i(TAG, "Launching " + pojo.id);
-
-        recordLaunch(context);
+    public final void launch(Context context, View v, QueryInterface queryInterface) {
+        Log.i("log", "Launching " + pojo.id);
 
         // Launch
         doLaunch(context, v);
+
+        if (queryInterface != null) {
+            recordLaunch(context, queryInterface);
+        }
+    }
+
+    void recordLaunch(Context context, QueryInterface queryInterface) {
+        // Record the launch after some period,
+        // * to ensure the animation runs smoothly
+        // * to avoid a flickering -- launchOccurred will refresh the list
+        // Thus TOUCH_DELAY * 3
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Save in history
+                KissApplication.getApplication(context).getDataHandler().addToHistory(pojo.getHistoryId());
+
+                queryInterface.launchOccurred();
+            }
+        }, KissApplication.TOUCH_DELAY * 3);
     }
 
     /**
-     * How to launch this record ? Most probably, will fire an intent. This
-     * function must call recordLaunch()
+     * How to launch this record ? Most probably, will fire an intent.
      *
      * @param context android context
      */
@@ -308,7 +328,7 @@ public abstract class Result {
      * @param context android context
      */
     public void fastLaunch(Context context, View v) {
-        this.launch(context, v);
+        this.launch(context, v, null);
     }
 
     /**
@@ -378,17 +398,7 @@ public abstract class Result {
         return inflater.inflate(id, parent, false);
     }
 
-    /**
-     * Put this item in application history
-     *
-     * @param context android context
-     */
-    void recordLaunch(Context context) {
-        // Save in history
-        KissApplication.getApplication(context).getDataHandler().addToHistory(pojo.id);
-    }
-
-    public void deleteRecord(Context context) {
+    void removeFromHistory(Context context) {
         DBHelper.removeFromHistory(context, pojo.id);
     }
 
@@ -431,11 +441,7 @@ public abstract class Result {
             Result result = appResultWeakReference.get();
             if (result == null)
                 return null;
-            Drawable drawable = result.getDrawable(image.getContext());
-            if (!result.isDrawableCached()){
-                result.setDrawableCache(drawable);
-            }
-            return drawable;
+            return result.getDrawable(image.getContext());
         }
 
         @Override

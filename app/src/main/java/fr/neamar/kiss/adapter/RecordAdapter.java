@@ -104,11 +104,10 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         return results.get(position).display(parent.getContext(), convertView, parent, fuzzyScore);
     }
 
-
     public void onLongClick(final int pos, View v) {
         ListPopup menu = results.get(pos).getPopupMenu(v.getContext(), this, v);
 
-        //check if menu contains elements and if yes show it
+        // check if menu contains elements and if yes show it
         if (menu.getAdapter().getCount() > 0) {
             parent.registerPopup(menu);
             menu.show(v);
@@ -120,37 +119,30 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
 
         try {
             result = results.get(position);
-            result.launch(v.getContext(), v);
+            result.launch(v.getContext(), v, parent);
         } catch (ArrayIndexOutOfBoundsException ignored) {
-            return;
         }
-
-        // Record the launch after some period,
-        // * to ensure the animation runs smoothly
-        // * to avoid a flickering -- launchOccurred will refresh the list
-        // Thus TOUCH_DELAY * 3
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                parent.launchOccurred();
-            }
-        }, KissApplication.TOUCH_DELAY * 3);
-
     }
 
     public void removeResult(Context context, Result result) {
         results.remove(result);
-        result.deleteRecord(context);
         notifyDataSetChanged();
+        // Do not reset scroll, we want the remaining items to still be in view
+        parent.temporarilyDisableTranscriptMode();
     }
 
-    public void updateResults(List<Result> results, String query) {
-        this.results = results;
+    public void updateResults(List<Result> results, boolean isRefresh, String query) {
+        this.results.clear();
+        this.results.addAll(results);
         StringNormalizer.Result queryNormalized = StringNormalizer.normalizeWithResult(query, false);
 
         fuzzyScore = new FuzzyScore(queryNormalized.codePoints, true);
         notifyDataSetChanged();
+
+        if (isRefresh) {
+            // We're refreshing an existing dataset, do not reset scroll!
+            parent.temporarilyDisableTranscriptMode();
+        }
     }
 
     /**
