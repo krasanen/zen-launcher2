@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.icons.IconPack;
 import fr.neamar.kiss.icons.IconPackXML;
 import fr.neamar.kiss.icons.SystemIconPack;
@@ -156,7 +157,7 @@ public class CustomIconDialog extends DialogFragment {
             mPreview = view.findViewById(R.id.preview);
             Drawable drawable = customIcon != 0 ? iconsHandler.getCustomIcon(name, customIcon) : null;
             if (drawable == null)
-                drawable = iconsHandler.getDrawableIconForPackage(cn, userHandle);
+                drawable = MemoryCacheHelper.getAppIconDrawable(context, cn, userHandle);
             mPreview.setImageDrawable(drawable);
         }
 
@@ -181,7 +182,7 @@ public class CustomIconDialog extends DialogFragment {
 
         // add default icon
         {
-            Drawable drawable = iconsHandler.getDrawableIconForPackage(cn, userHandle);
+            Drawable drawable = MemoryCacheHelper.getAppIconDrawable(context, cn, userHandle);
 
             ImageView icon = quickList.findViewById(android.R.id.icon);
             icon.setImageDrawable(drawable);

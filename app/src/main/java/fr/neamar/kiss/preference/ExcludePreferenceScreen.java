@@ -18,6 +18,7 @@ import java.util.List;
 import fr.neamar.kiss.IconsHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.SwitchPreference;
+import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.PojoComparator;
@@ -65,7 +66,7 @@ public class ExcludePreferenceScreen {
 		for (AppPojo app : apps) {
 			final ComponentName componentName = new ComponentName(app.packageName, app.activityName);
 
-			final Drawable icon = iconsHandler.getDrawableIconForPackage(componentName, app.userHandle);
+			final Drawable icon = MemoryCacheHelper.getAppIconDrawable(preferenceActivity.getApplicationContext(), componentName, app.userHandle);
 
 			final boolean showSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
 					|| preferenceActivity.getResources().getConfiguration().screenWidthDp > 420;
