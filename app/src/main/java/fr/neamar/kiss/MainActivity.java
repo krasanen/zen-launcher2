@@ -1085,7 +1085,8 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
         dismissPopup();
 
-        if (KissApplication.getApplication(this).getDataHandler().allProvidersHaveLoaded) {
+        if (KissApplication.getApplication(this) != null
+                && KissApplication.getApplication(this).getDataHandler().allProvidersHaveLoaded) {
             displayLoader(false);
             if (BuildConfig.DEBUG) Log.i(TAG, ">onFavoriteChange");
             onFavoriteChange();

@@ -51,7 +51,13 @@ public class KissApplication extends Application {
     }
 
     public static KissApplication getApplication(Context context) {
-        return (KissApplication) context.getApplicationContext();
+        Context applicationContext = context.getApplicationContext();
+        if (applicationContext instanceof KissApplication){
+            return (KissApplication) applicationContext;
+        } else {
+            Log.d(TAG,"getApplication, applicationContext class: "+applicationContext.getClass());
+            return null;
+        }
     }
 
     public MainActivity getMainActivity() {
