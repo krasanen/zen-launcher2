@@ -193,16 +193,19 @@ public class DataHandler
         this.context.bindService(intent, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName className, IBinder service) {
-                // We've bound to LocalService, cast the IBinder and get LocalService instance
-                Provider.LocalBinder binder = (Provider.LocalBinder) service;
-                IProvider provider = binder.getService();
+                if (BuildConfig.DEBUG) Log.d(TAG,"onServiceConnected: "+service.getClass());
+                if (service instanceof Provider.LocalBinder) {
+                    // We've bound to LocalService, cast the IBinder and get LocalService instance
+                    Provider.LocalBinder binder = (Provider.LocalBinder) service;
+                    IProvider provider = binder.getService();
 
-                // Update provider info so that it contains something useful
-                entry.provider = provider;
-                entry.connection = this;
+                    // Update provider info so that it contains something useful
+                    entry.provider = provider;
+                    entry.connection = this;
 
-                if (provider.isLoaded()) {
-                    handleProviderLoaded();
+                    if (provider.isLoaded()) {
+                        handleProviderLoaded();
+                    }
                 }
             }
 
