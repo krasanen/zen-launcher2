@@ -21,6 +21,11 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Display notification drawer -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" /> <!-- Display notification drawer -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" /> <!-- Ability to uninstall an app from KISS -->
+    <!-- Android 11 now makes listing apps a non-default permission
+    https://developer.android.com/training/basics/intents/package-visibility
+    -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- for Zen Alarm -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INTERNET" />

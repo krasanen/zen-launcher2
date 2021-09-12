@@ -15,12 +15,11 @@ public class KissApplication extends Application {
      * Setting this value to 0 removes all animations
      */
     public static final int TOUCH_DELAY = 0;
-    private static Context context;
     private DataHandler dataHandler;
     private RootHandler rootHandler;
     private IconsHandler iconsPackHandler;
     private static MainActivity mainActivity;
-    private final IconPackCache mIconPackCache = new IconPackCache();;
+    private final IconPackCache mIconPackCache = new IconPackCache();
     public static IconPackCache iconPackCache(Context ctx) {
         return getApplication(ctx).mIconPackCache;
     }
@@ -29,7 +28,6 @@ public class KissApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
-        KissApplication.context = getApplicationContext();
     }
 
     @Override
