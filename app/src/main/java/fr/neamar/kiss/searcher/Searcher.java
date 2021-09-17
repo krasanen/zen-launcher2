@@ -90,7 +90,7 @@ public abstract class Searcher extends AsyncTask<Void, Result, Void> {
     @Override
     protected void onPostExecute(Void param) {
         MainActivity activity = activityWeakReference.get();
-        if (activity == null)
+        if (activity == null || KissApplication.getApplication(activity) == null)
             return;
 
         // Loader should still be displayed until all the providers have finished loading
