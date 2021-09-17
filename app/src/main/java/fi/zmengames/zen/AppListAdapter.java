@@ -108,6 +108,8 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
             v = params[0];
             if (mPosition<getCount()) {
                 Pojo item = getItem(mPosition);
+                if (item==null)
+                    return new ColorDrawable(Color.TRANSPARENT);
                 this.hasNotification = item.getHasNotification();
                 final Result result = Result.fromPojo(null, item);
                 this.text = item.getName();
