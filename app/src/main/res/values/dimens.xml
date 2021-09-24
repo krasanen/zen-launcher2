@@ -46,7 +46,7 @@
 
     <dimen name="favorite_padding">5dp</dimen>
     <dimen name="favorite_height">58dp</dimen>
-    <dimen name="large_favorite_height">90dp</dimen>
+    <dimen name="large_favorite_height">68dp</dimen>
     <dimen name="favorite_text_size">12sp</dimen>
 
     <dimen name="popup_title">12sp</dimen>

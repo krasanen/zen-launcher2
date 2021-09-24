@@ -514,6 +514,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         return adapter;
     }
 
+    private boolean isExternalFavoriteBarEnabled() {
+        return prefs.getBoolean("enable-favorites-bar", true);
+    }
+
     Uri samsungBadgeUri = Uri.parse("content://com.sec.badge/apps");
     IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
     BroadcastReceiver mReceiver = new ScreenReceiver(this);
@@ -596,6 +600,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         // Add touch listener for history popup to root view
         findViewById(android.R.id.content).setOnTouchListener(this);
         findViewById(android.R.id.content).setOnLongClickListener(this);
+        findViewById(R.id.launcherButton).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                kissBar.setVisibility(View.VISIBLE);
+                findViewById(R.id.embeddedZenButtons).setVisibility(View.VISIBLE);
+                if (!isExternalFavoriteBarEnabled()) {
+                    findViewById(R.id.embeddedFavoritesBar).setVisibility(View.GONE);
+                }
+
+                return true;
+            }
+        });
 
         // add history popup touch listener to empty view (prevents on not working there)
         this.emptyListView.setOnTouchListener(this);
@@ -722,6 +738,10 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         if (!defaultLauncher){
             if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
             defaultLauncherNotification(this.getCurrentFocus());
+        }
+
+        if (!isExternalFavoriteBarEnabled()) {
+            findViewById(R.id.embeddedZenButtons).setVisibility(View.GONE);
         }
 
     }
@@ -1366,12 +1386,22 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
 
+    private void hideZenButtonsIfNeeded(){
+        if (findViewById(R.id.embeddedZenButtons).isShown()){
+            if (!isExternalFavoriteBarEnabled()) {
+                findViewById(R.id.mainKissbar).setVisibility(View.GONE);
+                findViewById(R.id.embeddedZenButtons).setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onBackPressed");
+
         if (mPopup != null) {
             mPopup.dismiss();
-        } else if (isViewingAllApps()) {
+        } else if (isViewingAllApps()||findViewById(R.id.embeddedZenButtons).isShown()) {
             displayKissBar(false);
         } else {
             // If no kissmenu, empty the search bar
@@ -2207,6 +2237,27 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     public int lastTouchX, lastTouchY;
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        if (BuildConfig.DEBUG) Log.i(TAG, "dispatchKeyEvent: " + event.getAction() + " - " + event.getKeyCode());
+        if (event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+            if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
+            {
+                if (BuildConfig.DEBUG) Log.i(TAG, "dispatchKeyEvent KEYCODE_ENTER:");
+                // TODO: check if focused to favorites and start focused favorite
+
+
+                return super.dispatchKeyEvent(event);
+            }
+
+
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (BuildConfig.DEBUG) Log.i(TAG, "dispatchTouchEvent: " + ev.getAction());
 
@@ -2331,6 +2382,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             list.setFastScrollAlwaysVisible(!searchTask.getClass().equals(ContactSearcher.class));
 
         } else {
+            hideZenButtonsIfNeeded();
             isDisplayingKissBar = false;
             // Hide the bar
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

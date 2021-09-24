@@ -59,7 +59,6 @@
 public class SettingsActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = SettingsActivity.class.getSimpleName();
-    private static final int PERMISSION_READ_PHONE_STATE = 1;
 
     // Those settings require the app to restart
     final static private String settingsRequiringRestart = "primary-color transparent-search transparent-favorites"

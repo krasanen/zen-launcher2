@@ -47,7 +47,7 @@ import fr.neamar.kiss.result.ShortcutsResult;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.ShapedContactBadge;
 
-public class Favorites extends Forwarder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnKeyListener {
+public class Favorites extends Forwarder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
     private static final String TAG = Favorites.class.getSimpleName();
 
     // Package used by Android when an Intent can be matched with more than one app
@@ -102,8 +102,6 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             // It is the first run. Make sure this is not an update by checking if history is empty
             if (DBHelper.getHistoryLength(mainActivity) == 0) {
                 addDefaultAppsToFavs();
-                checkBarCodeReaderStatus();
-            } else {
                 checkBarCodeReaderStatus();
             }
             // set flag to false
@@ -169,7 +167,6 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 image.setTag(i);
                 image.setOnDragListener(this);
                 image.setOnTouchListener(this);
-                image.setOnKeyListener(this);
                 image.setFocusable(true);
                 image.setClickable(true);
                 image.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -201,7 +198,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 }
             }
             if (favbarAppNames) {
-                image.setPadding(15,0,15,25);
+                image.setPadding(10,0,10,0);
                 textView.setVisibility(View.VISIBLE);
                 int size;
                 try {
@@ -220,7 +217,11 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 }
 
             } else {
-                image.setPadding(15,0,15,0);
+                if (isExternalFavoriteBarEnabled()) {
+                    image.setPadding(10, 0, 10, 25);
+                } else {
+                    image.setPadding(10, 10, 10, 10);
+                }
                 textView.setVisibility(View.GONE);
             }
             image.setVisibility(View.VISIBLE);
@@ -230,8 +231,12 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             if (pojo.getBadgeCount() > 0) {
                 badgeView.setText(String.valueOf(pojo.getBadgeText()));
                 badgeView.setVisibility(View.VISIBLE);
-                badgeView.setX(getBitmapOffset(image)[2]- (badgeView.getMeasuredWidth()>>1 ) );
-                badgeView.setY(getBitmapOffset(image)[3] );
+                if (isExternalFavoriteBarEnabled()) {
+                    badgeView.setX(getBitmapOffset(image)[2] - (badgeView.getMeasuredWidth()));
+                    badgeView.setY(getBitmapOffset(image)[3] - (badgeView.getMeasuredWidth()));
+                } else {
+                    badgeView.setX(getBitmapOffset(image)[2] - (badgeView.getMeasuredWidth()>>1));
+                }
             } else {
                 badgeView.setVisibility(View.GONE);
             }
@@ -549,13 +554,5 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
         return true;
     }
 
-    @Override
-    public boolean onKey(View view, int key, KeyEvent keyEvent) {
-        if (BuildConfig.DEBUG) Log.i(TAG, "onKey:"+ key);
-        if (key==KeyEvent.KEYCODE_ENTER) {
-            this.onClick(view);
-        }
-        return false;
-    }
 }
 

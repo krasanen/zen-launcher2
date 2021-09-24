@@ -640,16 +640,11 @@ public class DataHandler
      * @return favorites' pojo
      */
     public ArrayList<Pojo> getFavorites() {
-        ArrayList<Pojo> favorites = new ArrayList<>();
 
         String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
                 getString("favorite-apps-list", "");
-        assert favApps != null;
         List<String> favAppsList = Arrays.asList(favApps.split(";"));
-
-        // We might skip some later but this avoid to expand memory multiple times
-        favorites.ensureCapacity(favAppsList.size());
-
+        ArrayList<Pojo> favorites = new ArrayList<>(favAppsList.size());
         // Find associated items
         for (int i = 0; i < favAppsList.size(); i++) {
             Pojo pojo = getPojo(favAppsList.get(i));
@@ -669,22 +664,24 @@ public class DataHandler
      * @param position the new position of the fav
      */
     public void setFavoritePosition(MainActivity context, String id, int position) {
-        String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
-                getString("favorite-apps-list", "");
-        assert favApps != null;
-        List<String> favAppsList = new ArrayList<>(Arrays.asList(favApps.split(";")));
+        List<Pojo> currentFavorites = getFavorites();
+        List<String> favAppsList = new ArrayList<>();
+
+        for (Pojo pojo : currentFavorites) {
+            favAppsList.add(pojo.getFavoriteId());
+        }
 
         int currentPos = favAppsList.indexOf(id);
         if (currentPos == -1) {
             Log.e(TAG, "Couldn't find id in favAppsList");
             return;
         }
-        // Clamp the position so we dont just extend past the end of the array.
+        // Clamp the position so we don't just extend past the end of the array.
         position = Math.min(position, favAppsList.size() - 1);
 
         favAppsList.remove(currentPos);
-        // Because we're removing ourselves from the array, positions may change, we should take that into account
-        favAppsList.add(currentPos > position ? position + 1 : position, id);
+        favAppsList.add(position, id);
+
         String newFavList = TextUtils.join(";", favAppsList);
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
@@ -723,6 +720,12 @@ public class DataHandler
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString("favorite-apps-list", favApps + id + ";").apply();
+
+        boolean excludedApps = PreferenceManager.getDefaultSharedPreferences(context).
+                getBoolean("exclude-favorites-apps", false);
+        if (excludedApps) {
+            getAppProvider().reload();
+        }
     }
 
     public void removeFromFavorites(String id) {
@@ -738,6 +741,12 @@ public class DataHandler
 
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString("favorite-apps-list", favApps.replace(id + ";", "")).apply();
+
+        boolean excludedApps = PreferenceManager.getDefaultSharedPreferences(context).
+                getBoolean("exclude-favorites-apps", false);
+        if (excludedApps) {
+            getAppProvider().reload();
+        }
     }
 
     @SuppressWarnings("StringSplitter")
@@ -760,6 +769,12 @@ public class DataHandler
 
         PreferenceManager.getDefaultSharedPreferences(this.context).edit()
                 .putString("favorite-apps-list", favApps.toString()).apply();
+
+        boolean excludedApps = PreferenceManager.getDefaultSharedPreferences(context).
+                getBoolean("exclude-favorites-apps", false);
+        if (excludedApps) {
+            getAppProvider().reload();
+        }
     }
 
     /**
@@ -768,6 +783,10 @@ public class DataHandler
      * @param id pojo.id of item to record
      */
     public void addToHistory(String id) {
+        if (id.isEmpty()) {
+            return;
+        }
+
         boolean frozen = PreferenceManager.getDefaultSharedPreferences(context).
                 getBoolean("freeze-history", false);
 
