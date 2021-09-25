@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
 import java.util.Arrays;
 
 import fr.neamar.kiss.BuildConfig;
@@ -92,6 +93,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
             }
 
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_CANCEL:
                 mHasPerformedLongPress = false;
                 if (mPendingCheckForLongPress != null) {
@@ -113,6 +115,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
                     && !mHasPerformedLongPress) {
                 if (performLongClick()) {
                     mHasPerformedLongPress = true;
+                    if (BuildConfig.DEBUG) Log.d(TAG,"Widget longpress");
+                    EventBus.getDefault().post(new ZEvent(ZEvent.State.WIDGET_LONGPRESS));
                 }
             }
         }
