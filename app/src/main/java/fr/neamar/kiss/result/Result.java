@@ -292,12 +292,13 @@ public abstract class Result {
         // Launch
         doLaunch(context, v);
 
-        if (queryInterface != null) {
-            recordLaunch(context, queryInterface);
-        }
+        recordLaunch(context, queryInterface);
+
     }
 
     void recordLaunch(Context context, QueryInterface queryInterface) {
+
+        Log.i("log", "recordLaunch " + pojo.id);
         // Record the launch after some period,
         // * to ensure the animation runs smoothly
         // * to avoid a flickering -- launchOccurred will refresh the list
@@ -308,8 +309,9 @@ public abstract class Result {
             public void run() {
                 // Save in history
                 KissApplication.getApplication(context).getDataHandler().addToHistory(pojo.getHistoryId());
-
-                queryInterface.launchOccurred();
+                if (queryInterface!=null) {
+                    queryInterface.launchOccurred();
+                }
             }
         }, KissApplication.TOUCH_DELAY * 3);
     }

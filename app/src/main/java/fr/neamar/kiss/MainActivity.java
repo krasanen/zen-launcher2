@@ -1205,7 +1205,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     //Update favorite bar
                     this.onFavoriteChange();
                     //Update Search to reflect favorite add, if the "exclude favorites" option is active
-                    if (this.prefs.getBoolean("exclude-favorites", false) && this.isViewingSearchResults()) {
+                    if (this.prefs.getBoolean("exclude-favorites-apps", false) && this.isViewingSearchResults()) {
                         this.updateSearchRecords();
                     }
                     EventBus.getDefault().removeStickyEvent(event);

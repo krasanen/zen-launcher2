@@ -28,12 +28,10 @@ import fr.neamar.kiss.utils.UserHandle;
 public class LoadAppPojos extends LoadPojos<AppPojo> {
 
     private final TagsHandler tagsHandler;
-    private final BadgeHandler badgeHandler;
     private static final String TAG = LoadAppPojos.class.getSimpleName();
     public LoadAppPojos(Context context) {
         super(context, "app://");
         tagsHandler = KissApplication.getApplication(context).getDataHandler().getTagsHandler();
-        badgeHandler = KissApplication.getApplication(context).getDataHandler().getBadgeHandler();
     }
 
     public AppPojo loadApp(String packageName, UserHandle user, String className, Context ctx){
@@ -72,6 +70,7 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
         }
 
         Set<String> excludedAppList = KissApplication.getApplication(ctx).getDataHandler().getExcluded();
+        Set<String> excludedAppListFavorites = KissApplication.getApplication(ctx).getDataHandler().getExcludedFavorites();
         Set<String> excludedFromHistoryAppList = KissApplication.getApplication(ctx).getDataHandler().getExcludedFromHistory();
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -87,6 +86,7 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
                     String id = user.addUserSuffixToString(pojoScheme + appInfo.packageName + "/" + activityInfo.getName(), '/');
 
                     boolean isExcluded = excludedAppList.contains(AppPojo.getComponentName(appInfo.packageName, activityInfo.getName(), user));
+                    isExcluded |= excludedAppListFavorites.contains(id);
                     boolean isExcludedFromHistory = excludedFromHistoryAppList.contains(id);
 
                     AppPojo app = new AppPojo(id, appInfo.packageName, activityInfo.getName(), user,
@@ -113,6 +113,7 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
                 boolean isExcluded = excludedAppList.contains(
                         AppPojo.getComponentName(appInfo.packageName, info.activityInfo.name, new UserHandle())
                 );
+                isExcluded |= excludedAppListFavorites.contains(id);
                 boolean isExcludedFromHistory = excludedFromHistoryAppList.contains(id);
 
                 AppPojo app = new AppPojo(id, appInfo.packageName, info.activityInfo.name, new UserHandle(),
