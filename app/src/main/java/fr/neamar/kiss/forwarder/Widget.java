@@ -30,7 +30,6 @@ import fi.zmengames.zen.LauncherAppWidgetHost;
 import fi.zmengames.zen.LauncherAppWidgetHostView;
 import fi.zmengames.zen.ParcelableUtil;
 import fi.zmengames.zen.Utility;
-import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
@@ -47,10 +46,6 @@ import static fr.neamar.kiss.MainActivity.REQUEST_CREATE_APPWIDGET;
 import static fr.neamar.kiss.MainActivity.REQUEST_PICK_APPWIDGET;
 import static fr.neamar.kiss.MainActivity.REQUEST_REFRESH_APPWIDGET;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
     private static final String TAG = Widget.class.getSimpleName();
     private static final int APPWIDGET_HOST_ID = 442;
@@ -64,7 +59,6 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      */
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
-    private LauncherAppWidgetHostView mLauncherAppWidgetHostView;
 
     /**
      * View widgets are added to
@@ -98,7 +92,6 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
     void onStart() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onStart");
-        EventBus.getDefault().register(this);
         // Start listening for widget update
         try {
             mAppWidgetHost.startListening();
@@ -109,7 +102,6 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
     void onStop() {
         if (BuildConfig.DEBUG) Log.i(TAG, "onStop");
-        EventBus.getDefault().unregister(this);
         // Stop listening for widget update
         try {
             mAppWidgetHost.stopListening();
@@ -117,17 +109,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             if (BuildConfig.DEBUG) Log.i(TAG, "onStop, exception:" + e);
         }
     }
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ZEvent event) {
-        if (BuildConfig.DEBUG) Log.i(TAG, "Got message from service: " + event.getState());
 
-        switch (event.getState()) {
-            case WIDGET_LONGPRESS:
-                buildWidgetPopupMenu(mLauncherAppWidgetHostView);
-                break;
-
-        }
-    }
     void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (BuildConfig.DEBUG) Log.i(TAG, "onActivityResult, requestCode:" + requestCode);
         if (resultCode == Activity.RESULT_OK) {
@@ -308,8 +290,7 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
                 hostView.setMinimumHeight(appWidgetInfo.minHeight);
                 hostView.setMinimumWidth(appWidgetInfo.minWidth);
                 hostView.setAppWidget(appWidgetId, appWidgetInfo);
-                mLauncherAppWidgetHostView = hostView;
-                addLongClickListener(mLauncherAppWidgetHostView);
+                addListener(hostView);
                 WidgetPreferences wp = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     wp = addWidgetHostView(hostView, appWidgetInfo, mAppWidgetManager.getAppWidgetOptions(appWidgetId));
@@ -376,10 +357,16 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
 
     }
 
-    private void addLongClickListener(final LauncherAppWidgetHostView hostView) {
+    private void addListener(final LauncherAppWidgetHostView hostView) {
+
+        int viewCount = hostView.getChildCount();
+        if (BuildConfig.DEBUG) Log.i(TAG, "addListener,viewCount: "+viewCount);
         hostView.getRootView().setOnLongClickListener(view -> {
+            buildWidgetPopupMenu(hostView);
             return true;
         });
+
+
     }
 
     private void resizeView(LauncherAppWidgetHostView hostView) {
