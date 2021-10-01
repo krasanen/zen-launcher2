@@ -90,7 +90,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
                 postCheckForLongClick();
                 break;
             }
-
+            case MotionEvent.ACTION_MOVE:
+                this.cancelLongPress();
+                break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mHasPerformedLongPress = false;
