@@ -769,9 +769,10 @@ public class ContactsResult extends Result {
     }
 
     private void openEmail(Context context) {
-        Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse("content://com.android.contacts/data/" + contactPojo.emailLookupKey));
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("content://com.android.contacts/data/" + contactPojo.emailLookupKey));
         intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactPojo.emailLookupKey),
                 ContactsContract.CommonDataKinds.Email.CONTENT_TYPE);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{String.valueOf(contactPojo.normalizedEmail)});
         context.startActivity(Intent.createChooser(intent, "Send Email"));
     }
