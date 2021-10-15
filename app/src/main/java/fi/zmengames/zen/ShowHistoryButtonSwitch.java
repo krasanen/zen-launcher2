@@ -1,8 +1,8 @@
 package fi.zmengames.zen;
 
-import static fr.neamar.kiss.MainActivity.BARCODE_READER;
-import static fr.neamar.kiss.MainActivity.HIDE_HISTORYBUTTON;
-import static fr.neamar.kiss.MainActivity.SHOW_HISTORYBUTTON;
+
+import static fi.zmengames.zen.ZEvent.State.HIDE_HISTORYBUTTON;
+import static fi.zmengames.zen.ZEvent.State.SHOW_HISTORYBUTTON;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -33,9 +33,9 @@ public class ShowHistoryButtonSwitch extends SwitchPreference{
     @Override
     protected void onClick() {
         if (!isChecked()) {
-            EventBus.getDefault().postSticky(new ZEvent(ZEvent.State.INTERNAL_EVENT, SHOW_HISTORYBUTTON));
+            EventBus.getDefault().postSticky(new ZEvent(SHOW_HISTORYBUTTON));
         } else {
-            EventBus.getDefault().postSticky(new ZEvent(ZEvent.State.INTERNAL_EVENT, HIDE_HISTORYBUTTON));
+            EventBus.getDefault().postSticky(new ZEvent(HIDE_HISTORYBUTTON));
         }
         super.onClick();
     }

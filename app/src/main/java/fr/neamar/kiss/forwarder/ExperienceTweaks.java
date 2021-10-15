@@ -31,7 +31,8 @@ import fr.neamar.kiss.searcher.HistorySearcher;
 import fr.neamar.kiss.searcher.NullSearcher;
 
 import static android.text.InputType.TYPE_CLASS_PHONE;
-import static fr.neamar.kiss.MainActivity.BARCODE_READER;
+
+import static fi.zmengames.zen.ZEvent.State.BARCODE_READER;
 import static fr.neamar.kiss.MainActivity.mDebugJson;
 
 
@@ -510,7 +511,7 @@ public class ExperienceTweaks extends Forwarder {
                 mainActivity.toggleFlashLight();
                 break;
             case "start-barcode-reader":
-                EventBus.getDefault().post(new ZEvent(ZEvent.State.INTERNAL_EVENT, BARCODE_READER));
+                EventBus.getDefault().post(new ZEvent(BARCODE_READER));
                 break;
         }
     }

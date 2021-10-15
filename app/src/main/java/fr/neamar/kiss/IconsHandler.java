@@ -1,7 +1,5 @@
 package fr.neamar.kiss;
 
-import static fr.neamar.kiss.MainActivity.REFRESH_UI;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

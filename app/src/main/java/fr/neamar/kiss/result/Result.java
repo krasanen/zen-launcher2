@@ -1,5 +1,7 @@
 package fr.neamar.kiss.result;
 
+import static fi.zmengames.zen.ZEvent.State.REFRESH_UI;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -52,7 +54,6 @@ import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 
-import static fr.neamar.kiss.MainActivity.REFRESH_UI;
 
 public abstract class Result {
     /**
@@ -256,7 +257,7 @@ public abstract class Result {
                 launchRemoveFromFavorites(context, pojo);
                 break;
         }
-        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+        ZEvent event = new ZEvent(REFRESH_UI);
         EventBus.getDefault().postSticky(event);
 
         return false;

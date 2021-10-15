@@ -45,10 +45,10 @@ import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.ClipboardUtils;
 import fr.neamar.kiss.utils.FuzzyScore;
 
-import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
-import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
-import static fr.neamar.kiss.MainActivity.DATE_TIME_PICKER;
-import static fr.neamar.kiss.MainActivity.DEV_ADMIN_LOCK_AFTER;
+import static fi.zmengames.zen.ZEvent.State.ALARM_ENTERED_TEXT;
+import static fi.zmengames.zen.ZEvent.State.ALARM_IN_ACTION;
+import static fi.zmengames.zen.ZEvent.State.DATE_TIME_PICKER;
+import static fi.zmengames.zen.ZEvent.State.DEV_ADMIN_LOCK_AFTER;
 
 public class SearchResult extends Result {
     private static final String TAG = SearchResult.class.getSimpleName();
@@ -168,7 +168,7 @@ public class SearchResult extends Result {
                     Intent alarmIntent = new Intent(context, LauncherService.class);
                     if (BuildConfig.DEBUG) Log.w("ZEN_QUERY", "minutesOrTime: " + minutesOrTime);
                     if (minutesOrTime.isEmpty()) {
-                        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, DATE_TIME_PICKER+searchPojo.query);
+                        ZEvent event = new ZEvent(DATE_TIME_PICKER, searchPojo.query);
                         EventBus.getDefault().post(event);
                         return;
                     }
@@ -231,8 +231,8 @@ public class SearchResult extends Result {
                             alarmIntent.putExtra(ZenProvider.mMinutes, Long.valueOf(minutesOrTime));
                         }
                     }
-                    alarmIntent.putExtra(ALARM_ENTERED_TEXT, searchPojo.query + "\n"+ searchPojo.id);
-                    alarmIntent.setAction(ALARM_IN_ACTION);
+                    alarmIntent.putExtra(ALARM_ENTERED_TEXT.toString(), searchPojo.query + "\n"+ searchPojo.id);
+                    alarmIntent.setAction(ALARM_IN_ACTION.toString());
                     KissApplication.startLaucherService(alarmIntent, context);
                 } else if (searchPojo.url.contains(ZenProvider.mLockIn)) {
                     String minutes = searchPojo.url.substring(ZenProvider.mLockIn.length());
@@ -244,12 +244,12 @@ public class SearchResult extends Result {
                                 context.getString(R.string.hours), Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    lockin.setAction(DEV_ADMIN_LOCK_AFTER);
+                    lockin.setAction(DEV_ADMIN_LOCK_AFTER.toString());
                     KissApplication.startLaucherService(lockin, context);
                 }
                 break;
             case SearchPojo.ZEN_ALARM:
-                ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, DATE_TIME_PICKER+searchPojo.query);
+                ZEvent event = new ZEvent(DATE_TIME_PICKER, searchPojo.query);
                 EventBus.getDefault().post(event);
                 break;
         }

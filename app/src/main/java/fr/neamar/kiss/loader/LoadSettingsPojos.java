@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 import fi.zmengames.zen.LauncherService;
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
@@ -147,28 +148,28 @@ public class LoadSettingsPojos extends LoadPojos<SettingsPojo> {
             settings.add(createPojo(context.get().getString(R.string.settings_dev),
                     Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS, R.drawable.setting_dev));
         }
-        settings.add(createPojo(context.get().getString(R.string.wifi_on),
-                MainActivity.WIFI_ON, R.drawable.setting_wifi));
+        settings.add(createPojo(context.get().getString(R.string.wifi_on), "com.zmengames.zenlauncher",
+                ZEvent.State.WIFI_ON.toString(), R.drawable.setting_wifi));
         settings.add(createPojo(context.get().getString(R.string.wifi_off),
-                MainActivity.WIFI_OFF, R.drawable.setting_wifi));
+                ZEvent.State.WIFI_OFF.toString(), R.drawable.setting_wifi));
 
-        settings.add(createPojo(context.get().getString(R.string.nightmodeOn),
-                LauncherService.NIGHTMODE_ON, R.drawable.settings));
+        settings.add(createPojo(context.get().getString(R.string.nightmodeOn),"com.zmengames.zenlauncher",
+                ZEvent.State.NIGHTMODE_ON.toString(), R.drawable.settings));
 
-        settings.add(createPojo(context.get().getString(R.string.nightmodeOff),
-                LauncherService.NIGHTMODE_OFF, R.drawable.settings));
+        settings.add(createPojo(context.get().getString(R.string.nightmodeOff),"com.zmengames.zenlauncher",
+                ZEvent.State.NIGHTMODE_OFF.toString(), R.drawable.settings));
 
-        settings.add(createPojo(context.get().getString(R.string.flashlight_on),
-                MainActivity.FLASHLIGHT_ON, R.drawable.lightbulp_on));
+        settings.add(createPojo(context.get().getString(R.string.flashlight_on),"com.zmengames.zenlauncher",
+                ZEvent.State.FLASHLIGHT_ON.toString(), R.drawable.lightbulp_on));
 
-        settings.add(createPojo(context.get().getString(R.string.flashlight_off),
-                MainActivity.FLASHLIGHT_OFF, R.drawable.lightbulp));
+        settings.add(createPojo(context.get().getString(R.string.flashlight_off),"com.zmengames.zenlauncher",
+                ZEvent.State.FLASHLIGHT_OFF.toString(), R.drawable.lightbulp));
 
-        settings.add(createPojo(context.get().getString(R.string.menu_wallpaper),
-                MainActivity.UPDATE_WALLPAPER, R.drawable.settings));
+        settings.add(createPojo(context.get().getString(R.string.menu_wallpaper),"com.zmengames.zenlauncher",
+                ZEvent.State.UPDATE_WALLPAPER.toString(), R.drawable.settings));
 
-        settings.add(createPojo(context.get().getString(R.string.barcode_reader),
-                MainActivity.BARCODE_READER, R.drawable.barcode_scan));
+        settings.add(createPojo(context.get().getString(R.string.barcode_reader),"com.zmengames.zenlauncher",
+                ZEvent.State.BARCODE_READER.toString(), R.drawable.barcode_scan));
     }
 
     private SettingsPojo createPojo(String name, String packageName, String settingName,

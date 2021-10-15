@@ -1,5 +1,7 @@
 package fi.zmengames.zen;
 
+import static fi.zmengames.zen.ZEvent.State.DISABLE_PROXIMITY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,8 +12,6 @@ import android.util.Log;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.SwitchPreference;
-
-import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
 
 public class ProximityLockSwitch extends SwitchPreference {
     public ProximityLockSwitch(Context context) {
@@ -41,7 +41,7 @@ public class ProximityLockSwitch extends SwitchPreference {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         Intent proximity = new Intent(getContext(), LauncherService.class);
-        proximity.setAction(DISABLE_PROXIMITY);
+        proximity.setAction(DISABLE_PROXIMITY.toString());
         prefs.edit().putBoolean("proximity-switch-lock", false).commit();
         KissApplication.startLaucherService(proximity, getContext());
     }

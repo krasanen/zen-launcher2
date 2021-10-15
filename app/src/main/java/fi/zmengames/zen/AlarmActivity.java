@@ -1,5 +1,7 @@
 package fi.zmengames.zen;
 
+import static fi.zmengames.zen.ZEvent.State.ALARM_ENTERED_TEXT;
+
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -31,9 +33,6 @@ import java.util.TimerTask;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
-
-import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
-import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
 
 public class AlarmActivity extends Activity {
     public static final String ALARM_ID = "com.zmengames.zenlauncher.ALARM_ID";
@@ -299,9 +298,9 @@ public class AlarmActivity extends Activity {
 
     private void snoozeAlarm(String alarmText, long minutes) {
         Intent snoozeIntent = new Intent(getApplicationContext(), LauncherService.class);
-        snoozeIntent.putExtra(ALARM_ENTERED_TEXT, alarmText + "\n" + "SNOOZED!");
+        snoozeIntent.putExtra(ALARM_ENTERED_TEXT.toString(), alarmText + "\n" + "SNOOZED!");
         snoozeIntent.putExtra(ZenProvider.mMinutes, minutes);
-        snoozeIntent.setAction(ALARM_IN_ACTION);
+        snoozeIntent.setAction(ZEvent.State.ALARM_IN_ACTION.toString());
         startService(snoozeIntent);
     }
 

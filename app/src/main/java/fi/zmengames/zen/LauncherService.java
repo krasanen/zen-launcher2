@@ -50,25 +50,26 @@ import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static fi.zmengames.zen.AlarmActivity.ALARM_EXTRA;
 import static fi.zmengames.zen.AlarmActivity.ALARM_ID;
 import static fi.zmengames.zen.AlarmActivity.ALARM_TIME;
+import static fi.zmengames.zen.ZEvent.State.ALARM_DATE_PICKER_MILLIS;
+import static fi.zmengames.zen.ZEvent.State.ALARM_ENTERED_TEXT;
+import static fi.zmengames.zen.ZEvent.State.ALARM_IN_ACTION;
+import static fi.zmengames.zen.ZEvent.State.ALARM_PICKER;
+import static fi.zmengames.zen.ZEvent.State.DEV_ADMIN_LOCK_AFTER;
+import static fi.zmengames.zen.ZEvent.State.DISABLE_PROXIMITY;
+import static fi.zmengames.zen.ZEvent.State.ENABLE_PROXIMITY;
+import static fi.zmengames.zen.ZEvent.State.GOOGLE_SIGN_IN;
+import static fi.zmengames.zen.ZEvent.State.GOOGLE_SIGN_OUT;
+import static fi.zmengames.zen.ZEvent.State.LAUNCH_INTENT;
+import static fi.zmengames.zen.ZEvent.State.NIGHTMODE_OFF;
+import static fi.zmengames.zen.ZEvent.State.NIGHTMODE_ON;
+import static fi.zmengames.zen.ZEvent.State.SCREEN_OFF;
+import static fi.zmengames.zen.ZEvent.State.SCREEN_ON;
+import static fi.zmengames.zen.ZEvent.State.SET_BADGE_COUNT;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
-import static fr.neamar.kiss.MainActivity.ALARM_IN_ACTION;
-import static fr.neamar.kiss.MainActivity.ALARM_PICKER;
-import static fr.neamar.kiss.MainActivity.DEV_ADMIN_LOCK_AFTER;
 
 public class LauncherService extends Service {
     private static final String TAG = LauncherService.class.getSimpleName();
-    public static final String LAUNCH_INTENT = "com.zmengames.zenlauncher.LAUNCH_INTENT";
-    public static final String SET_BADGE_COUNT = "com.zmengames.zenlauncher.SET_BADGE_COUNT";
-    public static final String ENABLE_PROXIMITY = "com.zmengames.zenlauncher.ENABLE_PROXIMITY";
-    public static final String DISABLE_PROXIMITY = "com.zmengames.zenlauncher.DISABLE_PROXIMITY";
-    public static final String GOOGLE_SIGN_IN = "com.zmengames.zenlauncher.GOOGLE_SIGN_IN";
-    public static final String GOOGLE_SIGN_OUT = "com.zmengames.zenlauncher.GOOGLE_SIGN_OUT";
-    public static final String NIGHTMODE_ON = "com.zmengames.zenlauncher.NIGHTMODE_ON";
-    public static final String NIGHTMODE_OFF = "com.zmengames.zenlauncher.NIGHTMODE_OFF";
-    public static final String SCREEN_ON = "com.zmengames.zenlauncher.SCREEN_ON";
-    public static final String SCREEN_OFF = "com.zmengames.zenlauncher.SCREEN_OFF";
-    public static final String ALARM_ENTERED_TEXT = "com.zmengames.zenlauncher.ALARM_ENTERED_TEXT";
-    public static final String ALARM_DATE_PICKER_MILLIS = "com.zmengames.zenlauncher.ALARM_DATE_PICKER_MILLIS";
+
     private final IBinder mBinder = new MyBinder();
     private final ExecutorService serviceExecutor = Executors.newCachedThreadPool();
 
@@ -268,20 +269,20 @@ public class LauncherService extends Service {
         serviceExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                if (intent.getAction().equals(GOOGLE_SIGN_IN)) handleGoogleSignIn(intent);
-                else if (intent.getAction().equals(GOOGLE_SIGN_OUT)) handleGoogleSignOut(intent);
+                if (intent.getAction().equals(GOOGLE_SIGN_IN.toString())) handleGoogleSignIn(intent);
+                else if (intent.getAction().equals(GOOGLE_SIGN_OUT.toString())) handleGoogleSignOut(intent);
 
-                else if (intent.getAction().equals(NIGHTMODE_ON)) startNightMode();
-                else if (intent.getAction().equals(NIGHTMODE_OFF)) stopNightMode();
-                else if (intent.getAction().equals(LAUNCH_INTENT)) launchIntent(intent);
-                else if (intent.getAction().equals(SET_BADGE_COUNT)) setBadgeCount(intent);
-                else if (intent.getAction().equals(ENABLE_PROXIMITY)) startListeningProximitySensor();
-                else if (intent.getAction().equals(DISABLE_PROXIMITY)) stopListeningProximitySensor();
-                else if (intent.getAction().equals(SCREEN_ON)) screenOn();
-                else if (intent.getAction().equals(SCREEN_OFF)) screenOff();
-                else if (intent.getAction().equals(DEV_ADMIN_LOCK_AFTER)) lockScreenAfter(intent);
-                else if (intent.getAction().equals(ALARM_IN_ACTION)) alarmIn(intent);
-                else if (intent.getAction().equals(ALARM_PICKER)) alarmAtPicker(intent);
+                else if (intent.getAction().equals(NIGHTMODE_ON.toString())) startNightMode();
+                else if (intent.getAction().equals(NIGHTMODE_OFF.toString())) stopNightMode();
+                else if (intent.getAction().equals(LAUNCH_INTENT.toString())) launchIntent(intent);
+                else if (intent.getAction().equals(SET_BADGE_COUNT.toString())) setBadgeCount(intent);
+                else if (intent.getAction().equals(ENABLE_PROXIMITY.toString())) startListeningProximitySensor();
+                else if (intent.getAction().equals(DISABLE_PROXIMITY.toString())) stopListeningProximitySensor();
+                else if (intent.getAction().equals(SCREEN_ON.toString())) screenOn();
+                else if (intent.getAction().equals(SCREEN_OFF.toString())) screenOff();
+                else if (intent.getAction().equals(DEV_ADMIN_LOCK_AFTER.toString())) lockScreenAfter(intent);
+                else if (intent.getAction().equals(ALARM_IN_ACTION.toString())) alarmIn(intent);
+                else if (intent.getAction().equals(ALARM_PICKER.toString())) alarmAtPicker(intent);
             }
         });
 
@@ -289,8 +290,8 @@ public class LauncherService extends Service {
     }
 
     private void alarmAtPicker(Intent intent) {
-        long millis = intent.getLongExtra(ALARM_DATE_PICKER_MILLIS,0);
-        String enteredText = intent.getStringExtra(ALARM_ENTERED_TEXT);
+        long millis = intent.getLongExtra(ALARM_DATE_PICKER_MILLIS.toString(),0);
+        String enteredText = intent.getStringExtra(ALARM_ENTERED_TEXT.toString());
 
         if (BuildConfig.DEBUG)  Log.d(TAG,"alarmAtPicker, millis:"+ millis);
         Calendar calAlarm = Calendar.getInstance();
@@ -308,12 +309,12 @@ public class LauncherService extends Service {
             handleShowToast(toast );
         } else {
             handleShowToast(getString(R.string.deviceadmin_switch_text));
-            sendMessage(new ZEvent(ZEvent.State.INTERNAL_EVENT, DEV_ADMIN_LOCK_AFTER));
+            sendMessage(new ZEvent(DEV_ADMIN_LOCK_AFTER));
         }
     }
 
     private void alarmIn(Intent intent){
-        String query = intent.getStringExtra(ALARM_ENTERED_TEXT);
+        String query = intent.getStringExtra(ALARM_ENTERED_TEXT.toString());
 
         long minutes = intent.getLongExtra(ZenProvider.mMinutes, 0);
         if (BuildConfig.DEBUG)  Log.d(TAG,"alarmIn, minutes:"+ minutes);

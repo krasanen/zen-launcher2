@@ -61,9 +61,9 @@ import me.leolin.shortcutbadger.ShortcutBadgeException;
 import me.leolin.shortcutbadger.impl.IntentConstants;
 import me.leolin.shortcutbadger.util.BroadcastHelper;
 
-import static fr.neamar.kiss.MainActivity.REFRESH_UI;
-import static fr.neamar.kiss.MainActivity.REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL;
 import static org.greenrobot.eventbus.EventBus.TAG;
+import static fi.zmengames.zen.ZEvent.State.REFRESH_UI;
+import static fi.zmengames.zen.ZEvent.State.REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL;
 
 public class AppResult extends Result {
     private final AppPojo appPojo;
@@ -289,7 +289,7 @@ public class AppResult extends Result {
         KissApplication.getApplication(context).getDataHandler().getAppProvider().removeApp(appPojo);
         KissApplication.getApplication(context).getDataHandler().removeFromFavorites(appPojo.id);
         Toast.makeText(context, R.string.excluded_app_list_added, Toast.LENGTH_LONG).show();
-        ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+        ZEvent event = new ZEvent(REFRESH_UI);
         EventBus.getDefault().postSticky(event);
     }
 
@@ -357,7 +357,7 @@ public class AppResult extends Result {
             String msg = context.getResources().getString(R.string.app_rename_confirmation, app.getName());
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 
-            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+            ZEvent event = new ZEvent(REFRESH_UI);
             EventBus.getDefault().postSticky(event);
         });
         builder.setNegativeButton(R.string.custom_name_set_default, (dialog, which) -> {
@@ -382,7 +382,7 @@ public class AppResult extends Result {
                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 
                 // Refresh UI to reflect new name
-                ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+                ZEvent event = new ZEvent(REFRESH_UI);
                 EventBus.getDefault().postSticky(event);
             }
 
@@ -422,7 +422,7 @@ public class AppResult extends Result {
                 KissApplication.getApplication(context).getIconsHandler().restoreAppIcon(this);
             else
                 KissApplication.getApplication(context).getIconsHandler().changeAppIcon(this, drawable);
-            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+            ZEvent event = new ZEvent(REFRESH_UI);
             EventBus.getDefault().postSticky(event);
         });
 
@@ -458,7 +458,7 @@ public class AppResult extends Result {
      */
     private void launchUninstall(Context context, AppPojo app) {
         if (app.packageName.equals(context.getPackageName())) {
-            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL);
+            ZEvent event = new ZEvent(REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL);
             EventBus.getDefault().post(event);
         } else {
             Intent intent = new Intent(Intent.ACTION_DELETE,

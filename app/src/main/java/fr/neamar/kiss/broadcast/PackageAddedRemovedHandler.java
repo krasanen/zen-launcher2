@@ -1,5 +1,7 @@
 package fr.neamar.kiss.broadcast;
 
+import static fi.zmengames.zen.ZEvent.State.REFRESH_UI;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,8 +16,6 @@ import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.utils.UserHandle;
-
-import static fr.neamar.kiss.MainActivity.REFRESH_UI;
 
 /**
  * This class gets called when an application is created or removed on the
@@ -68,7 +68,7 @@ public class PackageAddedRemovedHandler extends BroadcastReceiver {
                 AppPojo appPojo = (AppPojo) provider.findByPackageName(packageName);
                 provider.removeApp(appPojo);
             }
-            ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, REFRESH_UI);
+            ZEvent event = new ZEvent(REFRESH_UI);
             EventBus.getDefault().postSticky(event);
         }
 

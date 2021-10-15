@@ -1,5 +1,7 @@
 package fr.neamar.kiss.result;
 
+import static fi.zmengames.zen.ZEvent.State.LAUNCH_INTENT;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -83,9 +85,9 @@ public class SettingsResult extends Result {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        if (settingPojo.settingName.contains("com.zmengames.zenlauncher")) {
+        if (settingPojo.packageName.startsWith("com.zmengames.zenlauncher")){
             try {
-                ZEvent event = new ZEvent(ZEvent.State.INTERNAL_EVENT, settingPojo.settingName);
+                ZEvent event = new ZEvent(ZEvent.State.valueOf(settingPojo.settingName));
                 EventBus.getDefault().post(event);
             } catch (Exception e) {
 
@@ -95,7 +97,7 @@ public class SettingsResult extends Result {
         } else {
             try {
                 Intent launchIntent = new Intent(v.getContext(), LauncherService.class);
-                launchIntent.setAction(LauncherService.LAUNCH_INTENT);
+                launchIntent.setAction(LAUNCH_INTENT.toString());
                 launchIntent.putExtra(Intent.EXTRA_INTENT, intent);
                 KissApplication.startLaucherService(launchIntent, v.getContext());
 

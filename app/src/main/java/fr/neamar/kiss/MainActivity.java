@@ -146,11 +146,15 @@ import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
-import static fi.zmengames.zen.LauncherService.ALARM_DATE_PICKER_MILLIS;
-import static fi.zmengames.zen.LauncherService.ALARM_ENTERED_TEXT;
-import static fi.zmengames.zen.LauncherService.DISABLE_PROXIMITY;
-import static fi.zmengames.zen.LauncherService.NIGHTMODE_OFF;
-import static fi.zmengames.zen.LauncherService.NIGHTMODE_ON;
+
+import static fi.zmengames.zen.ZEvent.State.ACTION_SET_DEFAULT_LAUNCHER;
+import static fi.zmengames.zen.ZEvent.State.ALARM_DATE_PICKER_MILLIS;
+import static fi.zmengames.zen.ZEvent.State.ALARM_ENTERED_TEXT;
+import static fi.zmengames.zen.ZEvent.State.ALARM_PICKER;
+import static fi.zmengames.zen.ZEvent.State.DATE_TIME_PICKER;
+import static fi.zmengames.zen.ZEvent.State.DISABLE_PROXIMITY;
+import static fi.zmengames.zen.ZEvent.State.NIGHTMODE_OFF;
+import static fi.zmengames.zen.ZEvent.State.NIGHTMODE_ON;
 import static fr.neamar.kiss.forwarder.Widget.WIDGET_PREFERENCE_ID;
 
 public class MainActivity extends Activity implements QueryInterface, KeyboardScrollHider.KeyboardHandler, View.OnTouchListener, Searcher.DataObserver, View.OnLongClickListener, /*ZBarScannerView.ResultHandler,*/ ZXingScannerView.ResultHandler {
@@ -181,25 +185,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     private static final int MY_PERMISSIONS_DND = 17;
     public static final int MY_PERMISSIONS_CAMERA = 18;
     private static final int ZEN_NOTIFICATION_ID = 19;
-
-    // app internal events
-    public static String WIFI_ON = "com.zmengames.zenlauncher.WIFI_ON";
-    public static String WIFI_OFF = "com.zmengames.zenlauncher.WIFI_OFF";
-    public static final String FLASHLIGHT_ON = "com.zmengames.zenlauncher.FLASHLIGHT_ON";
-    public static final String FLASHLIGHT_OFF = "com.zmengames.zenlauncher.FLASHLIGHT_OFF";
-    public static final String UPDATE_WALLPAPER = "com.zmengames.zenlauncher.UPDATE_WALLPAPER";
-    public static final String ALARM_IN_ACTION = "com.zmengames.zenlauncher.ALARM_IN_ACTION";
-    public static final String ALARM_AT = "com.zmengames.zenlauncher.ALARM_AT";
-    public static final String ALARM_PICKER = "com.zmengames.zenlauncher.ALARM_AT_PICKER";
-    public static final String DEV_ADMIN_LOCK_AFTER = "com.zmengames.zenlauncher.LOCK_AFTER";
-    public static final String DEV_ADMIN_LOCK_PROXIMITY = "com.zmengames.zenlauncher.PROXIMITY";
-    public static final String DATE_TIME_PICKER = "com.zmengames.zenlauncher.DATE_TIME_PICKER";
-    public static final String REFRESH_UI = "com.zmengames.zenlauncher.REFRESH_UI";
-    private static final String ACTION_SET_DEFAULT_LAUNCHER = "com.zmengames.zenlauncher.DEFAULT_LAUNCHER";
-    public static final String BARCODE_READER = "com.zmengames.zenlauncher.BARCODE_READER";
-    public static final String REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL = "com.zmengames.zenlauncher.REMOVE_DEVICE_ADMIN_UNINSTALL";
-    public static final String SHOW_HISTORYBUTTON = "com.zmengames.zenlauncher.SHOW_HISTORYBUTTON";
-    public static final String HIDE_HISTORYBUTTON = "com.zmengames.zenlauncher.HIDE_HISTORYBUTTON";
 
     // Google Drive helper
     private DriveServiceHelper mDriveServiceHelper;
@@ -789,7 +774,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     .setContentText(getResources().getString(R.string.set_as_default_info));
         }
         Intent notifyIntent = new Intent(this, MainActivity.class);
-        notifyIntent.setAction(ACTION_SET_DEFAULT_LAUNCHER);
+        notifyIntent.setAction(ACTION_SET_DEFAULT_LAUNCHER.toString());
        /*notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
         PendingIntent pendingIntent = PendingIntent.getActivity(this, ZEN_NOTIFICATION_ID, notifyIntent,  PendingIntent.FLAG_UPDATE_CURRENT);
@@ -1178,58 +1163,71 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
                 onFavoriteChange();
                 break;
-            case INTERNAL_EVENT:
-                if (BuildConfig.DEBUG) Log.v(TAG, "INTERNAL_EVENT:" + event.getText());
-                if (WIFI_ON.equals(event.getText())) {
-                    toggleWifiState(true);
-                } else if (WIFI_OFF.equals(event.getText())) {
-                    toggleWifiState(false);
-                } else if (NIGHTMODE_ON.equals(event.getText())) {
-                    setBlueLightFilter(true);
-                } else if (NIGHTMODE_OFF.equals(event.getText())) {
-                    setBlueLightFilter(false);
-                } else if (FLASHLIGHT_ON.equals(event.getText())) {
-                    flashToggle = false;
-                    toggleFlashLight();
-                } else if (FLASHLIGHT_OFF.equals(event.getText())) {
-                    flashToggle = true;
-                    toggleFlashLight();
-                } else if (UPDATE_WALLPAPER.equals(event.getText())) {
-                    updateWallPaper();
-                } else if (ALARM_AT.equals(event.getText())) {
-                    askAlarmAt();
-                } else if (event.getText().startsWith(DATE_TIME_PICKER)){
-                    dateTimePicker(event.getText());
-                } else if (event.getText().startsWith(REFRESH_UI)){
-                    if (BuildConfig.DEBUG) Log.d(TAG,"REFRESH_UI");
-                    //Update favorite bar
-                    this.onFavoriteChange();
-                    //Update Search to reflect favorite add, if the "exclude favorites" option is active
-                    if (this.prefs.getBoolean("exclude-favorites-apps", false) && this.isViewingSearchResults()) {
-                        this.updateSearchRecords();
-                    }
-                    EventBus.getDefault().removeStickyEvent(event);
-                } else if (event.getText().startsWith(BARCODE_READER)){
-                    if (askPermissionCamera()) {
-                        startBarCodeScan();
-                    }
-                } else if (event.getText().startsWith(DEV_ADMIN_LOCK_AFTER)) {
-                    if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
-
-                    }
-                } else if (event.getText().startsWith(DEV_ADMIN_LOCK_PROXIMITY)) {
-                    if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
-
-                    }
-                } else if (event.getText().startsWith(SHOW_HISTORYBUTTON)){
-                    historyButton.setVisibility(View.VISIBLE);
-                    EventBus.getDefault().removeStickyEvent(event);
-                } else if (event.getText().startsWith(HIDE_HISTORYBUTTON)){
-                    historyButton.setVisibility(View.GONE);
-                    EventBus.getDefault().removeStickyEvent(event);
-                } else if (event.getText().startsWith(REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL)){
-                    disableDeviceAdminAndUninstall();
+            case WIFI_ON:
+                toggleWifiState(true);
+                break;
+            case WIFI_OFF:
+                toggleWifiState(false);
+                break;
+            case NIGHTMODE_ON:
+                setBlueLightFilter(true);
+                break;
+            case NIGHTMODE_OFF:
+                setBlueLightFilter(false);
+                break;
+            case FLASHLIGHT_ON:
+                flashToggle = false;
+                toggleFlashLight();
+                break;
+            case FLASHLIGHT_OFF:
+                flashToggle = true;
+                toggleFlashLight();
+                break;
+            case UPDATE_WALLPAPER:
+                updateWallPaper();
+                break;
+            case ALARM_AT:
+                askAlarmAt();
+                break;
+            case DATE_TIME_PICKER:
+                dateTimePicker(event.getText());
+                break;
+            case REFRESH_UI:
+                if (BuildConfig.DEBUG) Log.d(TAG,"REFRESH_UI");
+                //Update favorite bar
+                this.onFavoriteChange();
+                //Update Search to reflect favorite add, if the "exclude favorites" option is active
+                if (this.prefs.getBoolean("exclude-favorites-apps", false) && this.isViewingSearchResults()) {
+                    this.updateSearchRecords();
                 }
+                EventBus.getDefault().removeStickyEvent(event);
+                break;
+            case BARCODE_READER:
+                if (askPermissionCamera()) {
+                    startBarCodeScan();
+                }
+                break;
+            case DEV_ADMIN_LOCK_AFTER:
+                if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
+
+                }
+                break;
+            case DEV_ADMIN_LOCK_PROXIMITY:
+                if (askPermissionDeviceAdmin(REQUEST_DEVICE_ADMIN_FOR_LOCK_AFTER)) {
+
+                }
+                break;
+            case SHOW_HISTORYBUTTON:
+                historyButton.setVisibility(View.VISIBLE);
+                EventBus.getDefault().removeStickyEvent(event);
+                break;
+
+            case HIDE_HISTORYBUTTON:
+                historyButton.setVisibility(View.GONE);
+                EventBus.getDefault().removeStickyEvent(event);
+                break;
+            case REQUEST_REMOVE_DEVICE_ADMIN_AND_UNINSTALL:
+                disableDeviceAdminAndUninstall();
                 break;
             case RELOAD_APPS:
                 if (BuildConfig.DEBUG) Log.v(TAG, "RELOAD_APPS:");
@@ -1266,7 +1264,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void dateTimePicker(String text) {
-        alarmText = text.replace(DATE_TIME_PICKER, "");
+        alarmText = text.replace(DATE_TIME_PICKER.toString(), "");
         showDialog(999);
     }
 
@@ -1292,9 +1290,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
             calAlarm.set(year,month, date, hours,minutes,0);
             Intent alarmIntent = new Intent(getApplicationContext(), LauncherService.class);
-            alarmIntent.putExtra(ALARM_DATE_PICKER_MILLIS, calAlarm.getTimeInMillis());
-            alarmIntent.putExtra(ALARM_ENTERED_TEXT,alarmText);
-            alarmIntent.setAction(ALARM_PICKER);
+            alarmIntent.putExtra(ALARM_DATE_PICKER_MILLIS.toString(), calAlarm.getTimeInMillis());
+            alarmIntent.putExtra(ALARM_ENTERED_TEXT.toString(),alarmText);
+            alarmIntent.setAction(ALARM_PICKER.toString());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
@@ -2153,12 +2151,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             if (b) {
                 prefs.edit().putBoolean("bluelightfilter", true).apply();
                 Intent nighton = new Intent(this, LauncherService.class);
-                nighton.setAction(NIGHTMODE_ON);
+                nighton.setAction(NIGHTMODE_ON.toString());
                 KissApplication.startLaucherService(nighton, this);
             } else {
                 prefs.edit().putBoolean("bluelightfilter", false).apply();
                 Intent nighton = new Intent(this, LauncherService.class);
-                nighton.setAction(NIGHTMODE_OFF);
+                nighton.setAction(NIGHTMODE_OFF.toString());
                 KissApplication.startLaucherService(nighton, this);
             }
         }
@@ -2732,7 +2730,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putBoolean("proximity-switch-lock", false).commit();
         Intent proximity = new Intent(context, LauncherService.class);
-        proximity.setAction(DISABLE_PROXIMITY);
+        proximity.setAction(DISABLE_PROXIMITY.toString());
         KissApplication.startLaucherService(proximity, context);
     }
 
