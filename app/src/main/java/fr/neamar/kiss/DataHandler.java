@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import fi.zmengames.zen.EmailProvider;
 import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenProvider;
 import fr.neamar.kiss.dataprovider.AppProvider;
@@ -60,7 +61,7 @@ public class DataHandler
      * List all known providers
      */
     final static private List<String> PROVIDER_NAMES = Arrays.asList(
-            "app", "contacts", "settings", "shortcuts"
+            "app", "contacts", "settings", "shortcuts", "email"
     );
     private TagsHandler tagsHandler;
     private BadgeHandler badgeHandler;
@@ -123,6 +124,9 @@ public class DataHandler
         ProviderEntry tagsEntry = new ProviderEntry();
         tagsEntry.provider = new TagsProvider();
         this.providers.put("tags", tagsEntry);
+        ProviderEntry emailEntry = new ProviderEntry();
+        emailEntry.provider = new EmailProvider(context);
+        this.providers.put("email", emailEntry);
     }
 
     @Override

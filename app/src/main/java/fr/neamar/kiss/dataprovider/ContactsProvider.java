@@ -118,6 +118,13 @@ public class ContactsProvider extends Provider<ContactsPojo> {
                 pojo.relevance = matchInfo.score;
             }
 
+            if (!match && pojo.normalizedEmail !=null) {
+                // search for the email
+                matchInfo = fuzzyScore.match(pojo.normalizedEmail.codePoints);
+                match = matchInfo.match;
+                pojo.relevance = matchInfo.score;
+            }
+
             if (match) {
                 pojo.relevance += Math.min(15, pojo.timesContacted);
                 if(pojo.starred) {

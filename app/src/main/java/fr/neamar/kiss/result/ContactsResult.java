@@ -47,7 +47,6 @@ import fr.neamar.kiss.searcher.ContactSearcher;
 import fr.neamar.kiss.searcher.QueryInterface;
 import fr.neamar.kiss.ui.ImprovedQuickContactBadge;
 import fr.neamar.kiss.ui.ListPopup;
-import fr.neamar.kiss.ui.ShapedContactBadge;
 import fr.neamar.kiss.utils.FuzzyScore;
 
 public class ContactsResult extends Result {
@@ -230,6 +229,10 @@ public class ContactsResult extends Result {
                 if (!contactPojo.getTitle().isEmpty()) {
                     line += " / " + contactPojo.getTitle();
                 }
+            }
+        } else { // Email
+            if (!contactPojo.normalizedEmail.toString().isEmpty()) {
+                line =  contactPojo.normalizedEmail.toString();
             }
         }
 
@@ -455,6 +458,9 @@ public class ContactsResult extends Result {
             adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_call_facebook));
             adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_hint_message_facebook));
         }
+        if (contactPojo.emailLookupKey != 0) {
+            adapter.add(new ListPopup.Item(context, R.string.ui_item_contact_email));
+        }
         adapter.add(new ListPopup.Item(context, R.string.menu_remove));
         adapter.add(new ListPopup.Item(context, R.string.menu_contact_copy_phone));
         adapter.add(new ListPopup.Item(context, R.string.menu_favorites_add));
@@ -491,6 +497,9 @@ public class ContactsResult extends Result {
                 return true;
             case R.string.ui_item_contact_hint_sms:
                 launchMessaging(context);
+                return true;
+            case R.string.ui_item_contact_email:
+                openEmail(context);
                 return true;
         }
 
@@ -759,4 +768,11 @@ public class ContactsResult extends Result {
         //  c.close();
     }
 
+    private void openEmail(Context context) {
+        Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse("content://com.android.contacts/data/" + contactPojo.emailLookupKey));
+        intent.setDataAndType(Uri.parse("content://com.android.contacts/data/" + contactPojo.emailLookupKey),
+                ContactsContract.CommonDataKinds.Email.CONTENT_TYPE);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{String.valueOf(contactPojo.normalizedEmail)});
+        context.startActivity(Intent.createChooser(intent, "Send Email"));
+    }
 }

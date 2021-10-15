@@ -32,6 +32,8 @@ public class ContactsPojo extends Pojo {
 
     public StringNormalizer.Result normalizedCompany;
 
+    public StringNormalizer.Result normalizedEmail;
+
     public String title = "";
 
     public String company ="";
@@ -58,6 +60,7 @@ public class ContactsPojo extends Pojo {
     public int signalMessaging;
     public int facebookCalling;
     public int facebookMessaging;
+    public int emailLookupKey;
 
     public String getNickname() {
         return nickname;
@@ -91,4 +94,11 @@ public class ContactsPojo extends Pojo {
         this.normalizedTitle = StringNormalizer.normalizeWithResult(title, false);
     }
 
+    public void setNormalizedEmail(String normalizedEmail){
+        this.normalizedEmail = StringNormalizer.normalizeWithResult(normalizedEmail, false);
+    }
+
+    public void setEmailLookupKey(int emailLookupKey){
+        this.emailLookupKey = emailLookupKey;
+    }
 }

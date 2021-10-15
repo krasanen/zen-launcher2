@@ -204,19 +204,21 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         + " = ? or " + ContactsContract.Data.MIMETYPE
                         + " = ? or " + ContactsContract.Data.MIMETYPE
                         + " = ? or " + ContactsContract.Data.MIMETYPE
+                        + " = ? or " + ContactsContract.Data.MIMETYPE
                         + " = ?",
                 new String[]{SIGNAL_CALL_MIMETYPE,
                         WHATSAPP_CALL_MIMETYPE,
                         WHATSAPP_CONTACT_MIMETYPE,
                         SIGNAL_CONTACT_MIMETYPE,
                         FACEBOOK_CALL_MIMETYPE,
-                        FECEBOOK_CONTACT_MIMETYPE},
+                        FECEBOOK_CONTACT_MIMETYPE,
+                        ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE
+                        },
                 null);
 
         if (cursor != null) {
             if(BuildConfig.DEBUG) Log.i(TAG, "Some search:");
-            int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-            int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+            int emailIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
             int lookupKeyIndex = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
             int mimeTypeKeyIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
             int contactIdIndex = cursor.getColumnIndex(ContactsContract.Data._ID);
@@ -224,8 +226,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             while (cursor.moveToNext()) {
                 String lookupKey = cursor.getString(lookupKeyIndex);
                 String mimeType = cursor.getString(mimeTypeKeyIndex);
-                String number = cursor.getString(numberIndex);
-                String name = cursor.getString(nameIndex);
+                String email = cursor.getString(emailIndex);
                 int contactId = cursor.getInt(contactIdIndex);
                 if (mapContacts.containsKey(lookupKey)) {
                     if (mimeType.equals(SIGNAL_CALL_MIMETYPE)) {
@@ -284,8 +285,14 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                                 contact.facebookMessaging = contactId;
                             }
                         }
-
-
+                    }
+                    if (mimeType.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE) ){
+                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                contact.setEmailLookupKey(contactId);
+                                contact.setNormalizedEmail(email);
+                            }
+                        }
                     }
                 }
             }

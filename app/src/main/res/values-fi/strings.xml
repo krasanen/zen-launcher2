@@ -407,4 +407,5 @@
     <string name="width">Leveys</string>
     <string name="height">Korkeus</string>
     <string name="alarm_received">Zen Herätys!</string>
+    <string name="ui_item_contact_email">Lähetä sähköpostia</string>
 </resources>
