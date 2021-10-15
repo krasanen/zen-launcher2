@@ -664,6 +664,7 @@ public class DataHandler
      * @param position the new position of the fav
      */
     public void setFavoritePosition(MainActivity context, String id, int position) {
+        if (BuildConfig.DEBUG) Log.d(TAG,"setFavoritePosition:" + id + ":"+position);
         List<Pojo> currentFavorites = getFavorites();
         List<String> favAppsList = new ArrayList<>();
 
