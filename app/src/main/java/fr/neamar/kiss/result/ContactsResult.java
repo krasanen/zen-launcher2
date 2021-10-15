@@ -231,7 +231,7 @@ public class ContactsResult extends Result {
                 }
             }
         } else { // Email
-            if (!contactPojo.normalizedEmail.toString().isEmpty()) {
+            if (contactPojo.normalizedEmail!= null && !contactPojo.normalizedEmail.toString().isEmpty()) {
                 line =  contactPojo.normalizedEmail.toString();
             }
         }
