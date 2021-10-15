@@ -509,6 +509,9 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 mDragEnabled = favCount > 1;
 
                 final View draggedView = (View) event.getLocalState();
+                if (draggedView == null){
+                    break;
+                }
 
                 // Sometimes we don't trigger onDrag over another app, in which case just drop.
                 if (overApp == null) {
