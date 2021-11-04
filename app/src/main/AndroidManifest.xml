@@ -164,7 +164,16 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/activity_setting"
-            android:theme="@style/SettingTheme" />
+            android:theme="@style/SettingTheme"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="fi.zmengames.zen.AppGridActivity" />
 
         <receiver
