@@ -413,4 +413,9 @@
     <string name="contact_masks">Activar formas de contacto</string>
     <string name="contact_masks_summary">Aplicar el paquete de iconos o la forma seleccionada para los iconos de contacto</string>
     <string name="alarm_received">¡Alarma recibida!</string>
+    <string name="offset_horizontal">Desplazamiento horizontal</string>
+    <string name="offset_top">Desplazamiento de la parte superior</string>
+    <string name="width">Anchura</string>
+    <string name="height">Altura</string>
+    <string name="ui_item_contact_email">Enviar correo electrónico</string>
 </resources>
