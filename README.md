@@ -21,13 +21,24 @@ Zen Launcher becomes smarter and smarter as you use it, pushing forward results 
 Get ready to be amazed.
 
 
-Previews
----------------------
-
-TDB, images here
-
-<!--
-|![Preview](https://user-images.githubusercontent.com/1615426/47822548-d6804a00-dd64-11e8-967a-0a027ae4ed40.png) | ![Preview](https://user-images.githubusercontent.com/1615426/47822549-d6804a00-dd64-11e8-9c8e-fa74881badfc.png) | ![Preview](https://user-images.githubusercontent.com/1615426/47822605-f7489f80-dd64-11e8-88a8-b5ebec461e1d.png) |
--->
-|:-------------------:|:------------------------:|:-----------------:|
-| Slick looking homescreen :) Supports multiple widgets! | Apps are just a few key strokes away! | Search in contacts too! (and everything is customizable) |
+Growing list of features that make Zen Launcher differ from KISS
+----------------------------------------------------------------
+* Contact's can be searched by its title, company or email address
+* QR and Barcode reader. Added to favorites by default.
+* Supports multiple widgets. Long press to configure.
+* Layout storing to Google Drive, also widgets.
+* Badge support (limited devices). Shows number of unread messages from your favorite apps.
+* Alarm clock. Type alarm, alarm 5, or alarm 7:00 to set alarms. Alarms that are set are visible in bell icon. Alarm 5 feed dog will include given "feed dog" when alarm goes off.
+* Lock feature after some time. Type lock 5, select 5 minutes or 5 hours.
+* Notification bubble support, also for contacts if name is same in contacts.
+* Lock device with proximity sensor or double click.
+* Blue light filter from 3 dots menu.
+* Wifi on/off toggle from long press menu.
+* Airplane mode shortcut from long press menu.
+* Direct dial or message to contact also with social media apps. Long pressing dial or msg button pops up menu to select app to handle event. Supports Signal, WhatsApp and Messenger.
+* Button to quickly see apps that have unread notifications
+* Improved calculator, can handle more complex equations.
+* Contacts can be shown separately in own list.
+* Apps can be shown in grid view.
+* gesture support
+* BONUS: Zen Flashlight widget included in the app!
