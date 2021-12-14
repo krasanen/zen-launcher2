@@ -188,7 +188,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             workCursor.close();
         }
 
-        // SOME stuff
+        // other messaging and call
         String[] projection = new String[]{
                 ContactsContract.Data._ID,
                 ContactsContract.CommonDataKinds.Phone.NUMBER,
@@ -196,7 +196,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 ContactsContract.Data.LOOKUP_KEY,
 
                 ContactsContract.Data.MIMETYPE};
-        Cursor cursor = context.get().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+        Cursor msgCursor = context.get().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 projection,
                 ContactsContract.Data.MIMETYPE
                         + " = ? or " + ContactsContract.Data.MIMETYPE
@@ -216,91 +216,92 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                         },
                 null);
 
-        if (cursor != null) {
-            if(BuildConfig.DEBUG) Log.i(TAG, "Some search:");
-            int emailIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
-            int lookupKeyIndex = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
-            int mimeTypeKeyIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
-            int contactIdIndex = cursor.getColumnIndex(ContactsContract.Data._ID);
+        if (msgCursor != null) {
+            if (msgCursor.getCount() > 0) {
+                if (BuildConfig.DEBUG) Log.i(TAG, "other messaging and call search:");
+                int emailIndex = msgCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
+                int lookupKeyIndex = msgCursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
+                int mimeTypeKeyIndex = msgCursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
+                int contactIdIndex = msgCursor.getColumnIndex(ContactsContract.Data._ID);
 
-            while (cursor.moveToNext()) {
-                String lookupKey = cursor.getString(lookupKeyIndex);
-                String mimeType = cursor.getString(mimeTypeKeyIndex);
-                String email = cursor.getString(emailIndex);
-                int contactId = cursor.getInt(contactIdIndex);
-                if (mapContacts.containsKey(lookupKey)) {
-                    if (mimeType.equals(SIGNAL_CALL_MIMETYPE)) {
-                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
-                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                contact.signalCalling = contactId;
-                                if (!contact.primary) {
-                                    contact.primary = true;
-                                }
-                            }
-                        }
-
-                    }
-
-                    if (mimeType.equals(WHATSAPP_CALL_MIMETYPE)) {
-                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
-                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                contact.whatsAppCalling = contactId;
-                                if(BuildConfig.DEBUG) Log.i(TAG, "whatsAppCalling:" + contact.getName());
-                                if (!contact.primary) {
-                                    contact.primary = true;
+                while (msgCursor.moveToNext()) {
+                    String lookupKey = msgCursor.getString(lookupKeyIndex);
+                    String mimeType = msgCursor.getString(mimeTypeKeyIndex);
+                    String email = msgCursor.getString(emailIndex);
+                    int contactId = msgCursor.getInt(contactIdIndex);
+                    if (mapContacts.containsKey(lookupKey)) {
+                        if (mimeType.equals(SIGNAL_CALL_MIMETYPE)) {
+                            if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                                for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                    contact.signalCalling = contactId;
+                                    if (!contact.primary) {
+                                        contact.primary = true;
+                                    }
                                 }
                             }
 
                         }
-                    }
 
-                    if (mimeType.equals(WHATSAPP_CONTACT_MIMETYPE)) {
-                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
-                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                contact.whatsAppMessaging = contactId;
+                        if (mimeType.equals(WHATSAPP_CALL_MIMETYPE)) {
+                            if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                                for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                    contact.whatsAppCalling = contactId;
+                                    if (BuildConfig.DEBUG)
+                                        Log.i(TAG, "whatsAppCalling:" + contact.getName());
+                                    if (!contact.primary) {
+                                        contact.primary = true;
+                                    }
+                                }
+
                             }
                         }
-                    }
-                    if (mimeType.equals(SIGNAL_CONTACT_MIMETYPE)) {
-                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
-                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                contact.signalMessaging = contactId;
+
+                        if (mimeType.equals(WHATSAPP_CONTACT_MIMETYPE)) {
+                            if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                                for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                    contact.whatsAppMessaging = contactId;
+                                }
+                            }
+                        }
+                        if (mimeType.equals(SIGNAL_CONTACT_MIMETYPE)) {
+                            if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                                for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                    contact.signalMessaging = contactId;
+                                }
+                            }
+
+                        }
+                        if (mimeType.equals(FACEBOOK_CALL_MIMETYPE)) {
+                            if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                                for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                    contact.facebookCalling = contactId;
+                                    if (BuildConfig.DEBUG)
+                                        Log.i(TAG, "facebookCalling:" + contact.getName());
+                                }
+
                             }
                         }
 
-                    }
-                    if (mimeType.equals(FACEBOOK_CALL_MIMETYPE)) {
-                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
-                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                contact.facebookCalling = contactId;
-                                if(BuildConfig.DEBUG) Log.i(TAG, "facebookCalling:" + contact.getName());
-                            }
-
-                        }
-                    }
-
-                    if (mimeType.equals(FECEBOOK_CONTACT_MIMETYPE)) {
-                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
-                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                contact.facebookMessaging = contactId;
+                        if (mimeType.equals(FECEBOOK_CONTACT_MIMETYPE)) {
+                            if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                                for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                    contact.facebookMessaging = contactId;
+                                }
                             }
                         }
-                    }
-                    if (mimeType.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE) ){
-                        if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
-                            for (ContactsPojo contact : mapContacts.get(lookupKey)) {
-                                contact.setEmailLookupKey(contactId);
-                                contact.setNormalizedEmail(email);
+                        if (mimeType.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)) {
+                            if (lookupKey != null && mapContacts.containsKey(lookupKey)) {
+                                for (ContactsPojo contact : mapContacts.get(lookupKey)) {
+                                    contact.setEmailLookupKey(contactId);
+                                    contact.setNormalizedEmail(email);
+                                }
                             }
                         }
                     }
                 }
             }
+            msgCursor.close();
         }
-        if (cursor != null) {
-            cursor.close();
-        }
-
         Set<String> notificationKeys = new HashSet<>(prefs.getAll().keySet());
         for (
                 Set<ContactsPojo> phones : mapContacts.values())
