@@ -28,11 +28,11 @@ public class ContactsPojo extends Pojo {
 
     private String nickname = "";
 
-    public StringNormalizer.Result normalizedTitle;
+    public StringNormalizer.Result normalizedTitle = null;
 
-    public StringNormalizer.Result normalizedCompany;
+    public StringNormalizer.Result normalizedCompany = null;
 
-    public StringNormalizer.Result normalizedEmail;
+    public StringNormalizer.Result normalizedEmail = null;
 
     public String title = "";
 
@@ -85,17 +85,31 @@ public class ContactsPojo extends Pojo {
     }
 
     public void setCompany(String company) {
-        this.company = company;
-        this.normalizedCompany = StringNormalizer.normalizeWithResult(company, false);
+        if( company != null) {
+            this.company = company;
+            this.normalizedCompany = StringNormalizer.normalizeWithResult(this.company, false);
+        } else {
+            this.company = null;
+            this.normalizedCompany = null;
+        }
     }
 
     public void setTitle(String title) {
-        this.title = title;
-        this.normalizedTitle = StringNormalizer.normalizeWithResult(title, false);
+        if( title != null) {
+            this.title = title;
+            this.normalizedTitle = StringNormalizer.normalizeWithResult(this.title, false);
+        } else {
+            this.title = null;
+            this.normalizedTitle = null;
+        }
     }
 
     public void setNormalizedEmail(String normalizedEmail){
-        this.normalizedEmail = StringNormalizer.normalizeWithResult(normalizedEmail, false);
+        if( normalizedEmail != null) {
+            this.normalizedEmail = StringNormalizer.normalizeWithResult(normalizedEmail, false);
+        } else {
+            this.normalizedEmail = null;
+        }
     }
 
     public void setEmailLookupKey(int emailLookupKey){
