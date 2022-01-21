@@ -223,7 +223,7 @@ public class ShortcutsResult extends Result {
                     if (shortcuts != null && shortcuts.size() > 0 && shortcuts.get(0).isEnabled()) {
                         try {
                             launcherApps.startShortcut(shortcuts.get(0), v.getClipBounds(), null);
-                        } catch (ActivityNotFoundException e){
+                        } catch (ActivityNotFoundException | IllegalStateException ignored){
                             Toast.makeText(context, R.string.application_not_found, Toast.LENGTH_LONG).show();
                         }
                         return;
