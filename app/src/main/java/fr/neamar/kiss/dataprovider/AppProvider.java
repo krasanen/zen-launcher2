@@ -222,43 +222,22 @@ public class AppProvider extends Provider<AppPojo> {
         return null;
     }
 
-    ArrayList<Pojo> records = new ArrayList<>();
-
     public ArrayList<Pojo> getAllApps() {
-        records.clear();
+        ArrayList<Pojo> records = new ArrayList<>(pojos.size());
+
         for (AppPojo pojo : pojos) {
-            if (pojo!=null) {
-                if (BuildConfig.DEBUG) Log.d(TAG,"getAllApps4:" + pojo.activityName);
-                if(pojo.isExcluded()) continue;
-                pojo.relevance = 0;
-                records.add(pojo);
-            }
+            pojo.relevance = 0;
+            records.add(pojo);
         }
         return records;
     }
-
-    public ArrayList<Pojo> getAllAppsCached(){
-        if (records.size()>0){
-            return records;
-        } else {
-            for (AppPojo pojo : pojos) {
-                if (pojo!=null) {
-                    if(pojo.isExcluded()) continue;
-                    pojo.relevance = 0;
-                    records.add(pojo);
-                }
-            }
-            return records;
-        }
-    }
-
     public void removeApp(AppPojo appPojo) {
         pojos.remove(appPojo);
     }
 
 
     public List<Pojo> getAppsWithNotif() {
-        records.clear();
+        ArrayList<Pojo> records = new ArrayList<>(pojos.size());
         for (AppPojo pojo : pojos) {
             if (pojo!=null) {
                 pojo.relevance = 0;

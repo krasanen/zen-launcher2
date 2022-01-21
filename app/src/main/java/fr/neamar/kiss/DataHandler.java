@@ -595,13 +595,6 @@ public class DataHandler
     }
 
     @Nullable
-    public List<Pojo> getApplicationsCached() {
-        AppProvider appProvider = getAppProvider();
-        return appProvider != null ? appProvider.getAllAppsCached() : null;
-    }
-
-
-    @Nullable
     public List<Pojo> getAppsWithNotif() {
         AppProvider appProvider = getAppProvider();
         return appProvider != null ? appProvider.getAppsWithNotif() : null;
