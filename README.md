@@ -42,3 +42,6 @@ Growing list of features that make Zen Launcher differ from KISS
 * Apps can be shown in grid view.
 * gesture support
 * BONUS: Zen Flashlight widget included in the app!
+
+If you want to help on translations, head to:
+https://zenlauncher.fi
