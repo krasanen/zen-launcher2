@@ -227,6 +227,7 @@ public class AppProvider extends Provider<AppPojo> {
 
         for (AppPojo pojo : pojos) {
             pojo.relevance = 0;
+            if(pojo.isExcluded()) continue;
             records.add(pojo);
         }
         return records;
