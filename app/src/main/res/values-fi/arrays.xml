@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string-array name="themesEntries">
-        <item>Vaalea teema</item>
-        <item>Puoliläpinäkyvä teema</item>
-        <item>Läpinäkyvä teema</item>
-        <item>Tumma teema</item>
-        <item>Tumma puoliläpinäkyvä teema</item>
-        <item>Tumma läpinäkyvä teema</item>
-        <item>Tumma AMOLED teema</item>
-    </string-array>
+
     <string-array name="themesValues" translatable="false">
         <item>light</item>
         <item>semi-transparent</item>
@@ -30,16 +22,7 @@
         <item>alphabetical</item>
         <item>invertedAlphabetical</item>
     </string-array>
-    <string-array name="historyModeEntries">
-        <item>Juuri käytetyt</item>
-        <item>Eniten käytetyt lähiaikoina</item>
-        <item>Eniten käytetyt koko ajalta</item>
-    </string-array>
-    <string-array name="historyModeValues" translatable="false">
-        <item>recency</item>
-        <item>frecency</item>
-        <item>frequency</item>
-    </string-array>
+
     <string-array name="defaultSearchProviders" tools:ignore="InconsistentArrays">
         <item>Bing|https://www.bing.com/search?q={q}</item>
         <item>DuckDuckGo|https://duckduckgo.com/?q={q}</item>

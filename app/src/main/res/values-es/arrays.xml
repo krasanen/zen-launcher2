@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string-array name="themesEntries">
-        <item>Tema claro</item>
-        <item>Tema semitransparente</item>
-        <item>Tema transparente</item>
-        <item>Tema oscuro</item>
-        <item>Tema oscuro semitransparente</item>
-        <item>Tema oscuro transparente</item>
-        <item>Tema oscuro AMOLED</item>
-    </string-array>
     <string-array name="themesValues" translatable="false">
         <item>light</item>
         <item>semi-transparent</item>
@@ -30,16 +21,7 @@
         <item>alphabetical</item>
         <item>invertedAlphabetical</item>
     </string-array>
-    <string-array name="historyModeEntries">
-        <item>Accedido recientemente primero</item>
-        <item>Accedido con frecuencia recientemente</item>
-        <item>Accedido con frecuencia</item>
-    </string-array>
-    <string-array name="historyModeValues" translatable="false">
-        <item>recency</item>
-        <item>frecency</item>
-        <item>frequency</item>
-    </string-array>
+
     <string-array name="defaultSearchProviders" tools:ignore="InconsistentArrays">
         <item>Yahoo|https://search.yahoo.com/search?p={q}</item>
         <item>Bing|https://www.bing.com/search?q=%s</item>

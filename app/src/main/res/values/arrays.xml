@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string-array name="themesEntries">
-        <item>Light theme</item>
-        <item>Semi-transparent theme</item>
-        <item>Transparent theme</item>
-        <item>Dark theme</item>
-        <item>Dark semi-transparent theme</item>
-        <item>Dark transparent theme</item>
-        <item>AMOLED dark theme</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_semi_light</item>
+        <item>@string/theme_light_transparent</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_semi_dark</item>
+        <item>@string/theme_dark_transparent</item>
+        <item>@string/theme_amoled</item>
     </string-array>
     <string-array name="themesValues" translatable="false">
         <item>light</item>
@@ -31,14 +31,18 @@
         <item>invertedAlphabetical</item>
     </string-array>
     <string-array name="historyModeEntries">
-        <item>Accessed recently first</item>
-        <item>Accessed frequently recently</item>
-        <item>Accessed frequently</item>
+        <item>@string/history_recency</item>
+        <item>@string/history_frecency</item>
+        <item>@string/history_frequency</item>
+        <item>@string/history_adaptive</item>
+        <item>@string/history_alphabetically</item>
     </string-array>
     <string-array name="historyModeValues" translatable="false">
         <item>recency</item>
         <item>frecency</item>
         <item>frequency</item>
+        <item>adaptive</item>
+        <item>alphabetically</item>
     </string-array>
     <string-array name="defaultSearchProviders" tools:ignore="InconsistentArrays">
         <item>Yahoo|https://search.yahoo.com/search?p={q}</item>
