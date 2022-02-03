@@ -217,4 +217,5 @@
     <string name="pref_fav_tags_drawable">Symbole für favorisierte Stichworte erzeugen</string>
     <string name="ui_item_new_contact">Neue Kontakte “%s”</string>
     <string name="phone_name">Telefonnummern</string>
+    <string name="menu_app_rename">Umbenennen</string>
 </resources>
