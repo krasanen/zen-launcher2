@@ -1,13 +1,16 @@
 package fr.neamar.kiss;
 
-import android.annotation.TargetApi;
+import android.app.KeyguardManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -15,8 +18,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,17 +28,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import fi.zmengames.zen.EmailProvider;
-import fi.zmengames.zen.ZEvent;
-import fi.zmengames.zen.ZenProvider;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.dataprovider.IProvider;
 import fr.neamar.kiss.dataprovider.Provider;
-import fr.neamar.kiss.dataprovider.SearchProvider;
 import fr.neamar.kiss.dataprovider.ShortcutsProvider;
 import fr.neamar.kiss.dataprovider.simpleprovider.CalculatorProvider;
 import fr.neamar.kiss.dataprovider.simpleprovider.PhoneProvider;
+import fr.neamar.kiss.dataprovider.simpleprovider.SearchProvider;
+import fr.neamar.kiss.dataprovider.simpleprovider.SettingsProvider;
 import fr.neamar.kiss.dataprovider.simpleprovider.TagsProvider;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.db.ShortcutRecord;
@@ -49,9 +48,9 @@ import fr.neamar.kiss.searcher.Searcher;
 import fr.neamar.kiss.utils.ShortcutUtil;
 import fr.neamar.kiss.utils.UserHandle;
 
-public class DataHandler
+public class DataHandler extends BroadcastReceiver
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = DataHandler.class.getSimpleName();
+    final static private String TAG = "DataHandler";
 
     /**
      * Package the providers reside in
@@ -61,35 +60,31 @@ public class DataHandler
      * List all known providers
      */
     final static private List<String> PROVIDER_NAMES = Arrays.asList(
-            "app", "contacts", "settings", "shortcuts"
+            "app", "contacts", "shortcuts"
     );
     private TagsHandler tagsHandler;
-    private BadgeHandler badgeHandler;
     final private Context context;
     private String currentQuery;
     private final Map<String, ProviderEntry> providers = new HashMap<>();
     public boolean allProvidersHaveLoaded = false;
-    private final long start;
-
-
-    public BadgeHandler getBadgeHandler() {
-        return badgeHandler;
-    }
+    private long start;
 
     /**
      * Initialize all providers
      */
     public DataHandler(Context context) {
-        if (badgeHandler == null) {
-            badgeHandler = new BadgeHandler(context);
-        }
-        start = System.currentTimeMillis();
-
-        // Make sure we are in the context of the main activity
+        // Make sure we are in the context of the main application
         // (otherwise we might receive an exception about broadcast listeners not being able
         //  to bind to services)
         this.context = context.getApplicationContext();
 
+        start = System.currentTimeMillis();
+
+        IntentFilter intentFilter = new IntentFilter(MainActivity.LOAD_OVER);
+        this.context.getApplicationContext().registerReceiver(this, intentFilter);
+
+        Intent i = new Intent(MainActivity.START_LOAD);
+        this.context.sendBroadcast(i);
 
         // Monitor changes for service preferences (to automatically start and stop services)
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -101,13 +96,13 @@ public class DataHandler
         // (this way, we don't need to reload the app list everytime for instance)
         for (String providerName : PROVIDER_NAMES) {
             if (prefs.getBoolean("enable-" + providerName, true)) {
-                this.connectToProvider(providerName);
+                this.connectToProvider(providerName, 0);
             }
         }
 
         // Some basic providers are defined directly,
         // as we don't need the overhead of a service for them
-        // Those providers don't expose a service connection,
+        // Those providers dong't expose a service connection,
         // and you can't bind / unbind to them dynamically.
         ProviderEntry calculatorEntry = new ProviderEntry();
         calculatorEntry.provider = new CalculatorProvider();
@@ -118,15 +113,12 @@ public class DataHandler
         ProviderEntry searchEntry = new ProviderEntry();
         searchEntry.provider = new SearchProvider(context);
         this.providers.put("search", searchEntry);
-        ProviderEntry zenEntry = new ProviderEntry();
-        zenEntry.provider = new ZenProvider(context);
-        this.providers.put("zen", zenEntry);
+        ProviderEntry settingsEntry = new ProviderEntry();
+        settingsEntry.provider = new SettingsProvider(context);
+        this.providers.put("settings", settingsEntry);
         ProviderEntry tagsEntry = new ProviderEntry();
         tagsEntry.provider = new TagsProvider();
         this.providers.put("tags", tagsEntry);
-        ProviderEntry emailEntry = new ProviderEntry();
-        emailEntry.provider = new EmailProvider(context);
-        this.providers.put("email", emailEntry);
     }
 
     @Override
@@ -135,7 +127,7 @@ public class DataHandler
             String providerName = key.substring(7);
             if (PROVIDER_NAMES.contains(providerName)) {
                 if (sharedPreferences.getBoolean(key, true)) {
-                    this.connectToProvider(providerName);
+                    this.connectToProvider(providerName, 0);
                 } else {
                     this.disconnectFromProvider(providerName);
                 }
@@ -171,25 +163,73 @@ public class DataHandler
      *
      * @param name Data provider name (i.e.: `ContactsProvider` → `"contacts"`)
      */
-    private void connectToProvider(final String name) {
+    private void connectToProvider(final String name, final int counter) {
         // Do not continue if this provider has already been connected to
         if (this.providers.containsKey(name)) {
             return;
         }
 
-        if (BuildConfig.DEBUG) Log.v(TAG, "Connecting to " + name);
+        Log.v(TAG, "Connecting to " + name);
 
 
         // Find provider class for the given service name
-        Intent intent = this.providerName2Intent(name);
+        final Intent intent = this.providerName2Intent(name);
         if (intent == null) {
             return;
         }
 
-        // Send "start service" command first so that the service can run independently
-        // of the activity
+        try {
+            // Send "start service" command first so that the service can run independently
+            // of the activity
+            this.context.startService(intent);
+        } catch (IllegalStateException e) {
+            // When KISS is the default launcher,
+            // the system will try to start KISS in the background after a reboot
+            // however at this point we're not allowed to start services, and an IllegalStateException will be thrown
+            // We'll then add a broadcast receiver for the next time the user turns his screen on
+            // (or passes the lockscreen) to retry at this point
+            // https://github.com/Neamar/KISS/issues/1130
+            // https://github.com/Neamar/KISS/issues/1154
+            Log.w(TAG, "Unable to start service for " + name + ". KISS is probably not in the foreground. Service will automatically be started when KISS gets to the foreground.");
 
-        KissApplication.startLaucherService(intent, this.context);
+            if (counter > 20) {
+                Log.e(TAG, "Already tried and failed twenty times to start service. Giving up.");
+                return;
+            }
+
+            // Add a receiver to get notified next time the screen is on
+            // or next time the users successfully dismisses his lock screen
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+            intentFilter.addAction(Intent.ACTION_USER_PRESENT);
+            context.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(final Context context, Intent intent) {
+                    // Is there a lockscreen still visible to the user?
+                    // If yes, we can't start background services yet, so we'll need to wait until we get ACTION_USER_PRESENT
+                    KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+                    boolean isPhoneLocked = myKM.inKeyguardRestrictedInputMode();
+                    if (!isPhoneLocked) {
+                        context.unregisterReceiver(this);
+                        final Handler handler = new Handler();
+                        // Even when all the stars are aligned,
+                        // starting the service needs to be slightly delayed because the Intent is fired *before* the app is considered in the foreground.
+                        // Each new release of Android manages to make the developer life harder.
+                        // Can't wait for the next one.
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.i(TAG, "Screen turned on or unlocked, retrying to start background services");
+                                connectToProvider(name, counter + 1);
+                            }
+                        }, 10);
+                    }
+                }
+            }, intentFilter);
+
+            // Stop here for now, the Receiver will re-trigger the whole flow when services can be started.
+            return;
+        }
 
         final ProviderEntry entry = new ProviderEntry();
 
@@ -197,19 +237,16 @@ public class DataHandler
         this.context.bindService(intent, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName className, IBinder service) {
-                if (BuildConfig.DEBUG) Log.d(TAG,"onServiceConnected: "+service.getClass());
-                if (service instanceof Provider.LocalBinder) {
-                    // We've bound to LocalService, cast the IBinder and get LocalService instance
-                    Provider.LocalBinder binder = (Provider.LocalBinder) service;
-                    IProvider provider = binder.getService();
+                // We've bound to LocalService, cast the IBinder and get LocalService instance
+                Provider.LocalBinder binder = (Provider.LocalBinder) service;
+                IProvider provider = binder.getService();
 
-                    // Update provider info so that it contains something useful
-                    entry.provider = provider;
-                    entry.connection = this;
+                // Update provider info so that it contains something useful
+                entry.provider = provider;
+                entry.connection = this;
 
-                    if (provider.isLoaded()) {
-                        handleProviderLoaded();
-                    }
+                if (provider.isLoaded()) {
+                    handleProviderLoaded();
                 }
             }
 
@@ -248,7 +285,8 @@ public class DataHandler
      * Called when some event occurred that makes us believe that all data providers
      * might be ready now
      */
-    public void handleProviderLoaded() {
+    @SuppressWarnings("CatchAndPrintStackTrace")
+    private void handleProviderLoaded() {
         if (this.allProvidersHaveLoaded) {
             return;
         }
@@ -261,17 +299,25 @@ public class DataHandler
         }
 
         long time = System.currentTimeMillis() - start;
-        if (BuildConfig.DEBUG) Log.v(TAG, "Time to load all providers: " + time + "ms");
+        Log.v(TAG, "Time to load all providers: " + time + "ms");
 
         this.allProvidersHaveLoaded = true;
 
         // Broadcast the fact that the new providers list is ready
+        try {
+            this.context.unregisterReceiver(this);
+            Intent i = new Intent(MainActivity.FULL_LOAD_OVER);
+            this.context.sendBroadcast(i);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
 
-        EventBus.getDefault().postSticky(new ZEvent(ZEvent.State.FULL_LOAD_OVER));
-   }
-
-
-
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        // A provider finished loading and contacted us
+        this.handleProviderLoaded();
+    }
 
     /**
      * Get records for this query.
@@ -315,9 +361,9 @@ public class DataHandler
      * May return an empty set if the providers are not done building records,
      * in this case it is probably a good idea to call this function 500ms after
      *
-     * @param context        android context
-     * @param itemCount      max number of items to retrieve, total number may be less (search or calls are not returned for instance)
-     * @param historyMode    Recency vs Frecency vs Frequency vs Adaptive vs Alphabetically
+     * @param context            android context
+     * @param itemCount          max number of items to retrieve, total number may be less (search or calls are not returned for instance)
+     * @param historyMode        Recency vs Frecency vs Frequency vs Adaptive vs Alphabetically
      * @param itemsToExcludeById Items to exclude from history by their id
      * @return pojos in recent history
      */
@@ -341,7 +387,7 @@ public class DataHandler
                 continue;
             }
 
-            if(itemsToExcludeById.contains(pojo.id)) {
+            if (itemsToExcludeById.contains(pojo.id)) {
                 continue;
             }
 
@@ -363,7 +409,7 @@ public class DataHandler
     /**
      * Query database for item and return its name
      *
-     * @param id      globally unique ID, usually starts with provider scheme, e.g. "app://" or "contact://"
+     * @param id globally unique ID, usually starts with provider scheme, e.g. "app://" or "contact://"
      * @return name of item (i.e. app name)
      */
     public String getItemName(String id) {
@@ -373,44 +419,50 @@ public class DataHandler
         return (pojo != null) ? pojo.getName() : "???";
     }
 
-    public boolean addShortcut(ShortcutRecord record) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "Adding shortcut for " + record.packageName);
-        if (DBHelper.insertShortcut(this.context, record)){
-            if (this.getShortcutsProvider()!=null) {
-                this.getShortcutsProvider().reload();
-            }
-            return true;
-        } else {
-            return false;
-        }
+    @Nullable
+    public Pojo getItemById(String id) {
+        return getPojo(id);
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    public void addShortcut(String packageName) {
-
+    /**
+     * Update stored shortcut info for all shortcuts of given packageName.
+     *
+     * @param packageName package name
+     */
+    public void updateShortcuts(String packageName) {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return;
         }
 
         List<ShortcutInfo> shortcuts;
         try {
-            shortcuts = ShortcutUtil.getShortcut(context, packageName);
+            shortcuts = ShortcutUtil.getShortcuts(context, packageName);
         } catch (SecurityException | IllegalStateException e) {
             e.printStackTrace();
             return;
         }
 
-        for (ShortcutInfo shortcutInfo : shortcuts) {
-            // Create Pojo
-            ShortcutRecord record = ShortcutUtil.createShortcutRecord(context, shortcutInfo, true);
-            if (record == null) {
-                continue;
-            }
-            // Add shortcut to the DataHandler
-            addShortcut(record);
+        updateShortcuts(packageName, shortcuts);
+    }
+
+    /**
+     * Update stored shortcut info for given shortcuts.
+     *
+     * @param packageName package name
+     */
+    public void updateShortcuts(String packageName, List<ShortcutInfo> shortcuts) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
         }
 
-        if (!shortcuts.isEmpty() && this.getShortcutsProvider() != null) {
+        Log.d(TAG, "Updating shortcuts for " + packageName);
+
+        boolean shortcutsUpdated = false;
+        for (ShortcutInfo shortcutInfo : shortcuts) {
+            shortcutsUpdated |= updateShortcut(shortcutInfo);
+        }
+
+        if (shortcutsUpdated && this.getShortcutsProvider() != null) {
             this.getShortcutsProvider().reload();
         }
     }
@@ -419,16 +471,94 @@ public class DataHandler
         DBHelper.clearHistory(this.context);
     }
 
+    /**
+     * Remove shortcut for given {@link ShortcutPojo}
+     * This is used for remove of shortcut from gui.
+     *
+     * @param shortcut shortcut to be removed
+     */
     public void removeShortcut(ShortcutPojo shortcut) {
-        // Also remove shortcut from favorites
-        removeFromFavorites(shortcut.id);
-        DBHelper.removeShortcut(this.context, shortcut);
-
+        removeShortcut(shortcut.id, shortcut.packageName, shortcut.intentUri);
         if (this.getShortcutsProvider() != null) {
             this.getShortcutsProvider().reload();
         }
     }
 
+    /**
+     * Update DB with given {@link ShortcutRecord}.
+     *
+     * @param shortcutInfo the shortcut to update.
+     * @return true if update was successful
+     */
+    public boolean updateShortcut(ShortcutInfo shortcutInfo) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return false;
+        }
+        return updateShortcut(shortcutInfo, !shortcutInfo.isPinned());
+    }
+
+    /**
+     * Update DB with given {@link ShortcutRecord}.
+     *
+     * @param shortcutInfo the shortcut to update.
+     * @param includePackageName include package name in shortcut name
+     * @return true if update was successful
+     */
+    public boolean updateShortcut(ShortcutInfo shortcutInfo, boolean includePackageName) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return false;
+        }
+
+        // Create Pojo
+        ShortcutRecord shortcut = ShortcutUtil.createShortcutRecord(context, shortcutInfo, includePackageName);
+
+        if (shortcut == null) {
+            return false;
+        }
+        if (shortcutInfo.isEnabled()) {
+            String componentName = ShortcutUtil.getComponentName(context, shortcutInfo);
+
+            // if related package is excluded from KISS then the shortcut must be excluded too
+            Set<String> excludedAppList = getExcluded();
+            if (excludedAppList.contains(componentName)) {
+                return false;
+            }
+
+            Log.d(TAG, "Adding shortcut for " + shortcut.packageName);
+
+            // if related package name is excluded from history, shortcut must be excluded from history too
+            Set<String> excludedFromHistoryAppList = getExcludedFromHistory();
+            if (excludedFromHistoryAppList.contains(componentName)) {
+                addToExcludedFromHistory(shortcut);
+            }
+
+            return DBHelper.insertShortcut(this.context, shortcut);
+        } else {
+            String id = ShortcutUtil.generateShortcutId(shortcut.name);
+            removeShortcut(id, shortcut.packageName, shortcut.intentUri);
+            return true;
+        }
+    }
+
+    /**
+     * Remove given shortcut from favorites and from DB
+     *
+     * @param id          KISS shortcut id, same as {@link ShortcutPojo#id}
+     * @param packageName package name, same as {@link ShortcutPojo#packageName}
+     * @param intentUri   intent to be called, same as {@link ShortcutPojo#intentUri}
+     */
+    private void removeShortcut(String id, String packageName, String intentUri) {
+        Log.d(TAG, "Removing shortcut for " + packageName);
+        // Also remove shortcut from favorites
+        removeFromFavorites(id);
+        DBHelper.removeShortcut(this.context, packageName, intentUri);
+    }
+
+    /**
+     * Removes all stored shortcuts for given packageName.
+     *
+     * @param packageName
+     */
     public void removeShortcuts(String packageName) {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return;
@@ -453,7 +583,7 @@ public class DataHandler
         Set<String> excluded = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("excluded-apps-from-history", null);
         if (excluded == null) {
             excluded = new HashSet<>();
-            excluded.add(context.getPackageName());
+            excluded.add("app://" + AppPojo.getComponentName(context.getPackageName(), MainActivity.class.getName(), new UserHandle()));
         }
         return excluded;
     }
@@ -463,7 +593,7 @@ public class DataHandler
         Set<String> excluded = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("excluded-apps", null);
         if (excluded == null) {
             excluded = new HashSet<>();
-            excluded.add(context.getPackageName());
+            excluded.add(AppPojo.getComponentName(context.getPackageName(), MainActivity.class.getName(), new UserHandle()));
         }
         return excluded;
     }
@@ -507,6 +637,16 @@ public class DataHandler
         app.setExcludedFromHistory(true);
     }
 
+    private void addToExcludedFromHistory(ShortcutRecord shortcut) {
+        // The set needs to be cloned and then edited,
+        // modifying in place is not supported by putStringSet()
+        Set<String> excluded = new HashSet<>(getExcludedFromHistory());
+        // Add given shortcut to being excluded from history
+        String id = ShortcutUtil.generateShortcutId(shortcut.name);
+        excluded.add(id);
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps-from-history", excluded).apply();
+    }
+
     public void removeFromExcludedFromHistory(AppPojo app) {
         // The set needs to be cloned and then edited,
         // modifying in place is not supported by putStringSet()
@@ -538,7 +678,7 @@ public class DataHandler
         DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
         dataHandler.removeFromFavorites(app.id);
 
-        //Exclude shortcuts for this app
+        // Exclude shortcuts for this app
         removeShortcuts(app.packageName);
     }
 
@@ -550,8 +690,8 @@ public class DataHandler
         PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("excluded-apps", excluded).apply();
         app.setExcluded(false);
 
-        //Add shortcuts for this app
-        addShortcut(app.packageName);
+        // Add shortcuts for this app
+        updateShortcuts(app.packageName);
     }
 
     public void removeFromExcluded(String packageName) {
@@ -589,21 +729,20 @@ public class DataHandler
      * @return pojos for all applications
      */
     @Nullable
-    public List<Pojo> getApplications() {
+    public List<AppPojo> getApplications() {
         AppProvider appProvider = getAppProvider();
         return appProvider != null ? appProvider.getAllApps() : null;
     }
 
+    /**
+     * Return all applications
+     *
+     * @return pojos for all applications
+     */
     @Nullable
-    public List<Pojo> getAppsWithNotif() {
+    public List<AppPojo> getApplicationsWithoutExcluded() {
         AppProvider appProvider = getAppProvider();
-        return appProvider != null ? appProvider.getAppsWithNotif() : null;
-    }
-
-    @Nullable
-    public List<Pojo> getContactssWithNotif() {
-        ContactsProvider contactsProvider = getContactsProvider();
-        return contactsProvider != null ? contactsProvider.getContactsWithNotif() : null;
+        return appProvider != null ? appProvider.getAllAppsWithoutExcluded() : null;
     }
 
     @Nullable
@@ -628,17 +767,6 @@ public class DataHandler
     public SearchProvider getSearchProvider() {
         ProviderEntry entry = this.providers.get("search");
         return (entry != null) ? ((SearchProvider) entry.provider) : null;
-    }
-
-    public boolean isFavorite(String packageName){
-        if (packageName!=null) {
-            String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
-                    getString("favorite-apps-list", "");
-            if (favApps.contains(packageName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -672,7 +800,6 @@ public class DataHandler
      * @param position the new position of the fav
      */
     public void setFavoritePosition(MainActivity context, String id, int position) {
-        if (BuildConfig.DEBUG) Log.d(TAG,"setFavoritePosition:" + id + ":"+position);
         List<Pojo> currentFavorites = getFavorites();
         List<String> favAppsList = new ArrayList<>();
 
@@ -699,24 +826,7 @@ public class DataHandler
         context.onFavoriteChange();
     }
 
-    /**
-     * Helper function to get the position of a favorite. Used mainly by the drag and drop system to know where to place the dropped app.
-     *
-     * @param context mainActivity context
-     * @param id      the app you want to get the position of.
-     * @return favorite position
-     */
-    public int getFavoritePosition(String id) {
-        String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
-                getString("favorite-apps-list", "");
-        assert favApps != null;
-        List<String> favAppsList = new ArrayList<>(Arrays.asList(favApps.split(";")));
-
-        return favAppsList.indexOf(id);
-    }
-
     public void addToFavorites(String id) {
-
         String favApps = PreferenceManager.getDefaultSharedPreferences(context).
                 getString("favorite-apps-list", "");
 

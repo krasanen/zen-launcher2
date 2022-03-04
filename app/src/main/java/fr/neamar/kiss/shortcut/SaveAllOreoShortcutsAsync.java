@@ -6,36 +6,30 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.UserManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Set;
 
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.dataprovider.ShortcutsProvider;
-import fr.neamar.kiss.db.ShortcutRecord;
-import fr.neamar.kiss.pojo.AppPojo;
 import fr.neamar.kiss.utils.ShortcutUtil;
-import fr.neamar.kiss.utils.UserHandle;
 
-@TargetApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O)
 public class SaveAllOreoShortcutsAsync extends AsyncTask<Void, Integer, Boolean> {
 
-    private static final String TAG = "SaveAllOreoShortcutsAsync";
+    private static final String TAG = SaveAllOreoShortcutsAsync.class.getSimpleName();
     private final WeakReference<Context> context;
-    private final WeakReference<DataHandler> dataHandler;
 
     public SaveAllOreoShortcutsAsync(@NonNull Context context) {
         this.context = new WeakReference<>(context);
-        this.dataHandler = new WeakReference<>(KissApplication.getApplication(context).getDataHandler());
     }
 
     @Override
@@ -65,44 +59,24 @@ public class SaveAllOreoShortcutsAsync extends AsyncTask<Void, Integer, Boolean>
             return null;
         }
 
-        final DataHandler dataHandler = this.dataHandler.get();
-        if (dataHandler == null) {
-            cancel(true);
-            return null;
-        }
+        final DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
 
-        Set<String> excludedAppList = dataHandler.getExcluded();
-        UserManager manager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-
+        boolean shortcutsUpdated = false;
         for (ShortcutInfo shortcutInfo : shortcuts) {
-
-            UserHandle user = new UserHandle(manager.getSerialNumberForUser(shortcutInfo.getUserHandle()), shortcutInfo.getUserHandle());
-            boolean isExcluded = excludedAppList.contains(AppPojo.getComponentName(shortcutInfo.getPackage(),
-                    shortcutInfo.getActivity().getClassName(), user));
-
-            // Skip shortcut if app is excluded
-            if (!excludedAppList.isEmpty() &&
-                    isExcluded) {
-                continue;
-            }
-
-            // Create Pojo
-            ShortcutRecord record = ShortcutUtil.createShortcutRecord(context, shortcutInfo, !shortcutInfo.isPinned());
-            if (record == null) {
-                continue;
-            }
-
             // Add shortcut to the DataHandler
-            dataHandler.addShortcut(record);
+            shortcutsUpdated |= dataHandler.updateShortcut(shortcutInfo);
         }
 
-        return true;
+        return shortcutsUpdated;
     }
 
     @Override
     protected void onProgressUpdate(Integer... progress) {
         if (progress[0] == -1) {
-            Toast.makeText(context.get(), R.string.cant_pin_shortcut, Toast.LENGTH_LONG).show();
+            Context context = this.context.get();
+            if (context != null) {
+                Toast.makeText(context, R.string.cant_pin_shortcut, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -111,9 +85,13 @@ public class SaveAllOreoShortcutsAsync extends AsyncTask<Void, Integer, Boolean>
         if (success) {
             Log.i(TAG, "Shortcuts added to KISS");
 
-            ShortcutsProvider provider = this.dataHandler.get().getShortcutsProvider();
-            if (provider != null) {
-                provider.reload();
+            Context context = this.context.get();
+            if (context != null) {
+                DataHandler dataHandler = KissApplication.getApplication(context).getDataHandler();
+                ShortcutsProvider provider = dataHandler.getShortcutsProvider();
+                if (provider != null) {
+                    provider.reload();
+                }
             }
         }
     }
