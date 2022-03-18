@@ -73,9 +73,6 @@ public class DataHandler
 
 
     public BadgeHandler getBadgeHandler() {
-        if (badgeHandler == null) {
-            badgeHandler = new BadgeHandler(context);
-        }
         return badgeHandler;
     }
 
@@ -83,6 +80,9 @@ public class DataHandler
      * Initialize all providers
      */
     public DataHandler(Context context) {
+        if (badgeHandler == null) {
+            badgeHandler = new BadgeHandler(context);
+        }
         start = System.currentTimeMillis();
 
         // Make sure we are in the context of the main activity
@@ -628,6 +628,15 @@ public class DataHandler
     public SearchProvider getSearchProvider() {
         ProviderEntry entry = this.providers.get("search");
         return (entry != null) ? ((SearchProvider) entry.provider) : null;
+    }
+
+    public boolean isFavorite(String packageName){
+        String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
+                getString("favorite-apps-list", "");
+        if (favApps.contains(packageName)){
+            return true;
+        }
+        return false;
     }
 
     /**

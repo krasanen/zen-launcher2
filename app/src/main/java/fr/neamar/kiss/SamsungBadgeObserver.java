@@ -26,6 +26,7 @@ public class SamsungBadgeObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange, Uri pUri) {
+        super.onChange(selfChange);
         if (BuildConfig.DEBUG) Log.i(TAG, "onChange: selfChange: "+selfChange + " Uri:"+pUri);
         // query badge status on content provider
         loadBadges(context);
@@ -89,8 +90,6 @@ public class SamsungBadgeObserver extends ContentObserver {
                     }
                 } finally {
                     cursor.close();
-                    ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT);
-                    EventBus.getDefault().post(event);
                 }
             }
         });

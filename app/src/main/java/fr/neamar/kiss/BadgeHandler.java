@@ -3,9 +3,12 @@ package fr.neamar.kiss;
 import android.content.Context;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.db.DBHelper;
 
 
@@ -39,7 +42,8 @@ public class BadgeHandler {
         }
         badgeCache.put(packageName, badge_count);
         DBHelper.setBadgeCount(this.context, packageName, badge_count);
-
+        ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT,packageName);
+        EventBus.getDefault().post(event);
     }
 
 

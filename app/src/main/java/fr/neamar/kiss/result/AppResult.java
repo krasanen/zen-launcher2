@@ -121,7 +121,7 @@ public class AppResult extends Result {
 
         TextView badgeView = view.findViewById(R.id.item_badge_count);
         if (pojo.getBadgeCount() > 0) {
-            badgeView.setText(String.valueOf(pojo.getBadgeText()));
+            badgeView.setText(pojo.getBadgeText());
             badgeView.setVisibility(View.VISIBLE);
         } else {
             badgeView.setVisibility(View.GONE);
@@ -129,22 +129,9 @@ public class AppResult extends Result {
         return view;
     }
 
-    private static final String INTENT_ACTION = IntentConstants.DEFAULT_INTENT_ACTION;
-    private static final String INTENT_EXTRA_BADGE_COUNT = "badge_count";
-    private static final String INTENT_EXTRA_PACKAGENAME = "badge_count_package_name";
-    private static final String INTENT_EXTRA_ACTIVITY_NAME = "badge_count_class_name";
-
     public static void executeBadge(Context context, String packageName, String className, int badgeCount) throws ShortcutBadgeException {
         if (BuildConfig.DEBUG) Log.i(TAG, "executeBadge " + packageName + ":" + className + "badgeCount:"+badgeCount);
-        Intent intent = new Intent(INTENT_ACTION);
-        intent.putExtra(INTENT_EXTRA_BADGE_COUNT, badgeCount);
-        intent.putExtra(INTENT_EXTRA_PACKAGENAME, packageName);
-        intent.putExtra(INTENT_EXTRA_ACTIVITY_NAME, className);
-
-        BroadcastHelper.sendDefaultIntentExplicitly(context, intent);
         KissApplication.getApplication(context).getDataHandler().getBadgeHandler().setBadgeCount(packageName, badgeCount);
-        ZEvent event = new ZEvent(ZEvent.State.BADGE_COUNT);
-        EventBus.getDefault().post(event);
     }
 
     @Override

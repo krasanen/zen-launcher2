@@ -617,6 +617,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.adapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
+                if (BuildConfig.DEBUG) Log.d(TAG,"onChanged");
                 super.onChanged();
                 if (adapter.isEmpty()) {
                     // Display help text when no results available
@@ -1157,11 +1158,12 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
                 break;
             case BADGE_COUNT:
-                if (BuildConfig.DEBUG) Log.v(TAG, "BADGE_COUNT update");
-                if (!isDisplayingKissBar) {
-                    adapter.notifyDataSetChanged();
+                if (BuildConfig.DEBUG) Log.v(TAG, "BADGE_COUNT update, event.getText():"+event.getText());
+                DataHandler dh = KissApplication.getApplication(this).getDataHandler();
+                if (dh.isFavorite(event.getText())) {
+                    if (BuildConfig.DEBUG) Log.d(TAG, "isFavorite:" + event.getText());
+                    onFavoriteChange();
                 }
-                onFavoriteChange();
                 break;
             case WIFI_ON:
                 toggleWifiState(true);

@@ -64,7 +64,6 @@ import static fi.zmengames.zen.ZEvent.State.NIGHTMODE_OFF;
 import static fi.zmengames.zen.ZEvent.State.NIGHTMODE_ON;
 import static fi.zmengames.zen.ZEvent.State.SCREEN_OFF;
 import static fi.zmengames.zen.ZEvent.State.SCREEN_ON;
-import static fi.zmengames.zen.ZEvent.State.SET_BADGE_COUNT;
 import static fi.zmengames.zen.ZEvent.State.SHOW_TOAST;
 
 public class LauncherService extends Service {
@@ -275,7 +274,6 @@ public class LauncherService extends Service {
                 else if (intent.getAction().equals(NIGHTMODE_ON.toString())) startNightMode();
                 else if (intent.getAction().equals(NIGHTMODE_OFF.toString())) stopNightMode();
                 else if (intent.getAction().equals(LAUNCH_INTENT.toString())) launchIntent(intent);
-                else if (intent.getAction().equals(SET_BADGE_COUNT.toString())) setBadgeCount(intent);
                 else if (intent.getAction().equals(ENABLE_PROXIMITY.toString())) startListeningProximitySensor();
                 else if (intent.getAction().equals(DISABLE_PROXIMITY.toString())) stopListeningProximitySensor();
                 else if (intent.getAction().equals(SCREEN_ON.toString())) screenOn();
@@ -390,11 +388,6 @@ public class LauncherService extends Service {
         if (isProximityLockEnabled(this)) {
             stopListeningProximitySensor();
         }
-    }
-
-    private void setBadgeCount(Intent intent) {
-        if(BuildConfig.DEBUG) Log.i(TAG, "setBadgeCount");
-        sendMessageSticky2(new ZEvent(ZEvent.State.BADGE_COUNT, intent.getStringExtra(BadgeCountHandler.PACKAGENAME), intent.getIntExtra(BadgeCountHandler.BADGECOUNT,0)));
     }
 
     private void launchIntent(Intent intent) {

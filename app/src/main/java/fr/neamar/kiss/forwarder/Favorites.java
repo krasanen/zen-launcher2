@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -229,14 +230,22 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             favoritesViews.get(i).setVisibility(View.VISIBLE);
             TextView badgeView = (favoritesViews.get(i).findViewById(R.id.fav_item_badge_count));
             if (pojo.getBadgeCount() > 0) {
-                badgeView.setText(String.valueOf(pojo.getBadgeText()));
+                badgeView.setText(pojo.getBadgeText());
                 badgeView.setVisibility(View.VISIBLE);
-                if (isExternalFavoriteBarEnabled()) {
-                    badgeView.setX(getBitmapOffset(image)[2] - (badgeView.getMeasuredWidth()));
-                    badgeView.setY(getBitmapOffset(image)[3] - (badgeView.getMeasuredWidth()));
-                } else {
-                    badgeView.setX(getBitmapOffset(image)[2] - (badgeView.getMeasuredWidth()>>1));
-                }
+                badgeView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int width = badgeView.getMeasuredWidth();
+                        int height = badgeView.getMeasuredHeight();
+                        if (isExternalFavoriteBarEnabled()) {
+                            badgeView.setX(getBitmapOffset(image)[2] - (width));
+                            badgeView.setY(getBitmapOffset(image)[3] - (height));
+                        } else {
+                            badgeView.setX(getBitmapOffset(image)[2] - (width>>1));
+                        }
+                    }
+                });
+
             } else {
                 badgeView.setVisibility(View.GONE);
             }
