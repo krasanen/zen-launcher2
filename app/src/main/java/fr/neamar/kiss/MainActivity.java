@@ -127,6 +127,7 @@ import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.preference.DefaultLauncherPreference;
+import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
 import fr.neamar.kiss.searcher.AppsWithNotifSearcher;
 import fr.neamar.kiss.searcher.ContactSearcher;
@@ -1163,6 +1164,29 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 if (dh.isFavorite(event.getText())) {
                     if (BuildConfig.DEBUG) Log.d(TAG, "isFavorite:" + event.getText());
                     onFavoriteChange();
+                }
+                // scroll back to same position if applist is open
+                if (isDisplayingKissBar) {
+                    int first = list.getFirstVisiblePosition();
+                    int last = list.getLastVisiblePosition();
+                    for (int a = first; a <= last; a++) {
+                        if (((AppResult) adapter.getItem(a)).getPackageName().equals(event.getText())) {
+                            int lastViewedPosition = list.getFirstVisiblePosition();
+
+                            //get offset of first visible view
+                            View v = list.getChildAt(0);
+                            int topOffset = (v == null) ? 0 : v.getTop();
+                            adapter.notifyDataSetChanged();
+                            list.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    list.setSelectionFromTop(lastViewedPosition, topOffset);
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    adapter.notifyDataSetChanged();
                 }
                 break;
             case WIFI_ON:
