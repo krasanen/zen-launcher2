@@ -158,16 +158,17 @@
         android:visibility="gone"
         android:src="@drawable/ic_phone" />
 
-    <ImageView
-        android:id="@+id/item_notification_dot"
-        android:layout_alignBottom="@id/item_contact_icon"
+    <TextView
+        android:id="@+id/item_notification_count"
+        android:layout_alignTop="@id/item_contact_icon"
         android:layout_alignEnd="@id/item_contact_icon"
         android:layout_alignRight="@id/item_contact_icon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:background="@drawable/notification_background"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:layout_width="?attr/resultBadgeSize"
+        android:layout_height="?attr/resultBadgeSize"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:contentDescription="@null"
-        android:src="@drawable/notification_dot" />
+        android:textSize="?attr/resultBadgeTextSize" />
 
 </RelativeLayout>

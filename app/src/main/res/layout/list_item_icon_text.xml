@@ -40,17 +40,18 @@
             android:layout_height="16dp"
             android:visibility="gone"
             android:textSize="?attr/resultSubtitleSize" />
-        <ImageView
-            android:id="@+id/zen_item_notification_dot"
-            android:layout_alignBottom="@id/icon"
+        <TextView
+            android:id="@+id/zen_item_notification_count"
+            android:layout_alignTop="@id/icon"
             android:layout_alignEnd="@id/icon"
             android:layout_alignRight="@id/icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:background="@drawable/notification_background"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:contentDescription="@null"
-            android:src="@drawable/notification_dot" />
+            android:textSize="?attr/resultSubtitleSize" />
     </RelativeLayout>
 
     <TextView

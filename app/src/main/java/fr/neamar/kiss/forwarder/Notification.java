@@ -66,7 +66,7 @@ class Notification extends Forwarder {
     private void updateDots(ViewGroup vg, int childCount, String packageAndTitle) {
         for (int i = 0; i < childCount; i++) {
             View v = vg.getChildAt(i);
-            final View notificationDot = v.findViewById(R.id.item_notification_dot);
+            final View notificationDot = v.findViewById(R.id.item_notification_count);
             if (notificationDot != null && packageAndTitle.equals(notificationDot.getTag())) {
                 boolean hasNotification = notificationPreferences.contains(packageAndTitle);
                 animateDot(notificationDot, hasNotification);

@@ -631,10 +631,12 @@ public class DataHandler
     }
 
     public boolean isFavorite(String packageName){
-        String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
-                getString("favorite-apps-list", "");
-        if (favApps.contains(packageName)){
-            return true;
+        if (packageName!=null) {
+            String favApps = PreferenceManager.getDefaultSharedPreferences(this.context).
+                    getString("favorite-apps-list", "");
+            if (favApps.contains(packageName)) {
+                return true;
+            }
         }
         return false;
     }

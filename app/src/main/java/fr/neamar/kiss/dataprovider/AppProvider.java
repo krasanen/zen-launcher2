@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -25,7 +24,6 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import fi.zmengames.zen.AlarmUtils;
-import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.broadcast.PackageAddedRemovedHandler;
 import fr.neamar.kiss.cache.MemoryCacheHelper;
@@ -242,7 +240,7 @@ public class AppProvider extends Provider<AppPojo> {
         for (AppPojo pojo : pojos) {
             if (pojo!=null) {
                 pojo.relevance = 0;
-                if (pojo.getBadgeCount() > 0 || pojo.getHasNotification()) {
+                if (pojo.getBadgeCount() > 0 || pojo.getNotificationCount()>0) {
                     if(pojo.isExcluded()) continue;
                     records.add(pojo);
                 }

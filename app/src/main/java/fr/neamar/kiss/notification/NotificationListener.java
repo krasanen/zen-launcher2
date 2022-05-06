@@ -12,11 +12,14 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.dataprovider.AppProvider;
@@ -135,7 +138,7 @@ public class NotificationListener extends NotificationListenerService {
             if (contact!=null){
                 if (BuildConfig.DEBUG) Log.v(TAG, "1. Package:"+sbn.getPackageName()+" title:"+title);
                 prefs.edit().putStringSet(sbn.getPackageName()+title, currentNotifications).apply();
-                contact.setHasNotification(true);
+                contact.incrementNotifications();
                 contact.setNotificationPackage(sbn.getPackageName());
             }
         }else {
@@ -147,10 +150,13 @@ public class NotificationListener extends NotificationListenerService {
             if (appPojo!=null){
                 if (BuildConfig.DEBUG) Log.v(TAG, "2. Package:"+sbn.getPackageName()+" title:"+title);
                 prefs.edit().putStringSet(sbn.getPackageName(), currentNotifications).apply();
-                appPojo.setHasNotification(true);
+                appPojo.incrementNotifications();
             }
         }
         if (BuildConfig.DEBUG) Log.v(TAG, "Added notification for " + sbn.getPackageName() + " title:" +title + " category:"+category);
+        if (KissApplication.getApplication(getApplicationContext()).getDataHandler().isFavorite(sbn.getPackageName())){
+            EventBus.getDefault().post(new ZEvent(ZEvent.State.NOTIFICATION_COUNT, sbn.getPackageName()));
+        }
     }
 
     @Override
@@ -206,6 +212,9 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
         editor.apply();
+        if (KissApplication.getApplication(getApplicationContext()).getDataHandler().isFavorite(sbn.getPackageName())){
+            EventBus.getDefault().post(new ZEvent(ZEvent.State.NOTIFICATION_COUNT, sbn.getPackageName()));
+        }
         if (BuildConfig.DEBUG) Log.v(TAG, "Removed notification for " + sbn.getPackageName() + title + ": " + currentNotifications.toString());
     }
 

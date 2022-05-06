@@ -249,16 +249,36 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             } else {
                 badgeView.setVisibility(View.GONE);
             }
-            ImageView notificationView = favoritesViews.get(i).findViewById(R.id.item_notification_dot);
-            notificationView.setVisibility(pojo.getHasNotification() ? View.VISIBLE : View.GONE);
-            int primaryColor = UIColors.getPrimaryColor(mainActivity);
+
+
+            TextView notificationView = (favoritesViews.get(i).findViewById(R.id.fav_item_notification_count));
+            if (pojo.getNotificationCount()>0) {
+                notificationView.setVisibility(View.VISIBLE);
+
+                notificationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int width = notificationView.getMeasuredWidth();
+                        if (isExternalFavoriteBarEnabled()) {
+                            notificationView.setX(getBitmapOffset(image)[2] - (width));
+
+                        } else {
+                            notificationView.setX(getBitmapOffset(image)[2] - (width>>1));
+                        }
+                    }
+                });
+
+            } else {
+                notificationView.setVisibility(View.GONE);
+            }
+
             if (result instanceof AppResult) {
                 String packageName = ((AppResult) result).getPackageName();
                 notificationView.setTag(packageName);
             } else if (result instanceof ContactsResult){
                 notificationView.setTag(pojo.getNotificationPackage()+result.pojo.getName());
             }
-            notificationView.setColorFilter(primaryColor);
+
         }
 
         // Hide empty favorites (not enough favorites yet)
