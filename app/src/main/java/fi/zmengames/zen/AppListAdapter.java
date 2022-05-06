@@ -1,12 +1,10 @@
 package fi.zmengames.zen;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +67,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
             holder.text.setVisibility(View.GONE);
             holder.context = getContext();
             holder.badge = view.findViewById(R.id.zen_badge_count);
-            holder.notification = view.findViewById(R.id.zen_item_notification_dot);
+            holder.notificationCount = view.findViewById(R.id.zen_item_notification_count);
             // initialize views
             view.setTag(holder);  // set tag on view
         } else {
@@ -88,7 +86,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
         TextView text;
         ImageView icon;
         TextView badge;
-        ImageView notification;
+        TextView notificationCount;
         Context context;
     }
 
@@ -97,7 +95,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
         private ViewHolder v;
         private String text;
         private String badgeText;
-        private boolean hasNotification;
+        private int notificationCount;
         private ImageLoadTask(int position) {
             this.mPosition = position;
 
@@ -110,7 +108,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
                 Pojo item = getItem(mPosition);
                 if (item==null)
                     return new ColorDrawable(Color.TRANSPARENT);
-                this.hasNotification = item.getHasNotification();
+                this.notificationCount = item.getNotificationCount();
                 final Result result = Result.fromPojo(null, item);
                 this.text = item.getName();
 
@@ -137,9 +135,7 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
                 v.badge.setText(badgeText);
                 v.badge.setVisibility(View.VISIBLE);
             }
-            v.notification.setVisibility(hasNotification ? View.VISIBLE : View.GONE);
-            int primaryColor = UIColors.getPrimaryColor(getContext());
-            v.notification.setColorFilter(primaryColor);
+            v.notificationCount.setVisibility(notificationCount>0 ? View.VISIBLE : View.GONE);
         }
     }
 }

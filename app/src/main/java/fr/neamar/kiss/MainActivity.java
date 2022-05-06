@@ -1189,6 +1189,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                     adapter.notifyDataSetChanged();
                 }
                 break;
+            case NOTIFICATION_COUNT:
+                if (BuildConfig.DEBUG) Log.v(TAG, "NOTIFICATION_COUNT update, event.getText():"+event.getText());
+                DataHandler dh2 = KissApplication.getApplication(this).getDataHandler();
+                if (dh2.isFavorite(event.getText())) {
+                    if (BuildConfig.DEBUG) Log.d(TAG, "isFavorite:" + event.getText());
+                    onFavoriteChange();
+                }
+                if (!isDisplayingKissBar) {
+                    adapter.notifyDataSetChanged();
+                }
+                break;
             case WIFI_ON:
                 toggleWifiState(true);
                 break;

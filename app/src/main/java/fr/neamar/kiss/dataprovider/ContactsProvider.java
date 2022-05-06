@@ -170,7 +170,7 @@ public class ContactsProvider extends Provider<ContactsPojo> {
         records.clear();
         for (ContactsPojo pojo : pojos) {
             pojo.relevance = 0;
-            if (pojo.getHasNotification()) {
+            if (pojo.getNotificationCount()>0) {
                 records.add(pojo);
             }
         }

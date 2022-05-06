@@ -66,7 +66,7 @@ public class ContactsResult extends Result {
 
     private void addCallItemsToMenu(PopupMenu popupExcludeMenu, View view) {
 
-        if (pojo.getHasNotification()){
+        if (pojo.getNotificationCount()>0){
             popupExcludeMenu.getMenu().add(OPEN_NOTIFICATION,Menu.NONE, Menu.NONE,R.string.open_notification_package);
         }
         popupExcludeMenu.getMenu().add(CELL_CALL,Menu.NONE, Menu.NONE,R.string.ui_item_contact_hint_call);
@@ -259,14 +259,11 @@ public class ContactsResult extends Result {
             contactIcon.setImageDrawable(null);
         }
 
-        ImageView notificationView = view.findViewById(R.id.item_notification_dot);
-        notificationView.setVisibility(pojo.getHasNotification() ? View.VISIBLE : View.GONE);
+        TextView notificationView = view.findViewById(R.id.item_notification_count);
+        notificationView.setVisibility(pojo.getNotificationCount()>0 ? View.VISIBLE : View.GONE);
         notificationView.setTag(pojo.getName());
 
         int primaryColor = UIColors.getPrimaryColor(context);
-        notificationView.setColorFilter(primaryColor);
-
-
 
         contactIcon.assignContactUri(Uri.withAppendedPath(
                 ContactsContract.Contacts.CONTENT_LOOKUP_URI,

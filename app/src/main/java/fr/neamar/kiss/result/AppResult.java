@@ -58,8 +58,6 @@ import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 import fr.neamar.kiss.utils.SpaceTokenizer;
 import me.leolin.shortcutbadger.ShortcutBadgeException;
-import me.leolin.shortcutbadger.impl.IntentConstants;
-import me.leolin.shortcutbadger.util.BroadcastHelper;
 
 import static org.greenrobot.eventbus.EventBus.TAG;
 import static fi.zmengames.zen.ZEvent.State.REFRESH_UI;
@@ -111,13 +109,9 @@ public class AppResult extends Result {
         } else {
             appIcon.setImageDrawable(null);
         }
-        ImageView notificationView = view.findViewById(R.id.item_notification_dot);
-        notificationView.setVisibility(pojo.getHasNotification() ? View.VISIBLE : View.GONE);
+        TextView notificationView = view.findViewById(R.id.item_notification_count);
+        notificationView.setVisibility(pojo.getNotificationCount()>0 ? View.VISIBLE : View.GONE);
         notificationView.setTag(getPackageName());
-
-        int primaryColor = UIColors.getPrimaryColor(context);
-        notificationView.setColorFilter(primaryColor);
-
 
         TextView badgeView = view.findViewById(R.id.item_badge_count);
         if (pojo.getBadgeCount() > 0) {

@@ -21,6 +21,7 @@ public class ZEvent {
         FULL_LOAD_OVER,
         SHOW_TOAST,
         BADGE_COUNT,
+        NOTIFICATION_COUNT,
         HANDLE_PENDING_EVENTS,
         RELOAD_APPS,
         WIFI_ON,

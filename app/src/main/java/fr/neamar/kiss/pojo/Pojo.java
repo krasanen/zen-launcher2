@@ -26,6 +26,7 @@ public abstract class Pojo {
     String name = "";
     private boolean hasNotification;
     private String notificationPackage;
+    private int notificationCount = 0;
 
     public Pojo(String id) {
         this.id = id;
@@ -77,10 +78,20 @@ public abstract class Pojo {
 
     public void setHasNotification(boolean hasNotification){
         this.hasNotification = hasNotification;
+        if (!hasNotification){
+            notificationCount = 0;
+        }
     }
-    public boolean getHasNotification(){
-        return hasNotification;
+    public void incrementNotifications(){
+        this.notificationCount++;
     }
+    public int getNotificationCount(){
+        return this.notificationCount;
+    }
+    public String getNotificationCountText(){
+        return String.valueOf(notificationCount);
+    }
+
     public void setNotificationPackage(String notificationPackage){
         this.notificationPackage = notificationPackage;
     }
