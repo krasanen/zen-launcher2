@@ -34,6 +34,9 @@ import java.util.Set;
 import fi.zmengames.zen.EmailProvider;
 import fi.zmengames.zen.ZEvent;
 import fi.zmengames.zen.ZenProvider;
+
+import fr.neamar.kiss.broadcast.ProfileChangedHandler;
+
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.dataprovider.ContactsProvider;
 import fr.neamar.kiss.dataprovider.IProvider;
@@ -94,6 +97,12 @@ public class DataHandler
         //  to bind to services)
         this.context = context.getApplicationContext();
 
+
+        // Monitor changes for profiles
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ProfileChangedHandler profileChangedHandler = new ProfileChangedHandler();
+            profileChangedHandler.register(this.context.getApplicationContext());
+        }
 
         // Monitor changes for service preferences (to automatically start and stop services)
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

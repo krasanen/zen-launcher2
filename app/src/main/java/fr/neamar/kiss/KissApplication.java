@@ -69,9 +69,6 @@ public class KissApplication extends Application {
         return dataHandler;
     }
 
-    public void setDataHandler(DataHandler newDataHandler) {
-        dataHandler = newDataHandler;
-    }
     public static void setMainActivity(MainActivity mainActivity) {
         KissApplication.mainActivity = mainActivity;
     }
