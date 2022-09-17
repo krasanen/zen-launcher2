@@ -2,20 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="fr.neamar.kiss">
-
-    <permission
-        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal" />
-
     <meta-data
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version" />
-
-    <permission
-        android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal" /> <!-- Self explanatory -->
     <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- To display contacts when searching -->
     <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- To call a phone number directly without displaying the dialer -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Display notification drawer -->
@@ -79,7 +68,8 @@
 
         <receiver
             android:name=".ZenWidget"
-            android:label="Zen Flashlight">
+            android:label="Zen Flashlight"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -88,7 +78,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/zen_widget_info" />
         </receiver>
-        <receiver android:name=".broadcast.BadgeCountHandler">
+        <receiver android:name=".broadcast.BadgeCountHandler"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BADGE_COUNT_UPDATE" />
                 <action android:name="com.htc.launcher.action.UPDATE_SHORTCUT" />
@@ -97,7 +88,8 @@
         </receiver>
         <receiver
             android:name="fi.zmengames.zen.ZenAdmin"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:exported="true">
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/policies" />
@@ -130,7 +122,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="user"
             android:stateNotNeeded="true"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -153,7 +146,8 @@
         </activity>
         <activity
             android:name=".DummyActivity"
-            android:enabled="false">
+            android:enabled="false"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -165,7 +159,8 @@
             android:name=".SettingsActivity"
             android:label="@string/activity_setting"
             android:theme="@style/SettingTheme"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -186,12 +181,14 @@
         </receiver> <!-- On incoming calls, add user to history -->
         <receiver
             android:name=".broadcast.IncomingCallHandler"
-            android:enabled="false">
+            android:exported="true"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver> <!-- Intents received used to install/uninstall shortcuts from other applications -->
-        <receiver android:name="fi.zmengames.zen.ScreenReceiver">
+        <receiver android:name="fi.zmengames.zen.ScreenReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_OFF" />
                 <action android:name="android.intent.action.SCREEN_ON" />
@@ -199,9 +196,10 @@
         </receiver>
         <receiver
             android:name="fi.zmengames.zen.AlarmReceiver"
-            android:process=":remote"></receiver>
-
-        <receiver android:name="fi.zmengames.zen.MediaMountListener">
+            android:process=":remote"
+            android:exported = "false"/>
+        <receiver android:name="fi.zmengames.zen.MediaMountListener"
+            android:exported = "true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_EJECT" />
                 <action android:name="android.intent.action.MEDIA_REMOVED" />
@@ -220,6 +218,7 @@
             android:enabled="true" />
         <service
             android:name=".notification.NotificationListener"
+            android:exported = "true"
             android:enabled="@bool/notification_service_enabled"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

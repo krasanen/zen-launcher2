@@ -33,7 +33,7 @@ public class ZenWidget extends AppWidgetProvider {
     protected PendingIntent getPendingSelfIntent(Context context, String action) {
         Intent intent = new Intent(context, getClass());
         intent.setAction(action);
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
     }
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

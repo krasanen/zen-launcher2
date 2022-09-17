@@ -23,11 +23,11 @@ android {
         abortOnError false
     }
 
-    compileSdkVersion 30
+    compileSdkVersion 33
     defaultConfig {
         applicationId 'com.zmengames.zenlauncher'
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionName = buildTimeStamp() + "@" + gitLastCommit()
         versionCode = gitVersion()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

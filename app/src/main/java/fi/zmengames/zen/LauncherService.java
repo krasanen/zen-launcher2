@@ -14,6 +14,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -500,6 +501,17 @@ public class LauncherService extends Service {
         mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;
         mLayoutParams.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
         mLayoutParams.format = PixelFormat.TRANSLUCENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            InputManager im = (InputManager) getSystemService(Context. INPUT_SERVICE);
+            float a = im.getMaximumObscuringOpacityForTouch();
+            if (a<0.8f) {
+                mLayoutParams.alpha = a;
+            } else {
+                mLayoutParams.alpha = 0.8f;
+            }
+        } else {
+            mLayoutParams.alpha = 0.8f;
+        }
         if (mLayout != null) {
             int color = Color.YELLOW;
             if (mYellowFilterAlpha > 0) {

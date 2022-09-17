@@ -779,7 +779,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         notifyIntent.setAction(ACTION_SET_DEFAULT_LAUNCHER.toString());
        /*notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, ZEN_NOTIFICATION_ID, notifyIntent,  PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, ZEN_NOTIFICATION_ID, notifyIntent,  PendingIntent.FLAG_IMMUTABLE);
 
         mBuilder.setContentIntent(pendingIntent);
 

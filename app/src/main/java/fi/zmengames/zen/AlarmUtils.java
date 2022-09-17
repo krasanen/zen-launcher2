@@ -25,7 +25,7 @@ public class AlarmUtils {
     public static void addAlarm(Context context, Intent intent, long notificationId, Calendar calendar) {
         if (BuildConfig.DEBUG) Log.d(TAG,"addAlarm: "+notificationId);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) notificationId & 0xfffffff, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) notificationId & 0xfffffff, intent, PendingIntent.FLAG_IMMUTABLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -40,7 +40,7 @@ public class AlarmUtils {
         if (BuildConfig.DEBUG) Log.d(TAG,"cancelAlarm: "+notificationId);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent myIntent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) notificationId & 0xfffffff, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) notificationId & 0xfffffff, myIntent, PendingIntent.FLAG_IMMUTABLE);
         alarmManager.cancel(pendingIntent);
         pendingIntent.cancel();
         removeAlarmId(context, notificationId);
