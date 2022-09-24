@@ -568,7 +568,11 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
             intent.setComponent(appWidget.configure);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            mainActivity.startActivityForResult(intent, REQUEST_CONFIGURE_APPWIDGET);
+            try {
+                mainActivity.startActivityForResult(intent, REQUEST_CONFIGURE_APPWIDGET);
+            } catch(SecurityException e) {
+                Toast.makeText(mainActivity,  "Zen doesn't have permission to configure this widget.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
