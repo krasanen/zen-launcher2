@@ -139,7 +139,11 @@ public class WidgetPreferences implements Serializable {
             return null;
         ObjectInputStream objectInputStream;
         try {
-            objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data.getBytes(StandardCharsets.ISO_8859_1)));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data.getBytes(StandardCharsets.ISO_8859_1)));
+            } else {
+                objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data.getBytes("ISO-8859-1")));
+            }
             WidgetPreferences wp = (WidgetPreferences) objectInputStream.readObject();
             return wp;
         } catch (Exception e) {
