@@ -26,6 +26,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -2706,7 +2707,20 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         clearButton.setVisibility(View.VISIBLE);
         menuButton.setVisibility(View.INVISIBLE);
     }
+    public boolean isZenDefaultLauncher() {
+        String homePackage;
+        try {
+            Intent i = new Intent(Intent.ACTION_MAIN);
+            i.addCategory(Intent.CATEGORY_HOME);
+            PackageManager pm = getPackageManager();
+            final ResolveInfo mInfo = pm.resolveActivity(i, PackageManager.MATCH_DEFAULT_ONLY);
+            homePackage = mInfo.activityInfo.packageName;
+        } catch (Exception e) {
+            homePackage = "unknown";
+        }
 
+        return homePackage.equals(this.getPackageName());
+    }
     public boolean isKeyboardVisible() {
         return systemUiVisibilityHelper.isKeyboardVisible();
     }
