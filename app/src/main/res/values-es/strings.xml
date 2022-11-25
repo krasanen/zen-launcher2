@@ -222,8 +222,6 @@
     <string name="stub_app_tag">Ejemplo de etiqueta</string>
     <string name="reset_excluded_apps_name_sum">Restablecer lista de apps excluidas</string>
     <string name="reset_excluded_from_history_apps_name_sum">Restablecer excluidos de la lista de apps del historial</string>
-    <string name="keyboard_workaround_name">Corrección de sugerencias de teclado</string>
-    <string name="keyboard_workaround_desc">Evitar los teclados de software rotos (como SwiftKey™) de mostrar sugerencias</string>
     <string name="regenerate_shortcuts">Regenerar todos los atajos de apps</string>
     <string name="regenerate_shortcuts_desc">¿Le gustaría volver a generar la lista de atajos?</string>
     <string name="regenerate_shortcuts_done">Se han regenerado los atajos</string>

@@ -277,9 +277,8 @@
                 android:title="@string/keyboard_name" />
             <fr.neamar.kiss.SwitchPreference
                 android:defaultValue="false"
-                android:key="enable-keyboard-workaround"
-                android:summary="@string/keyboard_workaround_desc"
-                android:title="@string/keyboard_workaround_name" />
+                android:key="enable-suggestions-keyboard"
+                android:title="@string/keyboard_suggestions" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/history_hide_name" android:key="history-hide-section">
             <fr.neamar.kiss.SwitchPreference

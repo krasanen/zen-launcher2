@@ -220,8 +220,6 @@
     <string name="stub_app_tag">Esempio di tag</string>
     <string name="reset_excluded_apps_name_sum">Reimposta elenco app escluse</string>
     <string name="reset_excluded_from_history_apps_name_sum">Reimposta escluse dall\'elenco delle app della cronologia</string>
-    <string name="keyboard_workaround_name">Correzione dei suggerimenti della tastiera</string>
-    <string name="keyboard_workaround_desc">Impedisci alle tastiere software rotte (come SwiftKey ™) di mostrare suggerimenti</string>
     <string name="order_apps_name">Ordinamento elenco app</string>
     <string name="enable_sms">Mostra gli SMS in arrivo nella cronologia</string>
     <string name="enable_phone_sum">Mostra le chiamate in arrivo nella visualizzazione della cronologia</string>

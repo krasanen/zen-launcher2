@@ -261,13 +261,13 @@ public class ExperienceTweaks extends Forwarder {
                         public void run() {
                             if (numberOfTaps == 1 )
                                 numberOfTaps = 0;
-                                if (swipeDetected) {
-                                    swipeDetected = false;
-                                } else {
-                                    onSingleTap();
-                                }
+                            if (swipeDetected) {
+                                swipeDetected = false;
+                            } else {
+                                onSingleTap();
                             }
-                        };
+                        }
+                    };
                     handler.postDelayed(onetap, ViewConfiguration.getDoubleTapTimeout());
                 }
 
@@ -355,7 +355,9 @@ public class ExperienceTweaks extends Forwarder {
         int currentInputType = mainActivity.searchEditText.getInputType();
         int requiredInputType;
 
-        if (currentText != null && Pattern.matches("[+]\\d+", currentText)) {
+        if (isSuggestionsEnabled()) {
+            requiredInputType = InputType.TYPE_CLASS_TEXT;
+        } else if (currentText != null && Pattern.matches("[+]\\d+", currentText)) {
             requiredInputType = TYPE_CLASS_PHONE;
         } else if (isNonCompliantKeyboard()) {
             requiredInputType = INPUT_TYPE_WORKAROUND;
@@ -374,7 +376,9 @@ public class ExperienceTweaks extends Forwarder {
             mainActivity.searchEditText.setInputType(TYPE_CLASS_PHONE);
         } else {
             int requiredInputType;
-            if (isNonCompliantKeyboard()) {
+            if (isSuggestionsEnabled()) {
+                requiredInputType = InputType.TYPE_CLASS_TEXT;
+            } else if (isNonCompliantKeyboard()) {
                 requiredInputType = INPUT_TYPE_WORKAROUND;
             } else {
                 requiredInputType = INPUT_TYPE_STANDARD;
@@ -441,6 +445,13 @@ public class ExperienceTweaks extends Forwarder {
             mNumericInputTypeForced = false;
             adjustInputType(null);
         }
+    }
+
+    /**
+     * Should the keyboard autocomplete and suggest options
+     */
+    private boolean isSuggestionsEnabled() {
+        return prefs.getBoolean("enable-suggestions-keyboard", false);
     }
 
     private void onSwipeDown() {

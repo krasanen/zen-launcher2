@@ -145,8 +145,7 @@
     <string name="title_wallpaper">Taustakuvan toiminnot</string>
     <string name="providers_summary">Poista tarjoajia käytöstä, lisää omia hakukoneita, …</string>
     <string name="user_experience_summary">Minimalistinen näkymä, näppäimistön asetukset, …</string>
-    <string name="keyboard_workaround_name">Näppäimistön ehdotusten korjaus</string>
-    <string name="keyboard_workaround_desc">Estä näppäimistösovelluksia (kuten SwiftKey™) näyttämästä ehdotuksia</string>
+    <string name="keyboard_suggestions">Ota käyttöön automaattinen täyttö/ehdotukset</string>
     <string name="history_settings_summary">Nollaa historianäkymä, jätä lukuunottamatta sovelluksia, …</string>
     <string name="history_favorites_summary">Nollaa suosikkisovellukset, poista suosikkisovellusnauha, …</string>
     <string name="user_interface_summary">Teemat, läpinäkyvyys ja värit</string>
