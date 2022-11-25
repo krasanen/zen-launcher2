@@ -1415,7 +1415,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         closeContextMenu();
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_SET_DEFAULT_LAUNCHER.equals(action)) {
+            if (ACTION_SET_DEFAULT_LAUNCHER.toString().equals(action)) {
                 DefaultLauncherPreference.selectLauncher(this);
                 removeNotification();
             }
