@@ -66,6 +66,6 @@ public class AppsWithNotifSearcher extends Searcher {
     protected void onPostExecute(Void param) {
         super.onPostExecute(param);
         // Build sections for fast scrolling
-        activityWeakReference.get().adapter.buildSections(false);
+        activityWeakReference.get().adapter.buildSections();
     }
 }
