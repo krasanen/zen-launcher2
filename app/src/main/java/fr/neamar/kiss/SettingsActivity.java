@@ -3,6 +3,7 @@
  import android.Manifest;
  import android.annotation.SuppressLint;
  import android.app.Dialog;
+ import android.app.role.RoleManager;
  import android.content.Context;
  import android.content.Intent;
  import android.content.SharedPreferences;
@@ -445,7 +446,7 @@ public class SettingsActivity extends PreferenceActivity implements
                 Permission.askPermission(Permission.PERMISSION_READ_PHONE_STATE, new Permission.PermissionResultListener() {
                     @Override
                     public void onGranted() {
-                        PackageManagerUtils.enableComponent(SettingsActivity.this, IncomingCallHandler.class, true);
+                        setPhoneHistoryEnabled(true);
                     }
 
                     @Override
@@ -457,7 +458,7 @@ public class SettingsActivity extends PreferenceActivity implements
                     }
                 });
             } else {
-                PackageManagerUtils.enableComponent(this, IncomingCallHandler.class, enabled);
+                setPhoneHistoryEnabled(enabled);
             }
         } else if (key.equalsIgnoreCase("primary-color")) {
             UIColors.clearPrimaryColorCache(this);
@@ -489,6 +490,15 @@ public class SettingsActivity extends PreferenceActivity implements
                 // Kill this activity too, and restart
                 recreate();
             }
+        }
+    }
+
+    private void setPhoneHistoryEnabled(boolean enabled) {
+        IncomingCallHandler.setEnabled(this, enabled);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && enabled) {
+            RoleManager roleManager = (RoleManager) getSystemService(ROLE_SERVICE);
+            Intent intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_CALL_SCREENING);
+            startActivityForResult(intent, 1);
         }
     }
 
