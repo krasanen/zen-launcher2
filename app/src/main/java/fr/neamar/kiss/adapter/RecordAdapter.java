@@ -2,9 +2,6 @@ package fr.neamar.kiss.adapter;
 
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,9 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
@@ -32,22 +28,20 @@ import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 
 public class RecordAdapter extends BaseAdapter implements SectionIndexer {
-    private final Context context;
     private final QueryInterface parent;
     private FuzzyScore fuzzyScore;
-    private static final String TAG = RecordAdapter.class.getSimpleName();
+
     /**
      * Array list containing all the results currently displayed
      */
-    private List<Result> results;
+    private final List<Result> results;
 
     // Mapping from letter to a position (only used for fast scroll, when viewing app list)
-    private HashMap<String, Integer> alphaIndexer = new HashMap<>();
+    private final HashMap<String, Integer> alphaIndexer = new HashMap<>();
     // List of available sections (only used for fast scroll)
     private String[] sections = new String[0];
 
-    public RecordAdapter(Context context, QueryInterface parent, ArrayList<Result> results) {
-        this.context = context;
+    public RecordAdapter(QueryInterface parent, ArrayList<Result> results) {
         this.parent = parent;
         this.results = results;
         this.fuzzyScore = null;
@@ -99,8 +93,8 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
     }
 
     @Override
-    public @NonNull
-    View getView(int position, View convertView, @NonNull ViewGroup parent) {
+    @NonNull
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         return results.get(position).display(parent.getContext(), convertView, parent, fuzzyScore);
     }
 
@@ -153,6 +147,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         parent.updateTranscriptMode(transcriptMode);
     }
 
+
     public void clear() {
         this.results.clear();
         notifyDataSetChanged();
@@ -162,7 +157,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
      * When using fast scroll, generate a mapping to know where a given letter starts in the list
      * (can only be used with a sorted result set!)
      */
-    public void buildSections(boolean contacts) {
+    public void buildSections() {
         alphaIndexer.clear();
         int size = results.size();
 
@@ -177,26 +172,19 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         }
 
         // Generate section list
-        Set<String> sectionLetters = alphaIndexer.keySet();
-        ArrayList<String> sectionList = new ArrayList<>(sectionLetters);
-        Collections.sort(sectionList);
-        // We're displaying from A to Z, everything needs to be reversed
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        // Apply app sorting preference
-        if (!contacts) {
-            if (prefs.getString("sort-apps", "alphabetical").equals("invertedAlphabetical")) {
-                Collections.reverse(sectionList);
+        List<Map.Entry<String, Integer>> entries = new ArrayList<>(alphaIndexer.entrySet());
+        Collections.sort(entries, (o1, o2) -> {
+            if (o2.getValue().equals(o1.getValue())) {
+                return 0;
             }
-        } else {
-            if (prefs.getString("sort-contacts", "alphabetical").equals("invertedAlphabetical")) {
-                Collections.reverse(sectionList);
-            }
+            // We're displaying from A to Z, everything needs to be reversed
+            return o2.getValue() > o1.getValue() ? -1 : 1;
+        });
+        sections = new String[entries.size()];
+        for (int i = 0; i < entries.size(); i++) {
+            sections[i] = entries.get(i).getKey();
         }
-
-        sections = new String[sectionList.size()];
-        sectionList.toArray(sections);
     }
-
 
     @Override
     public Object[] getSections() {
@@ -205,18 +193,16 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
 
     @Override
     public int getPositionForSection(int sectionIndex) {
-
-        if (sectionIndex > 0) {
-            try {
-                return alphaIndexer.get(sections[sectionIndex]);
-            } catch (ArrayIndexOutOfBoundsException e){
-                e.printStackTrace();
-                return 0;
-            }
-        } else {
+        if (sections.length == 0) {
             return 0;
         }
 
+        // In some rare situations, the system will ask for a section
+        // that does not exist anymore.
+        // It's likely there is a threading issue in our code somewhere,
+        // But I was unable to find where, so the following line is a quick and dirty fix.
+        sectionIndex = Math.max(0, Math.min(sections.length - 1, sectionIndex));
+        return alphaIndexer.get(sections[sectionIndex]);
     }
 
     @Override
@@ -233,6 +219,7 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
         // See #1005
         return sections.length - 2;
     }
+
     public void showDialog(DialogFragment dialog) {
         parent.showDialog(dialog);
     }

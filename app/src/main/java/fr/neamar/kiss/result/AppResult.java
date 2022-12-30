@@ -16,9 +16,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -125,7 +127,13 @@ public class AppResult extends Result {
 
     public static void executeBadge(Context context, String packageName, String className, int badgeCount) throws ShortcutBadgeException {
         if (BuildConfig.DEBUG) Log.i(TAG, "executeBadge " + packageName + ":" + className + "badgeCount:"+badgeCount);
-        KissApplication.getApplication(context).getDataHandler().getBadgeHandler().setBadgeCount(packageName, badgeCount);
+        int finalBadgeCount = badgeCount;
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                KissApplication.getApplication(context).getDataHandler().getBadgeHandler().setBadgeCount(packageName, finalBadgeCount);
+            }
+        });
     }
 
     @Override
