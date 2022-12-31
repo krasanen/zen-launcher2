@@ -606,7 +606,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         this.emptyListView.setOnTouchListener(this);
 
         // Create adapter for records
-        this.adapter = new RecordAdapter(this, this, new ArrayList<>());
+        this.adapter = new RecordAdapter(this, new ArrayList<>());
         this.list.setAdapter(this.adapter);
 
         this.list.setOnItemClickListener((parent, v, position, id) -> adapter.onClick(position, v));
@@ -1167,29 +1167,6 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 if (dh.isFavorite(event.getText())) {
                     if (BuildConfig.DEBUG) Log.d(TAG, "isFavorite:" + event.getText());
                     onFavoriteChange();
-                }
-                // scroll back to same position if applist is open
-                if (isDisplayingKissBar) {
-                    int first = list.getFirstVisiblePosition();
-                    int last = list.getLastVisiblePosition();
-                    for (int a = first; a <= last; a++) {
-                        if (((AppResult) adapter.getItem(a)).getPackageName().equals(event.getText())) {
-                            int lastViewedPosition = list.getFirstVisiblePosition();
-
-                            //get offset of first visible view
-                            View v = list.getChildAt(0);
-                            int topOffset = (v == null) ? 0 : v.getTop();
-                            adapter.notifyDataSetChanged();
-                            list.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    list.setSelectionFromTop(lastViewedPosition, topOffset);
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    adapter.notifyDataSetChanged();
                 }
                 break;
             case NOTIFICATION_COUNT:
