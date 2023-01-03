@@ -36,7 +36,7 @@
     <uses-permission android:name="com.sec.android.provider.badge.permission.READ" /> <!-- for badge support -->
     <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" /> <!-- for badge support -->
     <uses-permission android:name="com.huawei.android.totemweather.permission.ACCESS_WEATHERCLOCK_PROVIDER" /> <!-- for Huawei widgets -->
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
@@ -198,14 +198,10 @@
             android:name="fi.zmengames.zen.AlarmReceiver"
             android:process=":remote"
             android:exported = "false"/>
-        <receiver android:name="fi.zmengames.zen.MediaMountListener"
-            android:exported = "true">
+        <receiver android:name="fi.zmengames.zen.BootUpReceiver"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_EJECT" />
-                <action android:name="android.intent.action.MEDIA_REMOVED" />
-                <action android:name="android.intent.action.MEDIA_MOUNTED" />
-                <action android:name="android.intent.action.MEDIA_BAD_REMOVAL" />
-                <data android:scheme="file" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <service
