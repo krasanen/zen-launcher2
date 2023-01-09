@@ -2,7 +2,6 @@ name: Android CI
 
 on:
   push:
-    branches: [ zen-launcher ]
   pull_request:
     branches: [ zen-launcher ]
 
