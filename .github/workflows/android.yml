@@ -29,3 +29,6 @@ jobs:
       with:
         name: assets-for-download
         path: app/build/outputs
+    - name: OSSF Scorecard action
+      uses: ossf/scorecard-action@v2.1.2
+
