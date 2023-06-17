@@ -41,14 +41,14 @@ public class ShortcutUtil {
     /**
      * @return shortcut id generated from shortcut name
      */
-    public static String generateShortcutId(String shortcutName) {
+    public static String generateShortcutId(String shortcutName){
         return ShortcutPojo.SCHEME + shortcutName.toLowerCase(Locale.ROOT);
     }
 
     /**
      * @return true if shortcuts are enabled in settings and android version is higher or equals android 8
      */
-    public static boolean areShortcutsEnabled(Context context) {
+    public static boolean areShortcutsEnabled(Context context){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
                 prefs.getBoolean("enable-shortcuts", true);
@@ -83,14 +83,14 @@ public class ShortcutUtil {
      */
     @TargetApi(Build.VERSION_CODES.O)
     public static List<ShortcutInfo> getAllShortcuts(Context context) {
-        return getShortcuts(context, null);
+        return getShortcut(context, null);
     }
 
     /**
      * @return all shortcuts for given package name
      */
     @TargetApi(Build.VERSION_CODES.O)
-    public static List<ShortcutInfo> getShortcuts(Context context, String packageName) {
+    public static List<ShortcutInfo> getShortcut(Context context, String packageName) {
         List<ShortcutInfo> shortcutInfoList = new ArrayList<>();
 
         UserManager manager = (UserManager) context.getSystemService(Context.USER_SERVICE);
