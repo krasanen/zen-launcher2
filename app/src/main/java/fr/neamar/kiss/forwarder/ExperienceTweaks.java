@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -316,12 +317,8 @@ public class ExperienceTweaks extends Forwarder {
     }
 
     void onDisplayKissBar(Boolean display) {
-        if (isMinimalisticModeEnabledForFavorites()) {
-            if (display) {
-                mainActivity.favoritesBar.setVisibility(View.VISIBLE);
-            } else {
-                mainActivity.favoritesBar.setVisibility(View.GONE);
-            }
+        if (isMinimalisticModeEnabledForFavorites() && !display) {
+            mainActivity.favoritesBar.setVisibility(View.GONE);
         }
 
         if (!display && isKeyboardOnStartEnabled()) {
@@ -420,7 +417,7 @@ public class ExperienceTweaks extends Forwarder {
     }
 
     private boolean isMinimalisticModeEnabledForFavorites() {
-        return prefs.getBoolean("history-hide", false) && prefs.getBoolean("favorites-hide", false);
+        return prefs.getBoolean("history-hide", false) && prefs.getBoolean("favorites-hide", false) && prefs.getBoolean("enable-favorites-bar", true);
     }
 
     /**
@@ -471,7 +468,14 @@ public class ExperienceTweaks extends Forwarder {
     }
 
     public void onSingleTap() {
-        doAction(prefs.getString("gesture-single-tap", "do-nothing"));
+        if (prefs.getBoolean("history-onclick", false)) {
+            doAction("display-history");
+        }
+        else if(isMinimalisticModeEnabledForFavorites()) {
+            doAction("display-favorites");
+        } else {
+            doAction(prefs.getString("gesture-single-tap", "do-nothing"));
+        }
     }
 
     public void onDoubleTap() {
@@ -511,8 +515,24 @@ public class ExperienceTweaks extends Forwarder {
                 break;
             case "display-history":
                 // if minimalistic mode is enabled,
-                mainActivity.showHistory();
+                if (isMinimalisticModeEnabled()) {
+                    // and we're currently in minimalistic mode with no results,
+                    // and we're not looking at the app list
+                    if (mainActivity.isViewingSearchResults() && TextUtils.isEmpty(mainActivity.searchEditText.getText())) {
+                        if (mainActivity.list.getAdapter() == null || mainActivity.list.getAdapter().isEmpty()) {
+                            mainActivity.showHistory();
+                        }
+                    }
+                }
+
+                if (isMinimalisticModeEnabledForFavorites()) {
+                    mainActivity.favoritesBar.setVisibility(View.VISIBLE);
+                }
                 break;
+            case "display-favorites":
+                // Not provided as an option for the gestures, but useful if you only want to display favorites on tap,
+                // not history.
+                mainActivity.favoritesBar.setVisibility(View.VISIBLE);
             case "hide-keyboard":
                 if (mainActivity.isKeyboardVisible()) {
                     mainActivity.hideKeyboard();
