@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,6 @@ import java.util.List;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
-import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.result.Result;
 
@@ -77,9 +78,17 @@ public class AppListAdapter extends ArrayAdapter<Pojo> {
 
         if (holder != null) {
             new ImageLoadTask(position).execute(holder);
+            int textColor = getColorBasedOnTheme(getContext(), R.attr.resultColor);
+            holder.text.setTextColor(textColor);
         }
 
         return view;
+    }
+
+    private int getColorBasedOnTheme(Context context, int attr) {
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(attr, typedValue, true);
+        return typedValue.data;
     }
 
     static class ViewHolder {

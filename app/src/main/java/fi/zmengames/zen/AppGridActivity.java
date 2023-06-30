@@ -1,12 +1,14 @@
 package fi.zmengames.zen;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MotionEvent;
-
+import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
 
 import fr.neamar.kiss.BuildConfig;
@@ -22,6 +24,8 @@ public class AppGridActivity extends FragmentActivity {
         // Setting the theme needs to be done before setContentView()
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = prefs.getString("theme", "light");
+
+
         switch (theme) {
             case "dark":
                 this.setTheme(R.style.AppThemeDark);
@@ -42,9 +46,22 @@ public class AppGridActivity extends FragmentActivity {
                 this.setTheme(R.style.AppThemeAmoledDark);
                 break;
         }
+
         UIColors.updateThemePrimaryColor(this);
         this.getTheme().applyStyle(prefs.getBoolean("small-results", false) ? R.style.OverlayResultSizeSmall : R.style.OverlayResultSizeStandard, true);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            int backgroundColor = getColorBasedOnTheme(this, R.attr.listBackgroundColor);
+            window.setStatusBarColor(backgroundColor);
+        }
         setContentView(R.layout.appgripscreen);
+
+    }
+
+    private int getColorBasedOnTheme(Context context, int attr) {
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(attr, typedValue, true);
+        return typedValue.data;
     }
 
     @Override

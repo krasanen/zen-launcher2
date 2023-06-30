@@ -2,11 +2,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <fragment
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/listBackgroundColor"
+        android:id="@+id/apps_grid">
+        <fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="fi.zmengames.zen.AppsGridFragment"
-            android:id="@+id/apps_grid" />
+            android:layout_margin="8dp"
+            android:name="fi.zmengames.zen.AppsGridFragment" />
+
+    </LinearLayout>
 
 </RelativeLayout>
