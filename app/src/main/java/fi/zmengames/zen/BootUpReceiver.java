@@ -14,6 +14,6 @@ public class BootUpReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         ZEvent event = new ZEvent(ZEvent.State.RELOAD_APPS);
-        EventBus.getDefault().post(event);
+        EventBus.getDefault().postSticky(event);
     }
 }
