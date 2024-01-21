@@ -2,6 +2,7 @@ package fr.neamar.kiss.adapter;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.normalizer.StringNormalizer;
 import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
@@ -28,6 +30,8 @@ import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 
 public class RecordAdapter extends BaseAdapter implements SectionIndexer {
+    private static final String TAG = RecordAdapter.class.getSimpleName();
+
     private final QueryInterface parent;
     private FuzzyScore fuzzyScore;
 
@@ -110,7 +114,11 @@ public class RecordAdapter extends BaseAdapter implements SectionIndexer {
 
     public void onClick(final int position, View v) {
         final Result result;
-
+        if (results.isEmpty()) {
+            // Handle the case where the list is empty, would cause IndexOutOfBoundsException
+            Log.v(TAG,"onClick on empty results");
+            return;
+        }
         try {
             result = results.get(position);
             result.launch(v.getContext(), v, parent);
