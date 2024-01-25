@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
@@ -117,20 +119,23 @@ public class DBHelper {
      * @param record  record to insert
      */
     public static void insertHistory(Context context, String query, String record) {
-        SQLiteDatabase db = getDatabase(context);
-        ContentValues values = new ContentValues();
-        values.put("query", query);
-        values.put("record", record);
-        values.put("timeStamp", System.currentTimeMillis());
-        db.insert("history", null, values);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            SQLiteDatabase db = getDatabase(context);
+            ContentValues values = new ContentValues();
+            values.put("query", query);
+            values.put("record", record);
+            values.put("timeStamp", System.currentTimeMillis());
+            db.insert("history", null, values);
 
-        if (Math.random() <= 0.005) {
-            // Roughly every 200 inserts, clean up the history of items older than 3 months
-            long twoMonthsAgo = 7776000000L; // 1000 * 60 * 60 * 24 * 30 * 3;
-            db.delete("history", "timeStamp < ?", new String[]{Long.toString(System.currentTimeMillis() - twoMonthsAgo)});
-            // And vacuum the DB for speed
-            db.execSQL("VACUUM");
-        }
+            if (Math.random() <= 0.005) {
+                // Roughly every 200 inserts, clean up the history of items older than 3 months
+                long twoMonthsAgo = 7776000000L; // 1000 * 60 * 60 * 24 * 30 * 3;
+                db.delete("history", "timeStamp < ?", new String[]{Long.toString(System.currentTimeMillis() - twoMonthsAgo)});
+                // And vacuum the DB for speed
+                db.execSQL("VACUUM");
+            }
+        });
     }
 
     public static void removeFromHistory(Context context, String record) {
