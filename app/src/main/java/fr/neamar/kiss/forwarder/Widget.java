@@ -512,16 +512,22 @@ public class Widget extends Forwarder implements WidgetMenu.OnClickListener {
      * @param data Intent holding widget id to add
      */
     private void addAppWidget(Intent data) {
-        int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        if (BuildConfig.DEBUG) Log.i(TAG, "addAppWidget: appWidgetId" + appWidgetId);
-        //add widget
-        WidgetPreferences wp = addWidgetToLauncher(appWidgetId);
+        try {
+            int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+            if (BuildConfig.DEBUG) Log.i(TAG, "addAppWidget: appWidgetId" + appWidgetId);
+            //add widget
+            WidgetPreferences wp = addWidgetToLauncher(appWidgetId);
 
-        // Save widget in preferences
+            // Save widget in preferences
 
-        SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
-        widgetPrefsEditor.putString(String.valueOf(appWidgetId), WidgetPreferences.serialize(wp));
-        widgetPrefsEditor.apply();
+            SharedPreferences.Editor widgetPrefsEditor = widgetPrefs.edit();
+            widgetPrefsEditor.putString(String.valueOf(appWidgetId), WidgetPreferences.serialize(wp));
+            widgetPrefsEditor.apply();
+        }
+        catch (Exception e){
+            Toast.makeText(mainActivity, "Failed to add widget", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     /**
