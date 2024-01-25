@@ -83,28 +83,35 @@ public class ShortcutUtil {
      */
     @TargetApi(Build.VERSION_CODES.O)
     public static List<ShortcutInfo> getAllShortcuts(Context context) {
-        return getShortcut(context, null);
+        return getShortcuts(context, null);
     }
 
     /**
      * @return all shortcuts for given package name
      */
-    @TargetApi(Build.VERSION_CODES.O)
-    public static List<ShortcutInfo> getShortcut(Context context, String packageName) {
+    /**
+     * @return all shortcuts for given package name
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    public static List<ShortcutInfo> getShortcuts(Context context, String packageName) {
         List<ShortcutInfo> shortcutInfoList = new ArrayList<>();
 
         UserManager manager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
 
-        LauncherApps.ShortcutQuery shortcutQuery = new LauncherApps.ShortcutQuery();
-        shortcutQuery.setQueryFlags(FLAG_MATCH_DYNAMIC | FLAG_MATCH_MANIFEST | FLAG_MATCH_PINNED);
+        if (launcherApps.hasShortcutHostPermission()) {
+            LauncherApps.ShortcutQuery shortcutQuery = new LauncherApps.ShortcutQuery();
+            shortcutQuery.setQueryFlags(FLAG_MATCH_DYNAMIC | FLAG_MATCH_MANIFEST | FLAG_MATCH_PINNED);
 
-        if (!TextUtils.isEmpty(packageName)) {
-            shortcutQuery.setPackage(packageName);
-        }
+            if (!TextUtils.isEmpty(packageName)) {
+                shortcutQuery.setPackage(packageName);
+            }
 
-        for (android.os.UserHandle profile : manager.getUserProfiles()) {
-            shortcutInfoList.addAll(launcherApps.getShortcuts(shortcutQuery, profile));
+            for (android.os.UserHandle profile : manager.getUserProfiles()) {
+                if (manager.isUserUnlocked(profile)) {
+                    shortcutInfoList.addAll(launcherApps.getShortcuts(shortcutQuery, profile));
+                }
+            }
         }
 
         return shortcutInfoList;

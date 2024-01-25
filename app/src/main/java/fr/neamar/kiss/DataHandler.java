@@ -1,17 +1,13 @@
 package fr.neamar.kiss;
 
 import android.annotation.TargetApi;
-import android.app.KeyguardManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -407,7 +403,7 @@ public class DataHandler
 
         List<ShortcutInfo> shortcuts;
         try {
-            shortcuts = ShortcutUtil.getShortcut(context, packageName);
+            shortcuts = ShortcutUtil.getShortcuts(context, packageName);
         } catch (SecurityException | IllegalStateException e) {
             e.printStackTrace();
             return;
@@ -440,7 +436,7 @@ public class DataHandler
 
         List<ShortcutInfo> shortcuts;
         try {
-            shortcuts = ShortcutUtil.getShortcut(context, packageName);
+            shortcuts = ShortcutUtil.getShortcuts(context, packageName);
         } catch (SecurityException | IllegalStateException e) {
             e.printStackTrace();
             return;
