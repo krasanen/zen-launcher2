@@ -1,18 +1,23 @@
 package fr.neamar.kiss.loader;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.TagsHandler;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.pojo.ShortcutPojo;
+import fr.neamar.kiss.preference.DefaultLauncherPreference;
 import fr.neamar.kiss.utils.ShortcutUtil;
 
 public class LoadShortcutsPojos extends LoadPojos<ShortcutPojo> {
+
+    private static final String TAG = LoadShortcutsPojos.class.getSimpleName();
 
     public LoadShortcutsPojos(Context context) {
         super(context, ShortcutPojo.SCHEME);
@@ -38,6 +43,17 @@ public class LoadShortcutsPojos extends LoadPojos<ShortcutPojo> {
             pojo.setTags(tagsHandler.getTags(pojo.id));
 
             pojos.add(pojo);
+        }
+
+        // rebuild shortcuts if zen is now default launcher and list is empty
+        if (records.isEmpty()){
+            boolean defaultLauncher = DefaultLauncherPreference.isZenLauncherDefault(context);
+            if (!defaultLauncher){
+                if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
+            } else {
+                // rebuild shortcuts
+                ShortcutUtil.addAllShortcuts(context);
+            }
         }
 
         return pojos;

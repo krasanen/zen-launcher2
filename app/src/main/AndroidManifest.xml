@@ -232,5 +232,7 @@
             </intent-filter>
         </service>
     </application>
-
+    <queries>
+        <package android:name="com.sec.badge" />
+    </queries>
 </manifest>
