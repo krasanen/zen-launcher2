@@ -123,16 +123,25 @@ public class ZenProvider extends SimpleProvider {
             pojo2.id +=orgQuery;
             searcher.addResult(pojo2);
 
-            // only one result required for setting time alarm
-            if (!mAlarmTime.isEmpty()) return;
-
             if (!minutes.isEmpty()) {
-                url = mAlarm + Integer.valueOf(minutes) * 60;
+                if (!minutes.contains(":")) {
+                    SearchPojo pojo3 = new SearchPojo("zen://", query + minutes + ":00", url + ":00", SearchPojo.ZEN_QUERY);
+                    pojo3.relevance = 0;
+                    searcher.addResult(pojo3);
+                }
+
+                // only one result required for setting time alarm
+                if (!mAlarmTime.isEmpty()) return;
+
+                if (!minutes.isEmpty()) {
+                    url = mAlarm + Integer.valueOf(minutes) * 60;
+                }
+
+                SearchPojo pojo = getPojo(query, url, minutes, true);
+                pojo.relevance = 0;
+                searcher.addResult(pojo);
             }
 
-            SearchPojo pojo = getPojo(query, url, minutes, true);
-            pojo.relevance = 0;
-            searcher.addResult(pojo);
             addAlarms(searcher);
 
         } else if (query.toLowerCase(Locale.ROOT).trim().contains(mLockIn)||
