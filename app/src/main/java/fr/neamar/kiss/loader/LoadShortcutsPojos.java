@@ -1,6 +1,7 @@
 package fr.neamar.kiss.loader;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ public class LoadShortcutsPojos extends LoadPojos<ShortcutPojo> {
                 if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
             } else {
                 // rebuild shortcuts
-                ShortcutUtil.addAllShortcuts(context);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    ShortcutUtil.addAllShortcuts(context);
             }
         }
 
