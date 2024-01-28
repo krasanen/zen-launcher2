@@ -2,12 +2,14 @@ package fi.zmengames.zen;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
 
@@ -18,13 +20,14 @@ import fr.neamar.kiss.UIColors;
 
 public class AppGridActivity extends FragmentActivity {
     private static final String TAG = AppGridActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Setting the theme needs to be done before setContentView()
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = prefs.getString("theme", "light");
-
+        applySystemUi(isPreferenceHideNavBar(prefs), false);
 
         switch (theme) {
             case "dark":
@@ -64,14 +67,27 @@ public class AppGridActivity extends FragmentActivity {
         return typedValue.data;
     }
 
+    float startY;
+    float touchSlop = 400.0f; // amount scroll needed to close app grid
+    public static boolean onTop = false;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (BuildConfig.DEBUG) Log.i(TAG, "dispatchTouchEvent: " + ev.getAction());
         super.dispatchTouchEvent(ev);
-        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            MainActivity.dismissPopup();
-            return true;
+
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                startY = ev.getY(); // Save the initial Y coordinate
+                MainActivity.dismissPopup();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float deltaY = ev.getY() - startY;
+                if (onTop && deltaY > touchSlop) {
+                    onBackPressed();
+                }
+                break;
         }
+
         return true;
     }
     @Override
@@ -88,5 +104,42 @@ public class AppGridActivity extends FragmentActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
+    }
+
+    private void applySystemUi(boolean hideNavBar, boolean hideStatusBar) {
+        int visibility = 0;
+        if (hideNavBar) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                visibility = visibility
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // hide nav bar
+            } else {
+                visibility = visibility
+                        | View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // hide nav bar
+            }
+        }
+        if (hideStatusBar) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                visibility = visibility
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN; // hide status bar
+            }
+        }
+        if (hideNavBar || hideStatusBar) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                visibility = visibility
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE;
+            }
+        }
+
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(visibility);
+
+    }
+    private boolean isPreferenceHideNavBar(SharedPreferences prefs) {
+        return prefs.getBoolean("pref-hide-navbar", false);
+    }
+
+    private boolean isPreferenceHideStatusBar(SharedPreferences prefs) {
+        return prefs.getBoolean("pref-hide-statusbar", false);
     }
 }
