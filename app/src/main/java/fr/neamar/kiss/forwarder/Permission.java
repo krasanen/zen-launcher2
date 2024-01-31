@@ -81,50 +81,53 @@ public class Permission extends Forwarder {
     }
 
     void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length == 0) {
-            return;
-        }
-        if (BuildConfig.DEBUG) Log.d(TAG,"permissions:"+ Arrays.toString(permissions));
-        if (requestCode == PERMISSION_READ_CONTACTS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Great! Reload the contact provider. We're done :)
-            ContactsProvider contactsProvider = KissApplication.getApplication(mainActivity).getDataHandler().getContactsProvider();
-            if (contactsProvider != null) {
-                contactsProvider.reload();
+        try {
+            if (grantResults.length == 0) {
+                return;
             }
-        } else if (requestCode == PERMISSION_CALL_PHONE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Great! Start the intent we stored for later use.
-                KissApplication kissApplication = KissApplication.getApplication(mainActivity);
-                mainActivity.startActivity(pendingIntent);
-                pendingIntent = null;
+            if (BuildConfig.DEBUG) Log.d(TAG,"permissions:"+ Arrays.toString(permissions));
+            if (requestCode == PERMISSION_READ_CONTACTS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Great! Reload the contact provider. We're done :)
+                ContactsProvider contactsProvider = KissApplication.getApplication(mainActivity).getDataHandler().getContactsProvider();
+                if (contactsProvider != null) {
+                    contactsProvider.reload();
+                }
+            } else if (requestCode == PERMISSION_CALL_PHONE) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Great! Start the intent we stored for later use.
+                    mainActivity.startActivity(pendingIntent);
+                    pendingIntent = null;
 
-                // Record launch to clear search results
-                mainActivity.launchOccurred();
-            } else {
-                Toast.makeText(mainActivity, R.string.permission_denied, Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == MainActivity.MY_PERMISSIONS_REQUEST_READ_STORAGE) {
-            //premission to read storage
+                    // Record launch to clear search results
+                    mainActivity.launchOccurred();
+                } else {
+                    Toast.makeText(mainActivity, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+                }
+            } else if (requestCode == MainActivity.MY_PERMISSIONS_REQUEST_READ_STORAGE) {
+                //premission to read storage
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mainActivity.signIn(mainActivity.action);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(mainActivity, "We Need permission Storage", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            } else if (requestCode == MY_PERMISSIONS_CAMERA)
+                if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_MY_PERMISSIONS_CAMERA");
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mainActivity.signIn(mainActivity.action);
-
-            } else {
-
-                // permission denied, boo! Disable the
-                // functionality that depends on this permission.
-                Toast.makeText(mainActivity, "We Need permission Storage", Toast.LENGTH_SHORT).show();
-            }
-            return;
-        } else if (requestCode == MY_PERMISSIONS_CAMERA)
-            if (BuildConfig.DEBUG) Log.i(TAG, "REQUEST_MY_PERMISSIONS_CAMERA");
-            if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (BuildConfig.DEBUG) Log.i(TAG, "OK");
                 mainActivity.startBarCodeScan();
             } else {
                 if (BuildConfig.DEBUG) Log.i(TAG, "FALSE");
             }
-
+        }
+        catch (SecurityException e){
+            Toast.makeText(mainActivity, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+        }
     }
 }
