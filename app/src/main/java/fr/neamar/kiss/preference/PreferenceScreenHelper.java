@@ -16,29 +16,29 @@ public final class PreferenceScreenHelper {
 	@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 	public static @Nullable Toolbar findToolbar(PreferenceScreen preference) {
 		final Dialog dialog = preference.getDialog();
-		ViewGroup root = (ViewGroup) dialog.getWindow().getDecorView();
+		if (dialog != null) {
+			ViewGroup root = (ViewGroup) dialog.getWindow().getDecorView();
 
-		ArrayDeque<ViewGroup> viewGroups = new ArrayDeque<>();
-		viewGroups.push(root);
+			ArrayDeque<ViewGroup> viewGroups = new ArrayDeque<>();
+			viewGroups.push(root);
 
-		while (!viewGroups.isEmpty()) {
-			ViewGroup e = viewGroups.removeFirst();
+			while (!viewGroups.isEmpty()) {
+				ViewGroup e = viewGroups.removeFirst();
 
-			for (int i = 0; i < e.getChildCount(); i++) {
-				View child = e.getChildAt(i);
+				for (int i = 0; i < e.getChildCount(); i++) {
+					View child = e.getChildAt(i);
 
-				if (child instanceof Toolbar) {
-					// Only in LOLLIPOP or higher you're going to find a Toolbar
-					return (Toolbar) child;
-				}
+					if (child instanceof Toolbar) {
+						// Only in LOLLIPOP or higher you're going to find a Toolbar
+						return (Toolbar) child;
+					}
 
-				if (child instanceof ViewGroup) {
-					viewGroups.addFirst((ViewGroup) child);
+					if (child instanceof ViewGroup) {
+						viewGroups.addFirst((ViewGroup) child);
+					}
 				}
 			}
 		}
-
 		return null;
 	}
-
 }
