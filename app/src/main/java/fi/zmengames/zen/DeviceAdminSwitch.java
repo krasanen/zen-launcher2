@@ -1,5 +1,6 @@
 package fi.zmengames.zen;
 
+import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,9 +10,12 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.R;
 import fr.neamar.kiss.SwitchPreference;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
@@ -58,8 +62,12 @@ public class DeviceAdminSwitch extends SwitchPreference implements SharedPrefere
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permission is needed to be able to lock device directly from Zen Launcher");
-        KissApplication.getApplication(getContext()).getMainActivity().startActivityForResult(intent, REQUEST_DEVICE_ADMIN_FROM_PREFERENCES);
-
+        try {
+            ((Activity) context).startActivityForResult(intent, REQUEST_DEVICE_ADMIN_FROM_PREFERENCES);
+        } catch (Exception e){
+            Toast.makeText(context, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+            if (BuildConfig.DEBUG) Log.e(TAG, "enableDeviceAdminPermission - Exception");
+        }
     }
     private void disableDeviceAdminPermission() {
         if (BuildConfig.DEBUG) Log.v(TAG, "disableDeviceAdminPermission");
