@@ -79,7 +79,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 int isPrimaryIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.IS_PRIMARY);
                 int photoIdIndex = cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID);
 
-                while (cur.moveToNext()) {
+                while (cur.moveToNext() && lookupIndex!=-1) {
                     String lookupKey = cur.getString(lookupIndex);
                     Integer timesContacted = cur.getInt(timesContactedIndex);
                     String name = cur.getString(displayNameIndex);
@@ -136,7 +136,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
             if (nickCursor.getCount() > 0) {
                 int lookupKeyIndex = nickCursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
                 int nickNameIndex = nickCursor.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME);
-                while (nickCursor.moveToNext()) {
+                while (nickCursor.moveToNext() && lookupKeyIndex!=-1) {
                     String lookupKey = nickCursor.getString(lookupKeyIndex);
                     String nick = nickCursor.getString(nickNameIndex);
 
@@ -166,7 +166,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 int lookupKeyIndex = workCursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
                 int companyIndex = workCursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.COMPANY);
                 int titleIndex = workCursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE);
-                while (workCursor.moveToNext()) {
+                while (workCursor.moveToNext() && lookupKeyIndex!=-1) {
                     String lookupKey = workCursor.getString(lookupKeyIndex);
                     String title = workCursor.getString(titleIndex);
                     String company = workCursor.getString(companyIndex);
@@ -224,7 +224,7 @@ public class LoadContactsPojos extends LoadPojos<ContactsPojo> {
                 int mimeTypeKeyIndex = msgCursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
                 int contactIdIndex = msgCursor.getColumnIndex(ContactsContract.Data._ID);
 
-                while (msgCursor.moveToNext()) {
+                while (msgCursor.moveToNext() && lookupKeyIndex!=-1) {
                     String lookupKey = msgCursor.getString(lookupKeyIndex);
                     String mimeType = msgCursor.getString(mimeTypeKeyIndex);
                     String email = msgCursor.getString(emailIndex);
