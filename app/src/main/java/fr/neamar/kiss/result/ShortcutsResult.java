@@ -31,13 +31,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
-import fi.zmengames.zen.ZEvent;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
@@ -53,8 +50,10 @@ import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST;
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED;
 
 public class ShortcutsResult extends Result {
+    private static final String TAG = ShortcutsResult.class.getSimpleName();
     private final ShortcutPojo shortcutPojo;
-
+    private volatile Drawable appDrawable = null;
+    private volatile Drawable shortcutIconDrawable = null;
     ShortcutsResult(ShortcutPojo shortcutPojo) {
         super(shortcutPojo);
         this.shortcutPojo = shortcutPojo;
@@ -90,31 +89,32 @@ public class ShortcutsResult extends Result {
 
         // Retrieve package icon for this shortcut
         final PackageManager packageManager = context.getPackageManager();
-        Drawable appDrawable = null;
-        try {
-            Intent intent = Intent.parseUri(shortcutPojo.intentUri, 0);
-            List<ResolveInfo> packages = packageManager.queryIntentActivities(intent, 0);
-            if (packages.size() > 0) {
-                ResolveInfo mainPackage = packages.get(0);
-                String packageName = mainPackage.activityInfo.applicationInfo.packageName;
-                String activityName = mainPackage.activityInfo.name;
-                ComponentName className = new ComponentName(packageName, activityName);
-                appDrawable = context.getPackageManager().getActivityIcon(className);
-            } else {
-                // Can't make sense of the intent URI (Oreo shortcut, or a shortcut from an activity that was removed from an installed app)
-                // Retrieve app icon
-                try {
-                    appDrawable = packageManager.getApplicationIcon(shortcutPojo.packageName);
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
+        if (appDrawable == null){
+            try {
+                Intent intent = Intent.parseUri(shortcutPojo.intentUri, 0);
+                List<ResolveInfo> packages = packageManager.queryIntentActivities(intent, 0);
+                if (packages.size() > 0) {
+                    ResolveInfo mainPackage = packages.get(0);
+                    String packageName = mainPackage.activityInfo.applicationInfo.packageName;
+                    String activityName = mainPackage.activityInfo.name;
+                    ComponentName className = new ComponentName(packageName, activityName);
+                    appDrawable = context.getPackageManager().getActivityIcon(className);
+                } else {
+                    // Can't make sense of the intent URI (Oreo shortcut, or a shortcut from an activity that was removed from an installed app)
+                    // Retrieve app icon
+                    try {
+                        appDrawable = packageManager.getApplicationIcon(shortcutPojo.packageName);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
+            } catch (NameNotFoundException e) {
+                e.printStackTrace();
+                return view;
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                return view;
             }
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-            return view;
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return view;
         }
 
         if (!prefs.getBoolean("icons-hide", false)) {
@@ -146,33 +146,41 @@ public class ShortcutsResult extends Result {
     }
 
     public Drawable getDrawable(Context context) {
-        Drawable shortcutDrawable = null;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
-            UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-            assert launcherApps != null;
+        if (shortcutIconDrawable ==null){
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                final LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+                UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
+                assert launcherApps != null;
 
-            if (launcherApps.hasShortcutHostPermission() && !TextUtils.isEmpty(shortcutPojo.packageName)) {
-                LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();
-                query.setPackage(shortcutPojo.packageName);
-                query.setShortcutIds(Collections.singletonList(shortcutPojo.getOreoId()));
-                query.setQueryFlags(FLAG_MATCH_DYNAMIC | FLAG_MATCH_MANIFEST | FLAG_MATCH_PINNED);
+                if (launcherApps.hasShortcutHostPermission() && !TextUtils.isEmpty(shortcutPojo.packageName)) {
+                    LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();
+                    query.setPackage(shortcutPojo.packageName);
+                    query.setShortcutIds(Collections.singletonList(shortcutPojo.getOreoId()));
+                    query.setQueryFlags(FLAG_MATCH_DYNAMIC | FLAG_MATCH_MANIFEST | FLAG_MATCH_PINNED);
 
-                List<UserHandle> userHandles = launcherApps.getProfiles();
+                    List<UserHandle> userHandles = launcherApps.getProfiles();
 
-                // Find the correct UserHandle, and retrieve the icon.
-                for (UserHandle userHandle : userHandles) {
-                    if (userManager.isUserRunning(userHandle)) {
-                        List<ShortcutInfo> shortcuts = launcherApps.getShortcuts(query, userHandle);
-                        if (shortcuts != null && shortcuts.size() > 0) {
-                            shortcutDrawable = launcherApps.getShortcutIconDrawable(shortcuts.get(0), 0);
+                    // Find the correct UserHandle, and retrieve the icon.
+                    for (UserHandle userHandle : userHandles) {
+                        if (userManager.isUserRunning(userHandle)) {
+                            try {
+                                List<ShortcutInfo> shortcuts = launcherApps.getShortcuts(query, userHandle);
+                                if (shortcuts != null && shortcuts.size() > 0) {
+                                    shortcutIconDrawable = launcherApps.getShortcutIconDrawable(shortcuts.get(0), 0);
+                                }
+                            } catch (IllegalStateException e) {
+                                // do nothing if user is locked or not running
+                                Log.w(TAG, "Unable to get shortcut icon for '" + pojo.getName() + "', user is locked or not running", e);
+                            } catch (NullPointerException e) {
+                                // shortcuts may use invalid icons, see https://github.com/Neamar/KISS/issues/2158
+                                Log.e(TAG, "Unable to get shortcut icon for '" + pojo.getName() + "'", e);
+                            }
                         }
                     }
                 }
             }
         }
-
-        return shortcutDrawable;
+        return shortcutIconDrawable;
     }
 
 
