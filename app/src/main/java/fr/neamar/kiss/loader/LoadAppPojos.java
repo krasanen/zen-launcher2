@@ -14,6 +14,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import fr.neamar.kiss.BadgeHandler;
@@ -80,7 +81,8 @@ public class LoadAppPojos extends LoadPojos<AppPojo> {
             // Handle multi-profile support introduced in Android 5 (#542)
             for (android.os.UserHandle profile : manager.getUserProfiles()) {
                 UserHandle user = new UserHandle(manager.getSerialNumberForUser(profile), profile);
-                for (LauncherActivityInfo activityInfo : launcher.getActivityList(null, profile)) {
+                List<LauncherActivityInfo> activityList = launcher.getActivityList(null, profile);
+                for (LauncherActivityInfo activityInfo : activityList) {
                     ApplicationInfo appInfo = activityInfo.getApplicationInfo();
 
                     String id = user.addUserSuffixToString(pojoScheme + appInfo.packageName + "/" + activityInfo.getName(), '/');

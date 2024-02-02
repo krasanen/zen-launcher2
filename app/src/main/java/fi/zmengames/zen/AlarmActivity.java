@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -99,7 +100,11 @@ public class AlarmActivity extends Activity {
                     if (volume < streamMaxVolume) {
                         volume++;
                         if (BuildConfig.DEBUG) Log.d(TAG, "risingVolume volume:" + volume);
-                        am.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
+                        try {
+                            am.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
+                        } catch (SecurityException e) {
+                            Toast.makeText(AlarmActivity.this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
