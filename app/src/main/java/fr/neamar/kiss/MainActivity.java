@@ -2747,14 +2747,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public static void disableDeviceAdmin(Context context) {
-        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) context.getSystemService(DEVICE_POLICY_SERVICE);
-        ComponentName compName = new ComponentName(context, ZenAdmin.class);
-        devicePolicyManager.removeActiveAdmin(compName);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        prefs.edit().putBoolean("proximity-switch-lock", false).commit();
-        Intent proximity = new Intent(context, LauncherService.class);
-        proximity.setAction(DISABLE_PROXIMITY.toString());
-        KissApplication.startLaucherService(proximity, context);
+        try {
+            DevicePolicyManager devicePolicyManager = (DevicePolicyManager) context.getSystemService(DEVICE_POLICY_SERVICE);
+            ComponentName compName = new ComponentName(context, ZenAdmin.class);
+            devicePolicyManager.removeActiveAdmin(compName);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            prefs.edit().putBoolean("proximity-switch-lock", false).commit();
+            Intent proximity = new Intent(context, LauncherService.class);
+            proximity.setAction(DISABLE_PROXIMITY.toString());
+            KissApplication.startLaucherService(proximity, context);
+        } catch (SecurityException e){
+            Toast.makeText(context, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void onShortcutsButtonClicked(View view) {
