@@ -2,11 +2,15 @@ package fr.neamar.kiss.forwarder;
 
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.util.Log;
 
+import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.MainActivity;
+import fr.neamar.kiss.preference.DefaultLauncherPreference;
 import fr.neamar.kiss.utils.ShortcutUtil;
 
 public class OreoShortcuts extends Forwarder {
+    private static final String TAG = OreoShortcuts.class.getSimpleName();
     OreoShortcuts(MainActivity mainActivity) {
         super(mainActivity);
     }
@@ -17,12 +21,21 @@ public class OreoShortcuts extends Forwarder {
 
             // On first run save all shortcuts
             if (prefs.getBoolean("first-run-shortcuts", true)) {
-                if(mainActivity.isZenDefaultLauncher()) {
-                    // Save all shortcuts
-                    ShortcutUtil.addAllShortcuts(mainActivity);
-                    // Set flag to false
-                    prefs.edit().putBoolean("first-run-shortcuts", false).apply();
-                }
+
+                DefaultLauncherPreference.AsyncTaskCompleteListener callback = (result, activity) -> {
+                    // Handle the result here
+                    if (result) {
+                        ShortcutUtil.addAllShortcuts(mainActivity);
+                        // Set flag to false
+                        prefs.edit().putBoolean("first-run-shortcuts", false).apply();
+                    } else {
+                        if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
+                    }
+                };
+
+                DefaultLauncherPreference.ResolveDefaultLauncherTask myAsyncTask = new DefaultLauncherPreference.ResolveDefaultLauncherTask(callback,mainActivity);
+                myAsyncTask.execute();
+
             }
 
             Intent intent = mainActivity.getIntent();

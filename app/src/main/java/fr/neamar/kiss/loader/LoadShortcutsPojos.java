@@ -1,5 +1,6 @@
 package fr.neamar.kiss.loader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -48,14 +49,20 @@ public class LoadShortcutsPojos extends LoadPojos<ShortcutPojo> {
 
         // rebuild shortcuts if zen is now default launcher and list is empty
         if (records.isEmpty()){
-            boolean defaultLauncher = DefaultLauncherPreference.isZenLauncherDefault(context);
-            if (!defaultLauncher){
-                if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
-            } else {
-                // rebuild shortcuts
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    ShortcutUtil.addAllShortcuts(context);
-            }
+            DefaultLauncherPreference.AsyncTaskCompleteListener callback = new DefaultLauncherPreference.AsyncTaskCompleteListener() {
+                @Override
+                public void onTaskComplete(boolean result, Activity activity) {
+                    // Handle the result here
+                    if (result) {
+                        // rebuild shortcuts
+                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                            ShortcutUtil.addAllShortcuts(context);
+                    } else {
+                        if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
+                    }
+                }
+            };
+
         }
 
         return pojos;

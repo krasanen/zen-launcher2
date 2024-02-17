@@ -6,38 +6,32 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.neamar.kiss.BuildConfig;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.MainActivity;
 import fr.neamar.kiss.R;
-import fr.neamar.kiss.UIColors;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.pojo.Pojo;
 import fr.neamar.kiss.pojo.ShortcutPojo;
@@ -102,13 +96,33 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             if (BuildConfig.DEBUG) Log.d(TAG,"firstRun");
             // It is the first run. Make sure this is not an update by checking if history is empty
             if (DBHelper.getHistoryLength(mainActivity) == 0) {
-                addDefaultAppsToFavs();
+                new ResolveAndAddDefaultsToFavoritesTask().execute();
                 checkBarCodeReaderStatus();
             }
             // set flag to false
             prefs.edit().putBoolean("firstRun", false).apply();
         }
     }
+
+    private class ResolveAndAddDefaultsToFavoritesTask extends AsyncTask<Void, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(Void... params) {
+            return addDefaultAppsToFavs();
+        }
+
+        @Override
+        protected void onPostExecute(String[] favorites) {
+            if (favorites != null) {
+                DataHandler dataHandler =  KissApplication.getApplication(mainActivity).getDataHandler();
+                for (String favorite : favorites) {
+                    if (dataHandler!= null)
+                        dataHandler.addToFavorites(favorite);
+                }
+            }
+        }
+    }
+
 
     private void checkBarCodeReaderStatus() {
         // Zen barcode reader
@@ -320,7 +334,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
     /**
      * On first run, fill the favorite bar with sensible defaults
      */
-    private void addDefaultAppsToFavs() {
+    private String[] addDefaultAppsToFavs() {
+        List<String> defaultApps = new ArrayList<>();
         {
             //Default phone call app
             Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
@@ -342,7 +357,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                         // and we would have to update the String below to the new default resolver
                         activityName = "com.google.android.dialer.extensions.GoogleDialtactsActivity";
                     }
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
+                    defaultApps.add("app://" + packageName + "/" + activityName);
                 } else {
                     ResolveInfo resolveInfoSystem = mainActivity.getPackageManager().resolveActivity(phoneIntent, PackageManager.MATCH_SYSTEM_ONLY);
                     if (resolveInfoSystem != null) {
@@ -360,7 +375,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                                 // and we would have to update the String below to the new default resolver
                                 activityName = "com.google.android.dialer.extensions.GoogleDialtactsActivity";
                             }
-                            KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageNameSystem + "/" + activityName);
+                            defaultApps.add("app://" + packageNameSystem + "/" + activityName);
                         }
                     }
                 }
@@ -374,7 +389,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                 String packageName = resolveInfo.activityInfo.packageName;
                 if (BuildConfig.DEBUG) Log.i(TAG, "Contacts resolves to:" + packageName);
                 if (resolveInfo.activityInfo.name != null && !resolveInfo.activityInfo.name.equals(DEFAULT_RESOLVER)) {
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + resolveInfo.activityInfo.name);
+                    defaultApps.add("app://" + packageName + "/" + resolveInfo.activityInfo.name);
                 }
             }
 
@@ -397,7 +412,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                         // and we would have to update the String below to the new default resolver
                         activityName = "com.google.android.apps.chrome.Main";
                     }
-                    KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
+                    defaultApps.add("app://" + packageName + "/" + activityName);
                 }
             }
         }
@@ -415,11 +430,12 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                         if (BuildConfig.DEBUG) {
                             Log.i(TAG, "Adding camera:" + packageName + "/" + activityName);
                         }
-                        KissApplication.getApplication(mainActivity).getDataHandler().addToFavorites("app://" + packageName + "/" + activityName);
+                        defaultApps.add ("app://" + packageName + "/" + activityName);
                     }
                 }
             }
         }
+        return defaultApps.toArray(new String[0]);
     }
 
 

@@ -1,11 +1,13 @@
 package fr.neamar.kiss.preference;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.AsyncTask;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,12 +21,37 @@ import fr.neamar.kiss.R;
  */
 public class DefaultLauncherPreference extends DialogPreference {
 
-    public static boolean isZenLauncherDefault(Context context) {
-        final Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        final ResolveInfo res = context.getPackageManager().resolveActivity(intent, 0);
-        return res.activityInfo != null && context.getPackageName()
-                .equals(res.activityInfo.packageName);
+    public interface AsyncTaskCompleteListener {
+        void onTaskComplete(boolean result, Activity activity);
+    }
+
+    public static class ResolveDefaultLauncherTask extends AsyncTask<Activity, Void, Boolean> {
+        private Activity activity;
+        private AsyncTaskCompleteListener listener;
+
+        public ResolveDefaultLauncherTask(AsyncTaskCompleteListener listener, Activity activity) {
+            this.listener = listener;
+            this.activity = activity;
+        }
+
+        @Override
+        protected Boolean doInBackground(Activity... params) {
+            if (params.length > 0) {
+                activity = params[0];
+            }
+            final Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            final ResolveInfo res = activity.getPackageManager().resolveActivity(intent, 0);
+            return res.activityInfo != null && activity.getPackageName()
+                    .equals(res.activityInfo.packageName);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isDefault) {
+            if (listener != null) {
+                listener.onTaskComplete(isDefault, activity);
+            }
+        }
     }
 
     public DefaultLauncherPreference(Context context, AttributeSet attrs) {

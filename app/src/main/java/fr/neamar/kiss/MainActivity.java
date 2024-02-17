@@ -129,7 +129,6 @@ import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.db.DBHelper;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.preference.DefaultLauncherPreference;
-import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
 import fr.neamar.kiss.searcher.AppsWithNotifSearcher;
 import fr.neamar.kiss.searcher.ContactSearcher;
@@ -144,12 +143,8 @@ import fr.neamar.kiss.ui.AnimatedListView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
-import fr.neamar.kiss.utils.PackageManagerUtils;
-import fr.neamar.kiss.utils.Permission;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-import static android.view.HapticFeedbackConstants.LONG_PRESS;
 
 import static fi.zmengames.zen.ZEvent.State.ACTION_SET_DEFAULT_LAUNCHER;
 import static fi.zmengames.zen.ZEvent.State.ALARM_DATE_PICKER_MILLIS;
@@ -724,11 +719,22 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // setBlueLightFilter(true);
         }
 
-        boolean defaultLauncher = DefaultLauncherPreference.isZenLauncherDefault(this);
-        if (!defaultLauncher){
-            if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
-            defaultLauncherNotification(this.getCurrentFocus());
-        }
+
+        DefaultLauncherPreference.AsyncTaskCompleteListener callback = new DefaultLauncherPreference.AsyncTaskCompleteListener() {
+            @Override
+            public void onTaskComplete(boolean result, Activity activity) {
+                // Handle the result here
+                if (result) {
+                    // Do something when the task is successful
+                } else {
+                    if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
+                    defaultLauncherNotification(activity.getCurrentFocus());
+                }
+            }
+        };
+
+        DefaultLauncherPreference.ResolveDefaultLauncherTask myAsyncTask = new DefaultLauncherPreference.ResolveDefaultLauncherTask(callback,this);
+        myAsyncTask.execute();
 
         if (!isExternalFavoriteBarEnabled()) {
             findViewById(R.id.embeddedZenButtons).setVisibility(View.GONE);
@@ -2686,20 +2692,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         clearButton.setVisibility(View.VISIBLE);
         menuButton.setVisibility(View.INVISIBLE);
     }
-    public boolean isZenDefaultLauncher() {
-        String homePackage;
-        try {
-            Intent i = new Intent(Intent.ACTION_MAIN);
-            i.addCategory(Intent.CATEGORY_HOME);
-            PackageManager pm = getPackageManager();
-            final ResolveInfo mInfo = pm.resolveActivity(i, PackageManager.MATCH_DEFAULT_ONLY);
-            homePackage = mInfo.activityInfo.packageName;
-        } catch (Exception e) {
-            homePackage = "unknown";
-        }
 
-        return homePackage.equals(this.getPackageName());
-    }
     public boolean isKeyboardVisible() {
         return systemUiVisibilityHelper.isKeyboardVisible();
     }
