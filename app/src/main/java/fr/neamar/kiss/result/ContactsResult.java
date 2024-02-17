@@ -26,12 +26,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.ScatteringByteChannel;
 
 import fi.zmengames.zen.IconHelper;
 import fi.zmengames.zen.Utility;
@@ -609,25 +611,30 @@ public class ContactsResult extends Result {
 
     @SuppressLint("MissingPermission")
     private void launchCall(final Context context) {
-        // Create the intent to start a phone call
-        String url = "tel:" + Uri.encode(contactPojo.phone);
-        Intent phoneIntent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
-        phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            // Create the intent to start a phone call
+            String url = "tel:" + Uri.encode(contactPojo.phone);
+            Intent phoneIntent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
+            phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Make sure we have permission to call someone as this is considered a dangerous permission
-        if (Permission.ensureCallPhonePermission(phoneIntent)) {
-            // Pre-android 23, or we already have permission
-            context.startActivity(phoneIntent);
+            // Make sure we have permission to call someone as this is considered a dangerous permission
+            if (Permission.ensureCallPhonePermission(phoneIntent)) {
+                // Pre-android 23, or we already have permission
+                context.startActivity(phoneIntent);
 
-            // Register launch in the future
-            // (animation delay)
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    recordLaunch(context, queryInterface);
-                }
-            }, KissApplication.TOUCH_DELAY);
+                // Register launch in the future
+                // (animation delay)
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        recordLaunch(context, queryInterface);
+                    }
+                }, KissApplication.TOUCH_DELAY);
+            }
+        } catch (SecurityException e) {
+            Toast.makeText(context, R.string.permission_denied,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
