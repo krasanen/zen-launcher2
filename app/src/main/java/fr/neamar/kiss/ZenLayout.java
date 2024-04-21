@@ -43,7 +43,11 @@ public class ZenLayout implements Serializable {
     public ZenLayout(String serializedSettings, String serializedWidgetSettings, ByteArrayOutputStream screenShotWallPaper, ByteArrayOutputStream database) {
         this.json = serializedSettings;
         this.jsonWidgets = serializedWidgetSettings;
-        this.data = screenShotWallPaper.toByteArray();
+        if (screenShotWallPaper != null) {
+            this.data = screenShotWallPaper.toByteArray();
+        } else {
+            this.data = null;
+        }
         this.database = database.toByteArray();
     }
 

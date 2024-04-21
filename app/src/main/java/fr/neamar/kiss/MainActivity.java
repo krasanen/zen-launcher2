@@ -27,7 +27,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -127,6 +126,7 @@ import fr.neamar.kiss.broadcast.IncomingCallHandler;
 import fr.neamar.kiss.cache.MemoryCacheHelper;
 import fr.neamar.kiss.dataprovider.AppProvider;
 import fr.neamar.kiss.db.DBHelper;
+import fr.neamar.kiss.db.ShortcutRecord;
 import fr.neamar.kiss.forwarder.ForwarderManager;
 import fr.neamar.kiss.preference.DefaultLauncherPreference;
 import fr.neamar.kiss.searcher.ApplicationsSearcher;
@@ -143,6 +143,7 @@ import fr.neamar.kiss.ui.AnimatedListView;
 import fr.neamar.kiss.ui.KeyboardScrollHider;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.SearchEditText;
+import fr.neamar.kiss.utils.ShortcutUtil;
 import fr.neamar.kiss.utils.SystemUiVisibilityHelper;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -344,10 +345,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      * use this approach because tablet screen sizes can become pretty large and because the image
      * will contain any UI and layout surrounding the area of interest.
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     Bitmap getScreenShot() {
         final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-        final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+        final Drawable wallpaperDrawable = wallpaperManager.peekDrawable();
         View root = getWindow().getDecorView().getRootView();
         Bitmap screenshot = Bitmap.createBitmap(root.getWidth(), root.getHeight(), Bitmap.Config.ARGB_8888);
         Bitmap coverImage = ((BitmapDrawable) wallpaperDrawable).getBitmap();
@@ -359,10 +359,9 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
 
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     ByteArrayOutputStream getScreenShotWallPaper() {
         final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-        final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+        final Drawable wallpaperDrawable = wallpaperManager.peekDrawable();
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ((BitmapDrawable) wallpaperDrawable).getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, bytes);
 
@@ -381,19 +380,16 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
+                
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_STORAGE);
             } else {
 
                 // No explanation needed, we can request the permission.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    ActivityCompat.requestPermissions(activity,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_READ_STORAGE);
-                }
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_STORAGE);
             }
         } else {
             return true;
@@ -419,6 +415,19 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     public boolean askPermissionCamera() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_CAMERA);
+            Log.d(TAG,"askPermissionCamera FALSE");
+            return false;
+        } else {
+            Log.d(TAG,"askPermissionCamera TRUE");
+            return true;
+        }
+    }
+
+    public boolean askPermissionStorage() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -719,15 +728,18 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             // setBlueLightFilter(true);
         }
 
-
         DefaultLauncherPreference.AsyncTaskCompleteListener callback = new DefaultLauncherPreference.AsyncTaskCompleteListener() {
             @Override
             public void onTaskComplete(boolean result, Activity activity) {
                 // Handle the result here
                 if (result) {
-                    // Do something when the task is successful
+                    // rebuild shortcuts
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        ShortcutUtil.addAllShortcuts(activity);
                 } else {
                     if (BuildConfig.DEBUG) Log.d(TAG,"not a default launcher");
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        ShortcutUtil.removeAllShortcuts(activity);
                     defaultLauncherNotification(activity.getCurrentFocus());
                 }
             }
@@ -1678,14 +1690,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
     }
 
     private void saveToGoogle() {
-        if (checkPermissionReadStorage(this)) {
-            if (mSignedIn) {
-                createFile("" + Calendar.getInstance().getTime());
-            } else {
-                Toast.makeText(getBaseContext(), "Not signed in to Google",
-                        Toast.LENGTH_SHORT).show();
-            }
+
+        if (mSignedIn) {
+            createFile("" + Calendar.getInstance().getTime());
+        } else {
+            Toast.makeText(getBaseContext(), "Not signed in to Google",
+                    Toast.LENGTH_SHORT).show();
         }
+
     }
 
     // progress dialog we display while we're loading state from the cloud
@@ -1934,7 +1946,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             Log.e(TAG, "IOException", e);
             e.printStackTrace();
         }
-        if (mZenLayout != null) {
+        if (mZenLayout != null && mZenLayout.getData()!=null) {
             new Thread(() -> {
                 Bitmap bMap = BitmapFactory.decodeByteArray(mZenLayout.getData(), 0, mZenLayout.getData().length);
                 try {
@@ -1954,11 +1966,17 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
      *
      */
     private void saveFile(String fileId, String fileName) {
+
         if (mDriveServiceHelper != null) {
             if (BuildConfig.DEBUG) Log.i(TAG, "Saving " + fileId);
             byte[] fileContent = null;
             try {
-                mZenLayout = new ZenLayout(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
+                if (checkPermissionReadStorage(this)) {
+                    mZenLayout = new ZenLayout(getSerializedSettings2(), getSerializedWidgetSettings(), getScreenShotWallPaper(), DBHelper.getDatabaseBytes());
+                } else {
+                    mZenLayout = new ZenLayout(getSerializedSettings2(), getSerializedWidgetSettings(), null, DBHelper.getDatabaseBytes());
+                }
+
                 fileContent = objToByte(mZenLayout);
             } catch (IOException e) {
                 e.printStackTrace();

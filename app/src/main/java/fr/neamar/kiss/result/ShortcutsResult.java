@@ -35,12 +35,14 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
 import fr.neamar.kiss.DataHandler;
 import fr.neamar.kiss.KissApplication;
 import fr.neamar.kiss.R;
 import fr.neamar.kiss.adapter.RecordAdapter;
 import fr.neamar.kiss.icons.IconPack;
 import fr.neamar.kiss.pojo.ShortcutPojo;
+import fr.neamar.kiss.preference.DefaultLauncherPreference;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.utils.FuzzyScore;
 import fr.neamar.kiss.utils.SpaceTokenizer;
@@ -48,6 +50,7 @@ import fr.neamar.kiss.utils.SpaceTokenizer;
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC;
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST;
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED;
+import static fi.zmengames.zen.ZEvent.State.ACTION_SET_DEFAULT_LAUNCHER;
 
 public class ShortcutsResult extends Result {
     private static final String TAG = ShortcutsResult.class.getSimpleName();
@@ -146,6 +149,9 @@ public class ShortcutsResult extends Result {
     }
 
     public Drawable getDrawable(Context context) {
+        if (shortcutPojo.intentUri.equals(ACTION_SET_DEFAULT_LAUNCHER.toString())){
+            return ContextCompat.getDrawable(context, R.drawable.touch_app);
+        }
         if (shortcutIconDrawable ==null){
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 final LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
@@ -186,6 +192,13 @@ public class ShortcutsResult extends Result {
 
     @Override
     protected void doLaunch(Context context, View v) {
+
+        // Zen Launcher internal
+        if (shortcutPojo.intentUri.equals(ACTION_SET_DEFAULT_LAUNCHER.toString())){
+            DefaultLauncherPreference.selectLauncher(v.getContext());
+            return;
+        }
+
         if (shortcutPojo.isOreoShortcut()) {
             // Oreo shortcuts
             doOreoLaunch(context, v);
@@ -214,6 +227,7 @@ public class ShortcutsResult extends Result {
         // Only the default launcher is allowed to start shortcuts
         if (!launcherApps.hasShortcutHostPermission()) {
             Toast.makeText(context, context.getString(R.string.shortcuts_no_host_permission), Toast.LENGTH_LONG).show();
+            DefaultLauncherPreference.selectLauncher(v.getContext());
             return;
         }
 

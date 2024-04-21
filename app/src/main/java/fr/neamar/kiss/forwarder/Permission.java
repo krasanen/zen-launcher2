@@ -113,7 +113,7 @@ public class Permission extends Forwarder {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(mainActivity, "We Need permission Storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mainActivity, "Need Storage permission for storing wallpaper to Google Drive", Toast.LENGTH_SHORT).show();
                 }
                 return;
             } else if (requestCode == MY_PERMISSIONS_CAMERA)
