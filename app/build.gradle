@@ -136,7 +136,7 @@ tasks.withType(JavaCompile) {
 
 def gitVersion() {
     def process = "git rev-list HEAD --first-parent --count".execute()
-    return process.text.toInteger()
+    return process.text.toInteger() + 10
 }
 
 def gitLastCommit() {
