@@ -77,8 +77,8 @@ public class TagDummyResult extends Result {
         RectF rectF = new RectF(0, 0, width, height);
         rectF.inset(1.f, 1.f);
 
-        // draw a white rounded background
-        paint.setColor(0xFFffffff);
+        // draw a rounded background
+        paint.setColor(context.getResources().getColor(R.color.zenlauncher));
         canvas.drawRoundRect(rectF, width / 2.4f, height / 2.4f, paint);
 
         int codepoint = pojo.getName().codePointAt(0);
@@ -179,6 +179,13 @@ public class TagDummyResult extends Result {
         return favoriteView;
     }
 
+    @NonNull
+    @Override
+    public Drawable getFavoriteDrawable(@NonNull Context context, ImageView view) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Drawable drawable = new BitmapDrawable(generateBitmap(context, sharedPreferences));
+        return drawable;
+    }
     @Override
     protected void doLaunch(Context context, View v) {
         if (context instanceof MainActivity) {

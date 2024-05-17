@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import org.greenrobot.eventbus.EventBus;
@@ -112,17 +111,13 @@ public abstract class Result {
 
     @NonNull
     public View inflateFavorite(@NonNull Context context, @NonNull ViewGroup parent) {
-        View favoriteView = LayoutInflater.from(context).inflate(R.layout.favorite_item, parent, false);
-        Drawable drawable = getDrawable(context);
-        ImageView favoriteImage = favoriteView.findViewById(R.id.favorite_item_image);
-        if (drawable == null)
-            favoriteImage.setImageResource(R.drawable.ic_z);
-        else
-            favoriteImage.setImageDrawable(drawable);
-        favoriteView.setContentDescription(pojo.getName());
-        return favoriteView;
+        return null;
     }
 
+    @NonNull
+    public Drawable getFavoriteDrawable(@NonNull Context context, @NonNull ImageView imageView) {
+        return null;
+    }
     void displayHighlighted(String text, List<Pair<Integer, Integer>> positions, TextView view, Context context) {
         SpannableString enriched = new SpannableString(text);
         int primaryColor = UIColors.getPrimaryColor(context);

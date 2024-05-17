@@ -39,6 +39,7 @@ import fr.neamar.kiss.result.AppResult;
 import fr.neamar.kiss.result.ContactsResult;
 import fr.neamar.kiss.result.Result;
 import fr.neamar.kiss.result.ShortcutsResult;
+import fr.neamar.kiss.result.TagDummyResult;
 import fr.neamar.kiss.ui.ListPopup;
 import fr.neamar.kiss.ui.ShapedContactBadge;
 
@@ -198,7 +199,7 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
             Drawable drawable = result.getDrawable(mainActivity);
             if (drawable != null) {
                 if (result instanceof ContactsResult) {
-                    drawable = ShapedContactBadge.getShapedDrawable(mainActivity, drawable);
+                    drawable = ShapedContactBadge.getShapedDrawable(image.getContext(), drawable);
                 }
                 image.setImageDrawable(drawable);
             } else {
@@ -207,9 +208,8 @@ public class Favorites extends Forwarder implements View.OnClickListener, View.O
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         image.setColorFilter(mainActivity.getColor(R.color.zenlauncher));
                     }
-                } else {
-                    // Use a placeholder if no drawable found
-                    image.setImageResource(R.drawable.ic_z);
+                } else if (result instanceof TagDummyResult) {
+                    image.setImageDrawable(result.getFavoriteDrawable(image.getContext(), image));
                 }
             }
             if (favbarAppNames) {

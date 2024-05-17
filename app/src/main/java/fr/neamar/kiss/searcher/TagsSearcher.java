@@ -28,6 +28,7 @@ public class TagsSearcher extends Searcher
 		if ( activity == null )
 			return null;
 		List<Pojo> results = KissApplication.getApplication(activity).getDataHandler().getApplications();
+		results.addAll(KissApplication.getApplication(activity).getDataHandler().getShortcutsProvider().getPojos());
 		if (results == null)
 			return null;
 		for( Iterator<Pojo> iterator = results.iterator(); iterator.hasNext(); )
