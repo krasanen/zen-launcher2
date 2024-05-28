@@ -818,7 +818,11 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
         }
     }
     private void buildWidgetPopupMenu() {
-        checkPermissionHuawei(this);
+        try {
+            checkPermissionHuawei(this);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         widgetAddY = lastTouchY;
         widgetAddX = lastTouchX;
         show(this, lastTouchX, lastTouchY);
@@ -1978,9 +1982,7 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
                 }
 
                 fileContent = objToByte(mZenLayout);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+            } catch (IOException | SecurityException | JSONException e) {
                 e.printStackTrace();
             }
 
@@ -2407,10 +2409,14 @@ public class MainActivity extends Activity implements QueryInterface, KeyboardSc
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 int animationDuration = getResources().getInteger(
                         android.R.integer.config_shortAnimTime);
-
-                Animator anim = ViewAnimationUtils.createCircularReveal(kissBar, cx, cy, 0, finalRadius);
-                anim.setDuration(animationDuration);
-                anim.start();
+                try {
+                    Animator anim = ViewAnimationUtils.createCircularReveal(kissBar, cx, cy, 0, finalRadius);
+                    anim.setDuration(animationDuration);
+                    anim.start();
+                } catch (IllegalStateException e) {
+                    // If the view hasn't been laid out yet, we can't animate it
+                    e.printStackTrace();
+                }
             }
             kissBar.setVisibility(View.VISIBLE);
 

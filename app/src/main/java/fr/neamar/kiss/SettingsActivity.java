@@ -175,10 +175,14 @@ public class SettingsActivity extends PreferenceActivity implements
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId() == R.id.help) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://zmengames.com/zenlauncherprivacypolicy.html"));
-            startActivity(intent);
-            return true;
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://zmengames.com/zenlauncherprivacypolicy.html"));
+                startActivity(intent);
+                return true;
+            } catch (SecurityException e) {
+                Toast.makeText(item.getActionView().getContext(), R.string.application_not_found, Toast.LENGTH_LONG).show();
+            }
         }
         return super.onMenuItemSelected(featureId, item);
     }
