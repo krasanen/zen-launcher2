@@ -125,7 +125,7 @@ dependencies {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
     errorprone("com.google.errorprone:error_prone_core:2.3.3")
     implementation 'com.github.stefanhaustein.expressionparser:core:v1.0.0'
-    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 }
 
 tasks.withType(JavaCompile) {
