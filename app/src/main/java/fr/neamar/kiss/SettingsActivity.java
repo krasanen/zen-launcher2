@@ -177,7 +177,7 @@ public class SettingsActivity extends PreferenceActivity implements
         if (item.getItemId() == R.id.help) {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://zmengames.com/zenlauncherprivacypolicy.html"));
+                intent.setData(Uri.parse("https://zmengames.com/zenlauncher/privacypolicy.html"));
                 startActivity(intent);
                 return true;
             } catch (SecurityException e) {
